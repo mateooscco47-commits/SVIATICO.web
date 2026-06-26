@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dinacem", "Dinacem\Dinacem.csproj", "{BDD7B5C9-04ED-4D66-B39C-3AAA0294A43B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dinacem.Dominio", "Dinacem.Dominio", "{D99E5177-2447-4EA8-B3B7-62D5F39AFFEC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Entidades", "Entidades", "{C9E4383E-0D24-45FE-B6F3-8BB7B11A199E}"
+	ProjectSection(SolutionItems) = preProject
+		EstadoRendicion.cs = EstadoRendicion.cs
+		EstadoSolicitud.cs = EstadoSolicitud.cs
+		Gasto.cs = Gasto.cs
+		Rendicion.cs = Rendicion.cs
+		Rol.cs = Rol.cs
+		Solicitud.cs = Solicitud.cs
+		TipoComprobante.cs = TipoComprobante.cs
+		TipoGasto.cs = TipoGasto.cs
+		Usuario.cs = Usuario.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dincacem.Infraestructura", "Dincacem.Infraestructura", "{5A65B7E0-111A-43B4-8C68-502C0C463825}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BDD7B5C9-04ED-4D66-B39C-3AAA0294A43B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDD7B5C9-04ED-4D66-B39C-3AAA0294A43B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDD7B5C9-04ED-4D66-B39C-3AAA0294A43B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDD7B5C9-04ED-4D66-B39C-3AAA0294A43B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C9E4383E-0D24-45FE-B6F3-8BB7B11A199E} = {D99E5177-2447-4EA8-B3B7-62D5F39AFFEC}
+	EndGlobalSection
+EndGlobal
