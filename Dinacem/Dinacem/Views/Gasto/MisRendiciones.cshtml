@@ -1,0 +1,218 @@
+﻿@model List<Dinacem.Models.Rendicion>
+
+@{
+    ViewData["Title"] = "Mis Rendiciones";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <title>Mis Rendiciones</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+
+        body{
+            background:#f5f7fa;
+        }
+
+        .card{
+            border-radius:15px;
+            border:none;
+        }
+
+        .estado{
+            font-weight:bold;
+            padding:6px 12px;
+            border-radius:20px;
+            color:white;
+        }
+
+        .proceso{
+            background:#0d6efd;
+        }
+
+        .pendiente{
+            background:#ffc107;
+            color:black;
+        }
+
+        .aprobada{
+            background:#198754;
+        }
+
+        .rechazada{
+            background:#dc3545;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container mt-5">
+
+<div class="card shadow">
+
+<div class="card-header bg-primary text-white">
+
+<div class="d-flex justify-content-between align-items-center">
+
+<h3>Mis Rendiciones</h3>
+
+<a asp-controller="Empleado"
+   asp-action="Index"
+   class="btn btn-light">
+
+Volver
+
+</a>
+
+</div>
+
+</div>
+
+<div class="card-body">
+
+                @if (TempData["mensaje"] != null)
+                {
+        <div class="alert alert-success">
+                        @TempData["mensaje"]
+        </div>
+                }
+
+<table class="table table-hover table-bordered align-middle">
+
+<thead class="table-dark">
+
+<tr>
+
+<th>#</th>
+
+<th>Solicitud</th>
+
+<th>Fecha</th>
+
+<th>Total Gastado</th>
+
+<th>Saldo</th>
+
+<th>Estado</th>
+
+<th width="250">
+
+Acciones
+
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+                        @foreach (var item in Model)
+                        {
+
+    <tr>
+
+    <td>@item.IdRendicion</td>
+
+    <td>@item.IdSolicitud</td>
+
+    <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+
+    <td>S/. @item.Total.ToString("N2")</td>
+
+    <td>S/. @item.Saldo.ToString("N2")</td>
+
+    <td>
+
+                                    @if (item.IdEstadoRendicion == 1)
+                                    {
+        <span class="estado proceso">
+
+        En Proceso
+
+        </span>
+                                    }
+
+                                    @if (item.IdEstadoRendicion == 2)
+                                    {
+        <span class="estado pendiente">
+
+        Pendiente Revisión
+
+        </span>
+                                    }
+
+                                    @if (item.IdEstadoRendicion == 3)
+                                    {
+        <span class="estado aprobada">
+
+        Aprobada
+
+        </span>
+                                    }
+
+                                    @if (item.IdEstadoRendicion == 4)
+                                    {
+        <span class="estado rechazada">
+
+        Rechazada
+
+        </span>
+                                    }
+
+    </td>
+
+    <td>
+
+                                    @if (item.IdEstadoRendicion == 1)
+                                    {
+        <a asp-controller="Gasto"
+           asp-action="Index"
+           asp-route-idRendicion="@item.IdRendicion"
+           class="btn btn-primary btn-sm">
+
+        Continuar
+
+        </a>
+                                    }
+
+    <a asp-controller="Rendicion"
+       asp-action="Detalle"
+       asp-route-id="@item.IdRendicion"
+       class="btn btn-secondary btn-sm">
+
+    Detalle
+
+    </a>
+
+    </td>
+
+    </tr>
+
+                        }
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

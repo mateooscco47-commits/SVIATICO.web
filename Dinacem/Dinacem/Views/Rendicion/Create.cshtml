@@ -1,0 +1,63 @@
+﻿@model Dinacem.Models.Rendicion
+
+@{
+    ViewData["Title"] = "Crear Rendición";
+    Layout = "~/Views/Shared/_LayoutEmpleado.cshtml";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h3>Crear Rendición de Gastos</h3>
+        </div>
+
+        <div class="card-body">
+
+            <form asp-action="Create" method="post">
+
+                <input type="hidden" asp-for="IdSolicitud" />
+                <input type="hidden" asp-for="IdUsuario" />
+                <input type="hidden" asp-for="Fecha" />
+                <input type="hidden" asp-for="FechaInicio" />
+                <input type="hidden" asp-for="FechaFin" />
+                <input type="hidden" asp-for="Total" />
+                <input type="hidden" asp-for="Saldo" />
+                <input type="hidden" asp-for="IdEstadoRendicion" />
+
+                <div class="mb-3">
+                    <label class="form-label">Solicitud N°</label>
+                    <input class="form-control" value="@Model.IdSolicitud" readonly />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Fecha Inicio</label>
+                    <input class="form-control" value="@Model.FechaInicio.ToString("dd/MM/yyyy")" readonly />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Fecha Fin</label>
+                    <input class="form-control" value="@Model.FechaFin.ToString("dd/MM/yyyy")" readonly />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Saldo Inicial</label>
+                    <input class="form-control" value="S/ @Model.Saldo.ToString("N2")" readonly />
+                </div>
+
+                <button type="submit" class="btn btn-success">
+                    Confirmar Rendición
+                </button>
+
+                <a asp-controller="Rendicion" asp-action="Index" class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

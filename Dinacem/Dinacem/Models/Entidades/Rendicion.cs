@@ -13,16 +13,16 @@ namespace Dinacem.Models
         public int IdSolicitud { get; set; }
 
         [ForeignKey("IdSolicitud")]
-        public Solicitud Solicitud { get; set; }
+        public Solicitud? Solicitud { get; set; }
 
         [Required]
         public int IdUsuario { get; set; }
 
         [ForeignKey("IdUsuario")]
-        public Usuario Usuario { get; set; }
+        public Usuario? Usuario { get; set; }
 
         [Required]
-        public DateTime Fecha { get; set; }
+        public DateTime Fecha { get; set; } = DateTime.Now;
 
         [Required]
         public DateTime FechaInicio { get; set; }
@@ -31,15 +31,17 @@ namespace Dinacem.Models
         public DateTime FechaFin { get; set; }
 
         [Required]
-        public decimal Total { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Total { get; set; } = 0;
 
         [Required]
-        public decimal Saldo { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Saldo { get; set; } = 0;
 
         [Required]
         public int IdEstadoRendicion { get; set; }
 
         [ForeignKey("IdEstadoRendicion")]
-        public EstadoRendicion EstadoRendicion { get; set; }
+        public EstadoRendicion? EstadoRendicion { get; set; }
     }
 }

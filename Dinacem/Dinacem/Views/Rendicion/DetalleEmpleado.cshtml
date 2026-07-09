@@ -1,0 +1,129 @@
+﻿@model List<Dinacem.Models.Gasto>
+
+@{
+    ViewData["Title"] = "Detalle de Rendición";
+    Layout = "~/Views/Shared/_LayoutEmpleado.cshtml";
+
+    var rendicion = ViewBag.Rendicion as Dinacem.Models.Rendicion;
+    var montoAprobado = rendicion?.Solicitud?.Monto ?? 0;
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3>Detalle de Rendición</h3>
+        </div>
+
+        <div class="card-body">
+
+            <h5>Información General</h5>
+
+            <table class="table table-bordered">
+                <tr>
+                    <th>Solicitud</th>
+                    <td>@rendicion?.IdSolicitud</td>
+                </tr>
+                <tr>
+                    <th>Destino</th>
+                    <td>@rendicion?.Solicitud?.Destino</td>
+                </tr>
+                <tr>
+                    <th>Motivo</th>
+                    <td>@rendicion?.Solicitud?.Motivo</td>
+                </tr>
+                <tr>
+                    <th>Fecha Inicio</th>
+                    <td>@rendicion?.FechaInicio.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <th>Fecha Fin</th>
+                    <td>@rendicion?.FechaFin.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <th>Estado</th>
+                    <td>@rendicion?.EstadoRendicion?.Nombre</td>
+                </tr>
+            </table>
+
+            <hr />
+
+            <h5>Gastos Registrados</h5>
+
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Comprobante</th>
+                        <th>Serie</th>
+                        <th>Número</th>
+                        <th>Detalle</th>
+                        <th>IGV</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                                <td>@item.TipoGasto?.Nombre</td>
+                                <td>@item.TipoComprobante?.Nombre</td>
+                                <td>@item.Serie</td>
+                                <td>@item.Numero</td>
+                                <td>@item.Detalle</td>
+                                <td>S/. @item.IGV.ToString("N2")</td>
+                                <td>S/. @item.MontoTotal.ToString("N2")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">
+                                No hay gastos registrados.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <hr />
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="alert alert-primary">
+                        <strong>Monto Aprobado</strong><br />
+                        S/. @montoAprobado.ToString("N2")
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="alert alert-warning">
+                        <strong>Total Rendido</strong><br />
+                        S/. @rendicion?.Total.ToString("N2")
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="alert alert-success">
+                        <strong>Saldo</strong><br />
+                        S/. @rendicion?.Saldo.ToString("N2")
+                    </div>
+                </div>
+            </div>
+
+            <a asp-controller="Rendicion"
+               asp-action="MisRendiciones"
+               class="btn btn-secondary">
+                Volver
+            </a>
+
+        </div>
+    </div>
+
+</div>

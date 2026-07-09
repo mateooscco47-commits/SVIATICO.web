@@ -1,0 +1,520 @@
+﻿@model List<Dinacem.Models.Gasto>
+
+@{
+    ViewData["Title"] = "Rendición de Gastos";
+    Layout = "~/Views/Shared/_LayoutEmpleado.cshtml";
+
+    var rendicion = ViewBag.Rendicion as Dinacem.Models.Rendicion;
+    var tiposGasto = ViewBag.TiposGasto as List<Dinacem.Models.TipoGasto>;
+    var tiposComprobante = ViewBag.TiposComprobante as List<Dinacem.Models.TipoComprobante>;
+
+    var montoAprobado = rendicion?.Solicitud?.Monto ?? 0;
+    var totalIgv = Model?.Sum(x => x.IGV) ?? 0;
+    var totalRendido = rendicion?.Total ?? 0;
+    var saldoDisponible = rendicion?.Saldo ?? 0;
+}
+
+<style>
+    .panel {
+        background: white;
+        border: 1px solid #dbe1ea;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, .04);
+    }
+
+    .panel-header {
+        padding: 18px 22px;
+        border-bottom: 1px solid #e5e7eb;
+        font-weight: 800;
+        color: #0d6efd;
+    }
+
+    .panel-body {
+        padding: 20px;
+    }
+
+    .small-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+    }
+
+    .summary-card {
+        border: 1px solid #dbe1ea;
+        border-radius: 10px;
+        padding: 16px;
+        background: #fff;
+    }
+
+    .summary-value {
+        font-size: 22px;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .summary-blue {
+        color: #0d6efd;
+    }
+
+    .summary-green {
+        color: #198754;
+    }
+
+    .summary-orange {
+        color: #f59e0b;
+    }
+
+    .table th {
+        font-size: 12px;
+        color: #64748b;
+        text-transform: uppercase;
+    }
+
+    .form-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #334155;
+    }
+
+    .btn-dark-custom {
+        background: #0f172a;
+        color: white;
+        font-weight: 700;
+        height: 44px;
+    }
+
+        .btn-dark-custom:hover {
+            background: #111827;
+            color: white;
+        }
+
+    .badge-gasto {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #86efac;
+        padding: 5px 10px;
+        border-radius: 6px;
+    }
+</style>
+
+<div class="container-fluid p-4">
+
+    @if (TempData["mensaje"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["mensaje"]
+        </div>
+    }
+
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger">
+            @Html.Raw(TempData["error"])
+        </div>
+    }
+
+    <div class="row g-4">
+
+        <div class="col-lg-8">
+
+            <div class="panel mb-4">
+                <div class="panel-header">
+                    GASTOS REGISTRADOS
+                    <div class="text-muted fw-normal mt-1">
+                        Listado de gastos de la rendición actual
+                    </div>
+                </div>
+
+                <div class="panel-body p-0">
+
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Tipo</th>
+                                <th>Comprobante</th>
+                                <th>Detalle</th>
+                                <th>IGV</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+
+                                        <td>
+                                            <span class="badge-gasto">
+                                                @item.TipoGasto?.Nombre
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            @item.TipoComprobante?.Nombre
+                                            <br />
+                                            <span class="text-muted">
+                                                @item.Serie - @item.Numero
+                                            </span>
+                                        </td>
+
+                                        <td>@item.Detalle</td>
+
+                                        <td>S/ @item.IGV.ToString("N2")</td>
+
+                                        <td>
+                                            <strong>
+                                                S/ @item.MontoTotal.ToString("N2")
+                                            </strong>
+                                        </td>
+
+                                        <td>
+                                            @if (rendicion?.IdEstadoRendicion == 1)
+                                            {
+                                                <form asp-controller="Gasto"
+                                                      asp-action="Delete"
+                                                      method="post"
+                                                      class="d-inline">
+
+                                                    <input type="hidden"
+                                                           name="id"
+                                                           value="@item.IdGasto" />
+
+                                                    <input type="hidden"
+                                                           name="idRendicion"
+                                                           value="@rendicion.IdRendicion" />
+
+                                                    <button class="btn btn-outline-danger btn-sm"
+                                                            onclick="return confirm('¿Eliminar este gasto?');">
+                                                        Eliminar
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Bloqueado</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">
+                                        Aún no hay gastos registrados.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="p-3 border-top">
+                        Mostrando @(Model?.Count ?? 0) gasto(s)
+                    </div>
+
+                    <div class="row g-3 p-3">
+                        <div class="col-md-4">
+                            <div class="summary-card text-center">
+                                <div class="small-label">Subtotal</div>
+                                <div class="summary-value">
+                                    S/ @((Model?.Sum(x => x.MontoTotal) ?? 0).ToString("N2"))
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="summary-card text-center">
+                                <div class="small-label">Total IGV</div>
+                                <div class="summary-value">
+                                    S/ @totalIgv.ToString("N2")
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="summary-card text-center">
+                                <div class="small-label summary-blue">Total Rendido</div>
+                                <div class="summary-value summary-blue">
+                                    S/ @totalRendido.ToString("N2")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            @if (rendicion?.IdEstadoRendicion == 1)
+            {
+                <div class="panel">
+                    <div class="panel-header">
+                        AGREGAR NUEVO GASTO
+                    </div>
+
+                    <div class="panel-body">
+                        <form asp-controller="Gasto"
+                              asp-action="Create"
+                              method="post"
+                              enctype="multipart/form-data">
+
+                            <input type="hidden"
+                                   name="IdRendicion"
+                                   value="@rendicion.IdRendicion" />
+
+                            <div class="row g-3">
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Fecha</label>
+                                    <input type="date"
+                                           name="Fecha"
+                                           class="form-control"
+                                           required />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Tipo de Gasto</label>
+                                    <select name="IdTipoGasto"
+                                            class="form-select"
+                                            required>
+                                        <option value="">Seleccionar tipo</option>
+
+                                        @if (tiposGasto != null)
+                                        {
+                                            foreach (var item in tiposGasto)
+                                            {
+                                                <option value="@item.IdTipoGasto">
+                                                    @item.Nombre
+                                                </option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Tipo Comprobante</label>
+                                    <select name="IdTipoComprobante"
+                                            class="form-select"
+                                            required>
+                                        <option value="">Seleccionar comprobante</option>
+
+                                        @if (tiposComprobante != null)
+                                        {
+                                            foreach (var item in tiposComprobante)
+                                            {
+                                                <option value="@item.IdTipoComprobante">
+                                                    @item.Nombre
+                                                </option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Serie</label>
+                                    <input name="Serie"
+                                           class="form-control"
+                                           placeholder="F001" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Número</label>
+                                    <input name="Numero"
+                                           class="form-control"
+                                           placeholder="000123" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Detalle</label>
+                                    <input name="Detalle"
+                                           class="form-control"
+                                           placeholder="Ej. Almuerzo" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Monto Total</label>
+                                    <input type="number"
+                                           step="0.01"
+                                           name="MontoTotal"
+                                           class="form-control"
+                                           required />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">IGV</label>
+                                    <input type="number"
+                                           step="0.01"
+                                           name="IGV"
+                                           class="form-control"
+                                           value="0.00" />
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label">Comprobante Archivo</label>
+                                    <input type="file"
+                                           name="archivo"
+                                           class="form-control" />
+                                </div>
+
+                            </div>
+
+                            <div class="mt-4">
+                                <button class="btn btn-dark-custom px-4">
+                                    + Agregar Gasto
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    Esta rendición ya fue enviada. No se pueden agregar ni eliminar gastos.
+                </div>
+            }
+
+        </div>
+
+        <div class="col-lg-4">
+
+            <div class="panel mb-4">
+                <div class="panel-header">
+                    INFORMACIÓN DE LA RENDICIÓN
+                </div>
+
+                <div class="panel-body">
+                    <table class="table table-bordered mb-0">
+                        <tr>
+                            <th>Solicitud</th>
+                            <td>@rendicion?.IdSolicitud</td>
+                        </tr>
+                        <tr>
+                            <th>Destino</th>
+                            <td>@rendicion?.Solicitud?.Destino</td>
+                        </tr>
+                        <tr>
+                            <th>Motivo</th>
+                            <td>@rendicion?.Solicitud?.Motivo</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha Inicio</th>
+                            <td>@rendicion?.FechaInicio.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                        <tr>
+                            <th>Fecha Fin</th>
+                            <td>@rendicion?.FechaFin.ToString("dd/MM/yyyy")</td>
+                        </tr>
+                        <tr>
+                            <th>Monto Aprobado</th>
+                            <td>S/ @montoAprobado.ToString("N2")</td>
+                        </tr>
+                        <tr>
+                            <th>Estado</th>
+                            <td>
+                                @if (rendicion?.IdEstadoRendicion == 1)
+                                {
+                                    <span class="badge bg-primary">En proceso</span>
+                                }
+                                else if (rendicion?.IdEstadoRendicion == 2)
+                                {
+                                    <span class="badge bg-warning text-dark">Pendiente de revisión</span>
+                                }
+                                else if (rendicion?.IdEstadoRendicion == 3)
+                                {
+                                    <span class="badge bg-success">Aprobada</span>
+                                }
+                                else if (rendicion?.IdEstadoRendicion == 4)
+                                {
+                                    <span class="badge bg-danger">Rechazada</span>
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel mb-4">
+                <div class="panel-header">
+                    RESUMEN
+                </div>
+
+                <div class="panel-body">
+                    <div class="summary-card mb-3">
+                        <div class="small-label summary-green">
+                            Monto Aprobado
+                        </div>
+                        <div class="summary-value summary-green">
+                            S/ @montoAprobado.ToString("N2")
+                        </div>
+                    </div>
+
+                    <div class="summary-card mb-3">
+                        <div class="small-label summary-orange">
+                            Total Rendido
+                        </div>
+                        <div class="summary-value">
+                            S/ @totalRendido.ToString("N2")
+                        </div>
+                    </div>
+
+                    <div class="summary-card">
+                        <div class="small-label summary-blue">
+                            Saldo Disponible
+                        </div>
+                        <div class="summary-value summary-blue">
+                            S/ @saldoDisponible.ToString("N2")
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    ACCIONES
+                </div>
+
+                <div class="panel-body d-grid gap-3">
+
+                    @if (rendicion?.IdEstadoRendicion == 1)
+                    {
+                        <form asp-controller="Gasto"
+                              asp-action="EnviarRendicion"
+                              method="post">
+
+                            <input type="hidden"
+                                   name="idRendicion"
+                                   value="@rendicion.IdRendicion" />
+
+                            <button class="btn btn-success w-100"
+                                    onclick="return confirm('¿Desea enviar esta rendición para revisión?');">
+                                Finalizar y Enviar a Revisión
+                            </button>
+                        </form>
+                    }
+
+                    <a asp-controller="Rendicion"
+                       asp-action="MisRendiciones"
+                       class="btn btn-outline-secondary">
+                        Historial de Rendiciones
+                    </a>
+
+                    <a asp-controller="Rendicion"
+                       asp-action="Index"
+                       class="btn btn-outline-secondary">
+                        Volver
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

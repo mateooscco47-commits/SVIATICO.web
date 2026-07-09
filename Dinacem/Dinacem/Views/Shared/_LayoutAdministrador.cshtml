@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>@ViewData["Title"] - DINACEM</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+          rel="stylesheet" />
+
+    <style>
+
+        body {
+            background: #f5f7fb;
+        }
+
+        .navbar-top {
+            background: white;
+            border-bottom: 1px solid #dfe4ea;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        .menu {
+            background: #1e293b;
+        }
+
+            .menu .nav-link {
+                color: white;
+                font-weight: 500;
+                padding: 15px 25px;
+                transition: .3s;
+            }
+
+                .menu .nav-link:hover {
+                    background: #2563eb;
+                    color: white;
+                }
+
+        .contenido {
+            padding: 30px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Barra Superior -->
+
+    <nav class="navbar navbar-expand-lg navbar-top">
+
+        <div class="container-fluid">
+
+            <span class="logo">
+                DINACEM
+            </span>
+
+            <span class="ms-3 fs-5 fw-semibold">
+                Panel del Administrador
+            </span>
+
+            <div class="ms-auto d-flex align-items-center">
+
+                <span class="me-4 fw-semibold">
+                    <i class="bi bi-person-circle"></i>
+                    Administrador
+                </span>
+
+                <a asp-controller="Home"
+                   asp-action="Logout"
+                   class="btn btn-outline-danger">
+
+                    <i class="bi bi-box-arrow-right"></i>
+                    Salir
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <!-- Menú -->
+
+    <nav class="navbar navbar-expand-lg menu">
+
+        <div class="container-fluid">
+
+            <ul class="navbar-nav">
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="Principal"
+                       asp-action="Index">
+                        <i class="bi bi-house-door-fill"></i>
+                        Inicio
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="Usuario"
+                       asp-action="Index">
+                        <i class="bi bi-people-fill"></i>
+                        Usuarios
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="Solicitud"
+                       asp-action="Index">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                        Solicitudes
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="Rendicion"
+                       asp-action="IndexAdmin">
+                        <i class="bi bi-cash-stack"></i>
+                        Rendiciones
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="Reporte"
+                       asp-action="Index">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        Reportes
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link"
+                       asp-controller="Administrador"
+                       asp-action="Perfil">
+                        <i class="bi bi-person-fill"></i>
+                        Mi Perfil
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </nav>
+
+    <!-- Contenido -->
+
+    <div class="contenido">
+
+        @RenderBody()
+
+    </div>
+
+</body>
+</html>

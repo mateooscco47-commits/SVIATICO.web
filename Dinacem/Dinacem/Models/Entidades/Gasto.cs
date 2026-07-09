@@ -13,7 +13,7 @@ namespace Dinacem.Models
         public int IdRendicion { get; set; }
 
         [ForeignKey("IdRendicion")]
-        public Rendicion Rendicion { get; set; }
+        public Rendicion? Rendicion { get; set; }
 
         [Required]
         public DateTime Fecha { get; set; }
@@ -22,25 +22,25 @@ namespace Dinacem.Models
         public int IdTipoGasto { get; set; }
 
         [ForeignKey("IdTipoGasto")]
-        public TipoGasto TipoGasto { get; set; }
+        public TipoGasto? TipoGasto { get; set; }
 
         [Required]
         public int IdTipoComprobante { get; set; }
 
         [ForeignKey("IdTipoComprobante")]
-        public TipoComprobante TipoComprobante { get; set; }
+        public TipoComprobante? TipoComprobante { get; set; }
 
         [StringLength(20)]
-        public string Serie { get; set; }
+        public string? Serie { get; set; }
 
         [StringLength(30)]
-        public string Numero { get; set; }
+        public string? Numero { get; set; }
 
         [StringLength(500)]
-        public string Detalle { get; set; }
+        public string? Detalle { get; set; }
 
         [StringLength(300)]
-        public string Comprobante { get; set; }
+        public string? Comprobante { get; set; }
 
         [Required]
         public decimal MontoTotal { get; set; }

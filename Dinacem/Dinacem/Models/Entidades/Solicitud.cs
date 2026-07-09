@@ -13,10 +13,10 @@ namespace Dinacem.Models
         public int IdUsuario { get; set; }
 
         [ForeignKey("IdUsuario")]
-        public Usuario Usuario { get; set; }
+        public Usuario? Usuario { get; set; }
 
         [Required]
-        public DateTime Fecha { get; set; }
+        public DateTime Fecha { get; set; } = DateTime.Now;
 
         [Required]
         public DateTime FechaInicio { get; set; }
@@ -26,22 +26,23 @@ namespace Dinacem.Models
 
         [Required]
         [StringLength(500)]
-        public string Motivo { get; set; }
+        public string Motivo { get; set; } = string.Empty;
 
         [Required]
         [StringLength(200)]
-        public string Destino { get; set; }
+        public string Destino { get; set; } = string.Empty;
 
         [Required]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Monto { get; set; }
 
         [Required]
         public int IdEstadoSolicitud { get; set; }
 
         [ForeignKey("IdEstadoSolicitud")]
-        public EstadoSolicitud EstadoSolicitud { get; set; }
+        public EstadoSolicitud? EstadoSolicitud { get; set; }
 
         [StringLength(500)]
-        public string Observaciones { get; set; }
+        public string? Observaciones { get; set; }
     }
 }

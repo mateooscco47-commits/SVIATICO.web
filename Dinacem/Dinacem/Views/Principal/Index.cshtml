@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Dashboard Administrador";
-    Layout = null;
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
 }
 
 <!DOCTYPE html>
@@ -19,7 +19,7 @@
         }
 
         .sidebar-title {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: bold;
             color: #0d6efd;
         }
@@ -29,15 +29,16 @@
             border-radius: 15px;
             transition: 0.3s;
             cursor: pointer;
+            min-height: 230px;
         }
 
-        .card-option:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
+            .card-option:hover {
+                transform: scale(1.04);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            }
 
         .icon-box {
-            font-size: 40px;
+            font-size: 42px;
             color: #0d6efd;
         }
     </style>
@@ -47,92 +48,60 @@
 
     <div class="container py-5">
 
-        <!-- Encabezado -->
         <div class="text-center mb-5">
             <h2 class="sidebar-title">DINACEM - PANEL ADMINISTRADOR</h2>
             <p class="text-muted">Sistema de Gestión de Viáticos</p>
         </div>
 
-        <!-- Opciones -->
         <div class="row g-4">
 
-            <!-- Usuarios -->
             <div class="col-md-3">
                 <div class="card card-option text-center p-4 shadow-sm">
-                    <div class="icon-box mb-3">
-                        👤
-                    </div>
+                    <div class="icon-box mb-3">👤</div>
                     <h5>Gestión de Usuarios</h5>
                     <p class="text-muted">Administrar empleados y roles</p>
-                    <a href="/Usuario/Index" class="btn btn-primary w-100">Entrar</a>
+                    <a asp-controller="Usuario" asp-action="Index" class="btn btn-primary w-100">Entrar</a>
                 </div>
             </div>
 
-            <!-- Solicitudes -->
             <div class="col-md-3">
                 <div class="card card-option text-center p-4 shadow-sm">
-                    <div class="icon-box mb-3">
-                        📄
-                    </div>
+                    <div class="icon-box mb-3">📄</div>
                     <h5>Solicitudes</h5>
-                    <p class="text-muted">Aprobación de viáticos</p>
-                    <a href="/Solicitud/Index" class="btn btn-primary w-100">Entrar</a>
+                    <p class="text-muted">Aprobar o rechazar viáticos</p>
+                    <a asp-controller="Solicitud" asp-action="Index" class="btn btn-primary w-100">Entrar</a>
                 </div>
             </div>
 
-            <!-- Rendiciones -->
             <div class="col-md-3">
                 <div class="card card-option text-center p-4 shadow-sm">
-                    <div class="icon-box mb-3">
-                        💰
-                    </div>
+                    <div class="icon-box mb-3">💰</div>
                     <h5>Rendiciones</h5>
-                    <p class="text-muted">Revisión de gastos</p>
-                    <a href="/Rendicion/Index" class="btn btn-primary w-100">Entrar</a>
+                    <p class="text-muted">Revisar gastos enviados</p>
+                    <a asp-controller="Rendicion" asp-action="IndexAdmin" class="btn btn-primary w-100">Entrar</a>
                 </div>
             </div>
 
-            <!-- Gastos -->
             <div class="col-md-3">
                 <div class="card card-option text-center p-4 shadow-sm">
-                    <div class="icon-box mb-3">
-                        🧾
-                    </div>
-                    <h5>Gastos</h5>
-                    <p class="text-muted">Registro de comprobantes</p>
-                    <a href="/Gasto/Index" class="btn btn-primary w-100">Entrar</a>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Segunda fila -->
-        <div class="row g-4 mt-3">
-
-            <!-- Reportes -->
-            <div class="col-md-3">
-                <div class="card card-option text-center p-4 shadow-sm">
-                    <div class="icon-box mb-3">
-                        📊
-                    </div>
+                    <div class="icon-box mb-3">📊</div>
                     <h5>Reportes</h5>
                     <p class="text-muted">Estadísticas del sistema</p>
                     <a href="#" class="btn btn-primary w-100">Entrar</a>
                 </div>
             </div>
 
-            <!-- Logout -->
+        </div>
+
+        <div class="row g-4 mt-3">
             <div class="col-md-3">
                 <div class="card card-option text-center p-4 shadow-sm">
-                    <div class="icon-box mb-3">
-                        🚪
-                    </div>
+                    <div class="icon-box mb-3">🚪</div>
                     <h5>Salir</h5>
                     <p class="text-muted">Cerrar sesión</p>
-                    <a href="/Home/Logout" class="btn btn-danger w-100">Salir</a>
+                    <a asp-controller="Home" asp-action="Logout" class="btn btn-danger w-100">Salir</a>
                 </div>
             </div>
-
         </div>
 
     </div>

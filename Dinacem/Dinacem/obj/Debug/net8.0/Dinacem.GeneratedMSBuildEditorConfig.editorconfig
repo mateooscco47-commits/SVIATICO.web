@@ -24,6 +24,18 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Gasto/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FzdG9cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Gasto/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FzdG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Gasto/MisRendiciones.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FzdG9cTWlzUmVuZGljaW9uZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -36,12 +48,60 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpbmNpcGFsXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/Detalle.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXERldGFsbGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/DetalleAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXERldGFsbGVBZG1pbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/DetalleEmpleado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXERldGFsbGVFbXBsZWFkby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/IndexAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXEluZGV4QWRtaW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/MisRendiciones.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXE1pc1JlbmRpY2lvbmVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Shared/_LayoutAdministrador.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRBZG1pbmlzdHJhZG9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Shared/_LayoutEmpleado.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRFbXBsZWFkby5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Solicitud/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU29saWNpdHVkXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Solicitud/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU29saWNpdHVkXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Solicitud/MisSolicitudes.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU29saWNpdHVkXE1pc1NvbGljaXR1ZGVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Usuario/Create.cshtml]

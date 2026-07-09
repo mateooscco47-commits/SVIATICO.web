@@ -1,0 +1,213 @@
+﻿@model List<Dinacem.Models.Solicitud>
+
+@{
+    ViewData["Title"] = "Solicitudes de Viáticos";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+}
+
+<style>
+    .card {
+        border-radius: 15px;
+    }
+
+    .badge-pendiente {
+        background: #ffc107;
+        color: black;
+    }
+
+    .badge-aprobado {
+        background: #198754;
+        color: white;
+    }
+
+    .badge-rechazado {
+        background: #dc3545;
+        color: white;
+    }
+</style>
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h3>Solicitudes de Viáticos</h3>
+        </div>
+
+        <div class="card-body">
+
+            @if (TempData["mensaje"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["mensaje"]
+                </div>
+            }
+
+            @if (TempData["error"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["error"]
+                </div>
+            }
+
+            <table class="table table-hover table-bordered align-middle">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Empleado</th>
+                        <th>Fecha</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <th>Destino</th>
+                        <th>Monto</th>
+                        <th>Estado</th>
+                        <th width="220">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.IdSolicitud</td>
+
+                                <td>
+                                    @item.Usuario?.Nombres @item.Usuario?.Apellidos
+                                </td>
+
+                                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+
+                                <td>@item.FechaInicio.ToString("dd/MM/yyyy")</td>
+
+                                <td>@item.FechaFin.ToString("dd/MM/yyyy")</td>
+
+                                <td>@item.Destino</td>
+
+                                <td>S/. @item.Monto.ToString("N2")</td>
+
+                                <td>
+                                    @if (item.IdEstadoSolicitud == 1)
+                                    {
+                                        <span class="badge badge-pendiente">Pendiente</span>
+                                    }
+                                    else if (item.IdEstadoSolicitud == 2)
+                                    {
+                                        <span class="badge badge-aprobado">Aprobado</span>
+                                    }
+                                    else if (item.IdEstadoSolicitud == 3)
+                                    {
+                                        <span class="badge badge-rechazado">Rechazado</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (item.IdEstadoSolicitud == 1)
+                                    {
+                                        <form asp-controller="Solicitud"
+                                              asp-action="Aprobar"
+                                              method="post"
+                                              class="d-inline">
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@item.IdSolicitud" />
+
+                                            <button class="btn btn-success btn-sm">
+                                                Aprobar
+                                            </button>
+
+                                        </form>
+
+                                        <button class="btn btn-danger btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalRechazar@(item.IdSolicitud)">
+                                            Rechazar
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Finalizado</span>
+                                    }
+                                </td>
+                            </tr>
+
+                            <div class="modal fade"
+                                 id="modalRechazar@(item.IdSolicitud)"
+                                 tabindex="-1">
+
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+
+                                        <form asp-controller="Solicitud"
+                                              asp-action="Rechazar"
+                                              method="post">
+
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Rechazar Solicitud</h5>
+
+                                                <button type="button"
+                                                        class="btn-close"
+                                                        data-bs-dismiss="modal">
+                                                </button>
+                                            </div>
+
+                                            <div class="modal-body">
+
+                                                <input type="hidden"
+                                                       name="id"
+                                                       value="@item.IdSolicitud" />
+
+                                                <label class="form-label">
+                                                    Observaciones
+                                                </label>
+
+                                                <textarea name="observaciones"
+                                                          class="form-control"
+                                                          rows="4"
+                                                          required></textarea>
+
+                                            </div>
+
+                                            <div class="modal-footer">
+
+                                                <button type="button"
+                                                        class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">
+                                                    Cancelar
+                                                </button>
+
+                                                <button class="btn btn-danger">
+                                                    Rechazar
+                                                </button>
+
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="9" class="text-center text-muted">
+                                No hay solicitudes registradas.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
