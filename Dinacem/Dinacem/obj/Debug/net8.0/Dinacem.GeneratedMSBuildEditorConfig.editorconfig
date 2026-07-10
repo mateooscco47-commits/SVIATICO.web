@@ -1,133 +1,136 @@
 is_global = true
 build_property.TargetFramework = net8.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = true
 build_property.ProjectTypeGuids = 
 build_property.InvariantGlobalization = 
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
+build_property.EntryPointFilePath = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Dinacem
 build_property.RootNamespace = Dinacem
-build_property.ProjectDir = C:\Users\lucas\Desktop\FISCAapp\Dinacem\Dinacem\
+build_property.ProjectDir = C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\lucas\Desktop\FISCAapp\Dinacem\Dinacem
+build_property.MSBuildProjectDirectory = C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Empleado/Index.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Empleado/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbGVhZG9cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Gasto/Create.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Gasto/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FzdG9cQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Gasto/Index.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Gasto/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FzdG9cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Gasto/MisRendiciones.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Gasto/MisRendiciones.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2FzdG9cTWlzUmVuZGljaW9uZXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Home/Index.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Home/Privacy.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Principal/Index.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Principal/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpbmNpcGFsXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/Create.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Rendicion/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/Detalle.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Rendicion/Detalle.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXERldGFsbGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/DetalleAdmin.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Rendicion/DetalleAdmin.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXERldGFsbGVBZG1pbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/DetalleEmpleado.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Rendicion/DetalleEmpleado.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXERldGFsbGVFbXBsZWFkby5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/Index.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Rendicion/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/IndexAdmin.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Rendicion/IndexAdmin.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXEluZGV4QWRtaW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Rendicion/MisRendiciones.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Rendicion/MisRendiciones.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVuZGljaW9uXE1pc1JlbmRpY2lvbmVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Shared/Error.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Shared/_LayoutAdministrador.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Shared/_LayoutAdministrador.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRBZG1pbmlzdHJhZG9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Shared/_LayoutEmpleado.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Shared/_LayoutEmpleado.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRFbXBsZWFkby5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Solicitud/Create.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Solicitud/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU29saWNpdHVkXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Solicitud/Index.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Solicitud/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU29saWNpdHVkXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Solicitud/MisSolicitudes.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Solicitud/MisSolicitudes.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU29saWNpdHVkXE1pc1NvbGljaXR1ZGVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Usuario/Create.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Usuario/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Usuario/Delete.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Usuario/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Usuario/Edit.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Usuario/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Usuario/Index.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Usuario/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/_ViewImports.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/_ViewStart.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/lucas/Desktop/FISCAapp/Dinacem/Dinacem/Views/Shared/_Layout.cshtml]
+[C:/Users/HP/Documents/GitHub/SVIATICO.web/Dinacem/Dinacem/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-pgqg2l221h
