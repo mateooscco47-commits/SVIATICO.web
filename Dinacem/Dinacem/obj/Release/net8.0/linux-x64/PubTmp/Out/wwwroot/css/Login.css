@@ -1,0 +1,171 @@
+﻿body {
+    margin: 0;
+    padding: 0;
+    background: #F3F6F9;
+    font-family: 'Segoe UI',sans-serif;
+}
+
+
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+
+.login-card {
+    width: 420px;
+    background: white;
+    border-radius: 20px;
+    padding: 45px;
+    box-shadow: 0 15px 45px rgba(0,0,0,.10);
+    animation: fade .6s;
+}
+
+
+.logo {
+    width: 130px;
+    margin-bottom: 20px;
+}
+
+
+.titulo {
+    color: #0C4A8A;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: 1px;
+}
+
+
+.form-label {
+    color: #345;
+    font-weight: 600;
+}
+
+
+.form-control {
+    height: 48px;
+    border-radius: 10px;
+    border: 1px solid #D8DEE8;
+}
+
+
+    .form-control:focus {
+        border-color: #0C4A8A;
+        box-shadow: 0 0 0 .15rem rgba(12,74,138,.20);
+    }
+
+
+.input-group-text {
+    background: white;
+    border-radius: 10px 0 0 10px;
+    color: #0C4A8A;
+    border: 1px solid #D8DEE8;
+}
+
+
+.btn-login {
+    background: #0C4A8A;
+    border: none;
+    height: 48px;
+    border-radius: 10px;
+    color: white;
+    font-size: 17px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+
+    .btn-login:hover {
+        background: #6AA84F;
+        transform: translateY(-2px);
+    }
+
+
+@keyframes fade {
+
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform translateY(0);
+    }
+}
+@media(max-width:576px) {
+
+    .login-container {
+        padding: 15px;
+    }
+
+
+    .login-card {
+        width: 100%;
+        padding: 30px 20px;
+        border-radius: 15px;
+    }
+
+
+    .logo {
+        width: 100px;
+    }
+
+
+    .titulo {
+        font-size: 22px;
+    }
+
+
+    .form-control {
+        height: 45px;
+    }
+
+
+    .btn-login {
+        height: 45px;
+        font-size: 16px;
+    }
+}
+
+/* ============================= */
+/* RESPONSIVE PARA TABLETS */
+/* ============================= */
+
+@media (min-width:577px) and (max-width:991px) {
+
+    .login-container {
+        padding: 30px;
+    }
+
+
+    .login-card {
+        width: 450px;
+        padding: 40px;
+    }
+
+
+    .logo {
+        width: 120px;
+    }
+
+
+    .titulo {
+        font-size: 25px;
+    }
+
+
+    .form-control {
+        height: 50px;
+        font-size: 16px;
+    }
+
+
+    .btn-login {
+        height: 50px;
+        font-size: 17px;
+    }
+}
