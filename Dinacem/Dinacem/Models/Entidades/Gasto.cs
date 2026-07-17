@@ -48,5 +48,14 @@ namespace Dinacem.Models
         public decimal IGV { get; set; }
 
         public bool ExoneracionIGV { get; set; }
+
+        [StringLength(11)]
+        public string? Ruc { get; set; }
+
+        [StringLength(250)]
+        public string? RazonSocial { get; set; }
+
+        [StringLength(300)]
+        public string? DomicilioFiscal { get; set; }
     }
 }

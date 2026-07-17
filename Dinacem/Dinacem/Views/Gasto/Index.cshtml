@@ -360,6 +360,51 @@
                                            name="archivo"
                                            class="form-control" />
                                 </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">RUC</label>
+
+                                    <div class="input-group">
+                                        <input type="text"
+                                               id="ruc"
+                                               name="Ruc"
+                                               class="form-control"
+                                               maxlength="11"
+                                               inputmode="numeric"
+                                               pattern="[0-9]{11}"
+                                               placeholder="20123456789"
+                                               required />
+
+                                        <button type="button"
+                                                id="btnConsultarRuc"
+                                                class="btn btn-outline-primary">
+                                            Buscar
+                                        </button>
+                                    </div>
+
+                                    <div id="mensajeRuc" class="form-text"></div>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <label class="form-label">Razón Social</label>
+
+                                    <input type="text"
+                                           id="razonSocial"
+                                           name="RazonSocial"
+                                           class="form-control"
+                                           readonly
+                                           required />
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="form-label">Domicilio Fiscal</label>
+
+                                    <input type="text"
+                                           id="domicilioFiscal"
+                                           name="DomicilioFiscal"
+                                           class="form-control"
+                                           readonly
+                                           required />
+                                </div>
 
                             </div>
 
@@ -518,3 +563,70 @@
 
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rucInput = document.getElementById("ruc");
+        const boton = document.getElementById("btnConsultarRuc");
+        const razonSocial = document.getElementById("razonSocial");
+        const domicilioFiscal = document.getElementById("domicilioFiscal");
+        const mensaje = document.getElementById("mensajeRuc");
+
+        async function consultarRuc() {
+            const ruc = rucInput.value.trim();
+
+            razonSocial.value = "";
+            domicilioFiscal.value = "";
+            mensaje.textContent = "";
+
+            if (!/^\d{11}$/.test(ruc)) {
+                mensaje.textContent = "Ingrese un RUC válido de 11 dígitos.";
+                mensaje.className = "form-text text-danger";
+                return;
+            }
+
+            boton.disabled = true;
+            boton.textContent = "Buscando...";
+
+            try {
+                const url =
+                    '@Url.Action("ConsultarRuc", "Gasto")' +
+                    '?ruc=' +
+                    encodeURIComponent(ruc);
+
+                const response = await fetch(url);
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.mensaje || "No se encontró el RUC.");
+                }
+
+                razonSocial.value = data.razonSocial ?? "";
+                domicilioFiscal.value = data.domicilioFiscal ?? "";
+
+                mensaje.textContent =
+                    `Estado: ${data.estado ?? "-"} | Condición: ${data.condicion ?? "-"}`;
+
+                mensaje.className = "form-text text-success";
+            } catch (error) {
+                mensaje.textContent = error.message;
+                mensaje.className = "form-text text-danger";
+            } finally {
+                boton.disabled = false;
+                boton.textContent = "Buscar";
+            }
+        }
+
+        boton.addEventListener("click", consultarRuc);
+
+        rucInput.addEventListener("blur", function () {
+            if (/^\d{11}$/.test(rucInput.value.trim())) {
+                consultarRuc();
+            }
+        });
+
+        rucInput.addEventListener("input", function () {
+            rucInput.value = rucInput.value.replace(/\D/g, "").slice(0, 11);
+        });
+    });
+</script>
