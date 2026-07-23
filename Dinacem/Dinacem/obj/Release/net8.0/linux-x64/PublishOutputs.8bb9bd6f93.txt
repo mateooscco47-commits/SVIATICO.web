@@ -6,6 +6,8 @@ C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Dinacen.pdb
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Azure.Core.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Azure.Identity.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\BouncyCastle.Cryptography.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\MailKit.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Microsoft.Data.SqlClient.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Microsoft.EntityFrameworkCore.dll
@@ -28,6 +30,7 @@ C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Microsoft.IdentityModel.Tokens.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Microsoft.SqlServer.Server.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Microsoft.Win32.SystemEvents.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\MimeKit.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.ClientModel.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Configuration.ConfigurationManager.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Drawing.Common.dll
@@ -35,6 +38,7 @@ C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Memory.Data.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Runtime.Caching.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Security.Cryptography.Pkcs.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Security.Cryptography.ProtectedData.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Security.Permissions.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Windows.Extensions.dll

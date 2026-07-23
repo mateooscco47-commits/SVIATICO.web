@@ -19,6 +19,8 @@ namespace Dinacem.Models
         public DbSet<TipoComprobante> TipoComprobantes { get; set; }
         public DbSet<Gasto> Gastos { get; set; }
 
+        public DbSet<DevolucionSaldo> DevolucionesSaldo { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -119,6 +121,13 @@ namespace Dinacem.Models
 
             modelBuilder.Entity<Gasto>()
                 .Property(x => x.IGV)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<DevolucionSaldo>()
+    .HasIndex(d => d.IdRendicion)
+    .IsUnique();
+
+            modelBuilder.Entity<DevolucionSaldo>()
+                .Property(d => d.Monto)
                 .HasPrecision(18, 2);
         }
     }

@@ -1,100 +1,481 @@
 ﻿@model List<Dinacem.Models.Rendicion>
 
 @{
-    ViewData["Title"] = "Revisión de Rendiciones";
+    ViewData["Title"] = "Liquidaciones";
     Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+
+    var totalLiquidaciones = Model?.Count ?? 0;
+    var enProceso = Model?.Count(x => x.IdEstadoRendicion == 1) ?? 0;
+    var pendientes = Model?.Count(x => x.IdEstadoRendicion == 2) ?? 0;
+    var aprobadas = Model?.Count(x => x.IdEstadoRendicion == 3) ?? 0;
+    var rechazadas = Model?.Count(x => x.IdEstadoRendicion == 4) ?? 0;
 }
 
 <style>
     .card {
-        border-radius: 15px;
+        border: 0;
+        border-radius: 14px;
     }
 
-    .badge-pendiente {
-        background: #ffc107;
-        color: black;
-        padding: 8px 15px;
+    .page-header {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 22px;
+        margin-bottom: 22px;
+    }
+
+    .page-title {
+        color: #0f172a;
+        font-weight: 800;
+        margin-bottom: 4px;
+    }
+
+    .summary-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 18px;
+        height: 100%;
+    }
+
+    .summary-label {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .summary-number {
+        color: #0f172a;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .table th {
+        font-size: 12px;
+        color: #64748b;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .estado {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 11px;
         border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .estado-proceso {
+        background: #dbeafe;
+        color: #1d4ed8;
+        border: 1px solid #93c5fd;
+    }
+
+    .estado-pendiente {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fcd34d;
+    }
+
+    .estado-aprobada {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #86efac;
+    }
+
+    .estado-rechazada {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
+
+    .filtro-btn.active {
+        color: #fff;
+        background: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .accion-proceso {
+        color: #64748b;
+        font-size: 13px;
     }
 </style>
 
-<div class="container mt-4">
+<div class="container-fluid">
 
-    <div class="card shadow">
+    <div class="page-header">
+        <h2 class="page-title">
+            <i class="bi bi-receipt-cutoff me-2"></i>
+            Liquidaciones
+        </h2>
 
-        <div class="card-header bg-primary text-white">
-            <h3>Rendiciones Pendientes</h3>
+        <p class="text-muted mb-0">
+            Seguimiento de todas las rendiciones registradas y su estado actual.
+        </p>
+    </div>
+
+    @if (TempData["mensaje"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["mensaje"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+        </div>
+    }
+
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @TempData["error"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+        </div>
+    }
+
+    <!-- RESUMEN -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-6 col-xl">
+            <div class="summary-card">
+                <div class="summary-label">Total</div>
+                <div class="summary-number">@totalLiquidaciones</div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl">
+            <div class="summary-card">
+                <div class="summary-label text-primary">En proceso</div>
+                <div class="summary-number">@enProceso</div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl">
+            <div class="summary-card">
+                <div class="summary-label text-warning">Pendientes</div>
+                <div class="summary-number">@pendientes</div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl">
+            <div class="summary-card">
+                <div class="summary-label text-success">Aprobadas</div>
+                <div class="summary-number">@aprobadas</div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl">
+            <div class="summary-card">
+                <div class="summary-label text-danger">Rechazadas</div>
+                <div class="summary-number">@rechazadas</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-white border-bottom p-3">
+
+            <div class="d-flex flex-column flex-lg-row justify-content-between gap-3">
+
+                <div>
+                    <h5 class="mb-1">Listado de liquidaciones</h5>
+                    <span class="text-muted">
+                        Use los filtros para visualizar un estado específico.
+                    </span>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    <button type="button"
+                            class="btn btn-outline-secondary btn-sm filtro-btn active"
+                            data-estado="todos">
+                        Todos
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-outline-primary btn-sm filtro-btn"
+                            data-estado="1">
+                        En proceso
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-outline-warning btn-sm filtro-btn"
+                            data-estado="2">
+                        Pendientes
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-outline-success btn-sm filtro-btn"
+                            data-estado="3">
+                        Aprobadas
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-outline-danger btn-sm filtro-btn"
+                            data-estado="4">
+                        Rechazadas
+                    </button>
+
+                </div>
+
+            </div>
+
         </div>
 
         <div class="card-body">
 
-            @if (TempData["mensaje"] != null)
-            {
-                <div class="alert alert-success">
-                    @TempData["mensaje"]
-                </div>
-            }
+            <div class="table-responsive">
 
-            @if (TempData["error"] != null)
-            {
-                <div class="alert alert-danger">
-                    @TempData["error"]
-                </div>
-            }
+                <table class="table table-hover align-middle mb-0">
 
-            <table class="table table-hover table-bordered align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th>#</th>
-                        <th>Empleado</th>
-                        <th>Solicitud</th>
-                        <th>Fecha</th>
-                        <th>Total</th>
-                        <th>Saldo</th>
-                        <th>Estado</th>
-                        <th width="260">Acciones</th>
-                    </tr>
-                </thead>
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Empleado</th>
+                            <th>Solicitud</th>
+                            <th>Destino</th>
+                            <th>Periodo</th>
+                            <th>Fecha de creación</th>
+                            <th>Total</th>
+                            <th>Saldo</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var item in Model)
+                    <tbody id="tablaLiquidaciones">
+
+                        @if (Model != null && Model.Any())
                         {
-                            <tr>
-                                <td>@item.IdRendicion</td>
-                                <td>@item.Usuario?.Nombres @item.Usuario?.Apellidos</td>
-                                <td>@item.IdSolicitud</td>
-                                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
-                                <td>S/. @item.Total.ToString("N2")</td>
-                                <td>S/. @item.Saldo.ToString("N2")</td>
-                                <td>
-                                    <span class="badge-pendiente">
-                                        @item.EstadoRendicion?.Nombre
-                                    </span>
-                                </td>
-                                <td>
-                                    <a asp-controller="Rendicion"
-                                       asp-action="DetalleAdmin"
-                                       asp-route-id="@item.IdRendicion"
-                                       class="btn btn-info btn-sm">
-                                        Revisar
-                                    </a>
+                            foreach (var item in Model)
+                            {
+                                <tr data-estado="@item.IdEstadoRendicion">
+
+                                    <td>
+                                        <strong>@item.IdRendicion</strong>
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            @item.Usuario?.Nombres
+                                            @item.Usuario?.Apellidos
+                                        </strong>
+
+                                        @if (!string.IsNullOrWhiteSpace(item.Usuario?.Correo))
+                                        {
+                                            <br />
+                                            <small class="text-muted">
+                                                @item.Usuario.Correo
+                                            </small>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        #@item.IdSolicitud
+                                    </td>
+
+                                    <td>
+                                        @(item.Solicitud?.Destino ?? "-")
+                                    </td>
+
+                                    <td>
+                                        @item.FechaInicio.ToString("dd/MM/yyyy")
+                                        <br />
+                                        <small class="text-muted">
+                                            hasta @item.FechaFin.ToString("dd/MM/yyyy")
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        @item.Fecha.ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            S/ @item.Total.ToString("N2")
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        S/ @item.Saldo.ToString("N2")
+                                    </td>
+
+                                    <td>
+                                        @switch (item.IdEstadoRendicion)
+                                        {
+                                            case 1:
+                                                <span class="estado estado-proceso">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                    En proceso
+                                                </span>
+                                                break;
+
+                                            case 2:
+                                                <span class="estado estado-pendiente">
+                                                    <i class="bi bi-clock-fill"></i>
+                                                    Pendiente de revisión
+                                                </span>
+                                                break;
+
+                                            case 3:
+                                                <span class="estado estado-aprobada">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    Aprobada
+                                                </span>
+                                                break;
+
+                                            case 4:
+                                                <span class="estado estado-rechazada">
+                                                    <i class="bi bi-x-circle-fill"></i>
+                                                    Rechazada
+                                                </span>
+                                                break;
+
+                                            default:
+                                                <span class="estado bg-secondary text-white">
+                                                    Sin estado
+                                                </span>
+                                                break;
+                                        }
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        @if (item.IdEstadoRendicion == 1)
+                                        {
+                                            <span class="accion-proceso">
+                                                <i class="bi bi-hourglass-split"></i>
+                                                En elaboración
+                                            </span>
+                                        }
+                                        else if (item.IdEstadoRendicion == 2)
+                                        {
+                                            <a asp-controller="Rendicion"
+                                               asp-action="DetalleAdmin"
+                                               asp-route-id="@item.IdRendicion"
+                                               class="btn btn-warning btn-sm">
+                                                <i class="bi bi-search"></i>
+                                                Revisar
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Rendicion"
+                                               asp-action="DetalleAdmin"
+                                               asp-route-id="@item.IdRendicion"
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-eye"></i>
+                                                Ver detalle
+                                            </a>
+                                        }
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr id="filaSinRegistros">
+                                <td colspan="10"
+                                    class="text-center text-muted py-5">
+
+                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                    No hay liquidaciones registradas.
+
                                 </td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="8" class="text-center text-muted">
-                                No hay rendiciones pendientes de revisión.
+
+                        <tr id="filaSinFiltro"
+                            style="display:none;">
+
+                            <td colspan="10"
+                                class="text-center text-muted py-5">
+
+                                No existen liquidaciones para el estado seleccionado.
+
                             </td>
+
                         </tr>
-                    }
-                </tbody>
-            </table>
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
+
     </div>
+
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const botones = document.querySelectorAll(".filtro-btn");
+        const filas = document.querySelectorAll(
+            "#tablaLiquidaciones tr[data-estado]"
+        );
+
+        const filaSinFiltro =
+            document.getElementById("filaSinFiltro");
+
+        botones.forEach(function (boton) {
+
+            boton.addEventListener("click", function () {
+
+                botones.forEach(function (item) {
+                    item.classList.remove("active");
+                });
+
+                boton.classList.add("active");
+
+                const estadoSeleccionado =
+                    boton.dataset.estado;
+
+                let visibles = 0;
+
+                filas.forEach(function (fila) {
+
+                    const mostrar =
+                        estadoSeleccionado === "todos" ||
+                        fila.dataset.estado === estadoSeleccionado;
+
+                    fila.style.display =
+                        mostrar ? "" : "none";
+
+                    if (mostrar) {
+                        visibles++;
+                    }
+
+                });
+
+                if (filaSinFiltro) {
+                    filaSinFiltro.style.display =
+                        visibles === 0 ? "" : "none";
+                }
+
+            });
+
+        });
+
+    });
+</script>

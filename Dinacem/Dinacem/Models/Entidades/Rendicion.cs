@@ -43,5 +43,6 @@ namespace Dinacem.Models
 
         [ForeignKey("IdEstadoRendicion")]
         public EstadoRendicion? EstadoRendicion { get; set; }
+        public DevolucionSaldo? DevolucionSaldo { get; set; }
     }
 }

@@ -189,6 +189,7 @@
                                 <th>Contacto</th>
                                 <th>Vehículo</th>
                                 <th class="text-end">Acciones</th>
+                                <th>Estado</th>
                             </tr>
                         </thead>
 
@@ -223,25 +224,64 @@
                                         </td>
 
                                         <td class="text-end">
+
                                             <button class="btn btn-sm btn-warning"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#editarUsuario@item.IdUsuario">
                                                 Editar
                                             </button>
 
-                                            <form asp-controller="Usuario"
-                                                  asp-action="Delete"
-                                                  asp-route-id="@item.IdUsuario"
-                                                  method="post"
-                                                  class="d-inline">
+                                            @if (item.Estado)
+                                            {
+                                                <form asp-controller="Usuario"
+                                                      asp-action="Desactivar"
+                                                      asp-route-id="@item.IdUsuario"
+                                                      method="post"
+                                                      class="d-inline">
 
-                                                <button type="submit"
-                                                        class="btn btn-sm btn-danger"
-                                                        onclick="return confirm('¿Deseas eliminar este usuario?');">
-                                                    Eliminar
-                                                </button>
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-danger"
+                                                            onclick="return confirm('¿Desea desactivar este usuario?');">
 
-                                            </form>
+                                                        Desactivar
+
+                                                    </button>
+
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form asp-controller="Usuario"
+                                                      asp-action="Activar"
+                                                      asp-route-id="@item.IdUsuario"
+                                                      method="post"
+                                                      class="d-inline">
+
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-success"
+                                                            onclick="return confirm('¿Desea activar este usuario?');">
+
+                                                        Activar
+
+                                                    </button>
+
+                                                </form>
+                                            }
+
+                                        </td>
+                                        <td>
+                                            @if (item.Estado)
+                                            {
+                                                <span class="badge bg-success">
+                                                    Activo
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">
+                                                    Inactivo
+                                                </span>
+                                            }
                                         </td>
                                     </tr>                                    <!-- Modal Editar -->
 

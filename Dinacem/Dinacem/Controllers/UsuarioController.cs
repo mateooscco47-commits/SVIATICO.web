@@ -66,21 +66,39 @@ namespace Dinacem.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(int id)
+        public IActionResult Desactivar(int id)
         {
-            var usuario = _context.Usuarios
-                .FirstOrDefault(u => u.IdUsuario == id);
+            var usuario = _context.Usuarios.Find(id);
 
             if (usuario == null)
             {
-                TempData["error"] = "Usuario no encontrado.";
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
 
-            _context.Usuarios.Remove(usuario);
+            usuario.Estado = false;
+
             _context.SaveChanges();
 
-            TempData["mensaje"] = "Usuario eliminado correctamente.";
+            TempData["mensaje"] = "Usuario desactivado correctamente.";
+
+            return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        public IActionResult Activar(int id)
+        {
+            var usuario = _context.Usuarios.Find(id);
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            usuario.Estado = true;
+
+            _context.SaveChanges();
+
+            TempData["mensaje"] = "Usuario activado correctamente.";
+
             return RedirectToAction(nameof(Index));
         }
     }

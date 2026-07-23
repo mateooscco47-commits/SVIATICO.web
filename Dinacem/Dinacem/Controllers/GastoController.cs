@@ -58,7 +58,8 @@ namespace Dinacem.Controllers
                 await _context.TipoComprobantes
                     .OrderBy(t => t.Nombre)
                     .ToListAsync();
-
+            ViewBag.DevolucionSaldo = await _context.DevolucionesSaldo
+    .FirstOrDefaultAsync(d => d.IdRendicion == idRendicion);
             return View(gastos);
         }
 
@@ -103,8 +104,8 @@ namespace Dinacem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            Gasto gasto,
-            IFormFile? archivo)
+    Gasto gasto,
+    IFormFile? archivo)
         {
             var rendicion = await _context.Rendiciones
                 .Include(r => r.Solicitud)
@@ -138,14 +139,49 @@ namespace Dinacem.Controllers
             // =========================================
             // VALIDAR FECHA DEL GASTO
             // =========================================
-            if (gasto.Fecha.Date < rendicion.FechaInicio.Date ||
+
+            if (gasto.Fecha == default)
+            {
+                ModelState.AddModelError(
+                    nameof(gasto.Fecha),
+                    "Debe ingresar la fecha del gasto.");
+            }
+            else if (
+                gasto.Fecha.Date < rendicion.FechaInicio.Date ||
                 gasto.Fecha.Date > rendicion.FechaFin.Date)
             {
                 ModelState.AddModelError(
                     nameof(gasto.Fecha),
                     $"La fecha del gasto debe estar entre " +
                     $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
-                    $"{rendicion.FechaFin:dd/MM/yyyy}.");
+                    $"{rendicion.FechaFin:dd/MM/yyyy}. " +
+                    $"Puede registrar el gasto posteriormente, pero la fecha " +
+                    $"del comprobante debe pertenecer al periodo aprobado.");
+            }
+
+            // =========================================
+            // VALIDAR MONTO
+            // =========================================
+
+            if (gasto.MontoTotal <= 0)
+            {
+                ModelState.AddModelError(
+                    nameof(gasto.MontoTotal),
+                    "El monto total debe ser mayor que cero.");
+            }
+
+            if (gasto.IGV < 0)
+            {
+                ModelState.AddModelError(
+                    nameof(gasto.IGV),
+                    "El IGV no puede ser negativo.");
+            }
+
+            if (gasto.IGV > gasto.MontoTotal)
+            {
+                ModelState.AddModelError(
+                    nameof(gasto.IGV),
+                    "El IGV no puede ser mayor que el monto total.");
             }
 
             // =========================================
@@ -153,6 +189,7 @@ namespace Dinacem.Controllers
             // Hospedaje: S/ 50 por día
             // Alimentación: S/ 40 por día
             // =========================================
+
             var tipoGasto = await _context.TipoGastos
                 .FirstOrDefaultAsync(t =>
                     t.IdTipoGasto == gasto.IdTipoGasto);
@@ -163,7 +200,7 @@ namespace Dinacem.Controllers
                     nameof(gasto.IdTipoGasto),
                     "El tipo de gasto seleccionado no existe.");
             }
-            else
+            else if (gasto.Fecha != default)
             {
                 decimal limiteDiario = 0;
 
@@ -188,10 +225,8 @@ namespace Dinacem.Controllers
                     decimal montoRegistradoEseDia =
                         await _context.Gastos
                             .Where(g =>
-                                g.IdRendicion ==
-                                    gasto.IdRendicion &&
-                                g.IdTipoGasto ==
-                                    gasto.IdTipoGasto &&
+                                g.IdRendicion == gasto.IdRendicion &&
+                                g.IdTipoGasto == gasto.IdTipoGasto &&
                                 g.Fecha >= inicioDia &&
                                 g.Fecha < finDia)
                             .SumAsync(g =>
@@ -214,14 +249,11 @@ namespace Dinacem.Controllers
 
                         ModelState.AddModelError(
                             nameof(gasto.MontoTotal),
-                            $"El límite diario para " +
-                            $"{tipoGasto.Nombre} es " +
-                            $"S/ {limiteDiario:N2}. " +
-                            $"El {gasto.Fecha:dd/MM/yyyy} " +
-                            $"ya tiene registrado " +
+                            $"El límite diario para {tipoGasto.Nombre} " +
+                            $"es S/ {limiteDiario:N2}. " +
+                            $"El {gasto.Fecha:dd/MM/yyyy} ya tiene registrado " +
                             $"S/ {montoRegistradoEseDia:N2}. " +
-                            $"Solo puede agregar hasta " +
-                            $"S/ {disponible:N2}.");
+                            $"Solo puede agregar hasta S/ {disponible:N2}.");
                     }
                 }
             }
@@ -229,6 +261,9 @@ namespace Dinacem.Controllers
             // =========================================
             // VALIDAR RUC
             // =========================================
+
+            gasto.Ruc = gasto.Ruc?.Trim();
+
             if (string.IsNullOrWhiteSpace(gasto.Ruc) ||
                 gasto.Ruc.Length != 11 ||
                 !gasto.Ruc.All(char.IsDigit))
@@ -238,7 +273,10 @@ namespace Dinacem.Controllers
                     "El RUC debe contener exactamente 11 dígitos.");
             }
 
-            // Consultar el RUC y completar datos del proveedor.
+            // =========================================
+            // CONSULTAR RUC
+            // =========================================
+
             if (ModelState.IsValid)
             {
                 var consultaRuc =
@@ -268,6 +306,7 @@ namespace Dinacem.Controllers
             // =========================================
             // MOSTRAR ERRORES
             // =========================================
+
             if (!ModelState.IsValid)
             {
                 var errores = ModelState
@@ -296,16 +335,17 @@ namespace Dinacem.Controllers
             // =========================================
             // GUARDAR COMPROBANTE
             // =========================================
+
             if (archivo != null &&
                 archivo.Length > 0)
             {
                 string[] extensionesPermitidas =
                 {
-                    ".pdf",
-                    ".jpg",
-                    ".jpeg",
-                    ".png"
-                };
+            ".pdf",
+            ".jpg",
+            ".jpeg",
+            ".png"
+        };
 
                 var extension = Path
                     .GetExtension(archivo.FileName)
@@ -368,6 +408,7 @@ namespace Dinacem.Controllers
             // =========================================
             // GUARDAR GASTO
             // =========================================
+
             _context.Gastos.Add(gasto);
             await _context.SaveChangesAsync();
 
@@ -475,25 +516,21 @@ namespace Dinacem.Controllers
         // =========================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EnviarRendicion(
-            int idRendicion)
+        public async Task<IActionResult> EnviarRendicion(int idRendicion)
         {
-            var rendicion =
-                await _context.Rendiciones
-                    .FirstOrDefaultAsync(r =>
-                        r.IdRendicion ==
-                        idRendicion);
+            var rendicion = await _context.Rendiciones
+                .FirstOrDefaultAsync(r => r.IdRendicion == idRendicion);
 
             if (rendicion == null)
             {
-                TempData["error"] =
-                    "No se encontró la rendición.";
+                TempData["error"] = "No se encontró la rendición.";
 
                 return RedirectToAction(
                     "Index",
                     "Rendicion");
             }
 
+            // Solo puede enviarse si está en proceso.
             if (rendicion.IdEstadoRendicion != 1)
             {
                 TempData["error"] =
@@ -504,14 +541,10 @@ namespace Dinacem.Controllers
                     "Rendicion");
             }
 
-            var tieneGastos =
-                await _context.Gastos
-                    .AnyAsync(g =>
-                        g.IdRendicion ==
-                        idRendicion);
+            var tieneGastos = await _context.Gastos
+                .AnyAsync(g => g.IdRendicion == idRendicion);
 
-            if (!tieneGastos ||
-                rendicion.Total <= 0)
+            if (!tieneGastos || rendicion.Total <= 0)
             {
                 TempData["error"] =
                     "Debe registrar al menos un gasto antes de enviar la rendición.";
@@ -521,12 +554,69 @@ namespace Dinacem.Controllers
                     new { idRendicion });
             }
 
+            // Buscar devolución registrada.
+            var devolucion = await _context.DevolucionesSaldo
+                .FirstOrDefaultAsync(d =>
+                    d.IdRendicion == idRendicion);
+
+            // Si quedó saldo pendiente, debe existir una devolución.
+            if (rendicion.Saldo > 0 && devolucion == null)
+            {
+                TempData["error"] =
+                    $"Debe registrar la devolución de S/ {rendicion.Saldo:N2} " +
+                    "antes de enviar la rendición.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new { idRendicion });
+            }
+
+            // El monto devuelto debe coincidir exactamente con el saldo.
+            if (rendicion.Saldo > 0 &&
+                devolucion != null &&
+                devolucion.Monto != rendicion.Saldo)
+            {
+                TempData["error"] =
+                    $"El monto de la devolución debe ser exactamente " +
+                    $"S/ {rendicion.Saldo:N2}.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new { idRendicion });
+            }
+
+            // Si existe devolución, debe tener voucher.
+            if (rendicion.Saldo > 0 &&
+                devolucion != null &&
+                string.IsNullOrWhiteSpace(devolucion.Voucher))
+            {
+                TempData["error"] =
+                    "La devolución debe tener un voucher adjunto.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new { idRendicion });
+            }
+
+            // Evitar saldo negativo.
+            if (rendicion.Saldo < 0)
+            {
+                TempData["error"] =
+                    $"El total de gastos supera el monto aprobado por " +
+                    $"S/ {Math.Abs(rendicion.Saldo):N2}. Corrija los gastos antes de enviar.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new { idRendicion });
+            }
+
+            // 2 = Pendiente de revisión.
             rendicion.IdEstadoRendicion = 2;
 
             await _context.SaveChangesAsync();
 
             TempData["mensaje"] =
-                "La rendición fue enviada para revisión.";
+                "La rendición fue enviada correctamente para revisión.";
 
             return RedirectToAction(
                 "MisRendiciones",

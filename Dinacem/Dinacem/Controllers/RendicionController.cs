@@ -16,19 +16,38 @@ namespace Dinacem.Controllers
         // ================================
         // EMPLEADO: SOLICITUDES APROBADAS
         // ================================
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            int idUsuario = 1; // Temporal
+            var idUsuario = HttpContext.Session.GetInt32("IdUsuario");
 
-            var solicitudes = _context.Solicitudes
+            if (idUsuario == null)
+            {
+                TempData["error"] = "La sesión ha expirado.";
+
+                return RedirectToAction(
+                    "Index",
+                    "Home");
+            }
+
+            var solicitudes = await _context.Solicitudes
                 .Include(s => s.EstadoSolicitud)
-                .Where(s => s.IdUsuario == idUsuario && s.IdEstadoSolicitud == 2)
+                .Where(s =>
+                    s.IdUsuario == idUsuario.Value &&
+                    s.IdEstadoSolicitud == 2)
                 .OrderByDescending(s => s.Fecha)
+                .ToListAsync();
+
+            var idsSolicitudes = solicitudes
+                .Select(s => s.IdSolicitud)
                 .ToList();
 
-            var rendiciones = _context.Rendiciones
-                .Where(r => r.IdUsuario == idUsuario)
-                .ToList();
+            var rendiciones = await _context.Rendiciones
+                .Include(r => r.EstadoRendicion)
+                .Where(r =>
+                    r.IdUsuario == idUsuario.Value &&
+                    idsSolicitudes.Contains(r.IdSolicitud))
+                .ToListAsync();
 
             ViewBag.Rendiciones = rendiciones;
 
@@ -39,29 +58,48 @@ namespace Dinacem.Controllers
         // EMPLEADO: CREAR RENDICIÓN
         // ================================
         [HttpGet]
-        public IActionResult Create(int idSolicitud)
+        public async Task<IActionResult> Create(int idSolicitud)
         {
-            bool yaExisteRendicion = _context.Rendiciones
-                .Any(r => r.IdSolicitud == idSolicitud);
+            var idUsuario = HttpContext.Session.GetInt32("IdUsuario");
 
-            if (yaExisteRendicion)
+            if (idUsuario == null)
             {
-                TempData["error"] = "Esta solicitud ya tiene una rendición registrada.";
-                return RedirectToAction(nameof(Index));
+                TempData["error"] = "La sesión ha expirado.";
+
+                return RedirectToAction(
+                    "Index",
+                    "Home");
             }
 
-            var solicitud = _context.Solicitudes
-                .FirstOrDefault(s => s.IdSolicitud == idSolicitud);
+            var solicitud = await _context.Solicitudes
+                .FirstOrDefaultAsync(s =>
+                    s.IdSolicitud == idSolicitud &&
+                    s.IdUsuario == idUsuario.Value &&
+                    s.IdEstadoSolicitud == 2);
 
             if (solicitud == null)
             {
+                TempData["error"] =
+                    "La solicitud no existe, no está aprobada o no pertenece al usuario conectado.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            var existeRendicion = await _context.Rendiciones
+                .AnyAsync(r => r.IdSolicitud == idSolicitud);
+
+            if (existeRendicion)
+            {
+                TempData["error"] =
+                    "Esta solicitud ya tiene una rendición registrada.";
+
                 return RedirectToAction(nameof(Index));
             }
 
             var rendicion = new Rendicion
             {
                 IdSolicitud = solicitud.IdSolicitud,
-                IdUsuario = solicitud.IdUsuario,
+                IdUsuario = idUsuario.Value,
                 Fecha = DateTime.Now,
                 FechaInicio = solicitud.FechaInicio,
                 FechaFin = solicitud.FechaFin,
@@ -74,44 +112,85 @@ namespace Dinacem.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Rendicion rendicion)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Rendicion rendicion)
         {
-            bool yaExisteRendicion = _context.Rendiciones
-                .Any(r => r.IdSolicitud == rendicion.IdSolicitud);
+            var idUsuario = HttpContext.Session.GetInt32("IdUsuario");
 
-            if (yaExisteRendicion)
+            if (idUsuario == null)
             {
-                TempData["error"] = "Esta solicitud ya tiene una rendición registrada.";
+                TempData["error"] = "La sesión ha expirado.";
+
+                return RedirectToAction(
+                    "Index",
+                    "Home");
+            }
+
+            var solicitud = await _context.Solicitudes
+                .FirstOrDefaultAsync(s =>
+                    s.IdSolicitud == rendicion.IdSolicitud &&
+                    s.IdUsuario == idUsuario.Value &&
+                    s.IdEstadoSolicitud == 2);
+
+            if (solicitud == null)
+            {
+                TempData["error"] =
+                    "La solicitud no pertenece al usuario conectado.";
+
                 return RedirectToAction(nameof(Index));
             }
 
-            if (!ModelState.IsValid)
+            var existeRendicion = await _context.Rendiciones
+                .AnyAsync(r => r.IdSolicitud == rendicion.IdSolicitud);
+
+            if (existeRendicion)
             {
-                return View(rendicion);
+                TempData["error"] =
+                    "Esta solicitud ya tiene una rendición.";
+
+                return RedirectToAction(nameof(Index));
             }
 
+            rendicion.IdUsuario = idUsuario.Value;
+            rendicion.Fecha = DateTime.Now;
+            rendicion.FechaInicio = solicitud.FechaInicio;
+            rendicion.FechaFin = solicitud.FechaFin;
+            rendicion.Total = 0;
+            rendicion.Saldo = solicitud.Monto;
+            rendicion.IdEstadoRendicion = 1;
+
             _context.Rendiciones.Add(rendicion);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            TempData["mensaje"] = "Rendición creada correctamente.";
-
-            return RedirectToAction("Index", "Gasto",
+            return RedirectToAction(
+                "Index",
+                "Gasto",
                 new { idRendicion = rendicion.IdRendicion });
         }
 
         // ================================
         // EMPLEADO: MIS RENDICIONES
         // ================================
-        public IActionResult MisRendiciones()
+        [HttpGet]
+        public async Task<IActionResult> MisRendiciones()
         {
-            int idUsuario = 1; // Temporal
+            var idUsuario = HttpContext.Session.GetInt32("IdUsuario");
 
-            var lista = _context.Rendiciones
+            if (idUsuario == null)
+            {
+                TempData["error"] = "La sesión ha expirado.";
+
+                return RedirectToAction(
+                    "Index",
+                    "Home");
+            }
+
+            var lista = await _context.Rendiciones
                 .Include(r => r.Solicitud)
                 .Include(r => r.EstadoRendicion)
-                .Where(r => r.IdUsuario == idUsuario)
+                .Where(r => r.IdUsuario == idUsuario.Value)
                 .OrderByDescending(r => r.Fecha)
-                .ToList();
+                .ToListAsync();
 
             return View(lista);
         }
@@ -119,17 +198,17 @@ namespace Dinacem.Controllers
         // ================================
         // ADMIN: LISTAR RENDICIONES
         // ================================
-        public IActionResult IndexAdmin()
+        [HttpGet]
+        public async Task<IActionResult> IndexAdmin()
         {
-            var lista = _context.Rendiciones
+            var rendiciones = await _context.Rendiciones
                 .Include(r => r.Usuario)
                 .Include(r => r.Solicitud)
                 .Include(r => r.EstadoRendicion)
-                .Where(r => r.IdEstadoRendicion == 2)
                 .OrderByDescending(r => r.Fecha)
-                .ToList();
+                .ToListAsync();
 
-            return View(lista);
+            return View(rendiciones);
         }
 
         // ================================

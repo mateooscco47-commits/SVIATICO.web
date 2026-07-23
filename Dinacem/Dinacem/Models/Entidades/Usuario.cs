@@ -22,5 +22,6 @@ namespace Dinacem.Models
         [Required]
         [StringLength(50)]
         public string UsuarioAcceso { get; set; } = string.Empty;
+        public bool Estado { get; set; } = true;
     }
 }

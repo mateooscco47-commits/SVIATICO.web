@@ -5,99 +5,338 @@
     Layout = "~/Views/Shared/_LayoutEmpleado.cshtml";
 }
 
-<div class="container mt-4">
+<style>
+    .card-solicitudes {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+    }
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Mis Solicitudes de Viáticos</h3>
+    .table th {
+        font-size: 12px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .estado-badge {
+        padding: 7px 11px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+
+        <div>
+            <h3 class="mb-1">
+                Mis Solicitudes de Viáticos
+            </h3>
+
+            <p class="text-muted mb-0">
+                Consulte el estado de sus solicitudes registradas.
+            </p>
+        </div>
 
         <a asp-controller="Solicitud"
            asp-action="Create"
-           class="btn btn-primary">
+           class="btn btn-primary mt-3 mt-md-0">
+
+            <i class="bi bi-plus-circle"></i>
             Nueva Solicitud
+
         </a>
+
     </div>
 
     @if (TempData["mensaje"] != null)
     {
-        <div class="alert alert-success">
+        <div class="alert alert-success alert-dismissible fade show">
+
             @TempData["mensaje"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
         </div>
     }
 
     @if (TempData["error"] != null)
     {
-        <div class="alert alert-danger">
+        <div class="alert alert-danger alert-dismissible fade show">
+
             @TempData["error"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
         </div>
     }
 
-    <table class="table table-bordered table-hover align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>Fecha</th>
-                <th>Inicio</th>
-                <th>Fin</th>
-                <th>Destino</th>
-                <th>Motivo</th>
-                <th>Monto</th>
-                <th>Estado</th>
-                <th>Observaciones</th>
-            </tr>
-        </thead>
+    <div class="card card-solicitudes">
 
-        <tbody>
-            @if (Model != null && Model.Any())
-            {
-                foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
-                        <td>@item.FechaInicio.ToString("dd/MM/yyyy")</td>
-                        <td>@item.FechaFin.ToString("dd/MM/yyyy")</td>
-                        <td>@item.Destino</td>
-                        <td>@item.Motivo</td>
-                        <td>S/ @item.Monto.ToString("N2")</td>
-                        <td>
-                            @if (item.IdEstadoSolicitud == 1)
-                            {
-                                <span class="badge bg-warning text-dark">Pendiente</span>
-                            }
-                            else if (item.IdEstadoSolicitud == 2)
-                            {
-                                <span class="badge bg-success">Aprobada</span>
-                            }
-                            else if (item.IdEstadoSolicitud == 3)
-                            {
-                                <span class="badge bg-danger">Rechazada</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-secondary">
-                                    @(item.EstadoSolicitud?.Nombre ?? "Sin estado")
-                                </span>
-                            }
-                        </td>
-                        <td>
-                            @(string.IsNullOrWhiteSpace(item.Observaciones) ? "-" : item.Observaciones)
-                        </td>
-                    </tr>
-                }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="8" class="text-center text-muted">
-                        No tienes solicitudes registradas.
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        <div class="card-body">
 
-    <a asp-controller="Empleado"
-       asp-action="Index"
-       class="btn btn-secondary">
-        Volver
-    </a>
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle mb-0">
+
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Inicio</th>
+                            <th>Fin</th>
+                            <th>Destino</th>
+                            <th>Motivo</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @item.Fecha.ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        @item.FechaInicio.ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        @item.FechaFin.ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        @item.Destino
+                                    </td>
+
+                                    <td>
+                                        @item.Motivo
+                                    </td>
+
+                                    <td>
+                                        S/ @item.Monto.ToString("N2")
+                                    </td>
+
+                                    <td>
+                                        @if (item.IdEstadoSolicitud == 1)
+                                        {
+                                            <span class="badge estado-badge bg-warning text-dark">
+                                                <i class="bi bi-clock"></i>
+                                                Pendiente
+                                            </span>
+                                        }
+                                        else if (item.IdEstadoSolicitud == 2)
+                                        {
+                                            <span class="badge estado-badge bg-success">
+                                                <i class="bi bi-check-circle"></i>
+                                                Aprobada
+                                            </span>
+                                        }
+                                        else if (item.IdEstadoSolicitud == 3)
+                                        {
+                                            <span class="badge estado-badge bg-danger">
+                                                <i class="bi bi-x-circle"></i>
+                                                Rechazada
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge estado-badge bg-secondary">
+                                                @(item.EstadoSolicitud?.Nombre ?? "Sin estado")
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-center">
+
+                                        @if (item.IdEstadoSolicitud == 3 &&
+                                       !string.IsNullOrWhiteSpace(item.Observaciones))
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-outline-danger btn-sm"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalMotivo@(item.IdSolicitud)">
+
+                                                <i class="bi bi-eye"></i>
+                                                Ver motivo
+
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">
+                                                —
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                </tr>
+
+                                @if (item.IdEstadoSolicitud == 3 &&
+                               !string.IsNullOrWhiteSpace(item.Observaciones))
+                                {
+                                    <div class="modal fade"
+                                         id="modalMotivo@(item.IdSolicitud)"
+                                         tabindex="-1"
+                                         aria-labelledby="tituloMotivo@(item.IdSolicitud)"
+                                         aria-hidden="true">
+
+                                        <div class="modal-dialog modal-dialog-centered">
+
+                                            <div class="modal-content">
+
+                                                <div class="modal-header bg-danger text-white">
+
+                                                    <h5 class="modal-title"
+                                                        id="tituloMotivo@(item.IdSolicitud)">
+
+                                                        <i class="bi bi-exclamation-triangle"></i>
+                                                        Motivo del rechazo
+
+                                                    </h5>
+
+                                                    <button type="button"
+                                                            class="btn-close btn-close-white"
+                                                            data-bs-dismiss="modal"
+                                                            aria-label="Cerrar">
+                                                    </button>
+
+                                                </div>
+
+                                                <div class="modal-body">
+
+                                                    <div class="row mb-3">
+
+                                                        <div class="col-sm-4 text-muted">
+                                                            Solicitud
+                                                        </div>
+
+                                                        <div class="col-sm-8">
+                                                            <strong>
+                                                                #@item.IdSolicitud
+                                                            </strong>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="row mb-3">
+
+                                                        <div class="col-sm-4 text-muted">
+                                                            Destino
+                                                        </div>
+
+                                                        <div class="col-sm-8">
+                                                            <strong>
+                                                                @item.Destino
+                                                            </strong>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="row mb-3">
+
+                                                        <div class="col-sm-4 text-muted">
+                                                            Periodo
+                                                        </div>
+
+                                                        <div class="col-sm-8">
+                                                            @item.FechaInicio.ToString("dd/MM/yyyy")
+                                                            -
+                                                            @item.FechaFin.ToString("dd/MM/yyyy")
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="alert alert-danger mb-0">
+
+                                                        <strong>
+                                                            Observaciones del administrador:
+                                                        </strong>
+
+                                                        <div class="mt-2">
+                                                            @item.Observaciones
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="modal-footer">
+
+                                                    <button type="button"
+                                                            class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">
+
+                                                        Cerrar
+
+                                                    </button>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="8"
+                                    class="text-center text-muted py-5">
+
+                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+
+                                    No tienes solicitudes registradas.
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="mt-3">
+
+        <a asp-controller="Empleado"
+           asp-action="Index"
+           class="btn btn-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Volver
+
+        </a>
+
+    </div>
 
 </div>

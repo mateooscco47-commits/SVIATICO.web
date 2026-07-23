@@ -5,24 +5,48 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // ======================================
-// Servicios
+// Servicios MVC
 // ======================================
 
 builder.Services.AddControllersWithViews();
+
+// ======================================
+// Entity Framework + SQL Server
+// ======================================
 
 builder.Services.AddDbContext<AplicacionDbContexto>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+// ======================================
 // Servicio para consultar RUC
+// ======================================
+
 builder.Services.AddHttpClient<RucService>(client =>
 {
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
 // ======================================
-// Aplicación
+// Sesiones
+// ======================================
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.Name = ".Dinacem.Session";
+});
+
+builder.Services.Configure<CorreoConfiguracion>(
+    builder.Configuration.GetSection("Correo"));
+
+builder.Services.AddScoped<CorreoService>();
+
+// ======================================
+// Construir aplicación
 // ======================================
 
 var app = builder.Build();
@@ -43,6 +67,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// La sesión debe ir después de UseRouting
+// y antes de acceder a Session en controladores.
+app.UseSession();
+
 app.UseAuthorization();
 
 // ======================================
@@ -53,6 +81,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// ======================================
+// Ejecutar aplicación
 // ======================================
 
 app.Run();

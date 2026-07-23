@@ -147,3 +147,8 @@ C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\Dinacen.pdb
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\Dinacen.genruntimeconfig.cache
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\ref\Dinacen.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\BouncyCastle.Cryptography.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\MailKit.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\MimeKit.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll

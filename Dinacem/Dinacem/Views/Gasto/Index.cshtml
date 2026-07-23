@@ -12,6 +12,7 @@
     var totalIgv = Model?.Sum(x => x.IGV) ?? 0;
     var totalRendido = rendicion?.Total ?? 0;
     var saldoDisponible = rendicion?.Saldo ?? 0;
+    var devolucion = ViewBag.DevolucionSaldo as Dinacem.Models.DevolucionSaldo;
 }
 
 <style>
@@ -96,6 +97,15 @@
         padding: 5px 10px;
         border-radius: 6px;
     }
+
+    .devolucion-ok {
+        border-left: 5px solid #198754;
+    }
+
+    .devolucion-pendiente {
+        border-left: 5px solid #ffc107;
+    }
+
 </style>
 
 <div class="container-fluid p-4">
@@ -270,11 +280,21 @@
                             <div class="row g-3">
 
                                 <div class="col-md-4">
-                                    <label class="form-label">Fecha</label>
+                                    <label class="form-label">Fecha del gasto</label>
+
                                     <input type="date"
                                            name="Fecha"
                                            class="form-control"
+                                           min="@rendicion.FechaInicio.ToString("yyyy-MM-dd")"
+                                           max="@rendicion.FechaFin.ToString("yyyy-MM-dd")"
                                            required />
+
+                                    <small class="text-muted">
+                                        Solo se permiten fechas entre
+                                        @rendicion.FechaInicio.ToString("dd/MM/yyyy")
+                                        y
+                                        @rendicion.FechaFin.ToString("dd/MM/yyyy").
+                                    </small>
                                 </div>
 
                                 <div class="col-md-4">
@@ -520,6 +540,168 @@
                 </div>
             </div>
 
+            @if (rendicion != null &&
+            rendicion.IdEstadoRendicion == 1 &&
+            rendicion.Saldo > 0)
+            {
+                <div class="panel mb-4 @(devolucion == null ? "devolucion-pendiente" : "devolucion-ok")">
+                    <div class="panel-header">
+                        DEVOLUCIÓN DE SALDO
+                    </div>
+
+                    <div class="panel-body">
+                        @if (devolucion == null)
+                        {
+                            <div class="alert alert-warning">
+                                Tiene un saldo pendiente de devolución de
+                                <strong>S/ @rendicion.Saldo.ToString("N2")</strong>.
+                                Debe registrar el depósito antes de enviar la rendición.
+                            </div>
+
+                            <form asp-controller="DevolucionSaldo"
+                                  asp-action="Registrar"
+                                  method="post"
+                                  enctype="multipart/form-data">
+
+                                <input type="hidden"
+                                       name="IdRendicion"
+                                       value="@rendicion.IdRendicion" />
+
+                                <div class="mb-3">
+                                    <label class="form-label">Monto a devolver</label>
+                                    <input type="number"
+                                           name="Monto"
+                                           class="form-control"
+                                           value="@rendicion.Saldo.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                           step="0.01"
+                                           readonly />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Fecha del depósito</label>
+                                    <input type="date"
+                                           name="Fecha"
+                                           class="form-control"
+                                           value="@DateTime.Now.ToString("yyyy-MM-dd")"
+                                           required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Banco</label>
+                                    <input type="text"
+                                           name="Banco"
+                                           class="form-control"
+                                           maxlength="100"
+                                           placeholder="Ej. BCP, BBVA, Interbank"
+                                           required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Número de operación</label>
+                                    <input type="text"
+                                           name="NumeroOperacion"
+                                           class="form-control"
+                                           maxlength="100"
+                                           required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Voucher</label>
+                                    <input type="file"
+                                           name="voucher"
+                                           class="form-control"
+                                           accept=".pdf,.jpg,.jpeg,.png"
+                                           required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Observaciones</label>
+                                    <textarea name="Observaciones"
+                                              class="form-control"
+                                              rows="3"
+                                              maxlength="500"></textarea>
+                                </div>
+
+                                <button type="submit"
+                                        class="btn btn-primary w-100">
+                                    Registrar devolución
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="alert alert-success">
+                                Devolución registrada correctamente.
+                            </div>
+
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Monto</th>
+                                    <td>S/ @devolucion.Monto.ToString("N2")</td>
+                                </tr>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <td>@devolucion.Fecha.ToString("dd/MM/yyyy")</td>
+                                </tr>
+                                <tr>
+                                    <th>Banco</th>
+                                    <td>@devolucion.Banco</td>
+                                </tr>
+                                <tr>
+                                    <th>N.º operación</th>
+                                    <td>@devolucion.NumeroOperacion</td>
+                                </tr>
+                                <tr>
+                                    <th>Voucher</th>
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(devolucion.Voucher))
+                                        {
+                                            <a href="@devolucion.Voucher"
+                                               target="_blank"
+                                               rel="noopener"
+                                               class="btn btn-outline-primary btn-sm">
+                                                Ver voucher
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Sin archivo</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Observaciones</th>
+                                    <td>
+                                        @(string.IsNullOrWhiteSpace(devolucion.Observaciones)
+                                            ? "-"
+                                            : devolucion.Observaciones)
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <form asp-controller="DevolucionSaldo"
+                                  asp-action="Eliminar"
+                                  method="post">
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@devolucion.IdDevolucionSaldo" />
+
+                                <input type="hidden"
+                                       name="idRendicion"
+                                       value="@rendicion.IdRendicion" />
+
+                                <button type="submit"
+                                        class="btn btn-outline-danger w-100"
+                                        onclick="return confirm('¿Desea eliminar la devolución registrada?');">
+                                    Eliminar devolución
+                                </button>
+                            </form>
+                        }
+                    </div>
+                </div>
+            }
+
             <div class="panel">
                 <div class="panel-header">
                     ACCIONES
@@ -529,6 +711,10 @@
 
                     @if (rendicion?.IdEstadoRendicion == 1)
                     {
+                        var puedeEnviar =
+                        rendicion.Total > 0 &&
+                        (rendicion.Saldo <= 0 || devolucion != null);
+
                         <form asp-controller="Gasto"
                               asp-action="EnviarRendicion"
                               method="post">
@@ -537,11 +723,26 @@
                                    name="idRendicion"
                                    value="@rendicion.IdRendicion" />
 
-                            <button class="btn btn-success w-100"
+                            <button type="submit"
+                                    class="btn btn-success w-100"
+                                    disabled="@(!puedeEnviar)"
                                     onclick="return confirm('¿Desea enviar esta rendición para revisión?');">
                                 Finalizar y Enviar a Revisión
                             </button>
                         </form>
+
+                        @if (rendicion.Total <= 0)
+                        {
+                            <small class="text-danger">
+                                Debe registrar al menos un gasto.
+                            </small>
+                        }
+                        else if (rendicion.Saldo > 0 && devolucion == null)
+                        {
+                            <small class="text-danger">
+                                Debe registrar la devolución del saldo pendiente.
+                            </small>
+                        }
                     }
 
                     <a asp-controller="Rendicion"
@@ -570,6 +771,10 @@
         const razonSocial = document.getElementById("razonSocial");
         const domicilioFiscal = document.getElementById("domicilioFiscal");
         const mensaje = document.getElementById("mensajeRuc");
+
+        if (!rucInput || !boton || !razonSocial || !domicilioFiscal || !mensaje) {
+            return;
+        }
 
         async function consultarRuc() {
             const ruc = rucInput.value.trim();
