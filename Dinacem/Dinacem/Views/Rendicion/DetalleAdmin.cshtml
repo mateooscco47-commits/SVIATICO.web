@@ -4,166 +4,872 @@
     ViewData["Title"] = "Revisión de Rendición";
     Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
 
-    var rendicion = ViewBag.Rendicion as Dinacem.Models.Rendicion;
-    var montoAprobado = rendicion?.Solicitud?.Monto ?? 0;
+    var rendicion =
+        ViewBag.Rendicion as Dinacem.Models.Rendicion;
+
+    var devolucion =
+        ViewBag.DevolucionSaldo as Dinacem.Models.DevolucionSaldo;
+
+    var montoAprobado =
+        rendicion?.Solicitud?.Monto ?? 0;
+
+    var totalValorVenta =
+        Model?.Sum(x => x.ValorVenta) ?? 0;
+
+    var totalIgv =
+        Model?.Sum(x => x.IGV) ?? 0;
+
+    var totalRendido =
+        Model?.Sum(x => x.MontoTotal) ?? 0;
 }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    .page-header {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 22px;
+        margin-bottom: 22px;
+    }
 
-<div class="container mt-4">
+    .page-title {
+        color: #0f172a;
+        font-weight: 800;
+        margin-bottom: 4px;
+    }
 
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h3>Revisión de Rendición</h3>
-        </div>
+    .panel {
+        background: #ffffff;
+        border: 1px solid #dbe1ea;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, .06);
+        margin-bottom: 24px;
+    }
 
-        <div class="card-body">
+    .panel-header {
+        padding: 17px 20px;
+        border-bottom: 1px solid #e2e8f0;
+        color: #0d6efd;
+        font-weight: 800;
+    }
 
-            <h5>Información General</h5>
+    .panel-body {
+        padding: 20px;
+    }
 
-            <table class="table table-bordered">
-                <tr>
-                    <th>Empleado</th>
-                    <td>@rendicion?.Usuario?.Nombres @rendicion?.Usuario?.Apellidos</td>
-                </tr>
-                <tr>
-                    <th>Solicitud</th>
-                    <td>@rendicion?.IdSolicitud</td>
-                </tr>
-                <tr>
-                    <th>Destino</th>
-                    <td>@rendicion?.Solicitud?.Destino</td>
-                </tr>
-                <tr>
-                    <th>Motivo</th>
-                    <td>@rendicion?.Solicitud?.Motivo</td>
-                </tr>
-                <tr>
-                    <th>Fecha Inicio</th>
-                    <td>@rendicion?.FechaInicio.ToString("dd/MM/yyyy")</td>
-                </tr>
-                <tr>
-                    <th>Fecha Fin</th>
-                    <td>@rendicion?.FechaFin.ToString("dd/MM/yyyy")</td>
-                </tr>
-                <tr>
-                    <th>Estado</th>
-                    <td>@rendicion?.EstadoRendicion?.Nombre</td>
-                </tr>
-            </table>
+    .table th {
+        font-size: 12px;
+        color: #64748b;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
 
-            <hr />
+    .table td {
+        vertical-align: middle;
+    }
 
-            <h5>Gastos Registrados</h5>
+    .estado {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 11px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
 
-            <table class="table table-bordered table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Tipo</th>
-                        <th>Comprobante</th>
-                        <th>Serie</th>
-                        <th>Número</th>
-                        <th>Detalle</th>
-                        <th>IGV</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
+    .estado-proceso {
+        background: #dbeafe;
+        color: #1d4ed8;
+        border: 1px solid #93c5fd;
+    }
 
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
-                                <td>@item.TipoGasto?.Nombre</td>
-                                <td>@item.TipoComprobante?.Nombre</td>
-                                <td>@item.Serie</td>
-                                <td>@item.Numero</td>
-                                <td>@item.Detalle</td>
-                                <td>S/. @item.IGV.ToString("N2")</td>
-                                <td>S/. @item.MontoTotal.ToString("N2")</td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="8" class="text-center text-muted">
-                                No hay gastos registrados.
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    .estado-pendiente {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fcd34d;
+    }
 
-            <hr />
+    .estado-aprobada {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #86efac;
+    }
 
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="alert alert-primary">
-                        <strong>Monto Aprobado</strong><br />
-                        S/. @montoAprobado.ToString("N2")
-                    </div>
-                </div>
+    .estado-rechazada {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
 
-                <div class="col-md-4">
-                    <div class="alert alert-warning">
-                        <strong>Total Rendido</strong><br />
-                        S/. @rendicion?.Total.ToString("N2")
-                    </div>
-                </div>
+    .summary-card {
+        background: #ffffff;
+        border: 1px solid #dbe1ea;
+        border-radius: 12px;
+        padding: 18px;
+        height: 100%;
+    }
 
-                <div class="col-md-4">
-                    <div class="alert alert-success">
-                        <strong>Saldo</strong><br />
-                        S/. @rendicion?.Saldo.ToString("N2")
-                    </div>
-                </div>
+    .summary-label {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .summary-value {
+        margin-top: 5px;
+        color: #0f172a;
+        font-size: 23px;
+        font-weight: 800;
+    }
+
+    .summary-primary {
+        border-left: 5px solid #0d6efd;
+    }
+
+    .summary-orange {
+        border-left: 5px solid #f59e0b;
+    }
+
+    .summary-green {
+        border-left: 5px solid #198754;
+    }
+
+    .summary-purple {
+        border-left: 5px solid #7c3aed;
+    }
+
+    .acciones {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <div class="page-header">
+
+        <div class="d-flex flex-column flex-lg-row
+                    justify-content-between
+                    align-items-lg-center
+                    gap-3">
+
+            <div>
+                <h2 class="page-title">
+                    <i class="bi bi-receipt-cutoff me-2"></i>
+                    Revisión de Rendición
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Revise la información, los gastos,
+                    comprobantes y devolución registrada.
+                </p>
             </div>
 
-            <hr />
+            <div class="d-flex flex-wrap gap-2">
 
-            <div class="d-flex gap-2">
+                @if (!string.IsNullOrWhiteSpace(rendicion?.ArchivoPdf))
+                {
+                    <a href="@rendicion.ArchivoPdf"
+                       target="_blank"
+                       rel="noopener"
+                       class="btn btn-outline-danger">
 
-                <form asp-controller="Rendicion"
-                      asp-action="Aprobar"
-                      method="post">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                        Ver PDF
 
-                    <input type="hidden"
-                           name="id"
-                           value="@rendicion?.IdRendicion" />
-
-                    <button class="btn btn-success"
-                            onclick="return confirm('¿Desea aprobar esta rendición?');">
-                        Aprobar Rendición
-                    </button>
-                </form>
-
-                <form asp-controller="Rendicion"
-                      asp-action="Rechazar"
-                      method="post">
-
-                    <input type="hidden"
-                           name="id"
-                           value="@rendicion?.IdRendicion" />
-
-                    <button class="btn btn-danger"
-                            onclick="return confirm('¿Desea rechazar esta rendición?');">
-                        Rechazar Rendición
-                    </button>
-                </form>
+                    </a>
+                }
 
                 <a asp-controller="Rendicion"
                    asp-action="IndexAdmin"
-                   class="btn btn-secondary">
+                   class="btn btn-outline-secondary">
+
+                    <i class="bi bi-arrow-left"></i>
                     Volver
+
                 </a>
 
             </div>
 
         </div>
+
     </div>
+
+    @if (TempData["mensaje"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+
+            @TempData["mensaje"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+
+        </div>
+    }
+
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+
+            @Html.Raw(TempData["error"])
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+
+        </div>
+    }
+
+    @if (rendicion == null)
+    {
+        <div class="alert alert-danger">
+            No se encontró la información de la rendición.
+        </div>
+    }
+    else
+    {
+        <!-- INFORMACIÓN GENERAL -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+                <i class="bi bi-info-circle me-2"></i>
+                INFORMACIÓN GENERAL
+            </div>
+
+            <div class="panel-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered mb-0">
+
+                        <tbody>
+
+                            <tr>
+                                <th style="width:20%">Rendición</th>
+                                <td>#@rendicion.IdRendicion</td>
+
+                                <th style="width:20%">Solicitud</th>
+                                <td>#@rendicion.IdSolicitud</td>
+                            </tr>
+
+                            <tr>
+                                <th>Empleado</th>
+                                <td>
+                                    @rendicion.Usuario?.Nombres
+                                    @rendicion.Usuario?.Apellidos
+                                </td>
+
+                                <th>Correo</th>
+                                <td>
+                                    @(rendicion.Usuario?.Correo ?? "-")
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>Destino</th>
+                                <td>
+                                    @(rendicion.Solicitud?.Destino ?? "-")
+                                </td>
+
+                                <th>Motivo</th>
+                                <td>
+                                    @(rendicion.Solicitud?.Motivo ?? "-")
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>Fecha inicio</th>
+                                <td>
+                                    @rendicion.FechaInicio.ToString("dd/MM/yyyy")
+                                </td>
+
+                                <th>Fecha fin</th>
+                                <td>
+                                    @rendicion.FechaFin.ToString("dd/MM/yyyy")
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>Fecha de envío</th>
+                                <td>
+                                    @(rendicion.FechaEnvioRevision.HasValue
+                                        ? rendicion.FechaEnvioRevision.Value
+                                        .ToString("dd/MM/yyyy HH:mm")
+                                        : "-")
+                                </td>
+
+                                <th>Estado</th>
+                                <td>
+
+                                    @switch (rendicion.IdEstadoRendicion)
+                                    {
+                                        case 1:
+                                            <span class="estado estado-proceso">
+                                                <i class="bi bi-pencil-square"></i>
+                                                En proceso
+                                            </span>
+                                            break;
+
+                                        case 2:
+                                            <span class="estado estado-pendiente">
+                                                <i class="bi bi-clock-fill"></i>
+                                                Pendiente de revisión
+                                            </span>
+                                            break;
+
+                                        case 3:
+                                            <span class="estado estado-aprobada">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                Aprobada
+                                            </span>
+                                            break;
+
+                                        case 4:
+                                            <span class="estado estado-rechazada">
+                                                <i class="bi bi-x-circle-fill"></i>
+                                                Rechazada
+                                            </span>
+                                            break;
+
+                                        default:
+                                            <span class="estado bg-secondary text-white">
+                                                Sin estado
+                                            </span>
+                                            break;
+                                    }
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- GASTOS -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+                <i class="bi bi-cash-stack me-2"></i>
+                GASTOS REGISTRADOS
+            </div>
+
+            <div class="panel-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover align-middle mb-0">
+
+                        <thead class="table-dark">
+
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Tipo</th>
+                                <th>Proveedor</th>
+                                <th>Comprobante</th>
+                                <th>Detalle</th>
+                                <th>Base</th>
+                                <th>IGV</th>
+                                <th>Total</th>
+                                <th>Archivo</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+
+                                        <td>
+                                            @item.Fecha.ToString("dd/MM/yyyy")
+                                        </td>
+
+                                        <td>
+                                            @(item.TipoGasto?.Nombre ?? "-")
+                                        </td>
+
+                                        <td>
+                                            <strong>
+                                                @(item.RazonSocial ?? "-")
+                                            </strong>
+
+                                            @if (!string.IsNullOrWhiteSpace(item.Ruc))
+                                            {
+                                                <br />
+
+                                                <small class="text-muted">
+                                                    RUC: @item.Ruc
+                                                </small>
+                                            }
+                                        </td>
+
+                                        <td>
+                                            @(item.TipoComprobante?.Nombre ?? "-")
+
+                                            <br />
+
+                                            <small class="text-muted">
+                                                @item.Serie - @item.Numero
+                                            </small>
+                                        </td>
+
+                                        <td>
+                                            @(item.Detalle ?? "-")
+                                        </td>
+
+                                        <td>
+                                            S/ @item.ValorVenta.ToString("N2")
+
+                                            @if (item.ExoneracionIGV)
+                                            {
+                                                <br />
+
+                                                <span class="badge bg-info text-dark">
+                                                    Exonerado
+                                                </span>
+                                            }
+                                        </td>
+
+                                        <td>
+                                            S/ @item.IGV.ToString("N2")
+                                        </td>
+
+                                        <td>
+                                            <strong>
+                                                S/ @item.MontoTotal.ToString("N2")
+                                            </strong>
+                                        </td>
+
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(item.Comprobante))
+                                            {
+                                                <a href="@item.Comprobante"
+                                                   target="_blank"
+                                                   rel="noopener"
+                                                   class="btn btn-outline-primary btn-sm">
+
+                                                    <i class="bi bi-paperclip"></i>
+                                                    Ver
+
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">
+                                                    Sin archivo
+                                                </span>
+                                            }
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+
+                                    <td colspan="9"
+                                        class="text-center text-muted py-4">
+
+                                        No hay gastos registrados.
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RESUMEN -->
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-6 col-xl-3">
+
+                <div class="summary-card summary-primary">
+
+                    <div class="summary-label">
+                        Monto aprobado
+                    </div>
+
+                    <div class="summary-value">
+                        S/ @montoAprobado.ToString("N2")
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+
+                <div class="summary-card summary-purple">
+
+                    <div class="summary-label">
+                        Valor de venta
+                    </div>
+
+                    <div class="summary-value">
+                        S/ @totalValorVenta.ToString("N2")
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+
+                <div class="summary-card summary-orange">
+
+                    <div class="summary-label">
+                        IGV total
+                    </div>
+
+                    <div class="summary-value">
+                        S/ @totalIgv.ToString("N2")
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+
+                <div class="summary-card summary-green">
+
+                    <div class="summary-label">
+                        Total rendido
+                    </div>
+
+                    <div class="summary-value">
+                        S/ @totalRendido.ToString("N2")
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- DEVOLUCIÓN -->
+        @if (rendicion.Saldo > 0 || devolucion != null)
+        {
+            <div class="panel">
+
+                <div class="panel-header">
+                    <i class="bi bi-arrow-return-left me-2"></i>
+                    DEVOLUCIÓN DE SALDO
+                </div>
+
+                <div class="panel-body">
+
+                    @if (devolucion == null)
+                    {
+                        <div class="alert alert-warning mb-0">
+
+                            Existe un saldo pendiente de devolución de
+
+                            <strong>
+                                S/ @rendicion.Saldo.ToString("N2")
+                            </strong>,
+
+                            pero no se encontró una devolución registrada.
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+
+                            <table class="table table-bordered mb-0">
+
+                                <tr>
+                                    <th>Monto devuelto</th>
+                                    <td>
+                                        S/ @devolucion.Monto.ToString("N2")
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th>Fecha</th>
+                                    <td>
+                                        @devolucion.Fecha.ToString("dd/MM/yyyy")
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th>Banco</th>
+                                    <td>@devolucion.Banco</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Número de operación</th>
+                                    <td>@devolucion.NumeroOperacion</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Observaciones</th>
+                                    <td>
+                                        @(string.IsNullOrWhiteSpace(
+                                            devolucion.Observaciones)
+                                            ? "-"
+                                            : devolucion.Observaciones)
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th>Voucher</th>
+                                    <td>
+
+                                        @if (!string.IsNullOrWhiteSpace(
+                                       devolucion.Voucher))
+                                        {
+                                            <a href="@devolucion.Voucher"
+                                               target="_blank"
+                                               rel="noopener"
+                                               class="btn btn-outline-primary btn-sm">
+
+                                                <i class="bi bi-file-earmark-image"></i>
+                                                Ver voucher
+
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-danger">
+                                                Sin voucher
+                                            </span>
+                                        }
+
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+        }
+
+        <!-- OBSERVACIÓN DE RECHAZO -->
+        @if (rendicion.IdEstadoRendicion == 4 &&
+       !string.IsNullOrWhiteSpace(rendicion.Observaciones))
+        {
+            <div class="alert alert-danger">
+
+                <strong>
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    Motivo del rechazo:
+                </strong>
+
+                <div class="mt-2">
+                    @rendicion.Observaciones
+                </div>
+
+            </div>
+        }
+
+        <!-- ACCIONES -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+                <i class="bi bi-check2-square me-2"></i>
+                ACCIONES
+            </div>
+
+            <div class="panel-body">
+
+                <div class="acciones">
+
+                    @if (rendicion.IdEstadoRendicion == 2)
+                    {
+                        <form asp-controller="Rendicion"
+                              asp-action="Aprobar"
+                              method="post">
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@rendicion.IdRendicion" />
+
+                            <button type="submit"
+                                    class="btn btn-success"
+                                    onclick="return confirm('¿Desea aprobar esta rendición?');">
+
+                                <i class="bi bi-check-circle"></i>
+                                Aprobar rendición
+
+                            </button>
+
+                        </form>
+
+                        <button type="button"
+                                class="btn btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalRechazarRendicion">
+
+                            <i class="bi bi-x-circle"></i>
+                            Rechazar rendición
+
+                        </button>
+                    }
+                    else
+                    {
+                        <span class="text-muted align-self-center">
+
+                            <i class="bi bi-lock"></i>
+                            Esta rendición ya fue procesada.
+
+                        </span>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(rendicion.ArchivoPdf))
+                    {
+                        <a href="@rendicion.ArchivoPdf"
+                           target="_blank"
+                           rel="noopener"
+                           class="btn btn-outline-danger">
+
+                            <i class="bi bi-file-earmark-pdf"></i>
+                            Ver liquidación PDF
+
+                        </a>
+                    }
+
+                    <a asp-controller="Rendicion"
+                       asp-action="IndexAdmin"
+                       class="btn btn-outline-secondary">
+
+                        <i class="bi bi-arrow-left"></i>
+                        Volver
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- MODAL RECHAZAR -->
+        @if (rendicion.IdEstadoRendicion == 2)
+        {
+            <div class="modal fade"
+                 id="modalRechazarRendicion"
+                 tabindex="-1"
+                 aria-labelledby="tituloModalRechazo"
+                 aria-hidden="true">
+
+                <div class="modal-dialog modal-dialog-centered">
+
+                    <div class="modal-content">
+
+                        <form asp-controller="Rendicion"
+                              asp-action="Rechazar"
+                              method="post">
+
+                            <div class="modal-header bg-danger text-white">
+
+                                <h5 class="modal-title"
+                                    id="tituloModalRechazo">
+
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    Rechazar rendición
+
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close btn-close-white"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Cerrar">
+                                </button>
+
+                            </div>
+
+                            <div class="modal-body">
+
+                                <input type="hidden"
+                                       name="id"
+                                       value="@rendicion.IdRendicion" />
+
+                                <label for="observaciones"
+                                       class="form-label">
+
+                                    Motivo del rechazo
+
+                                </label>
+
+                                <textarea id="observaciones"
+                                          name="observaciones"
+                                          class="form-control"
+                                          rows="5"
+                                          maxlength="1000"
+                                          placeholder="Explique las correcciones que debe realizar el empleado..."
+                                          required></textarea>
+
+                                <small class="text-muted">
+                                    Esta observación será visible para el empleado.
+                                </small>
+
+                            </div>
+
+                            <div class="modal-footer">
+
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+
+                                    Cancelar
+
+                                </button>
+
+                                <button type="submit"
+                                        class="btn btn-danger">
+
+                                    <i class="bi bi-x-circle"></i>
+                                    Confirmar rechazo
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+    }
 
 </div>

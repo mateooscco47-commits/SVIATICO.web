@@ -5167,6 +5167,88 @@
           "Value": "sha256-OZVI+w57FGwS9boYCZpH1ZSpcP7pYhLu4KtIUvPlZ4I="
         }
       ]
+    },
+    {
+      "Route": "liquidaciones/Liquidacion-2-angel-asd.pdf",
+      "AssetFile": "liquidaciones/Liquidacion-2-angel-asd.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "37294"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"pJKIDeVqYUJfsIws060XWZH6e/Ch3FlgARCgBfy6DJ4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 23 Jul 2026 07:53:34 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-pJKIDeVqYUJfsIws060XWZH6e/Ch3FlgARCgBfy6DJ4="
+        }
+      ]
+    },
+    {
+      "Route": "liquidaciones/Liquidacion-2-angel-asd.whqqi23f8a.pdf",
+      "AssetFile": "liquidaciones/Liquidacion-2-angel-asd.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "37294"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"pJKIDeVqYUJfsIws060XWZH6e/Ch3FlgARCgBfy6DJ4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 23 Jul 2026 07:53:34 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "whqqi23f8a"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-pJKIDeVqYUJfsIws060XWZH6e/Ch3FlgARCgBfy6DJ4="
+        },
+        {
+          "Name": "label",
+          "Value": "liquidaciones/Liquidacion-2-angel-asd.pdf"
+        }
+      ]
     }
   ]
 }

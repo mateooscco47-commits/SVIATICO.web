@@ -9,13 +9,19 @@ namespace Dinacem.Controllers
     {
         private readonly AplicacionDbContexto _context;
         private readonly RucService _rucService;
+        private readonly RendicionPdfService _rendicionPdfService;
+        private readonly CorreoService _correoService;
 
         public GastoController(
-            AplicacionDbContexto context,
-            RucService rucService)
+    AplicacionDbContexto context,
+    RucService rucService,
+    RendicionPdfService rendicionPdfService,
+    CorreoService correoService)
         {
             _context = context;
             _rucService = rucService;
+            _rendicionPdfService = rendicionPdfService;
+            _correoService = correoService;
         }
 
         // =========================================
@@ -130,10 +136,7 @@ namespace Dinacem.Controllers
 
                 return RedirectToAction(
                     nameof(Index),
-                    new
-                    {
-                        idRendicion = gasto.IdRendicion
-                    });
+                    new { idRendicion = gasto.IdRendicion });
             }
 
             // =========================================
@@ -146,21 +149,20 @@ namespace Dinacem.Controllers
                     nameof(gasto.Fecha),
                     "Debe ingresar la fecha del gasto.");
             }
-            else if (
-                gasto.Fecha.Date < rendicion.FechaInicio.Date ||
-                gasto.Fecha.Date > rendicion.FechaFin.Date)
+            else if (gasto.Fecha.Date < rendicion.FechaInicio.Date ||
+                     gasto.Fecha.Date > rendicion.FechaFin.Date)
             {
                 ModelState.AddModelError(
                     nameof(gasto.Fecha),
                     $"La fecha del gasto debe estar entre " +
                     $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
                     $"{rendicion.FechaFin:dd/MM/yyyy}. " +
-                    $"Puede registrar el gasto posteriormente, pero la fecha " +
-                    $"del comprobante debe pertenecer al periodo aprobado.");
+                    "Puede registrar el gasto posteriormente, pero la fecha " +
+                    "del comprobante debe pertenecer al periodo aprobado.");
             }
 
             // =========================================
-            // VALIDAR MONTO
+            // VALIDAR MONTO TOTAL
             // =========================================
 
             if (gasto.MontoTotal <= 0)
@@ -170,18 +172,33 @@ namespace Dinacem.Controllers
                     "El monto total debe ser mayor que cero.");
             }
 
-            if (gasto.IGV < 0)
-            {
-                ModelState.AddModelError(
-                    nameof(gasto.IGV),
-                    "El IGV no puede ser negativo.");
-            }
+            // =========================================
+            // CALCULAR VALOR DE VENTA E IGV
+            // =========================================
 
-            if (gasto.IGV > gasto.MontoTotal)
+            if (gasto.MontoTotal > 0)
             {
-                ModelState.AddModelError(
-                    nameof(gasto.IGV),
-                    "El IGV no puede ser mayor que el monto total.");
+                if (gasto.ExoneracionIGV)
+                {
+                    gasto.ValorVenta = Math.Round(
+                        gasto.MontoTotal,
+                        2,
+                        MidpointRounding.AwayFromZero);
+
+                    gasto.IGV = 0;
+                }
+                else
+                {
+                    gasto.ValorVenta = Math.Round(
+                        gasto.MontoTotal / 1.18m,
+                        2,
+                        MidpointRounding.AwayFromZero);
+
+                    gasto.IGV = Math.Round(
+                        gasto.MontoTotal - gasto.ValorVenta,
+                        2,
+                        MidpointRounding.AwayFromZero);
+                }
             }
 
             // =========================================
@@ -316,8 +333,7 @@ namespace Dinacem.Controllers
                     .Select(x =>
                         $"{x.Key}: {string.Join(", ",
                             x.Value!.Errors.Select(e =>
-                                string.IsNullOrWhiteSpace(
-                                    e.ErrorMessage)
+                                string.IsNullOrWhiteSpace(e.ErrorMessage)
                                     ? "Valor no válido."
                                     : e.ErrorMessage))}");
 
@@ -326,10 +342,7 @@ namespace Dinacem.Controllers
 
                 return RedirectToAction(
                     nameof(Index),
-                    new
-                    {
-                        idRendicion = gasto.IdRendicion
-                    });
+                    new { idRendicion = gasto.IdRendicion });
             }
 
             // =========================================
@@ -358,10 +371,7 @@ namespace Dinacem.Controllers
 
                     return RedirectToAction(
                         nameof(Index),
-                        new
-                        {
-                            idRendicion = gasto.IdRendicion
-                        });
+                        new { idRendicion = gasto.IdRendicion });
                 }
 
                 const long tamanioMaximo =
@@ -374,10 +384,7 @@ namespace Dinacem.Controllers
 
                     return RedirectToAction(
                         nameof(Index),
-                        new
-                        {
-                            idRendicion = gasto.IdRendicion
-                        });
+                        new { idRendicion = gasto.IdRendicion });
                 }
 
                 var nombreArchivo =
@@ -416,14 +423,15 @@ namespace Dinacem.Controllers
                 gasto.IdRendicion);
 
             TempData["mensaje"] =
-                "Gasto registrado correctamente.";
+                gasto.ExoneracionIGV
+                    ? $"Gasto registrado. Operación exonerada: " +
+                      $"valor de venta S/ {gasto.ValorVenta:N2}, IGV S/ 0.00."
+                    : $"Gasto registrado. Valor de venta: " +
+                      $"S/ {gasto.ValorVenta:N2}, IGV: S/ {gasto.IGV:N2}.";
 
             return RedirectToAction(
                 nameof(Index),
-                new
-                {
-                    idRendicion = gasto.IdRendicion
-                });
+                new { idRendicion = gasto.IdRendicion });
         }
 
         // =========================================
@@ -516,21 +524,39 @@ namespace Dinacem.Controllers
         // =========================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EnviarRendicion(int idRendicion)
+        public async Task<IActionResult> EnviarRendicion(
+    int idRendicion)
         {
+            var idUsuario =
+                HttpContext.Session.GetInt32("IdUsuario");
+
+            if (idUsuario == null)
+            {
+                TempData["error"] =
+                    "La sesión ha expirado. Inicie sesión nuevamente.";
+
+                return RedirectToAction(
+                    "Index",
+                    "Home");
+            }
+
             var rendicion = await _context.Rendiciones
-                .FirstOrDefaultAsync(r => r.IdRendicion == idRendicion);
+                .Include(r => r.Solicitud)
+                .Include(r => r.Usuario)
+                .FirstOrDefaultAsync(r =>
+                    r.IdRendicion == idRendicion &&
+                    r.IdUsuario == idUsuario.Value);
 
             if (rendicion == null)
             {
-                TempData["error"] = "No se encontró la rendición.";
+                TempData["error"] =
+                    "No se encontró la rendición o no pertenece al usuario conectado.";
 
                 return RedirectToAction(
                     "Index",
                     "Rendicion");
             }
 
-            // Solo puede enviarse si está en proceso.
             if (rendicion.IdEstadoRendicion != 1)
             {
                 TempData["error"] =
@@ -541,10 +567,16 @@ namespace Dinacem.Controllers
                     "Rendicion");
             }
 
-            var tieneGastos = await _context.Gastos
-                .AnyAsync(g => g.IdRendicion == idRendicion);
+            var gastos = await _context.Gastos
+                .Include(g => g.TipoGasto)
+                .Include(g => g.TipoComprobante)
+                .Where(g =>
+                    g.IdRendicion == idRendicion)
+                .OrderBy(g => g.Fecha)
+                .ToListAsync();
 
-            if (!tieneGastos || rendicion.Total <= 0)
+            if (gastos.Count == 0 ||
+                rendicion.Total <= 0)
             {
                 TempData["error"] =
                     "Debe registrar al menos un gasto antes de enviar la rendición.";
@@ -554,30 +586,29 @@ namespace Dinacem.Controllers
                     new { idRendicion });
             }
 
-            // Buscar devolución registrada.
-            var devolucion = await _context.DevolucionesSaldo
-                .FirstOrDefaultAsync(d =>
-                    d.IdRendicion == idRendicion);
+            var devolucion =
+                await _context.DevolucionesSaldo
+                    .FirstOrDefaultAsync(d =>
+                        d.IdRendicion == idRendicion);
 
-            // Si quedó saldo pendiente, debe existir una devolución.
-            if (rendicion.Saldo > 0 && devolucion == null)
+            if (rendicion.Saldo > 0 &&
+                devolucion == null)
             {
                 TempData["error"] =
-                    $"Debe registrar la devolución de S/ {rendicion.Saldo:N2} " +
-                    "antes de enviar la rendición.";
+                    $"Debe registrar la devolución de " +
+                    $"S/ {rendicion.Saldo:N2} antes de enviar.";
 
                 return RedirectToAction(
                     nameof(Index),
                     new { idRendicion });
             }
 
-            // El monto devuelto debe coincidir exactamente con el saldo.
             if (rendicion.Saldo > 0 &&
                 devolucion != null &&
                 devolucion.Monto != rendicion.Saldo)
             {
                 TempData["error"] =
-                    $"El monto de la devolución debe ser exactamente " +
+                    $"El monto devuelto debe ser exactamente " +
                     $"S/ {rendicion.Saldo:N2}.";
 
                 return RedirectToAction(
@@ -585,7 +616,6 @@ namespace Dinacem.Controllers
                     new { idRendicion });
             }
 
-            // Si existe devolución, debe tener voucher.
             if (rendicion.Saldo > 0 &&
                 devolucion != null &&
                 string.IsNullOrWhiteSpace(devolucion.Voucher))
@@ -598,25 +628,187 @@ namespace Dinacem.Controllers
                     new { idRendicion });
             }
 
-            // Evitar saldo negativo.
             if (rendicion.Saldo < 0)
             {
                 TempData["error"] =
                     $"El total de gastos supera el monto aprobado por " +
-                    $"S/ {Math.Abs(rendicion.Saldo):N2}. Corrija los gastos antes de enviar.";
+                    $"S/ {Math.Abs(rendicion.Saldo):N2}.";
 
                 return RedirectToAction(
                     nameof(Index),
                     new { idRendicion });
             }
 
-            // 2 = Pendiente de revisión.
+            ResultadoPdfRendicion resultadoPdf;
+
+            try
+            {
+                resultadoPdf =
+                    await _rendicionPdfService.GenerarAsync(
+                        rendicion,
+                        gastos,
+                        devolucion);
+            }
+            catch (Exception)
+            {
+                TempData["error"] =
+                    "No se pudo generar el PDF de la liquidación.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new { idRendicion });
+            }
+
+            rendicion.ArchivoPdf =
+                resultadoPdf.RutaPublica;
+
+            rendicion.FechaEnvioRevision =
+                DateTime.Now;
+
+            // 2 = Pendiente de revisión
             rendicion.IdEstadoRendicion = 2;
 
             await _context.SaveChangesAsync();
 
+            var correosAdministradores =
+                await _context.Usuarios
+                    .Where(u =>
+                        u.IdRol == 1 &&
+                        u.Estado &&
+                        !string.IsNullOrWhiteSpace(u.Correo))
+                    .Select(u => u.Correo!)
+                    .ToListAsync();
+
+            var nombreEmpleado =
+                $"{rendicion.Usuario?.Nombres} " +
+                $"{rendicion.Usuario?.Apellidos}";
+
+            var totalBase =
+                gastos.Sum(g => g.ValorVenta);
+
+            var totalIgv =
+                gastos.Sum(g => g.IGV);
+
+            var asunto =
+                $"Liquidación de viáticos #{rendicion.IdRendicion} pendiente de revisión";
+
+            var contenidoHtml = $"""
+        <div style="font-family:Arial,sans-serif;max-width:700px">
+            <h2 style="color:#0d6efd">
+                Nueva liquidación pendiente de revisión
+            </h2>
+
+            <p>
+                El empleado
+                <strong>{nombreEmpleado}</strong>
+                ha enviado una liquidación de gastos.
+            </p>
+
+            <table style="border-collapse:collapse;width:100%">
+                <tr>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        <strong>Liquidación</strong>
+                    </td>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        #{rendicion.IdRendicion}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        <strong>Empleado</strong>
+                    </td>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        {nombreEmpleado}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        <strong>Destino</strong>
+                    </td>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        {rendicion.Solicitud?.Destino}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        <strong>Periodo</strong>
+                    </td>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        {rendicion.FechaInicio:dd/MM/yyyy}
+                        al
+                        {rendicion.FechaFin:dd/MM/yyyy}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        <strong>Monto aprobado</strong>
+                    </td>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        S/ {rendicion.Solicitud?.Monto:N2}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        <strong>Valor de venta</strong>
+                    </td>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        S/ {totalBase:N2}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        <strong>IGV</strong>
+                    </td>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        S/ {totalIgv:N2}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        <strong>Total rendido</strong>
+                    </td>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        S/ {rendicion.Total:N2}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        <strong>Saldo</strong>
+                    </td>
+                    <td style="border:1px solid #ddd;padding:8px">
+                        S/ {rendicion.Saldo:N2}
+                    </td>
+                </tr>
+            </table>
+
+            <p style="margin-top:20px">
+                Se adjunta el PDF de la liquidación.
+                Ingrese al sistema DINACEM para revisar los comprobantes,
+                la devolución y aprobar o rechazar la rendición.
+            </p>
+        </div>
+        """;
+
+            var correoEnviado =
+                await _correoService.EnviarAsync(
+                    correosAdministradores,
+                    asunto,
+                    contenidoHtml,
+                    resultadoPdf.RutaFisica,
+                    resultadoPdf.NombreArchivo);
+
             TempData["mensaje"] =
-                "La rendición fue enviada correctamente para revisión.";
+                correoEnviado
+                    ? "La rendición fue enviada para revisión y el PDF fue enviado a los administradores."
+                    : "La rendición y el PDF fueron guardados, pero no fue posible enviar el correo.";
 
             return RedirectToAction(
                 "MisRendiciones",

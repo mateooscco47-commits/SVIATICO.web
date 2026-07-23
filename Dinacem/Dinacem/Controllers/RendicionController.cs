@@ -174,11 +174,13 @@ namespace Dinacem.Controllers
         [HttpGet]
         public async Task<IActionResult> MisRendiciones()
         {
-            var idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+            var idUsuario =
+                HttpContext.Session.GetInt32("IdUsuario");
 
             if (idUsuario == null)
             {
-                TempData["error"] = "La sesión ha expirado.";
+                TempData["error"] =
+                    "La sesión ha expirado. Inicie sesión nuevamente.";
 
                 return RedirectToAction(
                     "Index",
@@ -188,7 +190,8 @@ namespace Dinacem.Controllers
             var lista = await _context.Rendiciones
                 .Include(r => r.Solicitud)
                 .Include(r => r.EstadoRendicion)
-                .Where(r => r.IdUsuario == idUsuario.Value)
+                .Where(r =>
+                    r.IdUsuario == idUsuario.Value)
                 .OrderByDescending(r => r.Fecha)
                 .ToListAsync();
 
@@ -266,22 +269,49 @@ namespace Dinacem.Controllers
         // ADMIN: RECHAZAR RENDICIÓN
         // ================================
         [HttpPost]
-        public IActionResult Rechazar(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Rechazar(
+    int id,
+    string observaciones)
         {
-            var rendicion = _context.Rendiciones
-                .FirstOrDefault(r => r.IdRendicion == id);
+            var rendicion = await _context.Rendiciones
+                .FirstOrDefaultAsync(r =>
+                    r.IdRendicion == id);
 
             if (rendicion == null)
             {
-                TempData["error"] = "Rendición no encontrada.";
+                TempData["error"] =
+                    "No se encontró la rendición.";
+
                 return RedirectToAction(nameof(IndexAdmin));
             }
 
-            rendicion.IdEstadoRendicion = 4; // Rechazada
+            if (rendicion.IdEstadoRendicion != 2)
+            {
+                TempData["error"] =
+                    "Solo se puede rechazar una rendición pendiente de revisión.";
 
-            _context.SaveChanges();
+                return RedirectToAction(nameof(IndexAdmin));
+            }
 
-            TempData["mensaje"] = "Rendición rechazada correctamente.";
+            if (string.IsNullOrWhiteSpace(observaciones))
+            {
+                TempData["error"] =
+                    "Debe ingresar el motivo del rechazo.";
+
+                return RedirectToAction(
+                    nameof(DetalleAdmin),
+                    new { id });
+            }
+
+            rendicion.IdEstadoRendicion = 4;
+            rendicion.Observaciones = observaciones.Trim();
+
+            await _context.SaveChangesAsync();
+
+            TempData["mensaje"] =
+                "La rendición fue rechazada correctamente.";
+
             return RedirectToAction(nameof(IndexAdmin));
         }
         // =====================================
@@ -316,27 +346,38 @@ namespace Dinacem.Controllers
         // ADMINISTRADOR
         // VER DETALLE DE LA RENDICIÓN
         // =====================================
-        public IActionResult DetalleAdmin(int id)
+        [HttpGet]
+        public async Task<IActionResult> DetalleAdmin(int id)
         {
-            var rendicion = _context.Rendiciones
+            var rendicion = await _context.Rendiciones
                 .Include(r => r.Usuario)
                 .Include(r => r.Solicitud)
                 .Include(r => r.EstadoRendicion)
-                .FirstOrDefault(r => r.IdRendicion == id);
+                .FirstOrDefaultAsync(r =>
+                    r.IdRendicion == id);
 
             if (rendicion == null)
             {
-                return NotFound();
+                TempData["error"] =
+                    "No se encontró la rendición.";
+
+                return RedirectToAction(nameof(IndexAdmin));
             }
 
-            var gastos = _context.Gastos
+            var gastos = await _context.Gastos
                 .Include(g => g.TipoGasto)
                 .Include(g => g.TipoComprobante)
-                .Where(g => g.IdRendicion == id)
+                .Where(g =>
+                    g.IdRendicion == id)
                 .OrderBy(g => g.Fecha)
-                .ToList();
+                .ToListAsync();
+
+            var devolucion = await _context.DevolucionesSaldo
+                .FirstOrDefaultAsync(d =>
+                    d.IdRendicion == id);
 
             ViewBag.Rendicion = rendicion;
+            ViewBag.DevolucionSaldo = devolucion;
 
             return View(gastos);
         }

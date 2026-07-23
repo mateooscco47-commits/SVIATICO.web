@@ -19,9 +19,11 @@ namespace Dinacem.Models.Servicios
         }
 
         public async Task<bool> EnviarAsync(
-            IEnumerable<string> destinatarios,
-            string asunto,
-            string contenidoHtml)
+    IEnumerable<string> destinatarios,
+    string asunto,
+    string contenidoHtml,
+    string? rutaAdjunto = null,
+    string? nombreAdjunto = null)
         {
             var correos = destinatarios
                 .Where(c => !string.IsNullOrWhiteSpace(c))
@@ -36,32 +38,42 @@ namespace Dinacem.Models.Servicios
                 return false;
             }
 
-            var mensaje = new MimeMessage();
-
-            mensaje.From.Add(new MailboxAddress(
-                _configuracion.NombreRemitente,
-                _configuracion.Remitente));
-
-            foreach (var correo in correos)
-            {
-                mensaje.To.Add(MailboxAddress.Parse(correo));
-            }
-
-            mensaje.Subject = asunto;
-
-            mensaje.Body = new BodyBuilder
-            {
-                HtmlBody = contenidoHtml
-            }.ToMessageBody();
-
             try
             {
-                using var cliente = new SmtpClient();
+                var mensaje = new MimeMessage();
+
+                mensaje.From.Add(
+                    new MailboxAddress(
+                        _configuracion.NombreRemitente,
+                        _configuracion.Remitente));
+
+                foreach (var correo in correos)
+                {
+                    mensaje.To.Add(
+                        MailboxAddress.Parse(correo));
+                }
+
+                mensaje.Subject = asunto;
+
+                var bodyBuilder = new BodyBuilder
+                {
+                    HtmlBody = contenidoHtml
+                };
+
+                if (!string.IsNullOrWhiteSpace(rutaAdjunto) &&
+    System.IO.File.Exists(rutaAdjunto))
+                {
+                    bodyBuilder.Attachments.Add(rutaAdjunto);
+                }
+
+                mensaje.Body = bodyBuilder.ToMessageBody();
+
+                using var cliente = new MailKit.Net.Smtp.SmtpClient();
 
                 await cliente.ConnectAsync(
                     _configuracion.Servidor,
                     _configuracion.Puerto,
-                    SecureSocketOptions.StartTls);
+                    MailKit.Security.SecureSocketOptions.StartTls);
 
                 await cliente.AuthenticateAsync(
                     _configuracion.Usuario,
@@ -77,7 +89,7 @@ namespace Dinacem.Models.Servicios
             {
                 _logger.LogError(
                     ex,
-                    "Error al enviar el correo de notificación.");
+                    "Error al enviar correo con archivo adjunto.");
 
                 return false;
             }

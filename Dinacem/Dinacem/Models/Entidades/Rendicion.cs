@@ -44,5 +44,13 @@ namespace Dinacem.Models
         [ForeignKey("IdEstadoRendicion")]
         public EstadoRendicion? EstadoRendicion { get; set; }
         public DevolucionSaldo? DevolucionSaldo { get; set; }
+        [StringLength(500)]
+        public string? ArchivoPdf { get; set; }
+
+        public DateTime? FechaEnvioRevision { get; set; }
+        [StringLength(1000)]
+        public string? Observaciones { get; set; }
+
+
     }
 }

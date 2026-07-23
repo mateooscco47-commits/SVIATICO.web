@@ -1,13 +1,15 @@
 using Dinacem.Models;
 using Dinacem.Models.Servicios;
 using Microsoft.EntityFrameworkCore;
-
+using QuestPDF.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
 // ======================================
 // Servicios MVC
 // ======================================
 
+builder.Services.AddControllersWithViews();
+QuestPDF.Settings.License = LicenseType.Community;
 builder.Services.AddControllersWithViews();
 
 // ======================================
@@ -45,6 +47,7 @@ builder.Services.Configure<CorreoConfiguracion>(
 
 builder.Services.AddScoped<CorreoService>();
 
+builder.Services.AddScoped<RendicionPdfService>();
 // ======================================
 // Construir aplicación
 // ======================================

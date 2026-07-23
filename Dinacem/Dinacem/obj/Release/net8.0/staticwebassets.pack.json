@@ -253,6 +253,10 @@
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-2-angel-asd.pdf",
+      "PackagePath": "staticwebassets\\liquidaciones\\Liquidacion-2-angel-asd.pdf"
+    },
+    {
       "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.Dinacen.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
     },
