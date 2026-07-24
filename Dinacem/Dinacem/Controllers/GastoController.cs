@@ -128,7 +128,10 @@ namespace Dinacem.Controllers
                     "Rendicion");
             }
 
-            // Solo se agregan gastos mientras la rendición está en proceso.
+            // =========================================
+            // VALIDAR ESTADO DE LA RENDICIÓN
+            // =========================================
+
             if (rendicion.IdEstadoRendicion != 1)
             {
                 TempData["error"] =
@@ -136,8 +139,50 @@ namespace Dinacem.Controllers
 
                 return RedirectToAction(
                     nameof(Index),
-                    new { idRendicion = gasto.IdRendicion });
+                    new
+                    {
+                        idRendicion = gasto.IdRendicion
+                    });
             }
+
+            // =========================================
+            // LIMPIAR CAMPOS RECIBIDOS
+            // =========================================
+
+            gasto.Ruc =
+                gasto.Ruc?.Trim();
+
+            gasto.RazonSocial =
+                gasto.RazonSocial?.Trim();
+
+            gasto.DomicilioFiscal =
+                gasto.DomicilioFiscal?.Trim();
+
+            gasto.Serie =
+                gasto.Serie?.Trim();
+
+            gasto.Numero =
+                gasto.Numero?.Trim();
+
+            gasto.Detalle =
+                gasto.Detalle?.Trim();
+
+            /*
+             * Estos campos pueden ser completados por la API.
+             * Se eliminan del ModelState para validarlos después
+             * de consultar el RUC.
+             */
+            ModelState.Remove(
+                nameof(gasto.RazonSocial));
+
+            ModelState.Remove(
+                nameof(gasto.DomicilioFiscal));
+
+            ModelState.Remove(
+                nameof(gasto.ValorVenta));
+
+            ModelState.Remove(
+                nameof(gasto.IGV));
 
             // =========================================
             // VALIDAR FECHA DEL GASTO
@@ -149,16 +194,20 @@ namespace Dinacem.Controllers
                     nameof(gasto.Fecha),
                     "Debe ingresar la fecha del gasto.");
             }
-            else if (gasto.Fecha.Date < rendicion.FechaInicio.Date ||
-                     gasto.Fecha.Date > rendicion.FechaFin.Date)
+            else if (
+                gasto.Fecha.Date <
+                    rendicion.FechaInicio.Date ||
+                gasto.Fecha.Date >
+                    rendicion.FechaFin.Date)
             {
                 ModelState.AddModelError(
                     nameof(gasto.Fecha),
                     $"La fecha del gasto debe estar entre " +
                     $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
                     $"{rendicion.FechaFin:dd/MM/yyyy}. " +
-                    "Puede registrar el gasto posteriormente, pero la fecha " +
-                    "del comprobante debe pertenecer al periodo aprobado.");
+                    "Puede registrar el gasto posteriormente, " +
+                    "pero la fecha del comprobante debe pertenecer " +
+                    "al periodo aprobado.");
             }
 
             // =========================================
@@ -195,21 +244,26 @@ namespace Dinacem.Controllers
                         MidpointRounding.AwayFromZero);
 
                     gasto.IGV = Math.Round(
-                        gasto.MontoTotal - gasto.ValorVenta,
+                        gasto.MontoTotal -
+                        gasto.ValorVenta,
                         2,
                         MidpointRounding.AwayFromZero);
                 }
             }
 
             // =========================================
-            // VALIDAR TIPO Y LÍMITE DIARIO
+            // VALIDAR TIPO DE GASTO
+            // Y LÍMITE DIARIO
+            //
             // Hospedaje: S/ 50 por día
             // Alimentación: S/ 40 por día
             // =========================================
 
-            var tipoGasto = await _context.TipoGastos
-                .FirstOrDefaultAsync(t =>
-                    t.IdTipoGasto == gasto.IdTipoGasto);
+            var tipoGasto =
+                await _context.TipoGastos
+                    .FirstOrDefaultAsync(t =>
+                        t.IdTipoGasto ==
+                        gasto.IdTipoGasto);
 
             if (tipoGasto == null)
             {
@@ -236,14 +290,19 @@ namespace Dinacem.Controllers
 
                 if (limiteDiario > 0)
                 {
-                    DateTime inicioDia = gasto.Fecha.Date;
-                    DateTime finDia = inicioDia.AddDays(1);
+                    DateTime inicioDia =
+                        gasto.Fecha.Date;
+
+                    DateTime finDia =
+                        inicioDia.AddDays(1);
 
                     decimal montoRegistradoEseDia =
                         await _context.Gastos
                             .Where(g =>
-                                g.IdRendicion == gasto.IdRendicion &&
-                                g.IdTipoGasto == gasto.IdTipoGasto &&
+                                g.IdRendicion ==
+                                    gasto.IdRendicion &&
+                                g.IdTipoGasto ==
+                                    gasto.IdTipoGasto &&
                                 g.Fecha >= inicioDia &&
                                 g.Fecha < finDia)
                             .SumAsync(g =>
@@ -253,7 +312,8 @@ namespace Dinacem.Controllers
                         montoRegistradoEseDia +
                         gasto.MontoTotal;
 
-                    if (nuevoTotalDelDia > limiteDiario)
+                    if (nuevoTotalDelDia >
+                        limiteDiario)
                     {
                         decimal disponible =
                             limiteDiario -
@@ -266,11 +326,14 @@ namespace Dinacem.Controllers
 
                         ModelState.AddModelError(
                             nameof(gasto.MontoTotal),
-                            $"El límite diario para {tipoGasto.Nombre} " +
-                            $"es S/ {limiteDiario:N2}. " +
-                            $"El {gasto.Fecha:dd/MM/yyyy} ya tiene registrado " +
+                            $"El límite diario para " +
+                            $"{tipoGasto.Nombre} es " +
+                            $"S/ {limiteDiario:N2}. " +
+                            $"El {gasto.Fecha:dd/MM/yyyy} " +
+                            $"ya tiene registrado " +
                             $"S/ {montoRegistradoEseDia:N2}. " +
-                            $"Solo puede agregar hasta S/ {disponible:N2}.");
+                            $"Solo puede agregar hasta " +
+                            $"S/ {disponible:N2}.");
                     }
                 }
             }
@@ -279,9 +342,8 @@ namespace Dinacem.Controllers
             // VALIDAR RUC
             // =========================================
 
-            gasto.Ruc = gasto.Ruc?.Trim();
-
-            if (string.IsNullOrWhiteSpace(gasto.Ruc) ||
+            if (string.IsNullOrWhiteSpace(
+                    gasto.Ruc) ||
                 gasto.Ruc.Length != 11 ||
                 !gasto.Ruc.All(char.IsDigit))
             {
@@ -296,6 +358,9 @@ namespace Dinacem.Controllers
 
             if (ModelState.IsValid)
             {
+                var domicilioIngresado =
+                    gasto.DomicilioFiscal;
+
                 var consultaRuc =
                     await _rucService.ConsultarAsync(
                         gasto.Ruc!);
@@ -310,14 +375,71 @@ namespace Dinacem.Controllers
                 else
                 {
                     gasto.Ruc =
-                        consultaRuc.Ruc;
+                        string.IsNullOrWhiteSpace(
+                            consultaRuc.Ruc)
+                            ? gasto.Ruc
+                            : consultaRuc.Ruc.Trim();
 
                     gasto.RazonSocial =
-                        consultaRuc.RazonSocial;
+                        consultaRuc.RazonSocial?.Trim();
 
-                    gasto.DomicilioFiscal =
-                        consultaRuc.DomicilioFiscal;
+                    /*
+                     * Si el empleado escribió o corrigió el domicilio,
+                     * se conserva ese valor.
+                     *
+                     * Solo se utiliza el domicilio de la API cuando
+                     * el campo enviado está vacío.
+                     */
+                    if (string.IsNullOrWhiteSpace(
+                            domicilioIngresado))
+                    {
+                        gasto.DomicilioFiscal =
+                            consultaRuc.DomicilioFiscal?
+                                .Trim();
+                    }
+                    else
+                    {
+                        gasto.DomicilioFiscal =
+                            domicilioIngresado.Trim();
+                    }
                 }
+            }
+
+            // =========================================
+            // VALIDAR RAZÓN SOCIAL
+            // =========================================
+
+            if (string.IsNullOrWhiteSpace(
+                    gasto.RazonSocial))
+            {
+                ModelState.AddModelError(
+                    nameof(gasto.RazonSocial),
+                    "No se encontró la razón social del RUC.");
+            }
+            else if (gasto.RazonSocial.Length > 250)
+            {
+                ModelState.AddModelError(
+                    nameof(gasto.RazonSocial),
+                    "La razón social no puede superar los 250 caracteres.");
+            }
+
+            // =========================================
+            // VALIDAR DOMICILIO FISCAL
+            // =========================================
+
+            if (string.IsNullOrWhiteSpace(
+                    gasto.DomicilioFiscal))
+            {
+                ModelState.AddModelError(
+                    nameof(gasto.DomicilioFiscal),
+                    "Debe ingresar el domicilio fiscal.");
+            }
+            else if (
+                gasto.DomicilioFiscal.Length > 300)
+            {
+                ModelState.AddModelError(
+                    nameof(gasto.DomicilioFiscal),
+                    "El domicilio fiscal no puede superar los 300 caracteres.");
             }
 
             // =========================================
@@ -331,9 +453,11 @@ namespace Dinacem.Controllers
                         x.Value != null &&
                         x.Value.Errors.Count > 0)
                     .Select(x =>
-                        $"{x.Key}: {string.Join(", ",
+                        $"{x.Key}: {string.Join(
+                            ", ",
                             x.Value!.Errors.Select(e =>
-                                string.IsNullOrWhiteSpace(e.ErrorMessage)
+                                string.IsNullOrWhiteSpace(
+                                    e.ErrorMessage)
                                     ? "Valor no válido."
                                     : e.ErrorMessage))}");
 
@@ -342,11 +466,15 @@ namespace Dinacem.Controllers
 
                 return RedirectToAction(
                     nameof(Index),
-                    new { idRendicion = gasto.IdRendicion });
+                    new
+                    {
+                        idRendicion =
+                            gasto.IdRendicion
+                    });
             }
 
             // =========================================
-            // GUARDAR COMPROBANTE
+            // VALIDAR Y GUARDAR COMPROBANTE
             // =========================================
 
             if (archivo != null &&
@@ -361,30 +489,41 @@ namespace Dinacem.Controllers
         };
 
                 var extension = Path
-                    .GetExtension(archivo.FileName)
+                    .GetExtension(
+                        archivo.FileName)
                     .ToLowerInvariant();
 
-                if (!extensionesPermitidas.Contains(extension))
+                if (!extensionesPermitidas
+                    .Contains(extension))
                 {
                     TempData["error"] =
                         "El comprobante debe ser PDF, JPG, JPEG o PNG.";
 
                     return RedirectToAction(
                         nameof(Index),
-                        new { idRendicion = gasto.IdRendicion });
+                        new
+                        {
+                            idRendicion =
+                                gasto.IdRendicion
+                        });
                 }
 
                 const long tamanioMaximo =
                     5 * 1024 * 1024;
 
-                if (archivo.Length > tamanioMaximo)
+                if (archivo.Length >
+                    tamanioMaximo)
                 {
                     TempData["error"] =
                         "El comprobante no debe superar los 5 MB.";
 
                     return RedirectToAction(
                         nameof(Index),
-                        new { idRendicion = gasto.IdRendicion });
+                        new
+                        {
+                            idRendicion =
+                                gasto.IdRendicion
+                        });
                 }
 
                 var nombreArchivo =
@@ -395,18 +534,21 @@ namespace Dinacem.Controllers
                     "wwwroot",
                     "comprobantes");
 
-                Directory.CreateDirectory(carpeta);
+                Directory.CreateDirectory(
+                    carpeta);
 
-                var rutaCompleta = Path.Combine(
-                    carpeta,
-                    nombreArchivo);
+                var rutaCompleta =
+                    Path.Combine(
+                        carpeta,
+                        nombreArchivo);
 
                 await using var stream =
                     new FileStream(
                         rutaCompleta,
                         FileMode.Create);
 
-                await archivo.CopyToAsync(stream);
+                await archivo.CopyToAsync(
+                    stream);
 
                 gasto.Comprobante =
                     $"/comprobantes/{nombreArchivo}";
@@ -416,7 +558,9 @@ namespace Dinacem.Controllers
             // GUARDAR GASTO
             // =========================================
 
-            _context.Gastos.Add(gasto);
+            _context.Gastos.Add(
+                gasto);
+
             await _context.SaveChangesAsync();
 
             await ActualizarTotalesRendicion(
@@ -425,13 +569,19 @@ namespace Dinacem.Controllers
             TempData["mensaje"] =
                 gasto.ExoneracionIGV
                     ? $"Gasto registrado. Operación exonerada: " +
-                      $"valor de venta S/ {gasto.ValorVenta:N2}, IGV S/ 0.00."
+                      $"valor de venta S/ {gasto.ValorVenta:N2}, " +
+                      "IGV S/ 0.00."
                     : $"Gasto registrado. Valor de venta: " +
-                      $"S/ {gasto.ValorVenta:N2}, IGV: S/ {gasto.IGV:N2}.";
+                      $"S/ {gasto.ValorVenta:N2}, " +
+                      $"IGV: S/ {gasto.IGV:N2}.";
 
             return RedirectToAction(
                 nameof(Index),
-                new { idRendicion = gasto.IdRendicion });
+                new
+                {
+                    idRendicion =
+                        gasto.IdRendicion
+                });
         }
 
         // =========================================
@@ -628,16 +778,64 @@ namespace Dinacem.Controllers
                     new { idRendicion });
             }
 
+            // =========================================
+            // GENERAR REEMBOLSO SI EL EMPLEADO GASTÓ MÁS
+            // =========================================
+
             if (rendicion.Saldo < 0)
             {
-                TempData["error"] =
-                    $"El total de gastos supera el monto aprobado por " +
-                    $"S/ {Math.Abs(rendicion.Saldo):N2}.";
+                decimal montoReembolso =
+                    Math.Abs(rendicion.Saldo);
 
-                return RedirectToAction(
-                    nameof(Index),
-                    new { idRendicion });
+                var reembolsoExistente =
+                    await _context.Reembolsos
+                        .FirstOrDefaultAsync(r =>
+                            r.IdRendicion == idRendicion);
+
+                if (reembolsoExistente == null)
+                {
+                    var nuevoReembolso = new Reembolso
+                    {
+                        IdRendicion =
+                            rendicion.IdRendicion,
+
+                        IdUsuario =
+                            rendicion.IdUsuario,
+
+                        Monto =
+                            montoReembolso,
+
+                        FechaSolicitud =
+                            DateTime.Now,
+
+                        // 1 = Pendiente de aprobación
+                        IdEstadoReembolso = 1
+                    };
+
+                    _context.Reembolsos.Add(
+                        nuevoReembolso);
+                }
+                else
+                {
+                    reembolsoExistente.Monto =
+                        montoReembolso;
+
+                    reembolsoExistente.FechaSolicitud =
+                        DateTime.Now;
+
+                    reembolsoExistente.IdEstadoReembolso = 1;
+                    reembolsoExistente.FechaAprobacion = null;
+                    reembolsoExistente.FechaPago = null;
+                    reembolsoExistente.Banco = null;
+                    reembolsoExistente.NumeroOperacion = null;
+                    reembolsoExistente.ComprobantePago = null;
+                    reembolsoExistente.Observaciones = null;
+                }
             }
+            rendicion.IdEstadoRendicion = 2;
+            rendicion.FechaEnvioRevision = DateTime.Now;
+
+            await _context.SaveChangesAsync();
 
             ResultadoPdfRendicion resultadoPdf;
 

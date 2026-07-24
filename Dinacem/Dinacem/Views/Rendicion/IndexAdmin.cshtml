@@ -9,34 +9,58 @@
     var pendientes = Model?.Count(x => x.IdEstadoRendicion == 2) ?? 0;
     var aprobadas = Model?.Count(x => x.IdEstadoRendicion == 3) ?? 0;
     var rechazadas = Model?.Count(x => x.IdEstadoRendicion == 4) ?? 0;
+
+    var reembolsos =
+        ViewBag.Reembolsos as List<Dinacem.Models.Reembolso>
+        ?? new List<Dinacem.Models.Reembolso>();
+
+    var reembolsosPendientes =
+        reembolsos.Count(x => x.IdEstadoReembolso == 2);
+
+    var reembolsosPagados =
+        reembolsos.Count(x => x.IdEstadoReembolso == 3);
 }
 
 <style>
-    .card {
-        border: 0;
-        border-radius: 14px;
+    .page-wrapper {
+        width: 100%;
+        max-width: 1650px;
+        margin: 0 auto;
     }
 
     .page-header {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
         padding: 22px;
         margin-bottom: 22px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
     }
 
     .page-title {
+        margin: 0 0 5px;
         color: #0f172a;
+        font-size: 28px;
         font-weight: 800;
-        margin-bottom: 4px;
+    }
+
+    .page-description {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
     }
 
     .summary-card {
+        height: 100%;
+        padding: 18px;
         background: #fff;
         border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 18px;
-        height: 100%;
+        border-radius: 13px;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, .04);
     }
 
     .summary-label {
@@ -47,21 +71,73 @@
     }
 
     .summary-number {
+        margin-top: 4px;
         color: #0f172a;
         font-size: 28px;
         font-weight: 800;
     }
 
-    .table th {
-        font-size: 12px;
-        color: #64748b;
-        text-transform: uppercase;
-        white-space: nowrap;
+    .panel-card {
+        overflow: hidden;
+        border: 0;
+        border-radius: 15px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .06);
     }
 
-    .table td {
-        vertical-align: middle;
+    .panel-header {
+        padding: 18px 20px;
+        background: #fff;
+        border-bottom: 1px solid #e2e8f0;
     }
+
+    .search-box {
+        position: relative;
+        width: 100%;
+        max-width: 430px;
+    }
+
+        .search-box .bi-search {
+            position: absolute;
+            top: 50%;
+            left: 14px;
+            z-index: 2;
+            color: #94a3b8;
+            transform: translateY(-50%);
+        }
+
+        .search-box input {
+            min-height: 42px;
+            padding-left: 40px;
+            border-radius: 10px;
+        }
+
+    .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .filtro-btn.active {
+        color: #fff;
+        background: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .table {
+        min-width: 1180px;
+        font-size: 14px;
+    }
+
+        .table th {
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
 
     .estado {
         display: inline-flex;
@@ -75,52 +151,133 @@
     }
 
     .estado-proceso {
-        background: #dbeafe;
         color: #1d4ed8;
+        background: #dbeafe;
         border: 1px solid #93c5fd;
     }
 
     .estado-pendiente {
-        background: #fef3c7;
         color: #92400e;
+        background: #fef3c7;
         border: 1px solid #fcd34d;
     }
 
     .estado-aprobada {
-        background: #dcfce7;
         color: #166534;
+        background: #dcfce7;
         border: 1px solid #86efac;
     }
 
     .estado-rechazada {
-        background: #fee2e2;
         color: #991b1b;
+        background: #fee2e2;
         border: 1px solid #fca5a5;
     }
 
-    .filtro-btn.active {
-        color: #fff;
-        background: #0d6efd;
-        border-color: #0d6efd;
+    .estado-reembolso {
+        color: #6b21a8;
+        background: #f3e8ff;
+        border: 1px solid #d8b4fe;
+    }
+
+    .estado-pagado {
+        color: #065f46;
+        background: #d1fae5;
+        border: 1px solid #6ee7b7;
     }
 
     .accion-proceso {
         color: #64748b;
         font-size: 13px;
     }
+
+    .acciones {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .result-count {
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    @@media (max-width: 991.98px) {
+        .page-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+            .page-header .btn {
+                width: 100%;
+            }
+
+        .panel-header > div {
+            width: 100%;
+        }
+
+        .search-box {
+            max-width: none;
+        }
+    }
+
+    @@media (max-width: 767.98px) {
+        .page-header {
+            padding: 18px;
+            border-radius: 13px;
+        }
+
+        .page-title {
+            font-size: 23px;
+        }
+
+        .summary-number {
+            font-size: 24px;
+        }
+
+        .panel-header {
+            padding: 15px;
+        }
+
+        .filters .btn {
+            flex: 1 1 calc(50% - 8px);
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .filters .btn {
+            flex: 1 1 100%;
+        }
+
+        .summary-card {
+            padding: 16px;
+        }
+    }
 </style>
 
-<div class="container-fluid">
+<div class="page-wrapper">
+
+    <!-- La barra de navegación del administrador se carga desde _LayoutAdministrador.cshtml -->
 
     <div class="page-header">
-        <h2 class="page-title">
-            <i class="bi bi-receipt-cutoff me-2"></i>
-            Liquidaciones
-        </h2>
+        <div>
+            <h1 class="page-title">
+                <i class="bi bi-receipt-cutoff me-2"></i>
+                Liquidaciones
+            </h1>
 
-        <p class="text-muted mb-0">
-            Seguimiento de todas las rendiciones registradas y su estado actual.
-        </p>
+            <p class="page-description">
+                Consulte todas las rendiciones, filtre por estado y busque por empleado, correo, destino o número.
+            </p>
+        </div>
+
+        <a asp-controller="Principal"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Volver al panel
+        </a>
     </div>
 
     @if (TempData["mensaje"] != null)
@@ -130,7 +287,8 @@
 
             <button type="button"
                     class="btn-close"
-                    data-bs-dismiss="alert">
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
             </button>
         </div>
     }
@@ -138,11 +296,12 @@
     @if (TempData["error"] != null)
     {
         <div class="alert alert-danger alert-dismissible fade show">
-            @TempData["error"]
+            @Html.Raw(TempData["error"])
 
             <button type="button"
                     class="btn-close"
-                    data-bs-dismiss="alert">
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
             </button>
         </div>
     }
@@ -150,87 +309,131 @@
     <!-- RESUMEN -->
     <div class="row g-3 mb-4">
 
-        <div class="col-md-6 col-xl">
+        <div class="col-12 col-sm-6 col-xl">
             <div class="summary-card">
                 <div class="summary-label">Total</div>
                 <div class="summary-number">@totalLiquidaciones</div>
             </div>
         </div>
 
-        <div class="col-md-6 col-xl">
+        <div class="col-12 col-sm-6 col-xl">
             <div class="summary-card">
                 <div class="summary-label text-primary">En proceso</div>
                 <div class="summary-number">@enProceso</div>
             </div>
         </div>
 
-        <div class="col-md-6 col-xl">
+        <div class="col-12 col-sm-6 col-xl">
             <div class="summary-card">
                 <div class="summary-label text-warning">Pendientes</div>
                 <div class="summary-number">@pendientes</div>
             </div>
         </div>
 
-        <div class="col-md-6 col-xl">
+        <div class="col-12 col-sm-6 col-xl">
             <div class="summary-card">
                 <div class="summary-label text-success">Aprobadas</div>
                 <div class="summary-number">@aprobadas</div>
             </div>
         </div>
 
-        <div class="col-md-6 col-xl">
+        <div class="col-12 col-sm-6 col-xl">
             <div class="summary-card">
                 <div class="summary-label text-danger">Rechazadas</div>
                 <div class="summary-number">@rechazadas</div>
             </div>
         </div>
 
+        <div class="col-12 col-sm-6 col-xl">
+            <div class="summary-card">
+                <div class="summary-label" style="color:#7c3aed;">
+                    Reembolsos pendientes
+                </div>
+                <div class="summary-number">
+                    @reembolsosPendientes
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="card shadow-sm">
+    <div class="card panel-card">
 
-        <div class="card-header bg-white border-bottom p-3">
+        <div class="panel-header">
 
-            <div class="d-flex flex-column flex-lg-row justify-content-between gap-3">
+            <div class="d-flex flex-column gap-3">
 
-                <div>
-                    <h5 class="mb-1">Listado de liquidaciones</h5>
-                    <span class="text-muted">
-                        Use los filtros para visualizar un estado específico.
-                    </span>
+                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
+
+                    <div>
+                        <h5 class="mb-1">Listado de liquidaciones</h5>
+
+                        <span class="text-muted">
+                            Use la búsqueda y los filtros para encontrar una liquidación.
+                        </span>
+                    </div>
+
+                    <div class="search-box">
+                        <i class="bi bi-search"></i>
+
+                        <input type="search"
+                               id="buscarLiquidacion"
+                               class="form-control"
+                               placeholder="Buscar por empleado, correo, destino o número..."
+                               autocomplete="off" />
+                    </div>
+
                 </div>
 
-                <div class="d-flex flex-wrap gap-2">
+                <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
 
-                    <button type="button"
-                            class="btn btn-outline-secondary btn-sm filtro-btn active"
-                            data-estado="todos">
-                        Todos
-                    </button>
+                    <div class="filters">
 
-                    <button type="button"
-                            class="btn btn-outline-primary btn-sm filtro-btn"
-                            data-estado="1">
-                        En proceso
-                    </button>
+                        <button type="button"
+                                class="btn btn-outline-secondary btn-sm filtro-btn active"
+                                data-estado="todos">
+                            Todos
+                        </button>
 
-                    <button type="button"
-                            class="btn btn-outline-warning btn-sm filtro-btn"
-                            data-estado="2">
-                        Pendientes
-                    </button>
+                        <button type="button"
+                                class="btn btn-outline-primary btn-sm filtro-btn"
+                                data-estado="1">
+                            En proceso
+                        </button>
 
-                    <button type="button"
-                            class="btn btn-outline-success btn-sm filtro-btn"
-                            data-estado="3">
-                        Aprobadas
-                    </button>
+                        <button type="button"
+                                class="btn btn-outline-warning btn-sm filtro-btn"
+                                data-estado="2">
+                            Pendientes
+                        </button>
 
-                    <button type="button"
-                            class="btn btn-outline-danger btn-sm filtro-btn"
-                            data-estado="4">
-                        Rechazadas
-                    </button>
+                        <button type="button"
+                                class="btn btn-outline-success btn-sm filtro-btn"
+                                data-estado="3">
+                            Aprobadas
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-outline-danger btn-sm filtro-btn"
+                                data-estado="4">
+                            Rechazadas
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-outline-secondary btn-sm filtro-btn"
+                                data-estado="reembolso">
+                            Reembolso pendiente
+                        </button>
+
+                    </div>
+
+                    <div class="result-count">
+                        Mostrando
+                        <strong id="cantidadVisible">@totalLiquidaciones</strong>
+                        de
+                        <strong>@totalLiquidaciones</strong>
+                        liquidación(es)
+                    </div>
 
                 </div>
 
@@ -265,23 +468,60 @@
                         {
                             foreach (var item in Model)
                             {
-                                <tr data-estado="@item.IdEstadoRendicion">
+                                var nombreCompleto =
+                                $"{item.Usuario?.Nombres} {item.Usuario?.Apellidos}".Trim();
+
+                                var correo =
+                                item.Usuario?.Correo ?? string.Empty;
+
+                                var destino =
+                                item.Solicitud?.Destino ?? string.Empty;
+
+                                var reembolso =
+                                reembolsos.FirstOrDefault(r =>
+                                r.IdRendicion == item.IdRendicion);
+
+                                var tieneReembolsoPendiente =
+                                reembolso != null &&
+                                reembolso.IdEstadoReembolso == 2;
+
+                                var reembolsoPagado =
+                                reembolso != null &&
+                                reembolso.IdEstadoReembolso == 3;
+
+                                var estadoFiltro =
+                                tieneReembolsoPendiente
+                                ? "reembolso"
+                                : item.IdEstadoRendicion.ToString();
+
+                                var textoBusqueda =
+                                $"{item.IdRendicion} " +
+                                $"{item.IdSolicitud} " +
+                                $"{nombreCompleto} " +
+                                $"{correo} " +
+                                $"{destino} " +
+                                $"{(tieneReembolsoPendiente ? "reembolso pendiente" : "")}";
+
+                                <tr data-estado="@estadoFiltro"
+                                    data-busqueda="@textoBusqueda.ToLowerInvariant()">
 
                                     <td>
-                                        <strong>@item.IdRendicion</strong>
+                                        <strong>#@item.IdRendicion</strong>
                                     </td>
 
                                     <td>
                                         <strong>
-                                            @item.Usuario?.Nombres
-                                            @item.Usuario?.Apellidos
+                                            @(string.IsNullOrWhiteSpace(nombreCompleto)
+                                                ? "Sin empleado"
+                                                : nombreCompleto)
                                         </strong>
 
-                                        @if (!string.IsNullOrWhiteSpace(item.Usuario?.Correo))
+                                        @if (!string.IsNullOrWhiteSpace(correo))
                                         {
                                             <br />
+
                                             <small class="text-muted">
-                                                @item.Usuario.Correo
+                                                @correo
                                             </small>
                                         }
                                     </td>
@@ -291,12 +531,16 @@
                                     </td>
 
                                     <td>
-                                        @(item.Solicitud?.Destino ?? "-")
+                                        @(string.IsNullOrWhiteSpace(destino)
+                                            ? "-"
+                                            : destino)
                                     </td>
 
                                     <td>
                                         @item.FechaInicio.ToString("dd/MM/yyyy")
+
                                         <br />
+
                                         <small class="text-muted">
                                             hasta @item.FechaFin.ToString("dd/MM/yyyy")
                                         </small>
@@ -334,10 +578,27 @@
                                                 break;
 
                                             case 3:
-                                                <span class="estado estado-aprobada">
-                                                    <i class="bi bi-check-circle-fill"></i>
-                                                    Aprobada
-                                                </span>
+                                                @if (tieneReembolsoPendiente)
+                                                {
+                                                    <span class="estado estado-reembolso">
+                                                        <i class="bi bi-cash-coin"></i>
+                                                        Aprobada - reembolso pendiente
+                                                    </span>
+                                                }
+                                                else if (reembolsoPagado)
+                                                {
+                                                    <span class="estado estado-pagado">
+                                                        <i class="bi bi-check-circle-fill"></i>
+                                                        Aprobada - reembolso pagado
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="estado estado-aprobada">
+                                                        <i class="bi bi-check-circle-fill"></i>
+                                                        Aprobada
+                                                    </span>
+                                                }
                                                 break;
 
                                             case 4:
@@ -355,36 +616,59 @@
                                         }
                                     </td>
 
-                                    <td class="text-end">
+                                    <td>
+                                        <div class="acciones">
 
-                                        @if (item.IdEstadoRendicion == 1)
-                                        {
-                                            <span class="accion-proceso">
-                                                <i class="bi bi-hourglass-split"></i>
-                                                En elaboración
-                                            </span>
-                                        }
-                                        else if (item.IdEstadoRendicion == 2)
-                                        {
-                                            <a asp-controller="Rendicion"
-                                               asp-action="DetalleAdmin"
-                                               asp-route-id="@item.IdRendicion"
-                                               class="btn btn-warning btn-sm">
-                                                <i class="bi bi-search"></i>
-                                                Revisar
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <a asp-controller="Rendicion"
-                                               asp-action="DetalleAdmin"
-                                               asp-route-id="@item.IdRendicion"
-                                               class="btn btn-outline-primary btn-sm">
-                                                <i class="bi bi-eye"></i>
-                                                Ver detalle
-                                            </a>
-                                        }
+                                            @if (item.IdEstadoRendicion == 1)
+                                            {
+                                                <span class="accion-proceso">
+                                                    <i class="bi bi-hourglass-split"></i>
+                                                    En elaboración
+                                                </span>
+                                            }
+                                            else if (item.IdEstadoRendicion == 2)
+                                            {
+                                                <a asp-controller="Rendicion"
+                                                   asp-action="DetalleAdmin"
+                                                   asp-route-id="@item.IdRendicion"
+                                                   class="btn btn-warning btn-sm">
+                                                    <i class="bi bi-search"></i>
+                                                    Revisar
+                                                </a>
+                                            }
+                                            else if (tieneReembolsoPendiente)
+                                            {
+                                                <a asp-controller="Rendicion"
+                                                   asp-action="DetalleAdmin"
+                                                   asp-route-id="@item.IdRendicion"
+                                                   class="btn btn-primary btn-sm">
+                                                    <i class="bi bi-cash-coin"></i>
+                                                    Registrar reembolso
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-controller="Rendicion"
+                                                   asp-action="DetalleAdmin"
+                                                   asp-route-id="@item.IdRendicion"
+                                                   class="btn btn-outline-primary btn-sm">
+                                                    <i class="bi bi-eye"></i>
+                                                    Ver detalle
+                                                </a>
+                                            }
 
+                                            @if (!string.IsNullOrWhiteSpace(item.ArchivoPdf))
+                                            {
+                                                <a href="@item.ArchivoPdf"
+                                                   target="_blank"
+                                                   rel="noopener"
+                                                   class="btn btn-outline-danger btn-sm">
+                                                    <i class="bi bi-file-earmark-pdf"></i>
+                                                    PDF
+                                                </a>
+                                            }
+
+                                        </div>
                                     </td>
 
                                 </tr>
@@ -403,13 +687,14 @@
                             </tr>
                         }
 
-                        <tr id="filaSinFiltro"
+                        <tr id="filaSinResultados"
                             style="display:none;">
 
                             <td colspan="10"
                                 class="text-center text-muted py-5">
 
-                                No existen liquidaciones para el estado seleccionado.
+                                <i class="bi bi-search fs-2 d-block mb-2"></i>
+                                No se encontraron liquidaciones con los criterios seleccionados.
 
                             </td>
 
@@ -425,18 +710,90 @@
 
     </div>
 
+    <div class="mt-4">
+        <a asp-controller="Principal"
+           asp-action="Index"
+           class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Regresar
+        </a>
+    </div>
+
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-        const botones = document.querySelectorAll(".filtro-btn");
-        const filas = document.querySelectorAll(
-            "#tablaLiquidaciones tr[data-estado]"
-        );
+        const botones =
+            document.querySelectorAll(".filtro-btn");
 
-        const filaSinFiltro =
-            document.getElementById("filaSinFiltro");
+        const filas =
+            document.querySelectorAll(
+                "#tablaLiquidaciones tr[data-estado]"
+            );
+
+        const buscador =
+            document.getElementById("buscarLiquidacion");
+
+        const filaSinResultados =
+            document.getElementById("filaSinResultados");
+
+        const cantidadVisible =
+            document.getElementById("cantidadVisible");
+
+        let estadoSeleccionado = "todos";
+
+        function normalizarTexto(texto) {
+            return (texto || "")
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .trim();
+        }
+
+        function aplicarFiltros() {
+
+            const termino =
+                normalizarTexto(buscador?.value);
+
+            let visibles = 0;
+
+            filas.forEach(function (fila) {
+
+                const coincideEstado =
+                    estadoSeleccionado === "todos" ||
+                    fila.dataset.estado === estadoSeleccionado;
+
+                const textoFila =
+                    normalizarTexto(fila.dataset.busqueda);
+
+                const coincideBusqueda =
+                    !termino ||
+                    textoFila.includes(termino);
+
+                const mostrar =
+                    coincideEstado && coincideBusqueda;
+
+                fila.style.display =
+                    mostrar ? "" : "none";
+
+                if (mostrar) {
+                    visibles++;
+                }
+            });
+
+            if (filaSinResultados) {
+                filaSinResultados.style.display =
+                    filas.length > 0 && visibles === 0
+                        ? ""
+                        : "none";
+            }
+
+            if (cantidadVisible) {
+                cantidadVisible.textContent =
+                    visibles.toString();
+            }
+        }
 
         botones.forEach(function (boton) {
 
@@ -448,34 +805,18 @@
 
                 boton.classList.add("active");
 
-                const estadoSeleccionado =
-                    boton.dataset.estado;
+                estadoSeleccionado =
+                    boton.dataset.estado || "todos";
 
-                let visibles = 0;
-
-                filas.forEach(function (fila) {
-
-                    const mostrar =
-                        estadoSeleccionado === "todos" ||
-                        fila.dataset.estado === estadoSeleccionado;
-
-                    fila.style.display =
-                        mostrar ? "" : "none";
-
-                    if (mostrar) {
-                        visibles++;
-                    }
-
-                });
-
-                if (filaSinFiltro) {
-                    filaSinFiltro.style.display =
-                        visibles === 0 ? "" : "none";
-                }
-
+                aplicarFiltros();
             });
-
         });
 
+        buscador?.addEventListener(
+            "input",
+            aplicarFiltros
+        );
+
+        aplicarFiltros();
     });
 </script>

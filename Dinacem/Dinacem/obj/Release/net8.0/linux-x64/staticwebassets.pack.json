@@ -9,8 +9,28 @@
       "PackagePath": "staticwebassets\\Images\\logo-dinacen.png"
     },
     {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Admin.css",
+      "PackagePath": "staticwebassets\\css\\Admin.css"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Layout-admin.css",
+      "PackagePath": "staticwebassets\\css\\Layout-admin.css"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Layout-empleado.css",
+      "PackagePath": "staticwebassets\\css\\Layout-empleado.css"
+    },
+    {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Login.css",
       "PackagePath": "staticwebassets\\css\\Login.css"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\dashboard-admin.css",
+      "PackagePath": "staticwebassets\\css\\dashboard-admin.css"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\dashboard-empleado.css",
+      "PackagePath": "staticwebassets\\css\\dashboard-empleado.css"
     },
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\site.css",
@@ -255,6 +275,14 @@
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-2-angel-asd.pdf",
       "PackagePath": "staticwebassets\\liquidaciones\\Liquidacion-2-angel-asd.pdf"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-3-angel-asd.pdf",
+      "PackagePath": "staticwebassets\\liquidaciones\\Liquidacion-3-angel-asd.pdf"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\reembolsos\\72e6d48d-28bd-4383-9186-0a98c77f8c92.png",
+      "PackagePath": "staticwebassets\\reembolsos\\72e6d48d-28bd-4383-9186-0a98c77f8c92.png"
     },
     {
       "Id": "obj\\Release\\net8.0\\linux-x64\\staticwebassets\\msbuild.Dinacen.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",

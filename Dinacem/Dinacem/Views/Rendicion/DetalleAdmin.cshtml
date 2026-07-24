@@ -21,9 +21,18 @@
 
     var totalRendido =
         Model?.Sum(x => x.MontoTotal) ?? 0;
+
+    var reembolso =
+        ViewBag.Reembolso as Dinacem.Models.Reembolso;
 }
 
 <style>
+    .page-wrapper {
+        width: 100%;
+        max-width: 1650px;
+        margin: 0 auto;
+    }
+
     .page-header {
         background: #ffffff;
         border: 1px solid #e2e8f0;
@@ -140,14 +149,165 @@
         border-left: 5px solid #7c3aed;
     }
 
+    .summary-danger {
+        border-left: 5px solid #dc3545;
+    }
+
+    .reembolso-panel {
+        border-left: 5px solid #0dcaf0;
+    }
+
+    .reembolso-monto {
+        color: #b91c1c;
+        font-size: 24px;
+        font-weight: 800;
+    }
+
+    .reembolso-formulario {
+        margin-top: 24px;
+        padding-top: 24px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+        .reembolso-formulario h5 {
+            color: #0f172a;
+            font-weight: 800;
+        }
+
+        .reembolso-formulario .form-label {
+            color: #334155;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .reembolso-formulario .form-control {
+            min-height: 44px;
+        }
+
     .acciones {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
     }
+
+    .table-gastos {
+        min-width: 1180px;
+    }
+
+    .table-info {
+        min-width: 760px;
+    }
+
+    .table-devolucion {
+        min-width: 600px;
+    }
+
+    .modal-content {
+        border: 0;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .mobile-hint {
+        display: none;
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 400;
+        margin-top: 5px;
+    }
+
+    @@media (max-width: 991.98px) {
+        .page-header {
+            padding: 19px;
+        }
+
+            .page-header .d-flex.flex-wrap.gap-2 {
+                width: 100%;
+            }
+
+                .page-header .d-flex.flex-wrap.gap-2 .btn {
+                    flex: 1 1 180px;
+                }
+
+        .panel-body {
+            padding: 17px;
+        }
+
+        .acciones .btn,
+        .acciones form {
+            flex: 1 1 210px;
+        }
+
+            .acciones form .btn {
+                width: 100%;
+            }
+
+        .mobile-hint {
+            display: block;
+        }
+    }
+
+    @@media (max-width: 767.98px) {
+        .page-header {
+            border-radius: 13px;
+            padding: 17px;
+        }
+
+        .page-title {
+            font-size: 23px;
+        }
+
+        .panel {
+            border-radius: 13px;
+            margin-bottom: 18px;
+        }
+
+        .panel-header {
+            padding: 15px 16px;
+            font-size: 14px;
+        }
+
+        .panel-body {
+            padding: 14px;
+        }
+
+        .summary-card {
+            padding: 16px;
+        }
+
+        .summary-value {
+            font-size: 20px;
+        }
+
+        .acciones {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+            .acciones .btn,
+            .acciones form,
+            .acciones form .btn {
+                width: 100%;
+            }
+
+        .modal-dialog {
+            margin: 12px;
+        }
+
+        .modal-footer {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+            .modal-footer .btn {
+                width: 100%;
+            }
+    }
 </style>
 
-<div class="container-fluid">
+<div class="page-wrapper">
+
+    <!-- La barra de navegación del administrador se carga desde _LayoutAdministrador.cshtml -->
 
     <div class="page-header">
 
@@ -188,7 +348,7 @@
                    class="btn btn-outline-secondary">
 
                     <i class="bi bi-arrow-left"></i>
-                    Volver
+                    Volver a liquidaciones
 
                 </a>
 
@@ -243,13 +403,17 @@
             <div class="panel-header">
                 <i class="bi bi-info-circle me-2"></i>
                 INFORMACIÓN GENERAL
+
+                <div class="mobile-hint">
+                    Deslice horizontalmente para ver todos los datos.
+                </div>
             </div>
 
             <div class="panel-body">
 
                 <div class="table-responsive">
 
-                    <table class="table table-bordered mb-0">
+                    <table class="table table-bordered table-info mb-0">
 
                         <tbody>
 
@@ -367,13 +531,17 @@
             <div class="panel-header">
                 <i class="bi bi-cash-stack me-2"></i>
                 GASTOS REGISTRADOS
+
+                <div class="mobile-hint">
+                    Deslice horizontalmente para ver todas las columnas.
+                </div>
             </div>
 
             <div class="panel-body">
 
                 <div class="table-responsive">
 
-                    <table class="table table-bordered table-hover align-middle mb-0">
+                    <table class="table table-bordered table-hover align-middle table-gastos mb-0">
 
                         <thead class="table-dark">
 
@@ -585,6 +753,10 @@
                 <div class="panel-header">
                     <i class="bi bi-arrow-return-left me-2"></i>
                     DEVOLUCIÓN DE SALDO
+
+                    <div class="mobile-hint">
+                        Deslice horizontalmente para ver todos los datos.
+                    </div>
                 </div>
 
                 <div class="panel-body">
@@ -607,7 +779,7 @@
                     {
                         <div class="table-responsive">
 
-                            <table class="table table-bordered mb-0">
+                            <table class="table table-bordered table-devolucion mb-0">
 
                                 <tr>
                                     <th>Monto devuelto</th>
@@ -677,6 +849,283 @@
 
                 </div>
 
+            </div>
+        }
+
+        <!-- REEMBOLSO AL EMPLEADO -->
+        @if (rendicion.Saldo < 0)
+        {
+            <div class="panel reembolso-panel">
+
+                <div class="panel-header">
+                    <i class="bi bi-cash-coin me-2"></i>
+                    REEMBOLSO AL EMPLEADO
+
+                    <div class="mobile-hint">
+                        Deslice horizontalmente para ver todos los datos.
+                    </div>
+                </div>
+
+                <div class="panel-body">
+
+                    <div class="alert alert-info">
+                        El total rendido supera el monto aprobado en:
+                        <strong>S/ @Math.Abs(rendicion.Saldo).ToString("N2")</strong>
+                        <br />
+                        Este importe deberá ser reembolsado al empleado
+                        cuando la rendición sea aprobada.
+                    </div>
+
+                    @if (reembolso == null)
+                    {
+                        <div class="alert alert-warning mb-0">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            No se encontró el registro de reembolso asociado
+                            a esta rendición.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-md-6 col-xl-4">
+                                <div class="summary-card summary-danger">
+                                    <div class="summary-label">Monto por reembolsar</div>
+                                    <div class="reembolso-monto">
+                                        S/ @reembolso.Monto.ToString("N2")
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-xl-4">
+                                <div class="summary-card">
+                                    <div class="summary-label">Fecha de solicitud</div>
+                                    <div class="summary-value">
+                                        @reembolso.FechaSolicitud.ToString("dd/MM/yyyy")
+                                    </div>
+                                    <small class="text-muted">
+                                        @reembolso.FechaSolicitud.ToString("HH:mm")
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-xl-4">
+                                <div class="summary-card">
+                                    <div class="summary-label">Estado del reembolso</div>
+                                    <div class="mt-2">
+                                        @switch (reembolso.IdEstadoReembolso)
+                                        {
+                                            case 1:
+                                                <span class="badge bg-warning text-dark">Pendiente de aprobación</span>
+                                                break;
+                                            case 2:
+                                                <span class="badge bg-primary">Aprobado, pendiente de pago</span>
+                                                break;
+                                            case 3:
+                                                <span class="badge bg-success">Pagado</span>
+                                                break;
+                                            case 4:
+                                                <span class="badge bg-danger">Rechazado</span>
+                                                break;
+                                            default:
+                                                <span class="badge bg-secondary">Sin estado</span>
+                                                break;
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-devolucion mb-0">
+                                <tbody>
+                                    <tr>
+                                        <th style="width:35%">Fecha de aprobación</th>
+                                        <td>
+                                            @(reembolso.FechaAprobacion.HasValue
+                                                ? reembolso.FechaAprobacion.Value.ToString("dd/MM/yyyy HH:mm")
+                                                : "-")
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Fecha de pago</th>
+                                        <td>
+                                            @(reembolso.FechaPago.HasValue
+                                                ? reembolso.FechaPago.Value.ToString("dd/MM/yyyy")
+                                                : "-")
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Banco</th>
+                                        <td>@(string.IsNullOrWhiteSpace(reembolso.Banco) ? "-" : reembolso.Banco)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Número de operación</th>
+                                        <td>@(string.IsNullOrWhiteSpace(reembolso.NumeroOperacion) ? "-" : reembolso.NumeroOperacion)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Observaciones</th>
+                                        <td>@(string.IsNullOrWhiteSpace(reembolso.Observaciones) ? "-" : reembolso.Observaciones)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Comprobante</th>
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(reembolso.ComprobantePago))
+                                            {
+                                                <a href="@reembolso.ComprobantePago"
+                                                   target="_blank"
+                                                   rel="noopener"
+                                                   class="btn btn-outline-primary btn-sm">
+                                                    <i class="bi bi-paperclip"></i>
+                                                    Ver comprobante
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Sin comprobante</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        @if (reembolso.IdEstadoReembolso == 2)
+                        {
+                            <div class="reembolso-formulario">
+
+                                <div class="mb-3">
+
+                                    <h5 class="mb-1">
+                                        <i class="bi bi-bank me-1"></i>
+                                        Registrar pago del reembolso
+                                    </h5>
+
+                                    <p class="text-muted mb-0">
+                                        Complete la información de la transferencia realizada al empleado.
+                                    </p>
+
+                                </div>
+
+                                <form asp-controller="Reembolso"
+                                      asp-action="RegistrarPago"
+                                      method="post"
+                                      enctype="multipart/form-data">
+
+                                    <input type="hidden"
+                                           name="idReembolso"
+                                           value="@reembolso.IdReembolso" />
+
+                                    <div class="row g-3">
+
+                                        <div class="col-12 col-md-6">
+
+                                            <label for="bancoReembolso"
+                                                   class="form-label">
+                                                Banco
+                                            </label>
+
+                                            <input type="text"
+                                                   id="bancoReembolso"
+                                                   name="banco"
+                                                   class="form-control"
+                                                   maxlength="100"
+                                                   placeholder="Ej. BCP, BBVA, Interbank"
+                                                   required />
+
+                                        </div>
+
+                                        <div class="col-12 col-md-6">
+
+                                            <label for="numeroOperacionReembolso"
+                                                   class="form-label">
+                                                Número de operación
+                                            </label>
+
+                                            <input type="text"
+                                                   id="numeroOperacionReembolso"
+                                                   name="numeroOperacion"
+                                                   class="form-control"
+                                                   maxlength="100"
+                                                   placeholder="Ingrese el número de operación"
+                                                   required />
+
+                                        </div>
+
+                                        <div class="col-12 col-md-6">
+
+                                            <label for="fechaPagoReembolso"
+                                                   class="form-label">
+                                                Fecha de pago
+                                            </label>
+
+                                            <input type="date"
+                                                   id="fechaPagoReembolso"
+                                                   name="fechaPago"
+                                                   class="form-control"
+                                                   value="@DateTime.Now.ToString("yyyy-MM-dd")"
+                                                   max="@DateTime.Now.ToString("yyyy-MM-dd")"
+                                                   required />
+
+                                        </div>
+
+                                        <div class="col-12 col-md-6">
+
+                                            <label for="comprobanteReembolso"
+                                                   class="form-label">
+                                                Comprobante de pago
+                                            </label>
+
+                                            <input type="file"
+                                                   id="comprobanteReembolso"
+                                                   name="comprobante"
+                                                   class="form-control"
+                                                   accept=".pdf,.jpg,.jpeg,.png"
+                                                   required />
+
+                                            <small class="text-muted">
+                                                Formatos permitidos: PDF, JPG, JPEG o PNG. Máximo 5 MB.
+                                            </small>
+
+                                        </div>
+
+                                        <div class="col-12">
+
+                                            <label for="observacionesReembolso"
+                                                   class="form-label">
+                                                Observaciones
+                                            </label>
+
+                                            <textarea id="observacionesReembolso"
+                                                      name="observaciones"
+                                                      class="form-control"
+                                                      rows="3"
+                                                      maxlength="1000"
+                                                      placeholder="Ingrese alguna observación sobre el pago"></textarea>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="d-flex flex-column flex-sm-row
+                                                justify-content-end gap-2 mt-4">
+
+                                        <button type="submit"
+                                                class="btn btn-primary">
+
+                                            <i class="bi bi-cash-coin me-1"></i>
+                                            Registrar pago
+
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        }
+                    }
+
+                </div>
             </div>
         }
 
@@ -770,7 +1219,7 @@
                        class="btn btn-outline-secondary">
 
                         <i class="bi bi-arrow-left"></i>
-                        Volver
+                        Regresar a liquidaciones
 
                     </a>
 
@@ -778,6 +1227,17 @@
 
             </div>
 
+        </div>
+
+        <div class="mb-4">
+            <a asp-controller="Rendicion"
+               asp-action="IndexAdmin"
+               class="btn btn-secondary">
+
+                <i class="bi bi-arrow-left"></i>
+                Regresar
+
+            </a>
         </div>
 
         <!-- MODAL RECHAZAR -->

@@ -20,6 +20,7 @@ namespace Dinacem.Models
         public DbSet<Gasto> Gastos { get; set; }
 
         public DbSet<DevolucionSaldo> DevolucionesSaldo { get; set; }
+        public DbSet<Reembolso> Reembolsos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

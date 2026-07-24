@@ -5,18 +5,166 @@
     Layout = "~/Views/Shared/_LayoutEmpleado.cshtml";
 }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    .page-wrapper {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+    }
 
-<div class="container mt-5">
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 22px;
+        margin-bottom: 22px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+    }
 
-    <div class="card shadow">
-        <div class="card-header bg-success text-white">
-            <h3>Crear Rendición de Gastos</h3>
+    .page-title {
+        margin: 0 0 5px;
+        color: #0f172a;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .page-description {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .form-card {
+        overflow: hidden;
+        background: #ffffff;
+        border: 1px solid #dbe1ea;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .06);
+    }
+
+    .form-card-header {
+        padding: 18px 22px;
+        color: #ffffff;
+        background: #198754;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .form-card-body {
+        padding: 24px;
+    }
+
+    .info-card {
+        height: 100%;
+        padding: 16px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+    }
+
+    .info-label {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .info-value {
+        margin-top: 5px;
+        color: #0f172a;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    @@media (max-width: 767.98px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 18px;
+        }
+
+            .page-header .btn {
+                width: 100%;
+            }
+
+        .page-title {
+            font-size: 23px;
+        }
+
+        .form-card-body {
+            padding: 17px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+            .action-buttons .btn {
+                width: 100%;
+            }
+    }
+</style>
+
+<div class="page-wrapper">
+
+    <!-- La barra del empleado se carga desde _LayoutEmpleado.cshtml -->
+
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="bi bi-wallet2 me-2"></i>
+                Crear Rendición de Gastos
+            </h1>
+
+            <p class="page-description">
+                Confirme los datos de la solicitud antes de iniciar el registro de gastos.
+            </p>
         </div>
 
-        <div class="card-body">
+        <a asp-controller="Rendicion"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Volver a rendiciones
+        </a>
+    </div>
 
-            <form asp-action="Create" method="post">
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @Html.Raw(TempData["error"])
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    <div class="form-card">
+        <div class="form-card-header">
+            <i class="bi bi-check2-square me-2"></i>
+            Confirmación de la rendición
+        </div>
+
+        <div class="form-card-body">
+            <form asp-controller="Rendicion"
+                  asp-action="Create"
+                  method="post">
 
                 <input type="hidden" asp-for="IdSolicitud" />
                 <input type="hidden" asp-for="IdUsuario" />
@@ -27,36 +175,63 @@
                 <input type="hidden" asp-for="Saldo" />
                 <input type="hidden" asp-for="IdEstadoRendicion" />
 
-                <div class="mb-3">
-                    <label class="form-label">Solicitud N°</label>
-                    <input class="form-control" value="@Model.IdSolicitud" readonly />
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle-fill me-1"></i>
+                    Al confirmar, se creará la rendición y podrá comenzar a registrar sus gastos.
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Fecha Inicio</label>
-                    <input class="form-control" value="@Model.FechaInicio.ToString("dd/MM/yyyy")" readonly />
+                <div class="row g-3">
+                    <div class="col-12 col-sm-6">
+                        <div class="info-card">
+                            <div class="info-label">Solicitud</div>
+                            <div class="info-value">#@Model.IdSolicitud</div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6">
+                        <div class="info-card">
+                            <div class="info-label">Saldo inicial</div>
+                            <div class="info-value text-success">
+                                S/ @Model.Saldo.ToString("N2")
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6">
+                        <div class="info-card">
+                            <div class="info-label">Fecha de inicio</div>
+                            <div class="info-value">
+                                @Model.FechaInicio.ToString("dd/MM/yyyy")
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6">
+                        <div class="info-card">
+                            <div class="info-label">Fecha de fin</div>
+                            <div class="info-value">
+                                @Model.FechaFin.ToString("dd/MM/yyyy")
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Fecha Fin</label>
-                    <input class="form-control" value="@Model.FechaFin.ToString("dd/MM/yyyy")" readonly />
+                <div class="action-buttons">
+                    <a asp-controller="Rendicion"
+                       asp-action="Index"
+                       class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i>
+                        Cancelar y regresar
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-success"
+                            onclick="return confirm('¿Desea crear esta rendición?');">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Confirmar rendición
+                    </button>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Saldo Inicial</label>
-                    <input class="form-control" value="S/ @Model.Saldo.ToString("N2")" readonly />
-                </div>
-
-                <button type="submit" class="btn btn-success">
-                    Confirmar Rendición
-                </button>
-
-                <a asp-controller="Rendicion" asp-action="Index" class="btn btn-secondary">
-                    Cancelar
-                </a>
-
             </form>
-
         </div>
     </div>
 

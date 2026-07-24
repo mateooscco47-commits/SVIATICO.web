@@ -39,29 +39,35 @@ namespace Dinacem.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Usuario usuario)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Usuario modelo)
         {
-            var usuarioBD = _context.Usuarios
-                .FirstOrDefault(u => u.IdUsuario == usuario.IdUsuario);
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u =>
+                    u.IdUsuario == modelo.IdUsuario);
 
-            if (usuarioBD == null)
+            if (usuario == null)
             {
-                TempData["error"] = "Usuario no encontrado.";
+                TempData["error"] =
+                    "No se encontró el usuario seleccionado.";
+
                 return RedirectToAction(nameof(Index));
             }
 
-            usuarioBD.IdRol = usuario.IdRol;
-            usuarioBD.Nombres = usuario.Nombres;
-            usuarioBD.Apellidos = usuario.Apellidos;
-            usuarioBD.Correo = usuario.Correo;
-            usuarioBD.Celular = usuario.Celular;
-            usuarioBD.Vehiculo = usuario.Vehiculo;
-            usuarioBD.Contrasenia = usuario.Contrasenia;
+            usuario.UsuarioAcceso = modelo.UsuarioAcceso;
+            usuario.IdRol = modelo.IdRol;
+            usuario.Nombres = modelo.Nombres;
+            usuario.Apellidos = modelo.Apellidos;
+            usuario.Correo = modelo.Correo;
+            usuario.Celular = modelo.Celular;
+            usuario.Vehiculo = modelo.Vehiculo;
+            usuario.Contrasenia = modelo.Contrasenia;
 
-            _context.Usuarios.Update(usuarioBD);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            TempData["mensaje"] = "Usuario actualizado correctamente.";
+            TempData["mensaje"] =
+                "Usuario actualizado correctamente.";
+
             return RedirectToAction(nameof(Index));
         }
 

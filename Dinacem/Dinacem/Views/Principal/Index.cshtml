@@ -1,225 +1,800 @@
 ﻿@{
     ViewData["Title"] = "Panel Principal";
     Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+
+    /*
+        Estos valores pueden reemplazarse posteriormente
+        por datos enviados desde PrincipalController.
+    */
+    var totalUsuarios =
+        ViewBag.TotalUsuarios ?? 0;
+
+    var solicitudesPendientes =
+        ViewBag.SolicitudesPendientes ?? 0;
+
+    var rendicionesPendientes =
+        ViewBag.RendicionesPendientes ?? 0;
+
+    var solicitudesAprobadas =
+        ViewBag.SolicitudesAprobadas ?? 0;
 }
 
+<style>
+    .dashboard-container {
+        width: 100%;
+        max-width: 1500px;
+        margin: 0 auto;
+    }
 
-<link rel="stylesheet"
-      href="~/css/dashboard-admin.css">
+    .dashboard-header {
+        position: relative;
+        overflow: hidden;
+        background:
+            linear-gradient(
+                135deg,
+                #0d6efd 0%,
+                #2563eb 55%,
+                #1d4ed8 100%
+            );
+        color: #ffffff;
+        border-radius: 18px;
+        padding: 32px;
+        margin-bottom: 26px;
+        box-shadow: 0 12px 30px rgba(37, 99, 235, .18);
+    }
 
+    .dashboard-header::after {
+        content: "";
+        position: absolute;
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, .10);
+        right: -70px;
+        top: -100px;
+    }
+
+    .dashboard-header-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .dashboard-title {
+        margin: 0 0 8px;
+        font-size: 30px;
+        font-weight: 800;
+    }
+
+    .dashboard-subtitle {
+        margin: 0;
+        color: rgba(255, 255, 255, .88);
+        font-size: 15px;
+    }
+
+    .dashboard-date {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-top: 18px;
+        padding: 8px 13px;
+        background: rgba(255, 255, 255, .15);
+        border: 1px solid rgba(255, 255, 255, .22);
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .section-title {
+        color: #0f172a;
+        font-size: 20px;
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    .section-description {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .module-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        min-height: 220px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 24px;
+        color: inherit;
+        text-decoration: none;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+        transition:
+            transform .2s ease,
+            box-shadow .2s ease,
+            border-color .2s ease;
+    }
+
+    .module-card:hover {
+        color: inherit;
+        transform: translateY(-5px);
+        border-color: #93c5fd;
+        box-shadow: 0 14px 28px rgba(15, 23, 42, .11);
+    }
+
+    .module-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 58px;
+        height: 58px;
+        border-radius: 15px;
+        margin-bottom: 22px;
+        font-size: 27px;
+    }
+
+    .icon-users {
+        color: #1d4ed8;
+        background: #dbeafe;
+    }
+
+    .icon-requests {
+        color: #92400e;
+        background: #fef3c7;
+    }
+
+    .icon-expenses {
+        color: #166534;
+        background: #dcfce7;
+    }
+
+    .icon-reports {
+        color: #6b21a8;
+        background: #f3e8ff;
+    }
+
+    .module-card h4 {
+        color: #0f172a;
+        font-size: 19px;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .module-card p {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.55;
+        margin-bottom: 20px;
+    }
+
+    .module-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: auto;
+        color: #2563eb;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .summary-panel {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+    }
+
+    .summary-card {
+        position: relative;
+        height: 100%;
+        min-height: 135px;
+        padding: 20px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+    }
+
+    .summary-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 18px;
+        bottom: 18px;
+        width: 4px;
+        border-radius: 0 4px 4px 0;
+    }
+
+    .summary-users::before {
+        background: #2563eb;
+    }
+
+    .summary-requests::before {
+        background: #f59e0b;
+    }
+
+    .summary-expenses::before {
+        background: #10b981;
+    }
+
+    .summary-approved::before {
+        background: #7c3aed;
+    }
+
+    .summary-label {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+    }
+
+    .summary-number {
+        margin-top: 5px;
+        color: #0f172a;
+        font-size: 31px;
+        font-weight: 800;
+    }
+
+    .summary-footer {
+        margin-top: 6px;
+        color: #94a3b8;
+        font-size: 12px;
+    }
+
+    .quick-panel {
+        height: 100%;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+    }
+
+    .quick-action {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 14px;
+        color: #334155;
+        text-decoration: none;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        transition:
+            background .2s ease,
+            border-color .2s ease;
+    }
+
+    .quick-action:last-child {
+        margin-bottom: 0;
+    }
+
+    .quick-action:hover {
+        color: #1d4ed8;
+        background: #eff6ff;
+        border-color: #bfdbfe;
+    }
+
+    .quick-action-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 41px;
+        height: 41px;
+        color: #2563eb;
+        background: #dbeafe;
+        border-radius: 11px;
+        font-size: 19px;
+    }
+
+    .quick-action-title {
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .quick-action-description {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    @@media (max-width: 991.98px) {
+        .dashboard-header {
+            padding: 26px;
+        }
+
+        .dashboard-title {
+            font-size: 26px;
+        }
+
+        .module-card {
+            min-height: 200px;
+        }
+    }
+
+    @@media (max-width: 767.98px) {
+        .dashboard-container {
+            padding: 0;
+        }
+
+        .dashboard-header {
+            border-radius: 14px;
+            padding: 22px 18px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-title {
+            font-size: 23px;
+        }
+
+        .dashboard-subtitle {
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 18px;
+        }
+
+        .module-card {
+            min-height: auto;
+            padding: 20px;
+        }
+
+        .module-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 23px;
+            margin-bottom: 16px;
+        }
+
+        .module-card h4 {
+            font-size: 17px;
+        }
+
+        .summary-panel,
+        .quick-panel {
+            padding: 18px;
+        }
+
+        .summary-card {
+            min-height: 115px;
+            padding: 17px;
+        }
+
+        .summary-number {
+            font-size: 27px;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        .dashboard-header {
+            padding: 20px 16px;
+        }
+
+        .dashboard-date {
+            align-items: flex-start;
+            border-radius: 12px;
+        }
+
+        .module-card {
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .module-icon {
+            margin-bottom: 0;
+        }
+
+        .module-content {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .module-link {
+            width: 100%;
+            padding-top: 4px;
+        }
+    }
+</style>
 
 <div class="dashboard-container">
 
+    <!-- ENCABEZADO -->
 
+    <section class="dashboard-header">
 
-    <div class="titulo">
+        <div class="dashboard-header-content">
 
+            <h1 class="dashboard-title">
+                Bienvenido, Administrador
+            </h1>
 
-        <h2>
-            Bienvenido, Administrador
+            <p class="dashboard-subtitle">
+                Panel de control del Sistema de Viáticos DINACEM.
+                Gestione usuarios, solicitudes, rendiciones y reportes.
+            </p>
+
+            <div class="dashboard-date">
+
+                <i class="bi bi-calendar3"></i>
+
+                @DateTime.Now.ToString(
+                         "dddd, dd 'de' MMMM 'de' yyyy",
+                         new System.Globalization.CultureInfo("es-PE"))
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- MÓDULOS -->
+
+    <section>
+
+        <h2 class="section-title">
+            Módulos del sistema
         </h2>
 
-
-        <p>
-            Panel de control del Sistema de Viáticos DINACEN
+        <p class="section-description">
+            Seleccione una opción para comenzar.
         </p>
 
+        <div class="row g-4">
 
-    </div>
+            <div class="col-12 col-sm-6 col-xl-3">
 
+                <a asp-controller="Usuario"
+                   asp-action="Index"
+                   class="module-card">
 
+                    <div class="module-icon icon-users">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
 
+                    <div class="module-content">
 
+                        <h4>
+                            Usuarios
+                        </h4>
 
-    <div class="row g-4">
+                        <p>
+                            Registre, edite, active o desactive
+                            usuarios del sistema.
+                        </p>
 
+                    </div>
 
+                    <div class="module-link">
 
-        <div class="col-xl-3 col-md-6">
+                        <span>Administrar usuarios</span>
 
+                        <i class="bi bi-arrow-right"></i>
 
-            <a asp-controller="Usuario"
-               asp-action="Index"
-               class="card-dashboard">
+                    </div>
 
-
-                <i class="bi bi-people-fill"></i>
-
-
-                <h4>
-                    Usuarios
-                </h4>
-
-
-                <p>
-                    Administrar usuarios del sistema
-                </p>
-
-
-            </a>
-
-
-        </div>
-
-
-
-
-
-        <div class="col-xl-3 col-md-6">
-
-
-            <a asp-controller="Solicitud"
-               asp-action="Index"
-               class="card-dashboard">
-
-
-                <i class="bi bi-file-earmark-text-fill"></i>
-
-
-                <h4>
-                    Solicitudes
-                </h4>
-
-
-                <p>
-                    Gestionar solicitudes de viáticos
-                </p>
-
-
-            </a>
-
-
-        </div>
-
-
-
-
-
-        <div class="col-xl-3 col-md-6">
-
-
-            <a asp-controller="Rendicion"
-               asp-action="IndexAdmin"
-               class="card-dashboard">
-
-
-                <i class="bi bi-wallet-fill"></i>
-
-
-                <h4>
-                    Rendiciones
-                </h4>
-
-
-                <p>
-                    Revisar rendiciones
-                </p>
-
-
-            </a>
-
-
-        </div>
-
-
-
-
-
-        <div class="col-xl-3 col-md-6">
-
-
-            <a asp-controller="Reporte"
-               asp-action="Index"
-               class="card-dashboard">
-
-
-                <i class="bi bi-bar-chart-fill"></i>
-
-
-                <h4>
-                    Reportes
-                </h4>
-
-
-                <p>
-                    Generar reportes
-                </p>
-
-
-            </a>
-
-
-        </div>
-
-
-
-    </div>
-
-
-
-
-
-    <div class="panel-info mt-5">
-
-
-        <h4>
-            Resumen del sistema
-        </h4>
-
-
-        <div class="row text-center">
-
-
-
-            <div class="col-md-4">
-
-                <h2>
-                    25
-                </h2>
-
-                <p>
-                    Usuarios registrados
-                </p>
-
+                </a>
 
             </div>
 
+            <div class="col-12 col-sm-6 col-xl-3">
 
+                <a asp-controller="Solicitud"
+                   asp-action="Index"
+                   class="module-card">
 
-            <div class="col-md-4">
+                    <div class="module-icon icon-requests">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                    </div>
 
-                <h2>
-                    15
-                </h2>
+                    <div class="module-content">
 
-                <p>
-                    Solicitudes pendientes
-                </p>
+                        <h4>
+                            Solicitudes
+                        </h4>
 
+                        <p>
+                            Revise, apruebe o rechace las solicitudes
+                            de viáticos registradas.
+                        </p>
+
+                    </div>
+
+                    <div class="module-link">
+
+                        <span>Gestionar solicitudes</span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </div>
+
+                </a>
 
             </div>
 
+            <div class="col-12 col-sm-6 col-xl-3">
 
+                <a asp-controller="Rendicion"
+                   asp-action="IndexAdmin"
+                   class="module-card">
 
-            <div class="col-md-4">
+                    <div class="module-icon icon-expenses">
+                        <i class="bi bi-wallet-fill"></i>
+                    </div>
 
-                <h2>
-                    10
-                </h2>
+                    <div class="module-content">
 
-                <p>
-                    Rendiciones en revisión
-                </p>
+                        <h4>
+                            Rendiciones
+                        </h4>
 
+                        <p>
+                            Revise gastos, comprobantes, devoluciones
+                            y liquidaciones enviadas.
+                        </p>
+
+                    </div>
+
+                    <div class="module-link">
+
+                        <span>Revisar rendiciones</span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </div>
+
+                </a>
 
             </div>
 
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <a asp-controller="Reporte"
+                   asp-action="Index"
+                   class="module-card">
+
+                    <div class="module-icon icon-reports">
+                        <i class="bi bi-bar-chart-fill"></i>
+                    </div>
+
+                    <div class="module-content">
+
+                        <h4>
+                            Reportes
+                        </h4>
+
+                        <p>
+                            Consulte información consolidada y genere
+                            reportes del sistema.
+                        </p>
+
+                    </div>
+
+                    <div class="module-link">
+
+                        <span>Ver reportes</span>
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </div>
+
+                </a>
+
+            </div>
 
         </div>
 
+    </section>
 
-    </div>
+    <!-- RESUMEN -->
 
+    <section class="mt-5">
 
+        <div class="row g-4">
+
+            <div class="col-12 col-xl-8">
+
+                <div class="summary-panel">
+
+                    <h2 class="section-title">
+                        Resumen del sistema
+                    </h2>
+
+                    <p class="section-description">
+                        Indicadores principales del sistema de viáticos.
+                    </p>
+
+                    <div class="row g-3">
+
+                        <div class="col-12 col-sm-6">
+
+                            <div class="summary-card summary-users">
+
+                                <div class="summary-label">
+                                    Usuarios registrados
+                                </div>
+
+                                <div class="summary-number">
+                                    @totalUsuarios
+                                </div>
+
+                                <div class="summary-footer">
+                                    Usuarios existentes en el sistema
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-12 col-sm-6">
+
+                            <div class="summary-card summary-requests">
+
+                                <div class="summary-label">
+                                    Solicitudes pendientes
+                                </div>
+
+                                <div class="summary-number">
+                                    @solicitudesPendientes
+                                </div>
+
+                                <div class="summary-footer">
+                                    Solicitudes por revisar
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-12 col-sm-6">
+
+                            <div class="summary-card summary-expenses">
+
+                                <div class="summary-label">
+                                    Rendiciones en revisión
+                                </div>
+
+                                <div class="summary-number">
+                                    @rendicionesPendientes
+                                </div>
+
+                                <div class="summary-footer">
+                                    Rendiciones enviadas por empleados
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-12 col-sm-6">
+
+                            <div class="summary-card summary-approved">
+
+                                <div class="summary-label">
+                                    Solicitudes aprobadas
+                                </div>
+
+                                <div class="summary-number">
+                                    @solicitudesAprobadas
+                                </div>
+
+                                <div class="summary-footer">
+                                    Solicitudes aprobadas registradas
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ACCESOS RÁPIDOS -->
+
+            <div class="col-12 col-xl-4">
+
+                <div class="quick-panel">
+
+                    <h2 class="section-title">
+                        Accesos rápidos
+                    </h2>
+
+                    <p class="section-description">
+                        Acciones frecuentes del administrador.
+                    </p>
+
+                    <a asp-controller="Usuario"
+                       asp-action="Index"
+                       class="quick-action">
+
+                        <div class="quick-action-icon">
+                            <i class="bi bi-person-plus-fill"></i>
+                        </div>
+
+                        <div>
+                            <div class="quick-action-title">
+                                Gestionar usuarios
+                            </div>
+
+                            <div class="quick-action-description">
+                                Registrar o actualizar usuarios
+                            </div>
+                        </div>
+
+                    </a>
+
+                    <a asp-controller="Solicitud"
+                       asp-action="Index"
+                       class="quick-action">
+
+                        <div class="quick-action-icon">
+                            <i class="bi bi-file-earmark-check"></i>
+                        </div>
+
+                        <div>
+                            <div class="quick-action-title">
+                                Revisar solicitudes
+                            </div>
+
+                            <div class="quick-action-description">
+                                Aprobar o rechazar solicitudes
+                            </div>
+                        </div>
+
+                    </a>
+
+                    <a asp-controller="Rendicion"
+                       asp-action="IndexAdmin"
+                       class="quick-action">
+
+                        <div class="quick-action-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+
+                        <div>
+                            <div class="quick-action-title">
+                                Revisar rendiciones
+                            </div>
+
+                            <div class="quick-action-description">
+                                Consultar liquidaciones pendientes
+                            </div>
+                        </div>
+
+                    </a>
+
+                    <a asp-controller="Reporte"
+                       asp-action="Index"
+                       class="quick-action">
+
+                        <div class="quick-action-icon">
+                            <i class="bi bi-file-earmark-bar-graph"></i>
+                        </div>
+
+                        <div>
+                            <div class="quick-action-title">
+                                Generar reportes
+                            </div>
+
+                            <div class="quick-action-description">
+                                Consultar información consolidada
+                            </div>
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
 
 </div>

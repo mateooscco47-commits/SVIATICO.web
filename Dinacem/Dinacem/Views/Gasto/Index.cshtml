@@ -17,6 +17,38 @@
 }
 
 <style>
+    .page-wrapper {
+        width: 100%;
+        max-width: 1650px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 22px;
+        margin-bottom: 22px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+    }
+
+    .page-title {
+        margin: 0 0 5px;
+        color: #0f172a;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .page-description {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+
     .panel {
         background: white;
         border: 1px solid #dbe1ea;
@@ -118,21 +150,158 @@
             font-size: 18px;
         }
 
+    .table-gastos {
+        min-width: 1050px;
+    }
+
+    .table-info {
+        min-width: 520px;
+    }
+
+    .mobile-hint {
+        display: none;
+        margin-top: 5px;
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 400;
+    }
+
+    .action-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    @@media (max-width: 1199.98px) {
+        .page-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+            .page-header .btn {
+                width: 100%;
+            }
+    }
+
+    @@media (max-width: 991.98px) {
+        .panel-body {
+            padding: 17px;
+        }
+
+        .mobile-hint {
+            display: block;
+        }
+
+        .btn-dark-custom {
+            width: 100%;
+        }
+    }
+
+    @@media (max-width: 767.98px) {
+        .page-header {
+            padding: 18px;
+            border-radius: 13px;
+        }
+
+        .page-title {
+            font-size: 23px;
+        }
+
+        .panel {
+            border-radius: 13px;
+        }
+
+        .panel-header {
+            padding: 15px 16px;
+        }
+
+        .panel-body {
+            padding: 14px;
+        }
+
+        .summary-value {
+            font-size: 19px;
+        }
+
+        .tax-summary {
+            padding: 12px;
+        }
+
+        .input-group > .btn {
+            width: 100%;
+            margin-top: 8px;
+            border-radius: 8px !important;
+        }
+
+        .input-group > .form-control {
+            width: 100%;
+            border-radius: 8px !important;
+        }
+
+        .action-row {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+            .action-row .btn,
+            .action-row form,
+            .action-row form .btn {
+                width: 100%;
+            }
+    }
 </style>
 
-<div class="container-fluid p-4">
+<div class="page-wrapper">
+
+    <!-- La barra de navegación del empleado se carga desde _LayoutEmpleado.cshtml -->
+
+    <div class="page-header">
+
+        <div>
+            <h1 class="page-title">
+                <i class="bi bi-receipt-cutoff me-2"></i>
+                Rendición de Gastos
+            </h1>
+
+            <p class="page-description">
+                Registre sus gastos, consulte el saldo y envíe la rendición para revisión.
+            </p>
+        </div>
+
+        <a asp-controller="Rendicion"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Volver a rendiciones
+
+        </a>
+
+    </div>
 
     @if (TempData["mensaje"] != null)
     {
-        <div class="alert alert-success">
+        <div class="alert alert-success alert-dismissible fade show">
             @TempData["mensaje"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
         </div>
     }
 
     @if (TempData["error"] != null)
     {
-        <div class="alert alert-danger">
+        <div class="alert alert-danger alert-dismissible fade show">
             @Html.Raw(TempData["error"])
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
         </div>
     }
 
@@ -146,108 +315,116 @@
                     <div class="text-muted fw-normal mt-1">
                         Listado de gastos de la rendición actual
                     </div>
+
+                    <div class="mobile-hint">
+                        Deslice horizontalmente para ver todas las columnas.
+                    </div>
                 </div>
 
                 <div class="panel-body p-0">
 
-                    <table class="table align-middle mb-0">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Tipo</th>
-                                <th>Comprobante</th>
-                                <th>Detalle</th>
-                                <th>Base</th>
-                                <th>IGV</th>
-                                <th>Total</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
+                    <div class="table-responsive">
 
-                        <tbody>
-                            @if (Model != null && Model.Any())
-                            {
-                                foreach (var item in Model)
+                        <table class="table table-gastos align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Tipo</th>
+                                    <th>Comprobante</th>
+                                    <th>Detalle</th>
+                                    <th>Base</th>
+                                    <th>IGV</th>
+                                    <th>Total</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+
+                                            <td>
+                                                <span class="badge-gasto">
+                                                    @item.TipoGasto?.Nombre
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                @item.TipoComprobante?.Nombre
+                                                <br />
+                                                <span class="text-muted">
+                                                    @item.Serie - @item.Numero
+                                                </span>
+                                            </td>
+
+                                            <td>@item.Detalle</td>
+
+                                            <td>
+                                                S/ @item.ValorVenta.ToString("N2")
+
+                                                @if (item.ExoneracionIGV)
+                                                {
+                                                    <br />
+                                                    <span class="badge bg-info text-dark">
+                                                        Exonerado
+                                                    </span>
+                                                }
+                                            </td>
+
+                                            <td>S/ @item.IGV.ToString("N2")</td>
+
+                                            <td>
+                                                <strong>
+                                                    S/ @item.MontoTotal.ToString("N2")
+                                                </strong>
+                                            </td>
+
+                                            <td>
+                                                @if (rendicion?.IdEstadoRendicion == 1)
+                                                {
+                                                    <form asp-controller="Gasto"
+                                                          asp-action="Delete"
+                                                          method="post"
+                                                          class="d-inline">
+
+                                                        <input type="hidden"
+                                                               name="id"
+                                                               value="@item.IdGasto" />
+
+                                                        <input type="hidden"
+                                                               name="idRendicion"
+                                                               value="@rendicion.IdRendicion" />
+
+                                                        <button class="btn btn-outline-danger btn-sm"
+                                                                onclick="return confirm('¿Eliminar este gasto?');">
+                                                            Eliminar
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">Bloqueado</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
                                 {
                                     <tr>
-                                        <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
-
-                                        <td>
-                                            <span class="badge-gasto">
-                                                @item.TipoGasto?.Nombre
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            @item.TipoComprobante?.Nombre
-                                            <br />
-                                            <span class="text-muted">
-                                                @item.Serie - @item.Numero
-                                            </span>
-                                        </td>
-
-                                        <td>@item.Detalle</td>
-
-                                        <td>
-                                            S/ @item.ValorVenta.ToString("N2")
-
-                                            @if (item.ExoneracionIGV)
-                                            {
-                                                <br />
-                                                <span class="badge bg-info text-dark">
-                                                    Exonerado
-                                                </span>
-                                            }
-                                        </td>
-
-                                        <td>S/ @item.IGV.ToString("N2")</td>
-
-                                        <td>
-                                            <strong>
-                                                S/ @item.MontoTotal.ToString("N2")
-                                            </strong>
-                                        </td>
-
-                                        <td>
-                                            @if (rendicion?.IdEstadoRendicion == 1)
-                                            {
-                                                <form asp-controller="Gasto"
-                                                      asp-action="Delete"
-                                                      method="post"
-                                                      class="d-inline">
-
-                                                    <input type="hidden"
-                                                           name="id"
-                                                           value="@item.IdGasto" />
-
-                                                    <input type="hidden"
-                                                           name="idRendicion"
-                                                           value="@rendicion.IdRendicion" />
-
-                                                    <button class="btn btn-outline-danger btn-sm"
-                                                            onclick="return confirm('¿Eliminar este gasto?');">
-                                                        Eliminar
-                                                    </button>
-                                                </form>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted">Bloqueado</span>
-                                            }
+                                        <td colspan="8" class="text-center text-muted py-4">
+                                            Aún no hay gastos registrados.
                                         </td>
                                     </tr>
                                 }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">
-                                        Aún no hay gastos registrados.
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+
+                    </div>
 
                     <div class="p-3 border-top">
                         Mostrando @(Model?.Count ?? 0) gasto(s)
@@ -534,22 +711,38 @@
                                            required />
                                 </div>
 
-                                <div class="col-md-12">
-                                    <label class="form-label">Domicilio Fiscal</label>
+                                <div class="col-12">
+
+                                    <label for="domicilioFiscal"
+                                           class="form-label">
+
+                                        Domicilio fiscal
+
+                                    </label>
 
                                     <input type="text"
                                            id="domicilioFiscal"
                                            name="DomicilioFiscal"
                                            class="form-control"
-                                           readonly
+                                           maxlength="300"
+                                           placeholder="Ingrese o corrija el domicilio fiscal"
                                            required />
+
+                                    <small class="text-muted">
+
+                                        El sistema intentará completar el domicilio al consultar el RUC.
+                                        Puede editarlo si está vacío, incompleto o es incorrecto.
+
+                                    </small>
                                 </div>
 
                             </div>
 
                             <div class="mt-4">
-                                <button class="btn btn-dark-custom px-4">
-                                    + Agregar Gasto
+                                <button type="submit"
+                                        class="btn btn-dark-custom px-4">
+                                    <i class="bi bi-plus-circle me-1"></i>
+                                    Agregar gasto
                                 </button>
                             </div>
 
@@ -574,53 +767,59 @@
                 </div>
 
                 <div class="panel-body">
-                    <table class="table table-bordered mb-0">
-                        <tr>
-                            <th>Solicitud</th>
-                            <td>@rendicion?.IdSolicitud</td>
-                        </tr>
-                        <tr>
-                            <th>Destino</th>
-                            <td>@rendicion?.Solicitud?.Destino</td>
-                        </tr>
-                        <tr>
-                            <th>Motivo</th>
-                            <td>@rendicion?.Solicitud?.Motivo</td>
-                        </tr>
-                        <tr>
-                            <th>Fecha Inicio</th>
-                            <td>@rendicion?.FechaInicio.ToString("dd/MM/yyyy")</td>
-                        </tr>
-                        <tr>
-                            <th>Fecha Fin</th>
-                            <td>@rendicion?.FechaFin.ToString("dd/MM/yyyy")</td>
-                        </tr>
-                        <tr>
-                            <th>Monto Aprobado</th>
-                            <td>S/ @montoAprobado.ToString("N2")</td>
-                        </tr>
-                        <tr>
-                            <th>Estado</th>
-                            <td>
-                                @if (rendicion?.IdEstadoRendicion == 1)
-                                {
-                                    <span class="badge bg-primary">En proceso</span>
-                                }
-                                else if (rendicion?.IdEstadoRendicion == 2)
-                                {
-                                    <span class="badge bg-warning text-dark">Pendiente de revisión</span>
-                                }
-                                else if (rendicion?.IdEstadoRendicion == 3)
-                                {
-                                    <span class="badge bg-success">Aprobada</span>
-                                }
-                                else if (rendicion?.IdEstadoRendicion == 4)
-                                {
-                                    <span class="badge bg-danger">Rechazada</span>
-                                }
-                            </td>
-                        </tr>
-                    </table>
+
+                    <div class="table-responsive">
+
+                        <table class="table table-bordered table-info mb-0">
+                            <tr>
+                                <th>Solicitud</th>
+                                <td>@rendicion?.IdSolicitud</td>
+                            </tr>
+                            <tr>
+                                <th>Destino</th>
+                                <td>@rendicion?.Solicitud?.Destino</td>
+                            </tr>
+                            <tr>
+                                <th>Motivo</th>
+                                <td>@rendicion?.Solicitud?.Motivo</td>
+                            </tr>
+                            <tr>
+                                <th>Fecha Inicio</th>
+                                <td>@rendicion?.FechaInicio.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                            <tr>
+                                <th>Fecha Fin</th>
+                                <td>@rendicion?.FechaFin.ToString("dd/MM/yyyy")</td>
+                            </tr>
+                            <tr>
+                                <th>Monto Aprobado</th>
+                                <td>S/ @montoAprobado.ToString("N2")</td>
+                            </tr>
+                            <tr>
+                                <th>Estado</th>
+                                <td>
+                                    @if (rendicion?.IdEstadoRendicion == 1)
+                                    {
+                                        <span class="badge bg-primary">En proceso</span>
+                                    }
+                                    else if (rendicion?.IdEstadoRendicion == 2)
+                                    {
+                                        <span class="badge bg-warning text-dark">Pendiente de revisión</span>
+                                    }
+                                    else if (rendicion?.IdEstadoRendicion == 3)
+                                    {
+                                        <span class="badge bg-success">Aprobada</span>
+                                    }
+                                    else if (rendicion?.IdEstadoRendicion == 4)
+                                    {
+                                        <span class="badge bg-danger">Rechazada</span>
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
                 </div>
             </div>
 
@@ -753,50 +952,54 @@
                                 Devolución registrada correctamente.
                             </div>
 
-                            <table class="table table-bordered">
-                                <tr>
-                                    <th>Monto</th>
-                                    <td>S/ @devolucion.Monto.ToString("N2")</td>
-                                </tr>
-                                <tr>
-                                    <th>Fecha</th>
-                                    <td>@devolucion.Fecha.ToString("dd/MM/yyyy")</td>
-                                </tr>
-                                <tr>
-                                    <th>Banco</th>
-                                    <td>@devolucion.Banco</td>
-                                </tr>
-                                <tr>
-                                    <th>N.º operación</th>
-                                    <td>@devolucion.NumeroOperacion</td>
-                                </tr>
-                                <tr>
-                                    <th>Voucher</th>
-                                    <td>
-                                        @if (!string.IsNullOrWhiteSpace(devolucion.Voucher))
-                                        {
-                                            <a href="@devolucion.Voucher"
-                                               target="_blank"
-                                               rel="noopener"
-                                               class="btn btn-outline-primary btn-sm">
-                                                Ver voucher
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted">Sin archivo</span>
-                                        }
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Observaciones</th>
-                                    <td>
-                                        @(string.IsNullOrWhiteSpace(devolucion.Observaciones)
-                                            ? "-"
-                                            : devolucion.Observaciones)
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered table-info">
+                                    <tr>
+                                        <th>Monto</th>
+                                        <td>S/ @devolucion.Monto.ToString("N2")</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <td>@devolucion.Fecha.ToString("dd/MM/yyyy")</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Banco</th>
+                                        <td>@devolucion.Banco</td>
+                                    </tr>
+                                    <tr>
+                                        <th>N.º operación</th>
+                                        <td>@devolucion.NumeroOperacion</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Voucher</th>
+                                        <td>
+                                            @if (!string.IsNullOrWhiteSpace(devolucion.Voucher))
+                                            {
+                                                <a href="@devolucion.Voucher"
+                                                   target="_blank"
+                                                   rel="noopener"
+                                                   class="btn btn-outline-primary btn-sm">
+                                                    Ver voucher
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Sin archivo</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Observaciones</th>
+                                        <td>
+                                            @(string.IsNullOrWhiteSpace(devolucion.Observaciones)
+                                                ? "-"
+                                                : devolucion.Observaciones)
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </div>
 
                             <form asp-controller="DevolucionSaldo"
                                   asp-action="Eliminar"
@@ -846,7 +1049,8 @@
                                     class="btn btn-success w-100"
                                     disabled="@(!puedeEnviar)"
                                     onclick="return confirm('¿Desea enviar esta rendición para revisión?');">
-                                Finalizar y Enviar a Revisión
+                                <i class="bi bi-send-check-fill me-1"></i>
+                                Finalizar y enviar a revisión
                             </button>
                         </form>
 
@@ -882,7 +1086,20 @@
         </div>
 
     </div>
+
+    <div class="mt-4">
+        <a asp-controller="Rendicion"
+           asp-action="Index"
+           class="btn btn-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Regresar
+
+        </a>
+    </div>
+
 </div>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const rucInput = document.getElementById("ruc");

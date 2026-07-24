@@ -1,10 +1,51 @@
-﻿body {
-    margin: 0;
-    padding: 0;
-    background: #F3F6F9;
-    font-family: 'Segoe UI',sans-serif;
+﻿/*=========================================
+    COLORES DINACEN
+=========================================*/
+:root {
+    --azul: #0C4A8A;
+    --verde: #6AA84F;
+    --gris: #D8DEE8;
+    --fondo: #F3F6F9;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    overflow-x: hidden;
+    position: relative;
+    background: #F3F6F9;
+}
+
+/*=========================================
+    FONDO DIFUMINADO DINACEN
+=========================================*/
+
+body {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background: #F7FAFC;
+}
+
+    body::before {
+        content: "";
+        position: fixed;
+        inset: -20%;
+        z-index: -1;
+        background: radial-gradient(circle at 15% 20%, rgba(0, 77, 153, 0.35) 0%, rgba(0, 77, 153, 0.18) 20%, transparent 45%), radial-gradient(circle at 85% 15%, rgba(107, 170, 73, 0.30) 0%, rgba(107, 170, 73, 0.15) 20%, transparent 42%), radial-gradient(circle at 20% 85%, rgba(0, 96, 170, 0.25) 0%, transparent 38%), radial-gradient(circle at 82% 82%, rgba(128, 190, 82, 0.25) 0%, transparent 40%), radial-gradient(circle at 50% 50%, rgba(255,255,255,0.9) 0%, transparent 65%);
+        filter: blur(90px);
+        transform: scale(1.15);
+    }
+
+/*=========================================
+    CONTENEDOR
+=========================================*/
 
 .login-container {
     min-height: 100vh;
@@ -14,60 +55,69 @@
     padding: 20px;
 }
 
-
 .login-card {
-    width: 420px;
-    background: white;
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 20px;
     padding: 45px;
-    box-shadow: 0 15px 45px rgba(0,0,0,.10);
+    border: 1px solid rgba(255,255,255,0.5);
+    box-shadow: 0 15px 45px rgba(0,0,0,.10), 0 0 25px rgba(12,74,138,.08);
     animation: fade .6s;
 }
 
+/*=========================================
+    LOGO
+=========================================*/
 
 .logo {
     width: 130px;
+    max-width: 100%;
     margin-bottom: 20px;
 }
 
-
 .titulo {
-    color: #0C4A8A;
+    color: var(--azul);
     font-weight: 700;
     font-size: 26px;
     letter-spacing: 1px;
 }
 
+/*=========================================
+    FORMULARIOS
+=========================================*/
 
 .form-label {
     color: #345;
     font-weight: 600;
 }
 
-
 .form-control {
     height: 48px;
     border-radius: 10px;
-    border: 1px solid #D8DEE8;
+    border: 1px solid var(--gris);
 }
 
-
     .form-control:focus {
-        border-color: #0C4A8A;
+        border-color: var(--azul);
         box-shadow: 0 0 0 .15rem rgba(12,74,138,.20);
     }
-
 
 .input-group-text {
     background: white;
     border-radius: 10px 0 0 10px;
-    color: #0C4A8A;
-    border: 1px solid #D8DEE8;
+    color: var(--azul);
+    border: 1px solid var(--gris);
 }
 
+/*=========================================
+    BOTÓN
+=========================================*/
 
 .btn-login {
-    background: #0C4A8A;
+    background: var(--azul);
     border: none;
     height: 48px;
     border-radius: 10px;
@@ -77,12 +127,14 @@
     transition: .3s;
 }
 
-
     .btn-login:hover {
-        background: #6AA84F;
+        background: var(--verde);
         transform: translateY(-2px);
     }
 
+/*=========================================
+    ANIMACIÓN
+=========================================*/
 
 @keyframes fade {
 
@@ -93,47 +145,46 @@
 
     to {
         opacity: 1;
-        transform translateY(0);
+        transform: translateY(0);
     }
 }
-@media(max-width:576px) {
+
+/*=========================================
+    CELULARES
+    320px - 576px
+=========================================*/
+
+@media (max-width: 576px) {
 
     .login-container {
         padding: 15px;
     }
 
-
     .login-card {
-        width: 100%;
+        max-width: 100%;
         padding: 30px 20px;
         border-radius: 15px;
     }
 
-
     .logo {
-        width: 100px;
+        width: 95px;
     }
-
 
     .titulo {
-        font-size: 22px;
+        font-size: 20px;
     }
 
-
-    .form-control {
-        height: 45px;
-    }
-
-
+    .form-control,
     .btn-login {
         height: 45px;
-        font-size: 16px;
+        font-size: 15px;
     }
 }
 
-/* ============================= */
-/* RESPONSIVE PARA TABLETS */
-/* ============================= */
+/*=========================================
+    TABLETS
+    577px - 991px
+=========================================*/
 
 @media (min-width:577px) and (max-width:991px) {
 
@@ -141,31 +192,53 @@
         padding: 30px;
     }
 
-
     .login-card {
-        width: 450px;
+        max-width: 460px;
         padding: 40px;
     }
 
-
     .logo {
-        width: 120px;
+        width: 115px;
     }
 
+    .titulo {
+        font-size: 24px;
+    }
+}
+
+/*=========================================
+    LAPTOPS
+    992px - 1366px
+=========================================*/
+
+@media (min-width:992px) and (max-width:1366px) {
+
+    .login-card {
+        max-width: 430px;
+    }
 
     .titulo {
         font-size: 25px;
     }
+}
 
+/*=========================================
+    COMPUTADORAS GRANDES
+    Más de 1366px
+=========================================*/
 
-    .form-control {
-        height: 50px;
-        font-size: 16px;
+@media (min-width:1367px) {
+
+    .login-card {
+        max-width: 450px;
+        padding: 50px;
     }
 
+    .titulo {
+        font-size: 28px;
+    }
 
-    .btn-login {
-        height: 50px;
-        font-size: 17px;
+    .logo {
+        width: 140px;
     }
 }

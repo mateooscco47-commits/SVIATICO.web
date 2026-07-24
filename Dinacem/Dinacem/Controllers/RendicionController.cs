@@ -204,14 +204,41 @@ namespace Dinacem.Controllers
         [HttpGet]
         public async Task<IActionResult> IndexAdmin()
         {
-            var rendiciones = await _context.Rendiciones
+            var idRol =
+                HttpContext.Session.GetInt32("IdRol");
+
+            if (idRol != 1)
+            {
+                TempData["error"] =
+                    "No tiene permiso para acceder a esta sección.";
+
+                return RedirectToAction(
+                    "Index",
+                    "Home");
+            }
+
+            var lista = await _context.Rendiciones
                 .Include(r => r.Usuario)
                 .Include(r => r.Solicitud)
                 .Include(r => r.EstadoRendicion)
                 .OrderByDescending(r => r.Fecha)
                 .ToListAsync();
 
-            return View(rendiciones);
+            var idsRendiciones =
+                lista.Select(r => r.IdRendicion)
+                    .ToList();
+
+            var reembolsos =
+                await _context.Reembolsos
+                    .Where(r =>
+                        idsRendiciones.Contains(
+                            r.IdRendicion))
+                    .ToListAsync();
+
+            ViewBag.Reembolsos =
+                reembolsos;
+
+            return View(lista);
         }
 
         // ================================
@@ -246,23 +273,55 @@ namespace Dinacem.Controllers
         // ADMIN: APROBAR RENDICIÓN
         // ================================
         [HttpPost]
-        public IActionResult Aprobar(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Aprobar(int id)
         {
-            var rendicion = _context.Rendiciones
-                .FirstOrDefault(r => r.IdRendicion == id);
+            var rendicion = await _context.Rendiciones
+                .FirstOrDefaultAsync(r =>
+                    r.IdRendicion == id);
 
             if (rendicion == null)
             {
-                TempData["error"] = "Rendición no encontrada.";
-                return RedirectToAction(nameof(IndexAdmin));
+                TempData["error"] =
+                    "No se encontró la rendición.";
+
+                return RedirectToAction(
+                    nameof(IndexAdmin));
             }
 
-            rendicion.IdEstadoRendicion = 3; // Aprobada
+            if (rendicion.IdEstadoRendicion != 2)
+            {
+                TempData["error"] =
+                    "Solo se puede aprobar una rendición pendiente de revisión.";
 
-            _context.SaveChanges();
+                return RedirectToAction(
+                    nameof(DetalleAdmin),
+                    new { id });
+            }
 
-            TempData["mensaje"] = "Rendición aprobada correctamente.";
-            return RedirectToAction(nameof(IndexAdmin));
+            // 3 = Rendición aprobada
+            rendicion.IdEstadoRendicion = 3;
+
+            var reembolso = await _context.Reembolsos
+                .FirstOrDefaultAsync(r =>
+                    r.IdRendicion == id);
+
+            if (reembolso != null)
+            {
+                // 2 = Aprobado, pendiente de pago
+                reembolso.IdEstadoReembolso = 2;
+                reembolso.FechaAprobacion = DateTime.Now;
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["mensaje"] =
+                reembolso == null
+                    ? "La rendición fue aprobada correctamente."
+                    : "La rendición fue aprobada y el reembolso quedó pendiente de pago.";
+
+            return RedirectToAction(
+                nameof(IndexAdmin));
         }
 
         // ================================
@@ -361,7 +420,8 @@ namespace Dinacem.Controllers
                 TempData["error"] =
                     "No se encontró la rendición.";
 
-                return RedirectToAction(nameof(IndexAdmin));
+                return RedirectToAction(
+                    nameof(IndexAdmin));
             }
 
             var gastos = await _context.Gastos
@@ -376,8 +436,18 @@ namespace Dinacem.Controllers
                 .FirstOrDefaultAsync(d =>
                     d.IdRendicion == id);
 
-            ViewBag.Rendicion = rendicion;
-            ViewBag.DevolucionSaldo = devolucion;
+            var reembolso = await _context.Reembolsos
+                .FirstOrDefaultAsync(r =>
+                    r.IdRendicion == id);
+
+            ViewBag.Rendicion =
+                rendicion;
+
+            ViewBag.DevolucionSaldo =
+                devolucion;
+
+            ViewBag.Reembolso =
+                reembolso;
 
             return View(gastos);
         }

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "SYlVN4tp87pOK0qQXHf8g5iE5Xu8n8wEWHMH2NONQ6g=",
+  "Hash": "qHc3mOFhxs2zTlPJcbIhKP4dcoXkl1KyW8t3Kb6UXhI=",
   "Source": "Dinacen",
   "BasePath": "_content/Dinacen",
   "Mode": "Default",
@@ -59,6 +59,111 @@
       "OriginalItemSpec": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\obj\\Release\\net8.0\\linux-x64\\scopedcss\\projectbundle\\Dinacen.bundle.scp.css"
     },
     {
+      "Identity": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Admin.css",
+      "SourceId": "Dinacen",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\",
+      "BasePath": "_content/Dinacen",
+      "RelativePath": "css/Admin#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "jrcui7qzmm",
+      "Integrity": "4TV6i86H8kqsCUVtFRcI6P8jtxcNNKNSn2cvH/mQIwY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\Admin.css"
+    },
+    {
+      "Identity": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\dashboard-admin.css",
+      "SourceId": "Dinacen",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\",
+      "BasePath": "_content/Dinacen",
+      "RelativePath": "css/dashboard-admin#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "tkwsib4j33",
+      "Integrity": "Ew4vgw6PdJTSemJIYmpqmNrmS6ADU3sPYwlsDCQItrE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\dashboard-admin.css"
+    },
+    {
+      "Identity": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\dashboard-empleado.css",
+      "SourceId": "Dinacen",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\",
+      "BasePath": "_content/Dinacen",
+      "RelativePath": "css/dashboard-empleado#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "8sls6etv3p",
+      "Integrity": "uFQHCs9qlAPepB07ICLj9Hp1bJiShomWzCfgvRGM0XY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\dashboard-empleado.css"
+    },
+    {
+      "Identity": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Layout-admin.css",
+      "SourceId": "Dinacen",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\",
+      "BasePath": "_content/Dinacen",
+      "RelativePath": "css/Layout-admin#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "yob2fdnsft",
+      "Integrity": "TiUnQc4UEGTkFaSboMr5C9GYZQGT7380VPVRzZkhlJg=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\Layout-admin.css"
+    },
+    {
+      "Identity": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Layout-empleado.css",
+      "SourceId": "Dinacen",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\",
+      "BasePath": "_content/Dinacen",
+      "RelativePath": "css/Layout-empleado#[.{fingerprint}]?.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "u2tvjdw7ji",
+      "Integrity": "9qsIFnG8525U+Ldkg4xqCtOXs0ylD1bOtrcLiZKMIJ0=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\Layout-empleado.css"
+    },
+    {
       "Identity": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Login.css",
       "SourceId": "Dinacen",
       "SourceType": "Discovered",
@@ -73,8 +178,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "14391vs5fq",
-      "Integrity": "/wry1pN7jjqf22+w6Ey3jW0tbewK8hlvAEBv6EKpWUk=",
+      "Fingerprint": "l9nyntkbkk",
+      "Integrity": "t0onHLFv1VTlcZKMz+YfExrY1HihDKlInJo1exOvEk4=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\Login.css"
@@ -1380,12 +1485,54 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\liquidaciones\\Liquidacion-2-angel-asd.pdf"
+    },
+    {
+      "Identity": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-3-angel-asd.pdf",
+      "SourceId": "Dinacen",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\",
+      "BasePath": "_content/Dinacen",
+      "RelativePath": "liquidaciones/Liquidacion-3-angel-asd#[.{fingerprint}]?.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "fc63zy9c0w",
+      "Integrity": "IWKwN88CxRaQOOMBnPrEajLcRgY/NZc1sbVqmInTGQc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\liquidaciones\\Liquidacion-3-angel-asd.pdf"
+    },
+    {
+      "Identity": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\reembolsos\\72e6d48d-28bd-4383-9186-0a98c77f8c92.png",
+      "SourceId": "Dinacen",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\",
+      "BasePath": "_content/Dinacen",
+      "RelativePath": "reembolsos/72e6d48d-28bd-4383-9186-0a98c77f8c92#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "iqzk2pw1vy",
+      "Integrity": "6nfznEUscSRmkf+UjbQmZ+FDULygac1tgfFWt9BBBhA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\reembolsos\\72e6d48d-28bd-4383-9186-0a98c77f8c92.png"
     }
   ],
   "Endpoints": [
     {
-      "Route": "css/Login.14391vs5fq.css",
-      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Login.css",
+      "Route": "css/Admin.css",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Admin.css",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -1394,7 +1541,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2508"
+          "Value": "2738"
         },
         {
           "Name": "Content-Type",
@@ -1402,11 +1549,48 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"/wry1pN7jjqf22+w6Ey3jW0tbewK8hlvAEBv6EKpWUk=\""
+          "Value": "\"4TV6i86H8kqsCUVtFRcI6P8jtxcNNKNSn2cvH/mQIwY=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 10 Jul 2026 07:52:34 GMT"
+          "Value": "Fri, 24 Jul 2026 06:19:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-4TV6i86H8kqsCUVtFRcI6P8jtxcNNKNSn2cvH/mQIwY="
+        }
+      ]
+    },
+    {
+      "Route": "css/Admin.jrcui7qzmm.css",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Admin.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2738"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4TV6i86H8kqsCUVtFRcI6P8jtxcNNKNSn2cvH/mQIwY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 06:19:28 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1416,15 +1600,343 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "14391vs5fq"
+          "Value": "jrcui7qzmm"
         },
         {
           "Name": "label",
-          "Value": "css/Login.css"
+          "Value": "css/Admin.css"
         },
         {
           "Name": "integrity",
-          "Value": "sha256-/wry1pN7jjqf22+w6Ey3jW0tbewK8hlvAEBv6EKpWUk="
+          "Value": "sha256-4TV6i86H8kqsCUVtFRcI6P8jtxcNNKNSn2cvH/mQIwY="
+        }
+      ]
+    },
+    {
+      "Route": "css/dashboard-admin.css",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\dashboard-admin.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1175"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Ew4vgw6PdJTSemJIYmpqmNrmS6ADU3sPYwlsDCQItrE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 06:19:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ew4vgw6PdJTSemJIYmpqmNrmS6ADU3sPYwlsDCQItrE="
+        }
+      ]
+    },
+    {
+      "Route": "css/dashboard-admin.tkwsib4j33.css",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\dashboard-admin.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1175"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Ew4vgw6PdJTSemJIYmpqmNrmS6ADU3sPYwlsDCQItrE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 06:19:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "tkwsib4j33"
+        },
+        {
+          "Name": "label",
+          "Value": "css/dashboard-admin.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Ew4vgw6PdJTSemJIYmpqmNrmS6ADU3sPYwlsDCQItrE="
+        }
+      ]
+    },
+    {
+      "Route": "css/dashboard-empleado.8sls6etv3p.css",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\dashboard-empleado.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2461"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uFQHCs9qlAPepB07ICLj9Hp1bJiShomWzCfgvRGM0XY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 06:19:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8sls6etv3p"
+        },
+        {
+          "Name": "label",
+          "Value": "css/dashboard-empleado.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-uFQHCs9qlAPepB07ICLj9Hp1bJiShomWzCfgvRGM0XY="
+        }
+      ]
+    },
+    {
+      "Route": "css/dashboard-empleado.css",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\dashboard-empleado.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2461"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uFQHCs9qlAPepB07ICLj9Hp1bJiShomWzCfgvRGM0XY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 06:19:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-uFQHCs9qlAPepB07ICLj9Hp1bJiShomWzCfgvRGM0XY="
+        }
+      ]
+    },
+    {
+      "Route": "css/Layout-admin.css",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Layout-admin.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2348"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"TiUnQc4UEGTkFaSboMr5C9GYZQGT7380VPVRzZkhlJg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 06:19:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-TiUnQc4UEGTkFaSboMr5C9GYZQGT7380VPVRzZkhlJg="
+        }
+      ]
+    },
+    {
+      "Route": "css/Layout-admin.yob2fdnsft.css",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Layout-admin.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2348"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"TiUnQc4UEGTkFaSboMr5C9GYZQGT7380VPVRzZkhlJg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 06:19:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "yob2fdnsft"
+        },
+        {
+          "Name": "label",
+          "Value": "css/Layout-admin.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-TiUnQc4UEGTkFaSboMr5C9GYZQGT7380VPVRzZkhlJg="
+        }
+      ]
+    },
+    {
+      "Route": "css/Layout-empleado.css",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Layout-empleado.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1554"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9qsIFnG8525U+Ldkg4xqCtOXs0ylD1bOtrcLiZKMIJ0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 06:19:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-9qsIFnG8525U+Ldkg4xqCtOXs0ylD1bOtrcLiZKMIJ0="
+        }
+      ]
+    },
+    {
+      "Route": "css/Layout-empleado.u2tvjdw7ji.css",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Layout-empleado.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1554"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9qsIFnG8525U+Ldkg4xqCtOXs0ylD1bOtrcLiZKMIJ0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 06:19:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "u2tvjdw7ji"
+        },
+        {
+          "Name": "label",
+          "Value": "css/Layout-empleado.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-9qsIFnG8525U+Ldkg4xqCtOXs0ylD1bOtrcLiZKMIJ0="
         }
       ]
     },
@@ -1439,7 +1951,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2508"
+          "Value": "5065"
         },
         {
           "Name": "Content-Type",
@@ -1447,11 +1959,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"/wry1pN7jjqf22+w6Ey3jW0tbewK8hlvAEBv6EKpWUk=\""
+          "Value": "\"t0onHLFv1VTlcZKMz+YfExrY1HihDKlInJo1exOvEk4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 10 Jul 2026 07:52:34 GMT"
+          "Value": "Fri, 24 Jul 2026 06:19:28 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1461,7 +1973,52 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-/wry1pN7jjqf22+w6Ey3jW0tbewK8hlvAEBv6EKpWUk="
+          "Value": "sha256-t0onHLFv1VTlcZKMz+YfExrY1HihDKlInJo1exOvEk4="
+        }
+      ]
+    },
+    {
+      "Route": "css/Login.l9nyntkbkk.css",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Login.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5065"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"t0onHLFv1VTlcZKMz+YfExrY1HihDKlInJo1exOvEk4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 06:19:28 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "l9nyntkbkk"
+        },
+        {
+          "Name": "label",
+          "Value": "css/Login.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-t0onHLFv1VTlcZKMz+YfExrY1HihDKlInJo1exOvEk4="
         }
       ]
     },
@@ -6710,6 +7267,170 @@
         {
           "Name": "integrity",
           "Value": "sha256-pJKIDeVqYUJfsIws060XWZH6e/Ch3FlgARCgBfy6DJ4="
+        }
+      ]
+    },
+    {
+      "Route": "liquidaciones/Liquidacion-3-angel-asd.fc63zy9c0w.pdf",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-3-angel-asd.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "34176"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"IWKwN88CxRaQOOMBnPrEajLcRgY/NZc1sbVqmInTGQc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 10:00:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "fc63zy9c0w"
+        },
+        {
+          "Name": "label",
+          "Value": "liquidaciones/Liquidacion-3-angel-asd.pdf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-IWKwN88CxRaQOOMBnPrEajLcRgY/NZc1sbVqmInTGQc="
+        }
+      ]
+    },
+    {
+      "Route": "liquidaciones/Liquidacion-3-angel-asd.pdf",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-3-angel-asd.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "34176"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"IWKwN88CxRaQOOMBnPrEajLcRgY/NZc1sbVqmInTGQc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 10:00:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-IWKwN88CxRaQOOMBnPrEajLcRgY/NZc1sbVqmInTGQc="
+        }
+      ]
+    },
+    {
+      "Route": "reembolsos/72e6d48d-28bd-4383-9186-0a98c77f8c92.iqzk2pw1vy.png",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\reembolsos\\72e6d48d-28bd-4383-9186-0a98c77f8c92.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "35120"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6nfznEUscSRmkf+UjbQmZ+FDULygac1tgfFWt9BBBhA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 10:15:57 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "iqzk2pw1vy"
+        },
+        {
+          "Name": "label",
+          "Value": "reembolsos/72e6d48d-28bd-4383-9186-0a98c77f8c92.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-6nfznEUscSRmkf+UjbQmZ+FDULygac1tgfFWt9BBBhA="
+        }
+      ]
+    },
+    {
+      "Route": "reembolsos/72e6d48d-28bd-4383-9186-0a98c77f8c92.png",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\reembolsos\\72e6d48d-28bd-4383-9186-0a98c77f8c92.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "35120"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6nfznEUscSRmkf+UjbQmZ+FDULygac1tgfFWt9BBBhA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 24 Jul 2026 10:15:57 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-6nfznEUscSRmkf+UjbQmZ+FDULygac1tgfFWt9BBBhA="
         }
       ]
     }

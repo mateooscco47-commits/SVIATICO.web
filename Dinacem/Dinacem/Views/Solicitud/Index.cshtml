@@ -3,211 +3,696 @@
 @{
     ViewData["Title"] = "Solicitudes de Viáticos";
     Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+
+    var totalSolicitudes = Model?.Count ?? 0;
+    var pendientes = Model?.Count(x => x.IdEstadoSolicitud == 1) ?? 0;
+    var aprobadas = Model?.Count(x => x.IdEstadoSolicitud == 2) ?? 0;
+    var rechazadas = Model?.Count(x => x.IdEstadoSolicitud == 3) ?? 0;
 }
 
 <style>
-    .card {
+    .page-wrapper {
+        width: 100%;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 22px;
+        margin-bottom: 24px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+    }
+
+    .page-title {
+        margin: 0 0 5px;
+        color: #0f172a;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .page-description {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .summary-card {
+        height: 100%;
+        padding: 17px 18px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 13px;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, .04);
+    }
+
+    .summary-label {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .summary-value {
+        margin-top: 4px;
+        color: #0f172a;
+        font-size: 26px;
+        font-weight: 800;
+    }
+
+    .panel {
+        background: #ffffff;
+        border: 1px solid #dbe1ea;
         border-radius: 15px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+        overflow: hidden;
     }
 
-    .badge-pendiente {
-        background: #ffc107;
-        color: black;
+    .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 18px 20px;
+        border-bottom: 1px solid #e2e8f0;
     }
 
-    .badge-aprobado {
-        background: #198754;
-        color: white;
+    .panel-title {
+        margin: 0;
+        color: #0f172a;
+        font-size: 18px;
+        font-weight: 800;
     }
 
-    .badge-rechazado {
+    .panel-body {
+        padding: 20px;
+    }
+
+    .table {
+        min-width: 1100px;
+        font-size: 14px;
+    }
+
+        .table thead th {
+            color: #64748b;
+            background: #f8fafc;
+            font-size: 12px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+    .estado {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 7px 11px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .estado-pendiente {
+        color: #92400e;
+        background: #fef3c7;
+        border: 1px solid #fcd34d;
+    }
+
+    .estado-aprobado {
+        color: #166534;
+        background: #dcfce7;
+        border: 1px solid #86efac;
+    }
+
+    .estado-rechazado {
+        color: #991b1b;
+        background: #fee2e2;
+        border: 1px solid #fca5a5;
+    }
+
+    .acciones {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .modal-content {
+        border: 0;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .modal-header-rechazo {
+        color: #ffffff;
         background: #dc3545;
-        color: white;
+    }
+
+    .observacion-rechazo {
+        max-width: 260px;
+        color: #991b1b;
+        font-size: 13px;
+    }
+
+    @@media (max-width: 991.98px) {
+        .page-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+            .page-header .btn {
+                width: 100%;
+            }
+
+        .panel-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+
+    @@media (max-width: 767.98px) {
+        .page-header {
+            padding: 18px;
+            border-radius: 13px;
+        }
+
+        .page-title {
+            font-size: 23px;
+        }
+
+        .summary-value {
+            font-size: 23px;
+        }
+
+        .panel-body {
+            padding: 14px;
+        }
+
+        .modal-dialog {
+            margin: 12px;
+        }
+
+        .modal-footer {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+            .modal-footer .btn {
+                width: 100%;
+            }
     }
 </style>
 
-<div class="container mt-4">
+<div class="page-wrapper">
 
-    <div class="card shadow">
+    <!--
+        La barra de navegación del administrador
+        se carga desde _LayoutAdministrador.cshtml
+    -->
 
-        <div class="card-header bg-primary text-white">
-            <h3>Solicitudes de Viáticos</h3>
+    <div class="page-header">
+
+        <div>
+            <h1 class="page-title">
+                <i class="bi bi-file-earmark-text-fill me-2"></i>
+                Solicitudes de Viáticos
+            </h1>
+
+            <p class="page-description">
+                Revise, apruebe o rechace las solicitudes registradas por los empleados.
+            </p>
         </div>
 
-        <div class="card-body">
+        <a asp-controller="Principal"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
 
-            @if (TempData["mensaje"] != null)
-            {
-                <div class="alert alert-success">
-                    @TempData["mensaje"]
+            <i class="bi bi-arrow-left"></i>
+            Volver al panel
+
+        </a>
+
+    </div>
+
+    @if (TempData["mensaje"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+
+            @TempData["mensaje"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+
+        </div>
+    }
+
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+
+            @Html.Raw(TempData["error"])
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+
+        </div>
+    }
+
+    <!-- RESUMEN -->
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="summary-card">
+
+                <div class="summary-label">
+                    Total de solicitudes
                 </div>
-            }
 
-            @if (TempData["error"] != null)
-            {
-                <div class="alert alert-danger">
-                    @TempData["error"]
+                <div class="summary-value">
+                    @totalSolicitudes
                 </div>
-            }
 
-            <table class="table table-hover table-bordered align-middle">
+            </div>
+        </div>
 
-                <thead class="table-dark">
-                    <tr>
-                        <th>#</th>
-                        <th>Empleado</th>
-                        <th>Fecha</th>
-                        <th>Inicio</th>
-                        <th>Fin</th>
-                        <th>Destino</th>
-                        <th>Monto</th>
-                        <th>Estado</th>
-                        <th width="220">Acciones</th>
-                    </tr>
-                </thead>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="summary-card">
 
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var item in Model)
+                <div class="summary-label text-warning">
+                    Pendientes
+                </div>
+
+                <div class="summary-value">
+                    @pendientes
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="summary-card">
+
+                <div class="summary-label text-success">
+                    Aprobadas
+                </div>
+
+                <div class="summary-value">
+                    @aprobadas
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="summary-card">
+
+                <div class="summary-label text-danger">
+                    Rechazadas
+                </div>
+
+                <div class="summary-value">
+                    @rechazadas
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LISTADO -->
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2 class="panel-title">
+                    Listado de solicitudes
+                </h2>
+
+                <small class="text-muted">
+                    En celular, deslice horizontalmente para ver todas las columnas.
+                </small>
+            </div>
+
+            <span class="badge bg-primary">
+                @totalSolicitudes registro(s)
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover table-bordered align-middle mb-0">
+
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Empleado</th>
+                            <th>Fecha</th>
+                            <th>Periodo</th>
+                            <th>Destino</th>
+                            <th>Motivo</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                            <th>Observación</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            #@item.IdSolicitud
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            @item.Usuario?.Nombres
+                                            @item.Usuario?.Apellidos
+                                        </strong>
+
+                                        @if (!string.IsNullOrWhiteSpace(item.Usuario?.Correo))
+                                        {
+                                            <br />
+
+                                            <small class="text-muted">
+                                                @item.Usuario.Correo
+                                            </small>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @item.Fecha.ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        @item.FechaInicio.ToString("dd/MM/yyyy")
+
+                                        <br />
+
+                                        <small class="text-muted">
+                                            hasta @item.FechaFin.ToString("dd/MM/yyyy")
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        @item.Destino
+                                    </td>
+
+                                    <td>
+                                        @item.Motivo
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            S/ @item.Monto.ToString("N2")
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @if (item.IdEstadoSolicitud == 1)
+                                        {
+                                            <span class="estado estado-pendiente">
+
+                                                <i class="bi bi-clock-fill"></i>
+                                                Pendiente
+
+                                            </span>
+                                        }
+                                        else if (item.IdEstadoSolicitud == 2)
+                                        {
+                                            <span class="estado estado-aprobado">
+
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                Aprobada
+
+                                            </span>
+                                        }
+                                        else if (item.IdEstadoSolicitud == 3)
+                                        {
+                                            <span class="estado estado-rechazado">
+
+                                                <i class="bi bi-x-circle-fill"></i>
+                                                Rechazada
+
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="estado bg-secondary text-white">
+                                                Sin estado
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (item.IdEstadoSolicitud == 3 &&
+                                       !string.IsNullOrWhiteSpace(item.Observaciones))
+                                        {
+                                            <div class="observacion-rechazo">
+                                                @item.Observaciones
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">
+                                                —
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <div class="acciones">
+
+                                            @if (item.IdEstadoSolicitud == 1)
+                                            {
+                                                <form asp-controller="Solicitud"
+                                                      asp-action="Aprobar"
+                                                      method="post"
+                                                      class="d-inline">
+
+                                                    <input type="hidden"
+                                                           name="id"
+                                                           value="@item.IdSolicitud" />
+
+                                                    <button type="submit"
+                                                            class="btn btn-success btn-sm"
+                                                            onclick="return confirm('¿Desea aprobar esta solicitud?');">
+
+                                                        <i class="bi bi-check-circle"></i>
+                                                        Aprobar
+
+                                                    </button>
+
+                                                </form>
+
+                                                <button type="button"
+                                                        class="btn btn-danger btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#modalRechazar-@item.IdSolicitud">
+
+                                                    <i class="bi bi-x-circle"></i>
+                                                    Rechazar
+
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted small">
+
+                                                    <i class="bi bi-lock-fill"></i>
+                                                    Procesada
+
+                                                </span>
+                                            }
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td>@item.IdSolicitud</td>
 
-                                <td>
-                                    @item.Usuario?.Nombres @item.Usuario?.Apellidos
+                                <td colspan="10"
+                                    class="text-center text-muted py-5">
+
+                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                    No hay solicitudes registradas.
+
                                 </td>
 
-                                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
-
-                                <td>@item.FechaInicio.ToString("dd/MM/yyyy")</td>
-
-                                <td>@item.FechaFin.ToString("dd/MM/yyyy")</td>
-
-                                <td>@item.Destino</td>
-
-                                <td>S/. @item.Monto.ToString("N2")</td>
-
-                                <td>
-                                    @if (item.IdEstadoSolicitud == 1)
-                                    {
-                                        <span class="badge badge-pendiente">Pendiente</span>
-                                    }
-                                    else if (item.IdEstadoSolicitud == 2)
-                                    {
-                                        <span class="badge badge-aprobado">Aprobado</span>
-                                    }
-                                    else if (item.IdEstadoSolicitud == 3)
-                                    {
-                                        <span class="badge badge-rechazado">Rechazado</span>
-                                    }
-                                </td>
-
-                                <td>
-                                    @if (item.IdEstadoSolicitud == 1)
-                                    {
-                                        <form asp-controller="Solicitud"
-                                              asp-action="Aprobar"
-                                              method="post"
-                                              class="d-inline">
-
-                                            <input type="hidden"
-                                                   name="id"
-                                                   value="@item.IdSolicitud" />
-
-                                            <button class="btn btn-success btn-sm">
-                                                Aprobar
-                                            </button>
-
-                                        </form>
-
-                                        <button class="btn btn-danger btn-sm"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#modalRechazar@(item.IdSolicitud)">
-                                            Rechazar
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">Finalizado</span>
-                                    }
-                                </td>
                             </tr>
-
-                            <div class="modal fade"
-                                 id="modalRechazar@(item.IdSolicitud)"
-                                 tabindex="-1">
-
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-
-                                        <form asp-controller="Solicitud"
-                                              asp-action="Rechazar"
-                                              method="post">
-
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Rechazar Solicitud</h5>
-
-                                                <button type="button"
-                                                        class="btn-close"
-                                                        data-bs-dismiss="modal">
-                                                </button>
-                                            </div>
-
-                                            <div class="modal-body">
-
-                                                <input type="hidden"
-                                                       name="id"
-                                                       value="@item.IdSolicitud" />
-
-                                                <label class="form-label">
-                                                    Observaciones
-                                                </label>
-
-                                                <textarea name="observaciones"
-                                                          class="form-control"
-                                                          rows="4"
-                                                          required></textarea>
-
-                                            </div>
-
-                                            <div class="modal-footer">
-
-                                                <button type="button"
-                                                        class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">
-                                                    Cancelar
-                                                </button>
-
-                                                <button class="btn btn-danger">
-                                                    Rechazar
-                                                </button>
-
-                                            </div>
-
-                                        </form>
-
-                                    </div>
-                                </div>
-                            </div>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="9" class="text-center text-muted">
-                                No hay solicitudes registradas.
-                            </td>
-                        </tr>
-                    }
-                </tbody>
 
-            </table>
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
     </div>
 
+    <!-- BOTÓN INFERIOR -->
+
+    <div class="mt-4">
+
+        <a asp-controller="Principal"
+           asp-action="Index"
+           class="btn btn-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Regresar
+
+        </a>
+
+    </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!--
+    Los modales se colocan fuera de la tabla para mantener
+    una estructura HTML válida y evitar problemas en celulares.
+-->
+@if (Model != null && Model.Any())
+{
+    foreach (var item in Model.Where(x => x.IdEstadoSolicitud == 1))
+    {
+        <div class="modal fade"
+             id="modalRechazar-@item.IdSolicitud"
+             tabindex="-1"
+             aria-labelledby="tituloRechazar-@item.IdSolicitud"
+             aria-hidden="true">
+
+            <div class="modal-dialog modal-dialog-centered">
+
+                <div class="modal-content">
+
+                    <form asp-controller="Solicitud"
+                          asp-action="Rechazar"
+                          method="post">
+
+                        <div class="modal-header modal-header-rechazo">
+
+                            <h5 class="modal-title"
+                                id="tituloRechazar-@item.IdSolicitud">
+
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                Rechazar solicitud #@item.IdSolicitud
+
+                            </h5>
+
+                            <button type="button"
+                                    class="btn-close btn-close-white"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Cerrar">
+                            </button>
+
+                        </div>
+
+                        <div class="modal-body">
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@item.IdSolicitud" />
+
+                            <div class="alert alert-warning">
+
+                                <strong>Empleado:</strong>
+
+                                @item.Usuario?.Nombres
+                                @item.Usuario?.Apellidos
+
+                                <br />
+
+                                <strong>Destino:</strong>
+                                @item.Destino
+
+                            </div>
+
+                            <div class="mb-3">
+
+                                <label for="observaciones-@item.IdSolicitud"
+                                       class="form-label">
+
+                                    Motivo del rechazo
+
+                                </label>
+
+                                <textarea id="observaciones-@item.IdSolicitud"
+                                          name="observaciones"
+                                          class="form-control"
+                                          rows="5"
+                                          maxlength="1000"
+                                          placeholder="Explique claramente por qué se rechaza la solicitud..."
+                                          required></textarea>
+
+                                <small class="text-muted">
+                                    Esta observación será visible para el empleado.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+
+                                Cancelar
+
+                            </button>
+
+                            <button type="submit"
+                                    class="btn btn-danger">
+
+                                <i class="bi bi-x-circle"></i>
+                                Confirmar rechazo
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+}

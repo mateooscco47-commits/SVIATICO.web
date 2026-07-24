@@ -4,134 +4,371 @@
     ViewData["Title"] = "Rendición de Gastos";
     Layout = "~/Views/Shared/_LayoutEmpleado.cshtml";
 
-    var rendiciones = ViewBag.Rendiciones as List<Dinacem.Models.Rendicion>;
+    var rendiciones =
+        ViewBag.Rendiciones as List<Dinacem.Models.Rendicion>;
+
+    var totalSolicitudes = Model?.Count ?? 0;
 }
 
-<div class="container mt-5">
+<style>
+    .page-wrapper {
+        width: 100%;
+        max-width: 1450px;
+        margin: 0 auto;
+    }
 
-    <div class="card shadow">
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 22px;
+        margin-bottom: 22px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+    }
 
-        <div class="card-header bg-primary text-white">
-            <h3>Rendición de Gastos</h3>
+    .page-title {
+        margin: 0 0 5px;
+        color: #0f172a;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .page-description {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .panel {
+        overflow: hidden;
+        background: #ffffff;
+        border: 1px solid #dbe1ea;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .06);
+    }
+
+    .panel-header {
+        padding: 18px 22px;
+        color: #ffffff;
+        background: #0d6efd;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .panel-body {
+        padding: 22px;
+    }
+
+    .table {
+        min-width: 900px;
+        font-size: 14px;
+    }
+
+        .table th {
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+    .estado {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 11px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .estado-sin {
+        color: #475569;
+        background: #e2e8f0;
+        border: 1px solid #cbd5e1;
+    }
+
+    .estado-proceso {
+        color: #1d4ed8;
+        background: #dbeafe;
+        border: 1px solid #93c5fd;
+    }
+
+    .estado-pendiente {
+        color: #92400e;
+        background: #fef3c7;
+        border: 1px solid #fcd34d;
+    }
+
+    .estado-aprobada {
+        color: #166534;
+        background: #dcfce7;
+        border: 1px solid #86efac;
+    }
+
+    .estado-rechazada {
+        color: #991b1b;
+        background: #fee2e2;
+        border: 1px solid #fca5a5;
+    }
+
+    .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    @@media (max-width: 767.98px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 18px;
+        }
+
+            .page-header .btn {
+                width: 100%;
+            }
+
+        .page-title {
+            font-size: 23px;
+        }
+
+        .panel-body {
+            padding: 15px;
+        }
+    }
+</style>
+
+<div class="page-wrapper">
+
+    <!-- La barra del empleado se carga desde _LayoutEmpleado.cshtml -->
+
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="bi bi-cash-stack me-2"></i>
+                Rendición de Gastos
+            </h1>
+
+            <p class="page-description">
+                Seleccione una solicitud aprobada para crear, continuar o consultar su rendición.
+            </p>
         </div>
 
-        <div class="card-body">
+        <a asp-controller="Empleado"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Volver al panel
+        </a>
+    </div>
 
-            <p class="text-muted">
-                Seleccione una solicitud aprobada para comenzar o continuar la rendición de gastos.
-            </p>
+    @if (TempData["mensaje"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["mensaje"]
 
-            @if (TempData["mensaje"] != null)
-            {
-                <div class="alert alert-success">
-                    @TempData["mensaje"]
-                </div>
-            }
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
 
-            @if (TempData["error"] != null)
-            {
-                <div class="alert alert-danger">
-                    @TempData["error"]
-                </div>
-            }
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @Html.Raw(TempData["error"])
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    <div class="panel">
+        <div class="panel-header">
+            <i class="bi bi-list-check me-2"></i>
+            Solicitudes aprobadas
+        </div>
+
+        <div class="panel-body">
+            <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
+                <p class="text-muted mb-0">
+                    Revise el estado de cada rendición y seleccione la acción correspondiente.
+                </p>
+
+                <span class="badge bg-primary align-self-md-center">
+                    @totalSolicitudes solicitud(es)
+                </span>
+            </div>
 
             @if (Model == null || Model.Count == 0)
             {
-                <div class="alert alert-warning">
+                <div class="alert alert-warning mb-0">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
                     No tiene solicitudes aprobadas para realizar una rendición.
                 </div>
             }
             else
             {
-                <table class="table table-hover table-bordered align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Solicitud</th>
-                            <th>Fecha</th>
-                            <th>Destino</th>
-                            <th>Monto Aprobado</th>
-                            <th>Estado Rendición</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            var rendicionExistente = rendiciones?
-                            .FirstOrDefault(r => r.IdSolicitud == item.IdSolicitud);
-
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered align-middle mb-0">
+                        <thead class="table-light">
                             <tr>
-                                <td>@item.IdSolicitud</td>
-                                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
-                                <td>@item.Destino</td>
-                                <td>S/. @item.Monto.ToString("N2")</td>
-
-                                <td>
-                                    @if (rendicionExistente == null)
-                                    {
-                                        <span class="badge bg-secondary">Sin rendición</span>
-                                    }
-                                    else if (rendicionExistente.IdEstadoRendicion == 1)
-                                    {
-                                        <span class="badge bg-primary">En proceso</span>
-                                    }
-                                    else if (rendicionExistente.IdEstadoRendicion == 2)
-                                    {
-                                        <span class="badge bg-warning text-dark">Pendiente de revisión</span>
-                                    }
-                                    else if (rendicionExistente.IdEstadoRendicion == 3)
-                                    {
-                                        <span class="badge bg-success">Aprobada</span>
-                                    }
-                                    else if (rendicionExistente.IdEstadoRendicion == 4)
-                                    {
-                                        <span class="badge bg-danger">Rechazada</span>
-                                    }
-                                </td>
-
-                                <td>
-                                    @if (rendicionExistente == null)
-                                    {
-                                        <a asp-action="Create"
-                                           asp-route-idSolicitud="@item.IdSolicitud"
-                                           class="btn btn-success btn-sm">
-                                            Crear Rendición
-                                        </a>
-                                    }
-                                    else if (rendicionExistente.IdEstadoRendicion == 1)
-                                    {
-                                        <a asp-controller="Gasto"
-                                           asp-action="Index"
-                                           asp-route-idRendicion="@rendicionExistente.IdRendicion"
-                                           class="btn btn-warning btn-sm">
-                                            Continuar Rendición
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <a asp-controller="Rendicion"
-                                           asp-action="DetalleEmpleado"
-                                           asp-route-id="@rendicionExistente.IdRendicion"
-                                           class="btn btn-secondary btn-sm">
-                                            Ver Detalle
-                                        </a>
-                                    }
-                                </td>
+                                <th>Solicitud</th>
+                                <th>Fecha</th>
+                                <th>Periodo</th>
+                                <th>Destino</th>
+                                <th>Monto aprobado</th>
+                                <th>Estado rendición</th>
+                                <th>Acción</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                var rendicionExistente = rendiciones?
+                                .FirstOrDefault(r =>
+                                r.IdSolicitud == item.IdSolicitud);
+
+                                <tr>
+                                    <td>
+                                        <strong>#@item.IdSolicitud</strong>
+                                    </td>
+
+                                    <td>
+                                        @item.Fecha.ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td>
+                                        @item.FechaInicio.ToString("dd/MM/yyyy")
+                                        <br />
+                                        <small class="text-muted">
+                                            hasta @item.FechaFin.ToString("dd/MM/yyyy")
+                                        </small>
+                                    </td>
+
+                                    <td>@item.Destino</td>
+
+                                    <td>
+                                        <strong>
+                                            S/ @item.Monto.ToString("N2")
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @if (rendicionExistente == null)
+                                        {
+                                            <span class="estado estado-sin">
+                                                <i class="bi bi-dash-circle"></i>
+                                                Sin rendición
+                                            </span>
+                                        }
+                                        else if (rendicionExistente.IdEstadoRendicion == 1)
+                                        {
+                                            <span class="estado estado-proceso">
+                                                <i class="bi bi-pencil-square"></i>
+                                                En proceso
+                                            </span>
+                                        }
+                                        else if (rendicionExistente.IdEstadoRendicion == 2)
+                                        {
+                                            <span class="estado estado-pendiente">
+                                                <i class="bi bi-clock-fill"></i>
+                                                Pendiente de revisión
+                                            </span>
+                                        }
+                                        else if (rendicionExistente.IdEstadoRendicion == 3)
+                                        {
+                                            <span class="estado estado-aprobada">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                Aprobada
+                                            </span>
+                                        }
+                                        else if (rendicionExistente.IdEstadoRendicion == 4)
+                                        {
+                                            <span class="estado estado-rechazada">
+                                                <i class="bi bi-x-circle-fill"></i>
+                                                Rechazada
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <div class="actions">
+                                            @if (rendicionExistente == null)
+                                            {
+                                                <a asp-controller="Rendicion"
+                                                   asp-action="Create"
+                                                   asp-route-idSolicitud="@item.IdSolicitud"
+                                                   class="btn btn-success btn-sm">
+                                                    <i class="bi bi-plus-circle"></i>
+                                                    Crear rendición
+                                                </a>
+                                            }
+                                            else if (rendicionExistente.IdEstadoRendicion == 1)
+                                            {
+                                                <a asp-controller="Gasto"
+                                                   asp-action="Index"
+                                                   asp-route-idRendicion="@rendicionExistente.IdRendicion"
+                                                   class="btn btn-warning btn-sm">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                    Continuar
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a asp-controller="Rendicion"
+                                                   asp-action="DetalleEmpleado"
+                                                   asp-route-id="@rendicionExistente.IdRendicion"
+                                                   class="btn btn-outline-secondary btn-sm">
+                                                    <i class="bi bi-eye"></i>
+                                                    Ver detalle
+                                                </a>
+                                            }
+
+                                            @if (rendicionExistente != null &&
+                                           !string.IsNullOrWhiteSpace(rendicionExistente.ArchivoPdf))
+                                            {
+                                                <a href="@rendicionExistente.ArchivoPdf"
+                                                   target="_blank"
+                                                   rel="noopener"
+                                                   class="btn btn-outline-danger btn-sm">
+                                                    <i class="bi bi-file-earmark-pdf"></i>
+                                                    PDF
+                                                </a>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
-
-            <div class="mt-3">
-                <a asp-controller="Empleado"
-                   asp-action="Index"
-                   class="btn btn-secondary">
-                    Volver
-                </a>
-            </div>
-
         </div>
     </div>
+
+    <div class="mt-4">
+        <a asp-controller="Empleado"
+           asp-action="Index"
+           class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Regresar
+        </a>
+    </div>
+
 </div>
