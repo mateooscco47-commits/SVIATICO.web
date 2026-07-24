@@ -1,0 +1,132 @@
+﻿body {
+    margin: 0;
+    background: #f5f7fb;
+    font-family: 'Segoe UI',sans-serif;
+}
+
+
+
+/* NAVBAR */
+
+.navbar-dinacen {
+    background: white;
+    height: 95px;
+    padding: 0 45px;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 3px 15px rgba(0,0,0,.06);
+}
+
+
+
+
+/* LOGO */
+
+
+.logo-dinacen {
+    width: 85px;
+    height: 85px;
+    object-fit: contain;
+}
+
+
+
+
+
+/* USUARIO */
+
+
+.usuario-panel {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+
+
+.usuario-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #343a40;
+}
+
+
+
+    .usuario-info i {
+        font-size: 35px;
+        color: #003366;
+    }
+
+
+
+
+/* BOTON SALIR */
+
+
+.btn-salir {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+
+    .btn-salir:hover {
+        background: #b02a37;
+        color: white;
+    }
+
+
+
+
+
+/* RESPONSIVE */
+
+
+@media(max-width:768px) {
+
+
+    .navbar-dinacen {
+        height: auto;
+        padding: 15px 20px;
+    }
+
+
+
+    .logo-dinacen {
+        width: 75px;
+        height: 75px;
+    }
+
+
+
+    .usuario-panel {
+        gap: 15px;
+    }
+
+
+
+    .usuario-info span {
+        display: none;
+    }
+
+
+
+    .usuario-info i {
+        font-size: 30px;
+    }
+
+
+
+    .btn-salir {
+        padding: 10px 15px;
+    }
+}

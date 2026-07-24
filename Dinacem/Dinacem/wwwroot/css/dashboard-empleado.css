@@ -1,0 +1,177 @@
+﻿/* ===============================
+   CONTENEDOR PRINCIPAL
+================================ */
+
+
+.dashboard-empleado {
+    padding: 40px;
+}
+
+
+
+/* ===============================
+   TITULO
+================================ */
+
+
+.header-dashboard {
+    margin-bottom: 40px;
+}
+
+
+
+    .header-dashboard h1 {
+        color: #003366;
+        font-weight: 800;
+    }
+
+
+
+    .header-dashboard p {
+        color: #6c757d;
+        font-size: 18px;
+    }
+
+
+
+
+
+/* ===============================
+   TARJETAS
+================================ */
+
+
+.card-dashboard {
+    background: white;
+    border-radius: 20px;
+    padding: 35px 30px;
+    min-height: 330px;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+    transition: .3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+    .card-dashboard:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0,0,0,.15);
+    }
+
+
+
+.icon-container {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+
+
+
+.card-dashboard h4 {
+    font-weight: 700;
+    color: #343a40;
+}
+
+
+
+.card-dashboard p {
+    color: #6c757d;
+    min-height: 50px;
+}
+
+
+
+
+.card-dashboard .btn {
+    border-radius: 10px;
+    padding: 10px 25px;
+    font-weight: 600;
+}
+
+
+
+/* ===============================
+ INFORMACION
+================================ */
+
+
+.info-panel {
+    background: white;
+    border-radius: 20px;
+    padding: 35px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+}
+
+
+
+    .info-panel i {
+        font-size: 40px;
+        color: #0066cc;
+    }
+
+
+
+    .info-panel h3 {
+        font-weight: 700;
+        margin-top: 15px;
+    }
+
+
+
+    .info-panel p {
+        color: #6c757d;
+    }
+
+
+
+
+/* ===============================
+ RESPONSIVE
+================================ */
+
+
+@media(max-width:768px) {
+
+
+    .dashboard-empleado {
+        padding: 20px;
+    }
+
+
+
+    .header-dashboard h1 {
+        font-size: 28px;
+    }
+
+
+
+    .card-dashboard {
+        min-height: 300px;
+    }
+}
+
+
+
+@media(max-width:576px) {
+
+
+    .header-dashboard {
+        text-align: center;
+    }
+
+
+    .card-dashboard {
+        padding: 25px;
+    }
+}
