@@ -1,5 +1,6 @@
 using Dinacem.Models;
 using Dinacem.Models.Servicios;
+using Dinacem.Services;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
@@ -9,8 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 // ======================================
 
 builder.Services.AddControllersWithViews();
+
+
 QuestPDF.Settings.License = LicenseType.Community;
-builder.Services.AddControllersWithViews();
+
+
 
 // ======================================
 // Entity Framework + SQL Server
@@ -21,14 +25,23 @@ builder.Services.AddDbContext<AplicacionDbContexto>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+
+
 // ======================================
-// Servicio para consultar RUC
+// Servicios
 // ======================================
 
 builder.Services.AddHttpClient<RucService>(client =>
 {
     client.Timeout = TimeSpan.FromSeconds(30);
 });
+
+
+builder.Services.AddScoped<CorreoService>();
+
+builder.Services.AddScoped<RendicionPdfService>();
+
+builder.Services.AddScoped<ReporteService>();
 
 // ======================================
 // Sesiones
@@ -48,6 +61,8 @@ builder.Services.Configure<CorreoConfiguracion>(
 builder.Services.AddScoped<CorreoService>();
 
 builder.Services.AddScoped<RendicionPdfService>();
+
+builder.Services.AddScoped<ReporteService>();
 // ======================================
 // Construir aplicación
 // ======================================

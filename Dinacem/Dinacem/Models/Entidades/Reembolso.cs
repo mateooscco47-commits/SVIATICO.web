@@ -46,5 +46,8 @@ namespace Dinacem.Models
 
         [StringLength(1000)]
         public string? Observaciones { get; set; }
+
+        [ForeignKey(nameof(IdEstadoReembolso))]
+        public EstadoReembolso? EstadoReembolso { get; set; }
     }
 }

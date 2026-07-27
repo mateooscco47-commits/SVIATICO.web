@@ -60,6 +60,9 @@ namespace Dinacem.Controllers
             HttpContext.Session.SetString(
                 "NombreUsuario",
                 $"{user.Nombres} {user.Apellidos}");
+            HttpContext.Session.SetString(
+             "RolUsuario",
+              user.IdRol == 1 ? "Administrador" : "Representante");
 
             // 1 = Administrador
             if (user.IdRol == 1)

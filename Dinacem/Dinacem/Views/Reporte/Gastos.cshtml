@@ -1,0 +1,325 @@
+﻿@model List<Dinacem.Models.Reporte.ReporteGasto>
+
+@{
+    ViewData["Title"] = "Reporte de Gastos";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+}
+
+<!-- ===========================================
+    ENCABEZADO DEL REPORTE
+=========================================== -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div class="d-flex align-items-center">
+
+        <a asp-controller="Reporte"
+           asp-action="Index"
+           class="btn btn-outline-primary rounded-pill me-3">
+
+            <i class="bi bi-arrow-left-circle"></i>
+
+            Volver
+
+        </a>
+
+        <div>
+
+            <h2 class="fw-bold text-primary mb-0">
+
+                <i class="bi bi-cash-stack me-2"></i>
+
+                Reporte de Gastos por Tipo
+
+            </h2>
+
+            <small class="text-muted">
+
+                Sistema de Viáticos DINACEN
+
+            </small>
+
+        </div>
+
+    </div>
+
+
+
+    <div>
+
+        <a asp-controller="Reporte"
+           asp-action="ExportarGastosPdf"
+           class="btn btn-danger rounded-pill">
+
+            <i class="bi bi-file-earmark-pdf-fill"></i>
+
+            Exportar PDF
+
+        </a>
+
+    </div>
+
+</div>
+
+<hr class="mb-4" />
+
+
+
+    <!-- TARJETAS -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-4">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Tipos de gasto
+
+                    </small>
+
+                    <h3 class="fw-bold">
+
+                        @Model.Count
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-md-4">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Total Gastado
+
+                    </small>
+
+                    <h3 class="fw-bold text-success">
+
+                        S/
+                        @(Model.Sum(x => x.Total).ToString("N2"))
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-md-4">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Promedio
+
+                    </small>
+
+                    <h3 class="fw-bold text-primary">
+
+                        S/
+                        @(Model.Any()
+                            ? Model.Average(x => x.Total).ToString("N2")
+                            : "0.00")
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="row">
+
+        <!-- GRÁFICO -->
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header fw-bold">
+
+                    Gráfico de Gastos
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="graficoGastos"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TABLA -->
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header fw-bold">
+
+                    Detalle
+
+                </div>
+
+                <div class="card-body table-responsive">
+
+                    <table class="table table-hover">
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th>Tipo de Gasto</th>
+
+                                <th>Total</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @if (Model.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+
+                                        <td>
+
+                                            @item.TipoGasto
+
+                                        </td>
+
+                                        <td>
+
+                                            S/
+                                            @item.Total.ToString("N2")
+
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+
+                                    <td colspan="2"
+                                        class="text-center">
+
+                                        No existen gastos registrados.
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+@section Scripts{
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx =
+document.getElementById('graficoGastos');
+
+new Chart(ctx, {
+
+    type: 'bar',
+
+    data: {
+
+        labels: [
+
+            @foreach (var item in Model)
+            {
+                <text>'@item.TipoGasto',</text>
+            }
+
+        ],
+
+        datasets: [{
+
+            label: 'Monto (S/)',
+
+            data: [
+
+                @foreach (var item in Model)
+                {
+                    <text>@item.Total,</text>
+                }
+
+            ]
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        plugins: {
+
+            legend: {
+
+                display: false
+
+            }
+
+        }
+
+    }
+
+});
+
+</script>
+
+}

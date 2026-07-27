@@ -1,0 +1,413 @@
+﻿@model List<Dinacem.Models.Reporte.ReporteRendicion>
+
+@{
+    ViewData["Title"] = "Reporte de Rendiciones";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+}
+
+
+
+<div class="container-fluid">
+
+
+    <!-- ===========================================
+    ENCABEZADO DEL REPORTE
+=========================================== -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div class="d-flex align-items-center">
+
+        <a asp-controller="Reporte"
+           asp-action="Index"
+           class="btn btn-outline-primary rounded-pill me-3">
+
+            <i class="bi bi-arrow-left-circle"></i>
+
+            Volver
+
+        </a>
+
+        <div>
+
+            <h2 class="fw-bold text-primary mb-0">
+
+                <i class="bi bi-wallet2 me-2"></i>
+
+                Reporte de Rendiciones
+
+            </h2>
+
+            <small class="text-muted">
+
+                Sistema de Viáticos DINACEN
+
+            </small>
+
+        </div>
+
+    </div>
+
+
+
+    <div>
+
+        <a asp-controller="Reporte"
+           asp-action="ExportarRendicionesPdf"
+           class="btn btn-danger rounded-pill">
+
+            <i class="bi bi-file-earmark-pdf-fill"></i>
+
+            Exportar PDF
+
+        </a>
+
+    </div>
+
+</div>
+
+<hr class="mb-4" />
+
+
+
+
+    <!-- INDICADORES -->
+
+
+    <div class="row g-4 mb-4">
+
+
+        <div class="col-md-3">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-body">
+
+
+                    <small class="text-muted">
+                        Total entregado
+                    </small>
+
+
+                    <h4 class="fw-bold">
+
+                        S/
+                        @Model.Sum(x => x.MontoEntregado)
+                        .ToString("N2")
+
+                    </h4>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="col-md-3">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-body">
+
+
+                    <small class="text-muted">
+                        Total gastado
+                    </small>
+
+
+                    <h4 class="fw-bold text-primary">
+
+                        S/
+                        @Model.Sum(x => x.Gastado)
+                        .ToString("N2")
+
+                    </h4>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="col-md-3">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-body">
+
+
+                    <small class="text-muted">
+                        Total devuelto
+                    </small>
+
+
+                    <h4 class="fw-bold text-success">
+
+                        S/
+                        @Model.Sum(x => x.Devuelto)
+                        .ToString("N2")
+
+                    </h4>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="col-md-3">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-body">
+
+
+                    <small class="text-muted">
+                        Saldo pendiente
+                    </small>
+
+
+                    <h4 class="fw-bold text-danger">
+
+                        S/
+                        @Model.Sum(x => x.Diferencia)
+                        .ToString("N2")
+
+                    </h4>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- TABLA -->
+
+
+    <div class="card shadow-sm">
+
+
+        <div class="card-header">
+
+            <strong>
+                Detalle de rendiciones
+            </strong>
+
+
+        </div>
+
+
+
+
+        <div class="card-body table-responsive">
+
+
+            <table class="table table-hover align-middle">
+
+
+                <thead class="table-light">
+
+
+                    <tr>
+
+                        <th>
+                            Usuario
+                        </th>
+
+
+                        <th>
+                            Solicitud
+                        </th>
+
+
+                        <th>
+                            Monto entregado
+                        </th>
+
+
+                        <th>
+                            Gastado
+                        </th>
+
+
+                        <th>
+                            Devuelto
+                        </th>
+
+
+                        <th>
+                            Diferencia
+                        </th>
+
+
+                        <th>
+                            Estado
+                        </th>
+
+                    </tr>
+
+
+                </thead>
+
+
+
+
+                <tbody>
+
+
+                @if(Model != null && Model.Any())
+                {
+
+
+                    foreach(var item in Model)
+                    {
+
+
+                        <tr>
+
+
+                            <td>
+                                @item.Usuario
+                            </td>
+
+
+
+                            <td>
+                                @item.Solicitud
+                            </td>
+
+
+
+                            <td>
+                                S/
+                                @item.MontoEntregado.ToString("N2")
+                            </td>
+
+
+
+                            <td>
+                                S/
+                                @item.Gastado.ToString("N2")
+                            </td>
+
+
+
+                            <td>
+                                S/
+                                @item.Devuelto.ToString("N2")
+                            </td>
+
+
+
+                            <td>
+                                S/
+                                @item.Diferencia.ToString("N2")
+                            </td>
+
+
+
+                            <td>
+
+
+                                @if(item.Estado == "Aprobado" ||
+                                    item.Estado == "Conforme")
+                                {
+
+                                    <span class="badge bg-success">
+
+                                        @item.Estado
+
+                                    </span>
+
+                                }
+                                else
+                                {
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        @item.Estado
+
+                                    </span>
+
+                                }
+
+
+                            </td>
+
+
+                        </tr>
+
+
+                    }
+
+
+                }
+                else
+                {
+
+                    <tr>
+
+                        <td colspan="7"
+                            class="text-center">
+
+                            No existen rendiciones registradas
+
+                        </td>
+
+                    </tr>
+
+                }
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>

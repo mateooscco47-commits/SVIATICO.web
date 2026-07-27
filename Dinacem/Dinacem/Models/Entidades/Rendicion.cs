@@ -50,6 +50,8 @@ namespace Dinacem.Models
         public DateTime? FechaEnvioRevision { get; set; }
         [StringLength(1000)]
         public string? Observaciones { get; set; }
+        public ICollection<Gasto> Gastos { get; set; }
+        = new List<Gasto>();
 
 
     }

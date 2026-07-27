@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
+using Dinacem.Models;
 namespace Dinacem.Models
 {
     public class AplicacionDbContexto : DbContext
@@ -21,10 +21,12 @@ namespace Dinacem.Models
 
         public DbSet<DevolucionSaldo> DevolucionesSaldo { get; set; }
         public DbSet<Reembolso> Reembolsos { get; set; }
+        public DbSet<EstadoReembolso> EstadoReembolsos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            
 
             // Nombres reales de tablas en SQL Server
             modelBuilder.Entity<Rol>().ToTable("Roles");
@@ -36,7 +38,7 @@ namespace Dinacem.Models
             modelBuilder.Entity<TipoGasto>().ToTable("TipoGasto");
             modelBuilder.Entity<TipoComprobante>().ToTable("TipoComprobante");
             modelBuilder.Entity<Gasto>().ToTable("Gastos");
-
+            modelBuilder.Entity<EstadoReembolso>().ToTable("EstadoReembolso");
             // Llaves primarias
             modelBuilder.Entity<Rol>().HasKey(x => x.IdRol);
             modelBuilder.Entity<Usuario>().HasKey(x => x.IdUsuario);
@@ -47,8 +49,14 @@ namespace Dinacem.Models
             modelBuilder.Entity<TipoGasto>().HasKey(x => x.IdTipoGasto);
             modelBuilder.Entity<TipoComprobante>().HasKey(x => x.IdTipoComprobante);
             modelBuilder.Entity<Gasto>().HasKey(x => x.IdGasto);
-
+            modelBuilder.Entity<EstadoReembolso>().HasKey(x => x.IdEstadoReembolso);
             // Relaciones
+            modelBuilder.Entity<Reembolso>()
+            .HasOne(x => x.EstadoReembolso)
+            .WithMany()
+            .HasForeignKey(x => x.IdEstadoReembolso)
+            .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Usuario>()
                 .HasOne(x => x.Rol)
                 .WithMany()
@@ -67,29 +75,29 @@ namespace Dinacem.Models
                 .HasForeignKey(x => x.IdEstadoSolicitud)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Rendicion>()
-                .HasOne(x => x.Solicitud)
-                .WithMany()
-                .HasForeignKey(x => x.IdSolicitud)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Solicitud>()
+            .HasOne(s => s.Rendicion)
+            .WithOne(r => r.Solicitud)
+            .HasForeignKey<Rendicion>(r => r.IdSolicitud)
+            .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Rendicion>()
-                .HasOne(x => x.Usuario)
-                .WithMany()
-                .HasForeignKey(x => x.IdUsuario)
-                .OnDelete(DeleteBehavior.Restrict);
+            .HasOne(x => x.Solicitud)
+            .WithOne(x => x.Rendicion)
+            .HasForeignKey<Rendicion>(x => x.IdSolicitud)
+            .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Rendicion>()
-                .HasOne(x => x.EstadoRendicion)
-                .WithMany()
-                .HasForeignKey(x => x.IdEstadoRendicion)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Solicitud>()
+            .HasOne(s => s.Rendicion)
+            .WithOne(r => r.Solicitud)
+            .HasForeignKey<Rendicion>(r => r.IdSolicitud)
+            .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Gasto>()
-                .HasOne(x => x.Rendicion)
-                .WithMany()
-                .HasForeignKey(x => x.IdRendicion)
-                .OnDelete(DeleteBehavior.Restrict);
+            .HasOne(x => x.Rendicion)
+            .WithMany(x => x.Gastos)
+            .HasForeignKey(x => x.IdRendicion)
+            .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Gasto>()
                 .HasOne(x => x.TipoGasto)

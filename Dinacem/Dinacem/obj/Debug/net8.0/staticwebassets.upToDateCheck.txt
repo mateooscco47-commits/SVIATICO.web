@@ -1,7 +1,7 @@
 wwwroot\css\Admin.css
 wwwroot\css\dashboard-admin.css
 wwwroot\css\dashboard-empleado.css
-wwwroot\css\Layout-admin.css
+wwwroot\css\Layout.css
 wwwroot\css\Login.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
@@ -65,4 +65,5 @@ wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
 wwwroot\liquidaciones\Liquidacion-2-angel-asd.pdf
-wwwroot\css\Layout-empleado.css
+wwwroot\liquidaciones\Liquidacion-3-angel-asd.pdf
+wwwroot\reembolsos\72e6d48d-28bd-4383-9186-0a98c77f8c92.png

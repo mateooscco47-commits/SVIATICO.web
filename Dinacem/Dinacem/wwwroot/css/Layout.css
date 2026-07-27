@@ -1,0 +1,717 @@
+﻿/*=====================================================
+    LAYOUT DINACEN
+    Sistema de Viáticos
+=====================================================*/
+
+
+/*=====================================================
+    VARIABLES
+=====================================================*/
+
+:root {
+    --azul: #0C4A8A;
+    --verde: #6AA84F;
+    --verde-hover: #5B9443;
+    --rojo: #DC3545;
+    --gris: #D8DEE8;
+    --gris-claro: #EEF2F6;
+    --texto: #334155;
+    --fondo: #F3F6F9;
+    --blanco: #FFFFFF;
+    --radio: 14px;
+    --sombra: 0 8px 25px rgba(0,0,0,.08);
+}
+
+
+
+/*=====================================================
+    RESET
+=====================================================*/
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+
+body {
+    min-height: 100vh;
+    font-family: 'Segoe UI',Arial,sans-serif;
+    background: var(--fondo);
+    color: var(--texto);
+    overflow-x: hidden;
+}
+
+
+
+/*=====================================================
+    SCROLLBAR
+=====================================================*/
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #eef2f7;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--azul);
+    border-radius: 20px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--verde);
+    }
+
+
+
+/*=====================================================
+    SELECCIÓN
+=====================================================*/
+
+::selection {
+    background: var(--verde);
+    color: #fff;
+}
+
+
+
+/*=====================================================
+    TRANSICIONES
+=====================================================*/
+
+a,
+button {
+    transition: .25s ease;
+}
+
+
+
+/*=====================================================
+    ESTRUCTURA
+=====================================================*/
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+
+
+/*=====================================================
+    SIDEBAR
+=====================================================*/
+
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--blanco);
+    border-right: 1px solid var(--gris);
+    box-shadow: var(--sombra);
+    z-index: 1000;
+}
+
+
+
+/*=====================================================
+    LOGO
+=====================================================*/
+
+.sidebar-logo {
+    height: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--blanco);
+    padding: 15px;
+}
+
+
+
+    .sidebar-logo img {
+        width: 175px;
+        max-width: 80%;
+        height: auto;
+        object-fit: contain;
+        display: block;
+        margin: auto;
+        pointer-events: none;
+        user-select: none;
+        cursor: default;
+    }
+
+
+
+/*=====================================================
+    MENÚ
+=====================================================*/
+
+.sidebar-menu {
+    flex: 1;
+    padding: 35px 15px 25px;
+}
+
+
+
+    .sidebar-menu ul {
+        list-style: none;
+    }
+
+
+
+    .sidebar-menu li {
+        margin-bottom: 10px;
+    }
+
+
+
+    .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 14px 18px;
+        color: var(--texto);
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 12px;
+    }
+
+
+
+        .sidebar-menu a i {
+            font-size: 22px;
+            width: 24px;
+            text-align: center;
+        }
+
+
+
+        /* Hover */
+
+        .sidebar-menu a:hover {
+            background: var(--verde);
+            color: white;
+            box-shadow: 0 8px 18px rgba(106,168,79,.25);
+        }
+
+
+
+        /* Activo */
+
+        .sidebar-menu a.active {
+            background: var(--azul);
+            color: white;
+            box-shadow: 0 8px 18px rgba(12,74,138,.25);
+        }
+/*=====================================================
+    FOOTER SIDEBAR
+=====================================================*/
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid var(--gris);
+    background: var(--blanco);
+}
+
+
+
+/* ================================
+   BOTÓN CERRAR SESIÓN
+================================ */
+
+.sidebar-footer {
+    margin-top: auto;
+    padding: 20px;
+}
+
+
+.btn-logout {
+    width: 100%;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #dc3545;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s ease;
+}
+
+
+    .btn-logout:hover {
+        background: #bb2d3b;
+        transform: translateY(-2px);
+    }
+
+
+    .btn-logout i {
+        font-size: 18px;
+    }
+
+
+
+/*=====================================================
+    CONTENIDO PRINCIPAL
+=====================================================*/
+
+.main-content {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+/*=====================================================
+    TOPBAR
+=====================================================*/
+
+.topbar {
+    height: 75px;
+    background: var(--blanco);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    border-bottom: 1px solid var(--gris);
+    box-shadow: 0 3px 12px rgba(0,0,0,.05);
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+
+
+/*=====================================================
+    TÍTULO
+=====================================================*/
+
+.page-title {
+    display: flex;
+    align-items: center;
+}
+
+
+
+    .page-title h4 {
+        margin: 0;
+        color: var(--azul);
+        font-size: 23px;
+        font-weight: 700;
+        letter-spacing: .3px;
+    }
+
+
+
+/*=====================================================
+    INFORMACIÓN DEL USUARIO
+=====================================================*/
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+
+    .topbar-actions i {
+        font-size: 34px;
+        color: var(--azul);
+    }
+
+
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+
+
+.user-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1F2937;
+}
+
+
+
+.user-role {
+    font-size: 12px;
+    color: #64748B;
+    font-weight: 600;
+}
+
+
+
+/*=====================================================
+    CONTENIDO
+=====================================================*/
+
+.content {
+    flex: 1;
+    padding: 30px;
+    animation: fadeContent .35s ease;
+}
+
+
+
+/*=====================================================
+    ANIMACIÓN
+=====================================================*/
+
+@keyframes fadeContent {
+
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+/*=====================================================
+    TARJETAS GENERALES
+=====================================================*/
+
+.card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: var(--sombra);
+}
+
+
+
+.card-header {
+    background: var(--blanco);
+    border-bottom: 1px solid var(--gris);
+    font-weight: 700;
+    color: var(--azul);
+}
+
+
+
+.card-body {
+    padding: 25px;
+}
+
+
+
+/*=====================================================
+    BOTONES BOOTSTRAP
+=====================================================*/
+
+.btn-primary {
+    background: var(--azul);
+    border-color: var(--azul);
+}
+
+
+
+    .btn-primary:hover {
+        background: #09396b;
+        border-color: #09396b;
+    }
+
+
+
+.btn-success {
+    background: var(--verde);
+    border-color: var(--verde);
+}
+
+
+
+    .btn-success:hover {
+        background: var(--verde-hover);
+        border-color: var(--verde-hover);
+    }
+
+
+
+.btn-danger {
+    background: var(--rojo);
+    border-color: var(--rojo);
+}
+
+
+
+    .btn-danger:hover {
+        background: #bb2d3b;
+    }
+
+/*=====================================================
+    RESPONSIVE
+=====================================================*/
+
+
+/*=====================================================
+    COMPUTADORAS Y LAPTOPS
+    992px - 1400px
+=====================================================*/
+
+@media (max-width:1400px) {
+
+    .sidebar {
+        width: 240px;
+    }
+
+    .main-content {
+        margin-left: 240px;
+        width: calc(100% - 240px);
+    }
+
+    .sidebar-logo img {
+        width: 165px;
+    }
+}
+
+
+
+/*=====================================================
+    TABLETS
+    768px - 991px
+=====================================================*/
+
+@media (max-width:991.98px) {
+
+    .sidebar {
+        width: 90px;
+    }
+
+    .main-content {
+        margin-left: 90px;
+        width: calc(100% - 90px);
+    }
+
+    .sidebar-logo {
+        height: 100px;
+        padding: 10px;
+    }
+
+        .sidebar-logo img {
+            width: 60px;
+        }
+
+    .sidebar-menu {
+        padding: 25px 10px;
+    }
+
+        .sidebar-menu a {
+            justify-content: center;
+            padding: 14px;
+        }
+
+        .sidebar-menu span {
+            display: none;
+        }
+
+        .sidebar-menu a i {
+            margin: 0;
+            font-size: 24px;
+            width: auto;
+        }
+
+    .sidebar-footer {
+        padding: 15px 10px;
+    }
+
+    .btn-logout span {
+        display: none;
+    }
+
+    .btn-logout {
+        padding: 14px;
+    }
+
+    .topbar {
+        padding: 0 20px;
+    }
+}
+
+
+
+/*=====================================================
+    CELULARES
+    Hasta 767px
+=====================================================*/
+
+@media (max-width:767.98px) {
+
+    .layout {
+        display: block;
+    }
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--gris);
+    }
+
+    .sidebar-logo {
+        height: 110px;
+        padding: 15px;
+    }
+
+        .sidebar-logo img {
+            width: 170px;
+        }
+
+    .sidebar-menu {
+        padding: 15px;
+    }
+
+        .sidebar-menu ul {
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            gap: 10px;
+        }
+
+        .sidebar-menu li {
+            margin: 0;
+        }
+
+        .sidebar-menu a {
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            padding: 15px 10px;
+            text-align: center;
+        }
+
+        .sidebar-menu span {
+            display: block;
+            font-size: 13px;
+        }
+
+        .sidebar-menu a i {
+            font-size: 24px;
+            width: auto;
+        }
+
+    .sidebar-footer {
+        padding: 20px;
+    }
+
+    .btn-logout {
+        width: 100%;
+    }
+
+    .main-content {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .topbar {
+        height: 65px;
+        padding: 0 15px;
+    }
+
+    .page-title h4 {
+        font-size: 18px;
+    }
+
+    .topbar-actions i {
+        font-size: 28px;
+    }
+
+    .user-name {
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 11px;
+    }
+
+    .content {
+        padding: 15px;
+    }
+}
+
+
+
+/*=====================================================
+    PANTALLAS MUY PEQUEÑAS
+    Hasta 480px
+=====================================================*/
+
+@media (max-width:480px) {
+
+    .sidebar-logo img {
+        width: 150px;
+    }
+
+    .sidebar-menu ul {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar-menu a {
+        flex-direction: row;
+        justify-content: flex-start;
+        text-align: left;
+        padding: 14px;
+    }
+
+    .sidebar-menu span {
+        font-size: 14px;
+    }
+
+    .btn-logout {
+        height: 48px;
+        font-size: 14px;
+    }
+}
+/*=========================================
+      TARJETAS DEL MÓDULO DE REPORTES
+=========================================*/
+
+.report-card {
+    transition: .25s;
+    cursor: pointer;
+    border-radius: 16px;
+}
+
+    .report-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 25px rgba(0,0,0,.15) !important;
+    }
+
+    .report-card i {
+        transition: .25s;
+    }
+
+    .report-card:hover i {
+        transform: scale(1.15);
+    }

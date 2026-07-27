@@ -1,0 +1,334 @@
+﻿@model List<Dinacem.Models.Reporte.ReporteReembolso>
+
+@{
+    ViewData["Title"] = "Reporte de Reembolsos";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+}
+
+<div class="container-fluid">
+
+   <!-- ===========================================
+    ENCABEZADO DEL REPORTE
+=========================================== -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div class="d-flex align-items-center">
+
+        <a asp-controller="Reporte"
+           asp-action="Index"
+           class="btn btn-outline-primary rounded-pill me-3">
+
+            <i class="bi bi-arrow-left-circle"></i>
+
+            Volver
+
+        </a>
+
+        <div>
+
+            <h2 class="fw-bold text-primary mb-0">
+
+                <i class="bi bi-cash-coin me-2"></i>
+
+                Reporte de Reembolsos
+
+            </h2>
+
+            <small class="text-muted">
+
+                Sistema de Viáticos DINACEN
+
+            </small>
+
+        </div>
+
+    </div>
+
+
+
+    <div>
+
+        <a asp-controller="Reporte"
+           asp-action="ExportarReembolsosPdf"
+           class="btn btn-danger rounded-pill">
+
+            <i class="bi bi-file-earmark-pdf-fill"></i>
+
+            Exportar PDF
+
+        </a>
+
+    </div>
+
+</div>
+
+<hr class="mb-4" />
+
+
+
+    <!-- TARJETAS -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Reembolsos
+
+                    </small>
+
+                    <h3 class="fw-bold text-primary">
+
+                        @Model.Count
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Total Reembolsado
+
+                    </small>
+
+                    <h3 class="fw-bold text-success">
+
+                        S/ @(Model.Sum(x => x.Monto).ToString("N2"))
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Pendientes
+
+                    </small>
+
+                    <h3 class="fw-bold text-warning">
+
+                        @Model.Count(x => x.Estado == "Pendiente")
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Pagados
+
+                    </small>
+
+                    <h3 class="fw-bold text-success">
+
+                        @Model.Count(x => x.Estado == "Pagado")
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- TABLA -->
+
+    <div class="card shadow-sm">
+
+        <div class="card-header fw-bold">
+
+            <i class="bi bi-table"></i>
+
+            Detalle de Reembolsos
+
+        </div>
+
+        <div class="card-body table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>Usuario</th>
+
+                        <th>Motivo</th>
+
+                        <th>Monto</th>
+
+                        <th>Estado</th>
+
+                        <th>Fecha</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @if (Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+
+                            <tr>
+
+                                <td>
+
+                                    @item.Usuario
+
+                                </td>
+
+                                <td>
+
+                                    @item.Motivo
+
+                                </td>
+
+                                <td>
+
+                                    <span class="fw-bold text-success">
+
+                                        S/ @item.Monto.ToString("N2")
+
+                                    </span>
+
+                                </td>
+
+                                <td>
+
+                                    @switch (item.Estado)
+                                    {
+                                        case "Pendiente":
+                                            <span class="badge bg-warning text-dark">
+
+                                                Pendiente
+
+                                            </span>
+                                            break;
+
+                                        case "Aprobado":
+                                            <span class="badge bg-primary">
+
+                                                Aprobado
+
+                                            </span>
+                                            break;
+
+                                        case "Pagado":
+                                            <span class="badge bg-success">
+
+                                                Pagado
+
+                                            </span>
+                                            break;
+
+                                        case "Rechazado":
+                                            <span class="badge bg-danger">
+
+                                                Rechazado
+
+                                            </span>
+                                            break;
+
+                                        default:
+                                            <span class="badge bg-secondary">
+
+                                                @item.Estado
+
+                                            </span>
+                                            break;
+                                    }
+
+                                </td>
+
+                                <td>
+
+                                    @item.Fecha.ToString("dd/MM/yyyy")
+
+                                </td>
+
+                            </tr>
+
+                        }
+                    }
+                    else
+                    {
+
+                        <tr>
+
+                            <td colspan="5"
+                                class="text-center py-5">
+
+                                <i class="bi bi-wallet2 text-secondary fs-1"></i>
+
+                                <br />
+
+                                <strong>
+
+                                    No existen reembolsos registrados.
+
+                                </strong>
+
+                            </td>
+
+                        </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

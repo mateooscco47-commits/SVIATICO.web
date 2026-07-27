@@ -1,0 +1,380 @@
+﻿@model Dinacem.Models.ReporteGeneral
+
+
+@{
+    ViewData["Title"] = "Dashboard de Viáticos";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+}
+
+
+
+<!-- ===========================================
+    ENCABEZADO DEL REPORTE
+=========================================== -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div class="d-flex align-items-center">
+
+        <a asp-controller="Reporte"
+           asp-action="Index"
+           class="btn btn-outline-primary rounded-pill me-3">
+
+            <i class="bi bi-arrow-left-circle"></i>
+
+            Volver
+
+        </a>
+
+        <div>
+
+            <h2 class="fw-bold text-primary mb-0">
+
+               <i class="bi bi-speedometer2 me-2"></i>
+
+                Dashboard Ejecutivo
+
+            </h2>
+
+            <small class="text-muted">
+
+                Sistema de Viáticos DINACEN
+
+            </small>
+
+        </div>
+
+    </div>
+
+
+
+    <div>
+
+        <a asp-controller="Reporte"
+           asp-action="ExportarDashboardPdf"
+           class="btn btn-danger rounded-pill">
+
+            <i class="bi bi-file-earmark-pdf-fill"></i>
+
+            Exportar PDF
+
+        </a>
+
+    </div>
+
+</div>
+
+<hr class="mb-4" />
+
+
+
+
+    <!-- TARJETAS -->
+
+    <div class="row g-4">
+
+
+        <div class="col-md-3">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-body">
+
+
+                    <h6 class="text-muted">
+                        Solicitudes Totales
+                    </h6>
+
+
+                    <h2 class="fw-bold">
+
+                        @Model.TotalSolicitudes
+
+                    </h2>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="col-md-3">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-body">
+
+
+                    <h6 class="text-muted">
+                        Pendientes
+                    </h6>
+
+
+                    <h2 class="fw-bold text-warning">
+
+                        @Model.SolicitudesPendientes
+
+                    </h2>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="col-md-3">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-body">
+
+
+                    <h6 class="text-muted">
+                        Aprobadas
+                    </h6>
+
+
+                    <h2 class="fw-bold text-success">
+
+                        @Model.SolicitudesAprobadas
+
+                    </h2>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="col-md-3">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-body">
+
+
+                    <h6 class="text-muted">
+                        Monto Ejecutado
+                    </h6>
+
+
+                    <h3 class="fw-bold">
+
+                        S/
+                        @Model.TotalGastado.ToString("N2")
+
+                    </h3>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+    <!-- RESUMEN -->
+
+    <div class="row mt-4">
+
+
+        <div class="col-md-6">
+
+
+            <div class="card shadow-sm">
+
+
+                <div class="card-header">
+
+                    Resumen económico
+
+                </div>
+
+
+
+                <div class="card-body">
+
+
+
+                    <p>
+                        Total solicitado:
+
+                        <strong class="float-end">
+
+                            S/
+                            @Model.TotalSolicitado.ToString("N2")
+
+                        </strong>
+
+                    </p>
+
+
+
+                    <p>
+                        Total rendido:
+
+                        <strong class="float-end">
+
+                            S/
+                            @Model.TotalRendido.ToString("N2")
+
+                        </strong>
+
+                    </p>
+
+
+
+
+                    <p>
+                        Saldo pendiente:
+
+                        <strong class="float-end text-danger">
+
+                            S/
+                            @Model.SaldoPendiente.ToString("N2")
+
+                        </strong>
+
+                    </p>
+
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+        <div class="col-md-6">
+
+
+            <div class="card shadow-sm">
+
+
+                <div class="card-header">
+
+                    Estados de solicitudes
+
+                </div>
+
+
+                <div class="card-body">
+
+
+                    <canvas id="estadoChart"></canvas>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+
+const ctx =
+document.getElementById('estadoChart');
+
+
+new Chart(ctx,
+{
+
+type:'doughnut',
+
+data:
+{
+
+labels:
+[
+'Pendientes',
+'Aprobadas',
+'Rechazadas'
+],
+
+
+datasets:
+[{
+
+data:
+[
+
+@Model.SolicitudesPendientes,
+
+@Model.SolicitudesAprobadas,
+
+@Model.SolicitudesRechazadas
+
+]
+
+}]
+
+}
+
+});
+
+
+
+</script>

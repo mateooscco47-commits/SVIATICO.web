@@ -1,0 +1,378 @@
+﻿@model List<Dinacem.Models.Reporte.ReporteUsuario>
+
+@{
+    ViewData["Title"] = "Reporte por Usuario";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+}
+
+<div class="container-fluid">
+
+   <!-- ===========================================
+    ENCABEZADO DEL REPORTE
+=========================================== -->
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div class="d-flex align-items-center">
+
+        <a asp-controller="Reporte"
+           asp-action="Index"
+           class="btn btn-outline-primary rounded-pill me-3">
+
+            <i class="bi bi-arrow-left-circle"></i>
+
+            Volver
+
+        </a>
+
+        <div>
+
+            <h2 class="fw-bold text-primary mb-0">
+
+                <i class="bi bi-people-fill me-2"></i>
+
+                Reporte por Usuarios
+
+            </h2>
+
+            <small class="text-muted">
+
+                Sistema de Viáticos DINACEN
+
+            </small>
+
+        </div>
+
+    </div>
+
+
+
+    <div>
+
+        <a asp-controller="Reporte"
+           asp-action="ExportarUsuariosPdf"
+           class="btn btn-danger rounded-pill">
+
+            <i class="bi bi-file-earmark-pdf-fill"></i>
+
+            Exportar PDF
+
+        </a>
+
+    </div>
+
+</div>
+
+<hr class="mb-4" />
+
+
+    <!-- KPI -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Usuarios
+
+                    </small>
+
+                    <h3 class="fw-bold text-primary">
+
+                        @Model.Count
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Solicitudes
+
+                    </small>
+
+                    <h3 class="fw-bold text-success">
+
+                        @Model.Sum(x => x.Solicitudes)
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Total Viáticos
+
+                    </small>
+
+                    <h3 class="fw-bold text-info">
+
+                        S/ @(Model.Sum(x => x.TotalViaticos).ToString("N2"))
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+
+                        Rendiciones Pendientes
+
+                    </small>
+
+                    <h3 class="fw-bold text-danger">
+
+                        @Model.Sum(x => x.RendicionesPendientes)
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="row">
+
+        <!-- GRÁFICO -->
+
+        <div class="col-lg-5">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header fw-bold">
+
+                    Total de Viáticos por Usuario
+
+                </div>
+
+                <div class="card-body">
+
+                    <canvas id="graficoUsuarios"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TABLA -->
+
+        <div class="col-lg-7">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header fw-bold">
+
+                    Detalle por Usuario
+
+                </div>
+
+                <div class="card-body table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th>Usuario</th>
+
+                                <th>Solicitudes</th>
+
+                                <th>Total Viáticos</th>
+
+                                <th>Rendiciones Pendientes</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @if (Model.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+
+                                        <td>
+
+                                            @item.Usuario
+
+                                        </td>
+
+                                        <td>
+
+                                            @item.Solicitudes
+
+                                        </td>
+
+                                        <td>
+
+                                            S/ @item.TotalViaticos.ToString("N2")
+
+                                        </td>
+
+                                        <td>
+
+                                            @if (item.RendicionesPendientes == 0)
+                                            {
+                                                <span class="badge bg-success">
+
+                                                    Sin pendientes
+
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning text-dark">
+
+                                                    @item.RendicionesPendientes Pendiente(s)
+
+                                                </span>
+                                            }
+
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+
+                                    <td colspan="4" class="text-center">
+
+                                        No existen registros.
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts{
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const ctx =
+document.getElementById('graficoUsuarios');
+
+new Chart(ctx, {
+
+    type: 'bar',
+
+    data: {
+
+        labels: [
+
+            @foreach (var item in Model)
+            {
+                <text>'@item.Usuario',</text>
+            }
+
+        ],
+
+        datasets: [{
+
+            label: 'Viáticos',
+
+            data: [
+
+                @foreach (var item in Model)
+                {
+                    <text>@item.TotalViaticos,</text>
+                }
+
+            ]
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        plugins: {
+
+            legend: {
+
+                display: false
+
+            }
+
+        },
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true
+
+            }
+
+        }
+
+    }
+
+});
+
+</script>
+
+}
