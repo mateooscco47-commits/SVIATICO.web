@@ -71,150 +71,54 @@
 
 
 
-    <!-- INDICADORES -->
+   <!-- INDICADORES -->
+<div class="row g-4 mb-4">
 
-
-    <div class="row g-4 mb-4">
-
-
-        <div class="col-md-3">
-
-
-            <div class="card shadow-sm border-0">
-
-
-                <div class="card-body">
-
-
-                    <small class="text-muted">
-                        Total entregado
-                    </small>
-
-
-                    <h4 class="fw-bold">
-
-                        S/
-                        @Model.Sum(x => x.MontoEntregado)
-                        .ToString("N2")
-
-                    </h4>
-
-
-                </div>
-
-
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <small class="text-muted">Total entregado</small>
+                <h4 class="fw-bold">
+                    S/ @(Model.Sum(x => x.MontoEntregado).ToString("N2"))
+                </h4>
             </div>
-
-
         </div>
-
-
-
-
-
-        <div class="col-md-3">
-
-
-            <div class="card shadow-sm border-0">
-
-
-                <div class="card-body">
-
-
-                    <small class="text-muted">
-                        Total gastado
-                    </small>
-
-
-                    <h4 class="fw-bold text-primary">
-
-                        S/
-                        @Model.Sum(x => x.Gastado)
-                        .ToString("N2")
-
-                    </h4>
-
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-
-
-
-        <div class="col-md-3">
-
-
-            <div class="card shadow-sm border-0">
-
-
-                <div class="card-body">
-
-
-                    <small class="text-muted">
-                        Total devuelto
-                    </small>
-
-
-                    <h4 class="fw-bold text-success">
-
-                        S/
-                        @Model.Sum(x => x.Devuelto)
-                        .ToString("N2")
-
-                    </h4>
-
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-
-
-
-        <div class="col-md-3">
-
-
-            <div class="card shadow-sm border-0">
-
-
-                <div class="card-body">
-
-
-                    <small class="text-muted">
-                        Saldo pendiente
-                    </small>
-
-
-                    <h4 class="fw-bold text-danger">
-
-                        S/
-                        @Model.Sum(x => x.Diferencia)
-                        .ToString("N2")
-
-                    </h4>
-
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
     </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <small class="text-muted">Total gastado</small>
+                <h4 class="fw-bold text-primary">
+                    S/ @(Model.Sum(x => x.Gastado).ToString("N2"))
+                </h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <small class="text-muted">Total devuelto</small>
+                <h4 class="fw-bold text-success">
+                    S/ @(Model.Sum(x => x.Devuelto).ToString("N2"))
+                </h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <small class="text-muted">Saldo pendiente</small>
+                <h4 class="fw-bold text-danger">
+                    S/ @(Model.Sum(x => x.Diferencia).ToString("N2"))
+                </h4>
+            </div>
+        </div>
+    </div>
+
+</div>
 
 
 

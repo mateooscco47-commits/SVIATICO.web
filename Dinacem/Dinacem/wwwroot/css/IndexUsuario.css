@@ -1,0 +1,456 @@
+﻿/* =========================================================
+   GESTIÓN DE USUARIOS - DINACEN
+   IndexUsuario.css
+   ========================================================= */
+
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================= */
+
+.page-wrapper {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   ENCABEZADO DE PÁGINA
+   ========================================================= */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 22px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+}
+
+
+/* =========================================================
+   TÍTULO
+   ========================================================= */
+
+.page-title {
+    margin: 0 0 5px;
+    color: #0f172a;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   DESCRIPCIÓN
+   ========================================================= */
+
+.page-description {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   TARJETAS DE RESUMEN
+   ========================================================= */
+
+.summary-card {
+    height: 100%;
+    padding: 17px 18px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, .04);
+}
+
+
+/* =========================================================
+   ETIQUETA DEL RESUMEN
+   ========================================================= */
+
+.summary-label {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   VALOR DEL RESUMEN
+   ========================================================= */
+
+.summary-value {
+    margin-top: 4px;
+    color: #0f172a;
+    font-size: 26px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   CAJAS PRINCIPALES
+   ========================================================= */
+
+.box {
+    height: 100%;
+    padding: 22px;
+    background: #fff;
+    border: 1px solid #dbe1ea;
+    border-radius: 15px;
+    box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+}
+
+
+/* =========================================================
+   TÍTULOS DE LAS CAJAS
+   ========================================================= */
+
+.box-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 18px;
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   ETIQUETAS DE FORMULARIOS
+   ========================================================= */
+
+.form-label {
+    margin-bottom: 5px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   INPUTS Y SELECTS
+   ========================================================= */
+
+.form-control,
+.form-select {
+    min-height: 42px;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   BOTÓN PRINCIPAL
+   ========================================================= */
+
+.btn-dark-custom {
+    min-height: 44px;
+    color: #fff;
+    background: #0f172a;
+    font-weight: 700;
+}
+
+
+    /* =========================================================
+   HOVER BOTÓN PRINCIPAL
+   ========================================================= */
+
+    .btn-dark-custom:hover {
+        color: #fff;
+        background: #111827;
+    }
+
+
+/* =========================================================
+   BADGE DEL ROL
+   ========================================================= */
+
+.badge-role {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 5px 9px;
+    color: #4f46e5;
+    background: #eef2ff;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   BADGE DE ESTADO
+   ========================================================= */
+
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   ESTADO ACTIVO
+   ========================================================= */
+
+.status-active {
+    color: #166534;
+    background: #dcfce7;
+    border: 1px solid #86efac;
+}
+
+
+/* =========================================================
+   ESTADO INACTIVO
+   ========================================================= */
+
+.status-inactive {
+    color: #991b1b;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+}
+
+
+/* =========================================================
+   TABLA
+   ========================================================= */
+
+.table {
+    min-width: 920px;
+    font-size: 14px;
+}
+
+
+    /* =========================================================
+   CABECERA DE TABLA
+   ========================================================= */
+
+    .table thead th {
+        color: #64748b;
+        background: #f8fafc;
+        font-size: 12px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+   CELDAS
+   ========================================================= */
+
+    .table td {
+        vertical-align: middle;
+    }
+
+
+/* =========================================================
+   BOTONES DE ACCIONES
+   ========================================================= */
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal-content {
+    border: 0;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   CABECERA DEL MODAL
+   ========================================================= */
+
+.modal-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+   ========================================================= */
+
+@media (max-width: 991.98px) {
+
+    .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+        .page-header .btn {
+            width: 100%;
+        }
+
+    .box {
+        padding: 19px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE - CELULAR
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .page-header {
+        padding: 18px;
+        border-radius: 13px;
+    }
+
+    .page-title {
+        font-size: 23px;
+    }
+
+    .summary-value {
+        font-size: 23px;
+    }
+
+    .box {
+        padding: 16px;
+        border-radius: 13px;
+    }
+
+    .box-title {
+        font-size: 17px;
+    }
+
+    .modal-dialog {
+        margin: 12px;
+    }
+
+    .modal-footer {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+        .modal-footer .btn {
+            width: 100%;
+        }
+}
+/* =========================================================
+   ENCABEZADO LISTA + BUSCADOR
+   ========================================================= */
+
+.users-list-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+
+/* =========================================================
+   BUSCADOR
+   ========================================================= */
+
+.users-search {
+    width: 100%;
+    max-width: 430px;
+}
+
+    .users-search .form-control {
+        min-height: 42px;
+    }
+
+    .users-search .input-group-text {
+        color: #64748b;
+        background: #fff;
+        border-right: 0;
+    }
+
+        .users-search .input-group-text + .form-control {
+            border-left: 0;
+        }
+
+.search-info {
+    margin-top: 5px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   SIN RESULTADOS
+   ========================================================= */
+
+.search-empty {
+    padding: 40px 20px;
+    color: #64748b;
+    text-align: center;
+}
+
+    .search-empty i {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 32px;
+    }
+
+    .search-empty h6 {
+        margin-bottom: 5px;
+        color: #334155;
+        font-weight: 700;
+    }
+
+    .search-empty p {
+        margin: 0;
+        font-size: 13px;
+    }
+
+
+/* =========================================================
+   VALIDACIONES
+   ========================================================= */
+
+.usuario-form .is-invalid {
+    border-color: #dc3545;
+}
+
+.usuario-form .is-valid {
+    border-color: #198754;
+}
+
+.usuario-form .invalid-feedback {
+    display: none;
+}
+
+.usuario-form .is-invalid ~ .invalid-feedback {
+    display: block;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .users-list-header {
+        flex-direction: column;
+    }
+
+    .users-search {
+        max-width: 100%;
+    }
+}

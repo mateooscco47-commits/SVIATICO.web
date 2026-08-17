@@ -1,0 +1,2 @@
+C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\wwwroot\css\Notificaciones.css
+C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\wwwroot\js\Notificaciones.js

@@ -60,7 +60,7 @@ namespace Dinacem.Controllers
             usuario.Apellidos = modelo.Apellidos;
             usuario.Correo = modelo.Correo;
             usuario.Celular = modelo.Celular;
-            usuario.Vehiculo = modelo.Vehiculo;
+            usuario.Zona = modelo.Zona;
             usuario.Contrasenia = modelo.Contrasenia;
 
             await _context.SaveChangesAsync();

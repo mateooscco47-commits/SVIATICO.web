@@ -139,7 +139,6 @@ C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\stati
 C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\swae.build.ex.cache
-C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\Dinacen.csproj.Up2Date
 C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\Dinacen.dll
 C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\refint\Dinacen.dll
@@ -341,3 +340,4 @@ C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runti
 C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\win-x86\native\QuestPdfSkia.dll
 C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\win-x86\native\qpdf.dll
 C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

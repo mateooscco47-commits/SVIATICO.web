@@ -9,255 +9,62 @@
     var usuariosInactivos = Model?.Count(x => !x.Estado) ?? 0;
 }
 
-<style>
-    .page-wrapper {
-        width: 100%;
-        max-width: 1600px;
-        margin: 0 auto;
-    }
+<link rel="stylesheet"
+      href="~/css/IndexUsuario.css"
+      asp-append-version="true" />
 
-    .page-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 24px;
-        padding: 22px;
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
-    }
-
-    .page-title {
-        margin: 0 0 5px;
-        color: #0f172a;
-        font-size: 28px;
-        font-weight: 800;
-    }
-
-    .page-description {
-        margin: 0;
-        color: #64748b;
-        font-size: 14px;
-    }
-
-    .summary-card {
-        height: 100%;
-        padding: 17px 18px;
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 13px;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, .04);
-    }
-
-    .summary-label {
-        color: #64748b;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
-
-    .summary-value {
-        margin-top: 4px;
-        color: #0f172a;
-        font-size: 26px;
-        font-weight: 800;
-    }
-
-    .box {
-        height: 100%;
-        padding: 22px;
-        background: #fff;
-        border: 1px solid #dbe1ea;
-        border-radius: 15px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
-    }
-
-    .box-title {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        margin-bottom: 18px;
-        color: #0f172a;
-        font-size: 18px;
-        font-weight: 800;
-    }
-
-    .form-label {
-        margin-bottom: 5px;
-        color: #334155;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .form-control,
-    .form-select {
-        min-height: 42px;
-        font-size: 14px;
-    }
-
-    .btn-dark-custom {
-        min-height: 44px;
-        color: #fff;
-        background: #0f172a;
-        font-weight: 700;
-    }
-
-        .btn-dark-custom:hover {
-            color: #fff;
-            background: #111827;
-        }
-
-    .badge-role {
-        display: inline-block;
-        margin-top: 4px;
-        padding: 5px 9px;
-        color: #4f46e5;
-        background: #eef2ff;
-        border-radius: 7px;
-        font-size: 12px;
-        font-weight: 700;
-    }
-
-    .badge-status {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 6px 10px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .status-active {
-        color: #166534;
-        background: #dcfce7;
-        border: 1px solid #86efac;
-    }
-
-    .status-inactive {
-        color: #991b1b;
-        background: #fee2e2;
-        border: 1px solid #fca5a5;
-    }
-
-    .table {
-        min-width: 920px;
-        font-size: 14px;
-    }
-
-        .table thead th {
-            color: #64748b;
-            background: #f8fafc;
-            font-size: 12px;
-            text-transform: uppercase;
-            white-space: nowrap;
-        }
-
-        .table td {
-            vertical-align: middle;
-        }
-
-    .actions {
-        display: flex;
-        justify-content: flex-end;
-        flex-wrap: wrap;
-        gap: 6px;
-    }
-
-    .modal-content {
-        border: 0;
-        border-radius: 15px;
-        overflow: hidden;
-    }
-
-    .modal-header {
-        background: #f8fafc;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    @@media (max-width: 991.98px) {
-        .page-header {
-            align-items: flex-start;
-            flex-direction: column;
-        }
-
-            .page-header .btn {
-                width: 100%;
-            }
-
-        .box {
-            padding: 19px;
-        }
-    }
-
-    @@media (max-width: 767.98px) {
-        .page-header {
-            padding: 18px;
-            border-radius: 13px;
-        }
-
-        .page-title {
-            font-size: 23px;
-        }
-
-        .summary-value {
-            font-size: 23px;
-        }
-
-        .box {
-            padding: 16px;
-            border-radius: 13px;
-        }
-
-        .box-title {
-            font-size: 17px;
-        }
-
-        .modal-dialog {
-            margin: 12px;
-        }
-
-        .modal-footer {
-            display: grid;
-            grid-template-columns: 1fr;
-        }
-
-            .modal-footer .btn {
-                width: 100%;
-            }
-    }
-</style>
 
 <div class="page-wrapper">
 
-    <!-- La barra de navegación del administrador ya se carga desde _LayoutAdministrador.cshtml -->
+    <!-- =========================================================
+         ENCABEZADO
+         ========================================================= -->
 
     <div class="page-header">
+
         <div>
+
             <h1 class="page-title">
+
                 <i class="bi bi-people-fill me-2"></i>
+
                 Gestión de Usuarios
+
             </h1>
 
             <p class="page-description">
+
                 Registre, edite, active o desactive usuarios del sistema.
+
             </p>
+
         </div>
+
 
         <a asp-controller="Principal"
            asp-action="Index"
            class="btn btn-outline-secondary">
+
             <i class="bi bi-arrow-left"></i>
+
             Volver al panel
+
         </a>
+
     </div>
 
+
+
+    <!-- =========================================================
+         MENSAJE DE ÉXITO
+         ========================================================= -->
     @if (TempData["mensaje"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show">
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-check-circle-fill me-2"></i>
+
             @TempData["mensaje"]
 
             <button type="button"
@@ -265,12 +72,22 @@
                     data-bs-dismiss="alert"
                     aria-label="Cerrar">
             </button>
+
         </div>
     }
 
+
+
+    <!-- =========================================================
+         MENSAJE DE ERROR
+         ========================================================= -->
     @if (TempData["error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show">
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
             @Html.Raw(TempData["error"])
 
             <button type="button"
@@ -278,184 +95,616 @@
                     data-bs-dismiss="alert"
                     aria-label="Cerrar">
             </button>
+
         </div>
     }
 
+
+
+    <!-- =========================================================
+         RESUMEN DE USUARIOS
+         ========================================================= -->
+
     <div class="row g-3 mb-4">
-        <div class="col-12 col-sm-4">
-            <div class="summary-card">
-                <div class="summary-label">Total de usuarios</div>
-                <div class="summary-value">@totalUsuarios</div>
-            </div>
-        </div>
+
+
+        <!-- TOTAL -->
 
         <div class="col-12 col-sm-4">
+
             <div class="summary-card">
-                <div class="summary-label text-success">Activos</div>
-                <div class="summary-value">@usuariosActivos</div>
+
+                <div class="summary-label">
+
+                    Total de usuarios
+
+                </div>
+
+                <div class="summary-value">
+
+                    @totalUsuarios
+
+                </div>
+
             </div>
+
         </div>
 
+
+        <!-- ACTIVOS -->
+
         <div class="col-12 col-sm-4">
+
             <div class="summary-card">
-                <div class="summary-label text-danger">Inactivos</div>
-                <div class="summary-value">@usuariosInactivos</div>
+
+                <div class="summary-label text-success">
+
+                    Activos
+
+                </div>
+
+                <div class="summary-value">
+
+                    @usuariosActivos
+
+                </div>
+
             </div>
+
         </div>
+
+
+        <!-- INACTIVOS -->
+
+        <div class="col-12 col-sm-4">
+
+            <div class="summary-card">
+
+                <div class="summary-label text-danger">
+
+                    Inactivos
+
+                </div>
+
+                <div class="summary-value">
+
+                    @usuariosInactivos
+
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
+
+
+
+    <!-- =========================================================
+         CONTENIDO PRINCIPAL
+         ========================================================= -->
 
     <div class="row g-4">
 
-        <!-- CREAR USUARIO -->
+
+        <!-- =====================================================
+             CREAR USUARIO
+             ===================================================== -->
+
         <div class="col-12 col-xl-3">
+
             <div class="box">
 
+
+                <!-- TÍTULO -->
+
                 <div class="box-title">
+
                     <i class="bi bi-person-plus-fill text-primary"></i>
+
                     Crear nuevo usuario
+
                 </div>
+
+
+
+                <!-- FORMULARIO -->
 
                 <form asp-controller="Usuario"
                       asp-action="Create"
-                      method="post">
+                      method="post"
+                      class="usuario-form"
+                      novalidate>
+
+
+                    <!-- =================================================
+                         USUARIO DE ACCESO
+                         ================================================= -->
 
                     <div class="mb-3">
-                        <label class="form-label">Usuario de acceso</label>
+
+                        <label class="form-label">
+
+                            Usuario de acceso
+
+                        </label>
+
                         <input type="text"
                                class="form-control"
                                name="UsuarioAcceso"
-                               maxlength="100"
+                               minlength="4"
+                               maxlength="50"
+                               pattern="[A-Za-z0-9._-]{4,50}"
                                placeholder="Ej. admin001 / P001"
+                               autocomplete="username"
                                required />
+
+                        <div class="invalid-feedback">
+
+                            El usuario debe tener entre 4 y 50 caracteres.
+                            Solo se permiten letras, números, punto,
+                            guion y guion bajo.
+
+                        </div>
+
                     </div>
 
+
+
+                    <!-- =================================================
+                         ZONA
+                         ================================================= -->
+
                     <div class="mb-3">
-                        <label class="form-label">Rol</label>
+
+                        <label class="form-label">
+
+                            Zona
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               name="Zona"
+                               maxlength="100"
+                               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 .-]{2,100}"
+                               placeholder="Ej. Huancayo"
+                               required />
+
+                        <div class="invalid-feedback">
+
+                            Ingrese una zona válida.
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         ROL
+                         ================================================= -->
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+
+                            Rol
+
+                        </label>
+
                         <select class="form-select"
                                 name="IdRol"
                                 required>
-                            <option value="">Seleccione...</option>
-                            <option value="1">Administrador</option>
-                            <option value="2">Empleado</option>
+
+                            <option value="">
+
+                                Seleccione...
+
+                            </option>
+
+                            <option value="1">
+
+                                Administrador
+
+                            </option>
+
+                            <option value="2">
+
+                                Supervisor
+
+                            </option>
+
+                            <option value="3">
+
+                                Representante
+
+                            </option>
+
                         </select>
+
+                        <div class="invalid-feedback">
+
+                            Debe seleccionar un rol.
+
+                        </div>
+
                     </div>
 
+
+
+                    <!-- =================================================
+                         NOMBRES
+                         ================================================= -->
+
                     <div class="mb-3">
-                        <label class="form-label">Nombres</label>
+
+                        <label class="form-label">
+
+                            Nombres
+
+                        </label>
+
                         <input type="text"
                                class="form-control"
                                name="Nombres"
                                maxlength="100"
+                               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{2,100}"
+                               autocomplete="given-name"
                                required />
+
+                        <div class="invalid-feedback">
+
+                            Ingrese nombres válidos.
+                            Solo se permiten letras y espacios.
+
+                        </div>
+
                     </div>
 
+
+
+                    <!-- =================================================
+                         APELLIDOS
+                         ================================================= -->
+
                     <div class="mb-3">
-                        <label class="form-label">Apellidos</label>
+
+                        <label class="form-label">
+
+                            Apellidos
+
+                        </label>
+
                         <input type="text"
                                class="form-control"
                                name="Apellidos"
                                maxlength="100"
+                               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{2,100}"
+                               autocomplete="family-name"
                                required />
+
+                        <div class="invalid-feedback">
+
+                            Ingrese apellidos válidos.
+                            Solo se permiten letras y espacios.
+
+                        </div>
+
                     </div>
 
+
+
+                    <!-- =================================================
+                         CORREO
+                         ================================================= -->
+
                     <div class="mb-3">
-                        <label class="form-label">Correo</label>
+
+                        <label class="form-label">
+
+                            Correo
+
+                        </label>
+
                         <input type="email"
                                class="form-control"
                                name="Correo"
                                maxlength="150"
                                placeholder="jperez@dinacem.com"
+                               autocomplete="email"
                                required />
+
+                        <div class="invalid-feedback">
+
+                            Ingrese un correo electrónico válido.
+
+                        </div>
+
                     </div>
 
+
+
+                    <!-- =================================================
+                         CELULAR
+                         ================================================= -->
+
                     <div class="mb-3">
-                        <label class="form-label">Número de celular</label>
+
+                        <label class="form-label">
+
+                            Número de celular
+
+                        </label>
+
                         <input type="tel"
-                               class="form-control"
+                               class="form-control celular-input"
                                name="Celular"
-                               maxlength="20"
+                               maxlength="9"
                                inputmode="numeric"
-                               placeholder="999999999" />
+                               pattern="9[0-9]{8}"
+                               placeholder="999999999"
+                               autocomplete="tel"
+                               required />
+
+                        <div class="invalid-feedback">
+
+                            El celular debe tener exactamente
+                            9 dígitos y comenzar con 9.
+
+                        </div>
+
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Vehículo</label>
-                        <input type="text"
-                               class="form-control"
-                               name="Vehiculo"
-                               maxlength="100"
-                               placeholder="Opcional" />
-                    </div>
+
+
+                    <!-- =================================================
+                         CONTRASEÑA
+                         ================================================= -->
 
                     <div class="mb-3">
-                        <label class="form-label">Contraseña inicial</label>
+
+                        <label class="form-label">
+
+                            Contraseña inicial
+
+                        </label>
+
                         <input type="password"
-                               class="form-control"
+                               class="form-control password-input"
                                name="Contrasenia"
+                               minlength="8"
+                               maxlength="100"
+                               pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,100}"
                                autocomplete="new-password"
                                required />
+
+                        <small class="text-muted d-block mt-1">
+
+                            Mínimo 8 caracteres, con mayúscula,
+                            minúscula, número y carácter especial.
+
+                        </small>
+
+                        <div class="invalid-feedback">
+
+                            La contraseña debe tener mínimo 8 caracteres,
+                            una mayúscula, una minúscula, un número
+                            y un carácter especial.
+
+                        </div>
+
                     </div>
+
+
+
+                    <!-- =================================================
+                         BOTÓN REGISTRAR
+                         ================================================= -->
 
                     <button type="submit"
                             class="btn btn-dark-custom w-100">
-                        <i class="bi bi-person-check-fill"></i>
+
+                        <i class="bi bi-person-check-fill me-1"></i>
+
                         Registrar usuario
+
                     </button>
 
+
                 </form>
+
             </div>
+
         </div>
 
-        <!-- LISTA DE USUARIOS -->
+
+
+        <!-- =====================================================
+             LISTA DE USUARIOS
+             ===================================================== -->
+
         <div class="col-12 col-xl-9">
+
             <div class="box">
 
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
-                    <div class="box-title mb-0">
-                        <i class="bi bi-list-ul text-primary"></i>
-                        Lista de usuarios
+
+                <!-- =================================================
+                     ENCABEZADO DE LISTA
+                     ================================================= -->
+
+                <div class="users-list-header mb-3">
+
+
+                    <div>
+
+                        <div class="box-title mb-1">
+
+                            <i class="bi bi-list-ul text-primary"></i>
+
+                            Lista de usuarios
+
+                        </div>
+
+                        <span class="text-muted small">
+
+                            Administre los usuarios registrados.
+
+                        </span>
+
                     </div>
 
-                    <span class="text-muted small">
-                        En celular, deslice la tabla horizontalmente.
-                    </span>
+
+
+                    <!-- =================================================
+                         BUSCADOR
+                         ================================================= -->
+
+                    <div class="users-search">
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+
+                                <i class="bi bi-search"></i>
+
+                            </span>
+
+                            <input type="search"
+                                   id="buscadorUsuarios"
+                                   class="form-control"
+                                   placeholder="Buscar usuario, nombre, correo..."
+                                   autocomplete="off" />
+
+                            <button type="button"
+                                    id="btnLimpiarBusqueda"
+                                    class="btn btn-outline-secondary"
+                                    title="Limpiar búsqueda">
+
+                                <i class="bi bi-x-lg"></i>
+
+                            </button>
+
+                        </div>
+
+
+                        <div class="search-info">
+
+                            <span id="contadorResultados">
+
+                                @totalUsuarios usuarios
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
+
+
+                <!-- =================================================
+                     TABLA
+                     ================================================= -->
+
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
+
+                    <table id="tablaUsuarios"
+                           class="table table-hover align-middle mb-0">
+
 
                         <thead>
+
                             <tr>
-                                <th>Usuario</th>
-                                <th>Datos personales</th>
-                                <th>Contacto</th>
-                                <th>Vehículo</th>
-                                <th>Estado</th>
-                                <th class="text-end">Acciones</th>
+
+                                <th>
+                                    Usuario
+                                </th>
+
+                                <th>
+                                    Datos personales
+                                </th>
+
+                                <th>
+                                    Contacto
+                                </th>
+
+                                <th>
+                                    Zona
+                                </th>
+
+                                <th>
+                                    Estado
+                                </th>
+
+                                <th class="text-end">
+                                    Acciones
+                                </th>
+
                             </tr>
+
                         </thead>
 
+
+
                         <tbody>
+
                             @if (Model != null && Model.Any())
                             {
+
                                 foreach (var item in Model)
                                 {
-                                    <tr>
-                                        <td>
-                                            <strong>@item.UsuarioAcceso</strong>
-                                            <br />
-                                            <span class="badge-role">
-                                                @(item.Rol?.Nombre ?? "Sin rol")
-                                            </span>
-                                        </td>
+
+                                    <tr class="usuario-row">
+
+
+                                        <!-- =================================================
+                                             USUARIO
+                                             ================================================= -->
 
                                         <td>
+
                                             <strong>
-                                                @item.Nombres @item.Apellidos
+
+                                                @item.UsuarioAcceso
+
                                             </strong>
+
+                                            <br />
+
+                                            <span class="badge-role">
+
+                                                @(item.Rol?.Nombre ?? "Sin rol")
+
+                                            </span>
+
                                         </td>
 
+
+
+                                        <!-- =================================================
+                                             DATOS PERSONALES
+                                             ================================================= -->
+
                                         <td>
+
+                                            <strong>
+
+                                                @item.Nombres @item.Apellidos
+
+                                            </strong>
+
+                                        </td>
+
+
+
+                                        <!-- =================================================
+                                             CONTACTO
+                                             ================================================= -->
+
+                                        <td>
+
                                             @(string.IsNullOrWhiteSpace(item.Correo)
                                                 ? "-"
                                                 : item.Correo)
@@ -463,249 +712,848 @@
                                             <br />
 
                                             <small class="text-muted">
+
                                                 @(string.IsNullOrWhiteSpace(item.Celular)
                                                     ? "Sin celular"
                                                     : item.Celular)
+
                                             </small>
+
                                         </td>
 
+
+
+                                        <!-- =================================================
+                                             ZONA
+                                             ================================================= -->
+
                                         <td>
-                                            @(string.IsNullOrWhiteSpace(item.Vehiculo)
+
+                                            @(string.IsNullOrWhiteSpace(item.Zona)
                                                 ? "-"
-                                                : item.Vehiculo)
+                                                : item.Zona)
+
                                         </td>
 
+
+
+                                        <!-- =================================================
+                                             ESTADO
+                                             ================================================= -->
+
                                         <td>
+
                                             @if (item.Estado)
                                             {
+
                                                 <span class="badge-status status-active">
+
                                                     <i class="bi bi-check-circle-fill"></i>
+
                                                     Activo
+
                                                 </span>
+
                                             }
                                             else
                                             {
+
                                                 <span class="badge-status status-inactive">
+
                                                     <i class="bi bi-x-circle-fill"></i>
+
                                                     Inactivo
+
                                                 </span>
+
                                             }
+
                                         </td>
 
-                                        <td>
-                                            <div class="actions">
 
-                                                <!-- Cada botón abre el modal del IdUsuario correspondiente -->
+
+                                        <!-- =================================================
+                                             ACCIONES
+                                             ================================================= -->
+
+                                        <td>
+
+                                            <div class="actions justify-content-end">
+
+
+                                                <!-- EDITAR -->
+
                                                 <button type="button"
                                                         class="btn btn-sm btn-warning"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#editarUsuario-@item.IdUsuario">
+
                                                     <i class="bi bi-pencil-square"></i>
+
                                                     Editar
+
                                                 </button>
 
+
+
+                                                <!-- ACTIVAR / DESACTIVAR -->
                                                 @if (item.Estado)
                                                 {
+
                                                     <form asp-controller="Usuario"
                                                           asp-action="Desactivar"
                                                           asp-route-id="@item.IdUsuario"
                                                           method="post"
-                                                          class="d-inline">
+                                                          class="d-inline"
+                                                          onsubmit="confirmarDesactivacion(event, this);">
 
                                                         <button type="submit"
-                                                                class="btn btn-sm btn-outline-danger"
-                                                                onclick="return confirm('¿Desea desactivar este usuario?');">
+                                                                class="btn btn-sm btn-outline-danger">
+
                                                             <i class="bi bi-person-x-fill"></i>
+
                                                             Desactivar
+
                                                         </button>
+
                                                     </form>
+
                                                 }
                                                 else
                                                 {
+
                                                     <form asp-controller="Usuario"
                                                           asp-action="Activar"
                                                           asp-route-id="@item.IdUsuario"
                                                           method="post"
-                                                          class="d-inline">
+                                                          class="d-inline"
+                                                          onsubmit="confirmarActivacion(event, this);">
 
                                                         <button type="submit"
-                                                                class="btn btn-sm btn-outline-success"
-                                                                onclick="return confirm('¿Desea activar este usuario?');">
+                                                                class="btn btn-sm btn-outline-success">
+
                                                             <i class="bi bi-person-check-fill"></i>
+
                                                             Activar
+
                                                         </button>
+
                                                     </form>
+
                                                 }
 
                                             </div>
+
                                         </td>
+
                                     </tr>
 
-                                    <!-- MODAL EXCLUSIVO DEL USUARIO ACTUAL -->
-                                    <div class="modal fade"
-                                         id="editarUsuario-@item.IdUsuario"
-                                         tabindex="-1"
-                                         aria-labelledby="tituloEditarUsuario-@item.IdUsuario"
-                                         aria-hidden="true">
-
-                                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                                            <div class="modal-content">
-
-                                                <form asp-controller="Usuario"
-                                                      asp-action="Edit"
-                                                      method="post">
-
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title"
-                                                            id="tituloEditarUsuario-@item.IdUsuario">
-                                                            <i class="bi bi-pencil-square me-1"></i>
-                                                            Editar usuario:
-                                                            @item.Nombres @item.Apellidos
-                                                        </h5>
-
-                                                        <button type="button"
-                                                                class="btn-close"
-                                                                data-bs-dismiss="modal"
-                                                                aria-label="Cerrar">
-                                                        </button>
-                                                    </div>
-
-                                                    <div class="modal-body">
-
-                                                        <!-- Este Id garantiza que se edite el usuario seleccionado -->
-                                                        <input type="hidden"
-                                                               name="IdUsuario"
-                                                               value="@item.IdUsuario" />
-
-                                                        <div class="row g-3">
-
-                                                            <div class="col-12 col-md-6">
-                                                                <label class="form-label">Usuario de acceso</label>
-                                                                <input type="text"
-                                                                       class="form-control"
-                                                                       name="UsuarioAcceso"
-                                                                       value="@item.UsuarioAcceso"
-                                                                       maxlength="100"
-                                                                       required />
-                                                            </div>
-
-                                                            <div class="col-12 col-md-6">
-                                                                <label class="form-label">Rol</label>
-                                                                <select class="form-select"
-                                                                        name="IdRol"
-                                                                        required>
-                                                                    @if (item.IdRol == 1)
-                                                                    {
-                                                                        <option value="1" selected>Administrador</option>
-                                                                        <option value="2">Empleado</option>
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        <option value="1">Administrador</option>
-                                                                        <option value="2" selected>Empleado</option>
-                                                                    }
-                                                                </select>
-                                                            </div>
-
-                                                            <div class="col-12 col-md-6">
-                                                                <label class="form-label">Nombres</label>
-                                                                <input type="text"
-                                                                       class="form-control"
-                                                                       name="Nombres"
-                                                                       value="@item.Nombres"
-                                                                       maxlength="100"
-                                                                       required />
-                                                            </div>
-
-                                                            <div class="col-12 col-md-6">
-                                                                <label class="form-label">Apellidos</label>
-                                                                <input type="text"
-                                                                       class="form-control"
-                                                                       name="Apellidos"
-                                                                       value="@item.Apellidos"
-                                                                       maxlength="100"
-                                                                       required />
-                                                            </div>
-
-                                                            <div class="col-12 col-md-6">
-                                                                <label class="form-label">Correo</label>
-                                                                <input type="email"
-                                                                       class="form-control"
-                                                                       name="Correo"
-                                                                       value="@item.Correo"
-                                                                       maxlength="150"
-                                                                       required />
-                                                            </div>
-
-                                                            <div class="col-12 col-md-6">
-                                                                <label class="form-label">Celular</label>
-                                                                <input type="tel"
-                                                                       class="form-control"
-                                                                       name="Celular"
-                                                                       value="@item.Celular"
-                                                                       maxlength="20"
-                                                                       inputmode="numeric" />
-                                                            </div>
-
-                                                            <div class="col-12 col-md-6">
-                                                                <label class="form-label">Vehículo</label>
-                                                                <input type="text"
-                                                                       class="form-control"
-                                                                       name="Vehiculo"
-                                                                       value="@item.Vehiculo"
-                                                                       maxlength="100" />
-                                                            </div>
-
-                                                            <div class="col-12 col-md-6">
-                                                                <label class="form-label">Contraseña</label>
-                                                                <input type="password"
-                                                                       class="form-control"
-                                                                       name="Contrasenia"
-                                                                       value="@item.Contrasenia"
-                                                                       autocomplete="new-password"
-                                                                       required />
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="modal-footer">
-                                                        <button type="button"
-                                                                class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">
-                                                            Cancelar
-                                                        </button>
-
-                                                        <button type="submit"
-                                                                class="btn btn-primary">
-                                                            <i class="bi bi-save-fill"></i>
-                                                            Guardar cambios
-                                                        </button>
-                                                    </div>
-
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
                                 }
+
                             }
                             else
                             {
+
                                 <tr>
+
                                     <td colspan="6"
-                                        class="text-center text-muted py-5">
-                                        <i class="bi bi-people fs-2 d-block mb-2"></i>
-                                        No hay usuarios registrados.
+                                        class="text-center py-4 text-muted">
+
+                                        <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+
+                                        No se encontraron usuarios registrados.
+
                                     </td>
+
                                 </tr>
+
                             }
+
                         </tbody>
 
                     </table>
+
                 </div>
+
             </div>
+
         </div>
 
     </div>
 
 </div>
+
+
+
+<!-- =========================================================
+     MODALES DE EDICIÓN
+     ========================================================= -->
+@if (Model != null && Model.Any())
+{
+
+    foreach (var item in Model)
+    {
+
+        <div class="modal fade"
+             id="editarUsuario-@item.IdUsuario"
+             tabindex="-1"
+             aria-labelledby="tituloEditarUsuario-@item.IdUsuario"
+             aria-hidden="true">
+
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+
+                <div class="modal-content">
+
+
+                    <form asp-controller="Usuario"
+                          asp-action="Edit"
+                          method="post"
+                          class="usuario-form"
+                          novalidate>
+
+
+                        <!-- =================================================
+                             HEADER
+                             ================================================= -->
+
+                        <div class="modal-header">
+
+                            <h5 class="modal-title"
+                                id="tituloEditarUsuario-@item.IdUsuario">
+
+                                <i class="bi bi-pencil-square me-1"></i>
+
+                                Editar usuario:
+                                @item.Nombres @item.Apellidos
+
+                            </h5>
+
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Cerrar">
+                            </button>
+
+                        </div>
+
+
+
+                        <!-- =================================================
+                             BODY
+                             ================================================= -->
+
+                        <div class="modal-body">
+
+
+                            <!-- ID -->
+
+                            <input type="hidden"
+                                   name="IdUsuario"
+                                   value="@item.IdUsuario" />
+
+
+                            <div class="row g-3">
+
+
+                                <!-- =================================================
+                                     USUARIO DE ACCESO
+                                     ================================================= -->
+
+                                <div class="col-12 col-md-6">
+
+                                    <label class="form-label">
+
+                                        Usuario de acceso
+
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           name="UsuarioAcceso"
+                                           value="@item.UsuarioAcceso"
+                                           minlength="4"
+                                           maxlength="50"
+                                           pattern="[A-Za-z0-9._-]{4,50}"
+                                           autocomplete="username"
+                                           required />
+
+                                    <div class="invalid-feedback">
+
+                                        El usuario debe tener entre 4 y 50 caracteres.
+                                        Solo se permiten letras, números, punto,
+                                        guion y guion bajo.
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- =================================================
+                                     ZONA
+                                     ================================================= -->
+
+                                <div class="col-12 col-md-6">
+
+                                    <label class="form-label">
+
+                                        Zona
+
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           name="Zona"
+                                           value="@item.Zona"
+                                           maxlength="100"
+                                           pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ0-9 .-]{2,100}"
+                                           required />
+
+                                    <div class="invalid-feedback">
+
+                                        Ingrese una zona válida.
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- =================================================
+                                     ROL
+                                     ================================================= -->
+
+                                <div class="col-12 col-md-6">
+
+                                    <label class="form-label">
+
+                                        Rol
+
+                                    </label>
+
+                                    <select class="form-select"
+                                            name="IdRol"
+                                            required>
+
+                                        <option value="">
+
+                                            Seleccione...
+
+                                        </option>
+
+                                        @if (item.IdRol == 1)
+                                        {
+                                            <option value="1" selected>
+                                                Administrador
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="1">
+                                                Administrador
+                                            </option>
+                                        }
+
+
+                                        @if (item.IdRol == 2)
+                                        {
+                                            <option value="2" selected>
+                                                Supervisor
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="2">
+                                                Supervisor
+                                            </option>
+                                        }
+
+
+                                        @if (item.IdRol == 3)
+                                        {
+                                            <option value="3" selected>
+                                                Representante
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="3">
+                                                Representante
+                                            </option>
+                                        }
+
+                                    </select>
+
+                                    <div class="invalid-feedback">
+
+                                        Debe seleccionar un rol.
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- =================================================
+                                     NOMBRES
+                                     ================================================= -->
+
+                                <div class="col-12 col-md-6">
+
+                                    <label class="form-label">
+
+                                        Nombres
+
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           name="Nombres"
+                                           value="@item.Nombres"
+                                           maxlength="100"
+                                           pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{2,100}"
+                                           autocomplete="given-name"
+                                           required />
+
+                                    <div class="invalid-feedback">
+
+                                        Ingrese nombres válidos.
+                                        Solo se permiten letras y espacios.
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- =================================================
+                                     APELLIDOS
+                                     ================================================= -->
+
+                                <div class="col-12 col-md-6">
+
+                                    <label class="form-label">
+
+                                        Apellidos
+
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           name="Apellidos"
+                                           value="@item.Apellidos"
+                                           maxlength="100"
+                                           pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]{2,100}"
+                                           autocomplete="family-name"
+                                           required />
+
+                                    <div class="invalid-feedback">
+
+                                        Ingrese apellidos válidos.
+                                        Solo se permiten letras y espacios.
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- =================================================
+                                     CORREO
+                                     ================================================= -->
+
+                                <div class="col-12 col-md-6">
+
+                                    <label class="form-label">
+
+                                        Correo
+
+                                    </label>
+
+                                    <input type="email"
+                                           class="form-control"
+                                           name="Correo"
+                                           value="@item.Correo"
+                                           maxlength="150"
+                                           autocomplete="email"
+                                           required />
+
+                                    <div class="invalid-feedback">
+
+                                        Ingrese un correo electrónico válido.
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- =================================================
+                                     CELULAR
+                                     ================================================= -->
+
+                                <div class="col-12 col-md-6">
+
+                                    <label class="form-label">
+
+                                        Número de celular
+
+                                    </label>
+
+                                    <input type="tel"
+                                           class="form-control celular-input"
+                                           name="Celular"
+                                           value="@item.Celular"
+                                           maxlength="9"
+                                           inputmode="numeric"
+                                           pattern="9[0-9]{8}"
+                                           autocomplete="tel"
+                                           required />
+
+                                    <div class="invalid-feedback">
+
+                                        El celular debe tener exactamente
+                                        9 dígitos y comenzar con 9.
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- =================================================
+                                     NUEVA CONTRASEÑA
+                                     ================================================= -->
+
+                                <div class="col-12">
+
+                                    <label class="form-label">
+
+                                        Nueva contraseña
+
+                                    </label>
+
+                                    <input type="password"
+                                           class="form-control password-input"
+                                           name="Contrasenia"
+                                           minlength="8"
+                                           maxlength="100"
+                                           pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,100}"
+                                           placeholder="Dejar en blanco para mantener actual"
+                                           autocomplete="new-password" />
+
+                                    <small class="text-muted d-block mt-1">
+
+                                        Solo completar si desea cambiar la contraseña.
+                                        Debe contener mayúscula, minúscula,
+                                        número y carácter especial.
+
+                                    </small>
+
+                                    <div class="invalid-feedback">
+
+                                        La contraseña debe tener mínimo 8 caracteres,
+                                        una mayúscula, una minúscula, un número
+                                        y un carácter especial.
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- =================================================
+                             FOOTER
+                             ================================================= -->
+
+                        <div class="modal-footer">
+
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">
+
+                                Cancelar
+
+                            </button>
+
+
+                            <button type="submit"
+                                    class="btn btn-warning">
+
+                                <i class="bi bi-save me-1"></i>
+
+                                Guardar cambios
+
+                            </button>
+
+                        </div>
+
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    }
+
+}
+
+
+
+<!-- =========================================================
+     SCRIPTS
+     ========================================================= -->
+@section Scripts {
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+
+            // ====================================================
+            // 1. BUSCADOR DE USUARIOS
+            // ====================================================
+
+            const buscador =
+                document.getElementById("buscadorUsuarios");
+
+            const btnLimpiar =
+                document.getElementById("btnLimpiarBusqueda");
+
+            const contador =
+                document.getElementById("contadorResultados");
+
+            const filas =
+                document.querySelectorAll(".usuario-row");
+
+
+            function filtrarTabla() {
+
+                const termino =
+                    buscador
+                        ? buscador.value.toLowerCase().trim()
+                        : "";
+
+                let visibles = 0;
+
+
+                filas.forEach(function (fila) {
+
+                    const textoFila =
+                        fila.textContent.toLowerCase();
+
+
+                    if (textoFila.includes(termino)) {
+
+                        fila.style.display = "";
+
+                        visibles++;
+
+                    }
+                    else {
+
+                        fila.style.display = "none";
+
+                    }
+
+                });
+
+
+                if (contador) {
+
+                    contador.textContent =
+                        `${visibles} usuarios`;
+
+                }
+
+            }
+
+
+            if (buscador) {
+
+                buscador.addEventListener(
+                    "input",
+                    filtrarTabla
+                );
+
+            }
+
+
+            if (btnLimpiar) {
+
+                btnLimpiar.addEventListener(
+                    "click",
+                    function () {
+
+                        if (buscador) {
+
+                            buscador.value = "";
+
+                            filtrarTabla();
+
+                            buscador.focus();
+
+                        }
+
+                    }
+                );
+
+            }
+
+
+
+            // ====================================================
+            // 2. VALIDACIÓN DE FORMULARIOS
+            // ====================================================
+
+            const forms =
+                document.querySelectorAll(".usuario-form");
+
+
+            forms.forEach(function (form) {
+
+                form.addEventListener(
+                    "submit",
+                    function (event) {
+
+                        if (!form.checkValidity()) {
+
+                            event.preventDefault();
+
+                            event.stopPropagation();
+
+                        }
+
+                        form.classList.add(
+                            "was-validated"
+                        );
+
+                    }
+                );
+
+            });
+
+
+
+            // ====================================================
+            // 3. SOLO NÚMEROS PARA CELULAR
+            // ====================================================
+
+            const celulares =
+                document.querySelectorAll(".celular-input");
+
+
+            celulares.forEach(function (input) {
+
+                input.addEventListener(
+                    "input",
+                    function () {
+
+                        this.value =
+                            this.value
+                                .replace(/\D/g, "")
+                                .slice(0, 9);
+
+                    }
+                );
+
+            });
+
+
+
+            // ====================================================
+            // 4. CERRAR MODAL DESPUÉS DE ERROR DE VALIDACIÓN
+            // ====================================================
+
+            document
+                .querySelectorAll(".modal")
+                .forEach(function (modal) {
+
+                    modal.addEventListener(
+                        "shown.bs.modal",
+                        function () {
+
+                            const form =
+                                modal.querySelector(
+                                    ".usuario-form"
+                                );
+
+                            if (form) {
+
+                                form.classList.remove(
+                                    "was-validated"
+                                );
+
+                            }
+
+                        }
+                    );
+
+                });
+
+        });
+
+
+
+        // ========================================================
+        // 5. CONFIRMACIÓN DE DESACTIVACIÓN
+        // ========================================================
+
+        function confirmarDesactivacion(event, form) {
+
+            const confirmar = confirm(
+                "¿Está seguro de que desea desactivar este usuario?\n\n" +
+                "El usuario no podrá acceder al sistema mientras esté inactivo."
+            );
+
+
+            if (!confirmar) {
+
+                event.preventDefault();
+
+                return false;
+
+            }
+
+
+            return true;
+
+        }
+
+
+
+        // ========================================================
+        // 6. CONFIRMACIÓN DE ACTIVACIÓN
+        // ========================================================
+
+        function confirmarActivacion(event, form) {
+
+            const confirmar = confirm(
+                "¿Desea activar nuevamente este usuario?"
+            );
+
+
+            if (!confirmar) {
+
+                event.preventDefault();
+
+                return false;
+
+            }
+
+
+            return true;
+
+        }
+
+    </script>
+
+}

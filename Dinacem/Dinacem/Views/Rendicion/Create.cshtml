@@ -6,6 +6,7 @@
 }
 
 <style>
+
     .page-wrapper {
         width: 100%;
         max-width: 900px;
@@ -89,15 +90,16 @@
     }
 
     @@media (max-width: 767.98px) {
+
         .page-header {
             flex-direction: column;
             align-items: flex-start;
             padding: 18px;
         }
 
-            .page-header .btn {
-                width: 100%;
-            }
+        .page-header .btn {
+            width: 100%;
+        }
 
         .page-title {
             font-size: 23px;
@@ -112,60 +114,64 @@
             grid-template-columns: 1fr;
         }
 
-            .action-buttons .btn {
-                width: 100%;
-            }
+        .action-buttons .btn {
+            width: 100%;
+        }
     }
+
 </style>
 
+
+<!-- =========================================================
+     CONTENEDOR PRINCIPAL
+     ========================================================= -->
 <div class="page-wrapper">
 
-    <!-- La barra del empleado se carga desde _LayoutEmpleado.cshtml -->
-
+    <!-- =========================================================
+         ENCABEZADO
+         ========================================================= -->
     <div class="page-header">
         <div>
             <h1 class="page-title">
-                <i class="bi bi-wallet2 me-2"></i>
-                Crear Rendición de Gastos
+                <i class="bi bi-wallet2 me-2"></i> Crear Rendición de Gastos
             </h1>
-
             <p class="page-description">
                 Confirme los datos de la solicitud antes de iniciar el registro de gastos.
             </p>
         </div>
 
-        <a asp-controller="Rendicion"
-           asp-action="Index"
-           class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i>
-            Volver a rendiciones
+        <a asp-controller="Rendicion" asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver a rendiciones
         </a>
     </div>
 
+    <!-- =========================================================
+         MENSAJE DE ERROR
+         ========================================================= -->
     @if (TempData["error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
             @Html.Raw(TempData["error"])
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Cerrar">
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
     }
 
+    <!-- =========================================================
+         TARJETA PRINCIPAL
+         ========================================================= -->
     <div class="form-card">
+
+        <!-- CABECERA -->
         <div class="form-card-header">
-            <i class="bi bi-check2-square me-2"></i>
-            Confirmación de la rendición
+            <i class="bi bi-check2-square me-2"></i> Confirmación de la rendición
         </div>
 
+        <!-- CUERPO -->
         <div class="form-card-body">
-            <form asp-controller="Rendicion"
-                  asp-action="Create"
-                  method="post">
+            <form asp-controller="Rendicion" asp-action="Create" method="post" id="formCrearRendicion">
 
+                <!-- CAMPOS OCULTOS -->
                 <input type="hidden" asp-for="IdSolicitud" />
                 <input type="hidden" asp-for="IdUsuario" />
                 <input type="hidden" asp-for="Fecha" />
@@ -175,64 +181,185 @@
                 <input type="hidden" asp-for="Saldo" />
                 <input type="hidden" asp-for="IdEstadoRendicion" />
 
-                <div class="alert alert-info">
+                <!-- INFORMACIÓN -->
+                <div class="alert alert-info" role="alert">
                     <i class="bi bi-info-circle-fill me-1"></i>
                     Al confirmar, se creará la rendición y podrá comenzar a registrar sus gastos.
                 </div>
 
+                <!-- DATOS DE LA RENDICIÓN -->
                 <div class="row g-3">
+
+                    <!-- SOLICITUD -->
                     <div class="col-12 col-sm-6">
                         <div class="info-card">
                             <div class="info-label">Solicitud</div>
-                            <div class="info-value">#@Model.IdSolicitud</div>
+                            <div class="info-value">
+                                @if (Model.IdSolicitud > 0)
+                                {
+                                    <span>#@Model.IdSolicitud</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger">
+                                        <i class="bi bi-exclamation-circle-fill"></i> Solicitud no válida
+                                    </span>
+                                }
+                            </div>
                         </div>
                     </div>
 
+                    <!-- SALDO INICIAL -->
                     <div class="col-12 col-sm-6">
                         <div class="info-card">
                             <div class="info-label">Saldo inicial</div>
                             <div class="info-value text-success">
-                                S/ @Model.Saldo.ToString("N2")
+                                @if (Model.Saldo >= 0)
+                                {
+                                    <span>S/ @Model.Saldo.ToString("N2")</span>
+                                }
+                                else
+                                {
+                                    <span class="text-danger">S/ @Model.Saldo.ToString("N2")</span>
+                                }
                             </div>
                         </div>
                     </div>
 
+                    <!-- FECHA DE INICIO -->
                     <div class="col-12 col-sm-6">
                         <div class="info-card">
                             <div class="info-label">Fecha de inicio</div>
                             <div class="info-value">
-                                @Model.FechaInicio.ToString("dd/MM/yyyy")
+                                @if (Model.FechaInicio != default)
+                                {
+                                    @Model.FechaInicio.ToString("dd/MM/yyyy")
+                                }
+                                else
+                                {
+                                    <span class="text-danger">
+                                        <i class="bi bi-exclamation-circle-fill"></i> Fecha no registrada
+                                    </span>
+                                }
                             </div>
                         </div>
                     </div>
 
+                    <!-- FECHA DE FIN -->
                     <div class="col-12 col-sm-6">
                         <div class="info-card">
                             <div class="info-label">Fecha de fin</div>
                             <div class="info-value">
-                                @Model.FechaFin.ToString("dd/MM/yyyy")
+                                @if (Model.FechaFin != default)
+                                {
+                                    @Model.FechaFin.ToString("dd/MM/yyyy")
+                                }
+                                else
+                                {
+                                    <span class="text-danger">
+                                        <i class="bi bi-exclamation-circle-fill"></i> Fecha no registrada
+                                    </span>
+                                }
                             </div>
                         </div>
                     </div>
+
+                    <!-- DESTINO -->
+                    <div class="col-12 col-sm-6">
+                        <div class="info-card">
+                            <div class="info-label">Destino</div>
+                            <div class="info-value">
+                                @if (Model.Solicitud != null && !string.IsNullOrWhiteSpace(Model.Solicitud.Destino))
+                                {
+                                    @Model.Solicitud.Destino
+                                }
+                                else
+                                {
+                                    <span class="text-muted">
+                                        <i class="bi bi-dash-circle"></i> Sin destino registrado
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MONTO DE LA SOLICITUD -->
+                    <div class="col-12 col-sm-6">
+                        <div class="info-card">
+                            <div class="info-label">Monto aprobado</div>
+                            <div class="info-value">
+                                @if (Model.Solicitud != null && Model.Solicitud.Monto >= 0)
+                                {
+                                    <span class="text-success">S/ @Model.Solicitud.Monto.ToString("N2")</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Sin monto registrado</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
+                <!-- VALIDACIÓN GENERAL -->
+                @if (Model.IdSolicitud <= 0 || Model.FechaInicio == default || Model.FechaFin == default)
+                {
+                    <div class="alert alert-warning mt-4" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>No se puede confirmar la rendición.</strong><br />
+                        Algunos datos obligatorios de la rendición están incompletos o no son válidos.
+                    </div>
+                }
+
+                <!-- BOTONES -->
                 <div class="action-buttons">
-                    <a asp-controller="Rendicion"
-                       asp-action="Index"
-                       class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i>
-                        Cancelar y regresar
+                    <a asp-controller="Rendicion" asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Cancelar y regresar
                     </a>
 
-                    <button type="submit"
-                            class="btn btn-success"
-                            onclick="return confirm('¿Desea crear esta rendición?');">
-                        <i class="bi bi-check-circle-fill"></i>
-                        Confirmar rendición
+                    <button type="submit" 
+                            class="btn btn-success" 
+                            id="btnConfirmarRendicion"
+                            @(Model.IdSolicitud <= 0 || Model.FechaInicio == default || Model.FechaFin == default ? "disabled" : null)>
+                        <i class="bi bi-check-circle-fill"></i> Confirmar rendición
                     </button>
                 </div>
+
             </form>
         </div>
+
     </div>
 
 </div>
+
+<!-- =========================================================
+     SCRIPTS DE CONFIRMACIÓN
+     ========================================================= -->
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const formulario = document.getElementById("formCrearRendicion");
+            const boton = document.getElementById("btnConfirmarRendicion");
+
+            if (!formulario || !boton) return;
+
+            formulario.addEventListener("submit", function (event) {
+                const confirmar = confirm(
+                    "¿Está seguro de que desea crear esta rendición?\n\n" +
+                    "Una vez creada podrá comenzar a registrar los gastos."
+                );
+
+                if (!confirmar) {
+                    event.preventDefault();
+                    return;
+                }
+
+                boton.disabled = true;
+                boton.innerHTML = 
+                    '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>' +
+                    'Creando rendición...';
+            });
+        });
+    </script>
+}

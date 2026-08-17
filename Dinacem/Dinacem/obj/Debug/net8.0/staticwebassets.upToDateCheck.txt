@@ -1,11 +1,14 @@
+wwwroot\comprobantes\85e15cd6-0754-441c-8446-5ad25eff7ace.pdf
 wwwroot\css\Admin.css
 wwwroot\css\dashboard-admin.css
 wwwroot\css\dashboard-empleado.css
+wwwroot\css\IndexUsuario.css
 wwwroot\css\Layout.css
 wwwroot\css\Login.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\Images\logo-dinacen.png
+wwwroot\js\IndexUsuario.js
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
