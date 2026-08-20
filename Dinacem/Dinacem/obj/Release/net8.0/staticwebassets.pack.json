@@ -9,16 +9,20 @@
       "PackagePath": "staticwebassets\\Images\\logo-dinacen.png"
     },
     {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\85e15cd6-0754-441c-8446-5ad25eff7ace.pdf",
+      "PackagePath": "staticwebassets\\comprobantes\\85e15cd6-0754-441c-8446-5ad25eff7ace.pdf"
+    },
+    {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Admin.css",
       "PackagePath": "staticwebassets\\css\\Admin.css"
     },
     {
-      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Layout-admin.css",
-      "PackagePath": "staticwebassets\\css\\Layout-admin.css"
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\IndexUsuario.css",
+      "PackagePath": "staticwebassets\\css\\IndexUsuario.css"
     },
     {
-      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Layout-empleado.css",
-      "PackagePath": "staticwebassets\\css\\Layout-empleado.css"
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Layout.css",
+      "PackagePath": "staticwebassets\\css\\Layout.css"
     },
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Login.css",
@@ -39,6 +43,10 @@
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\js\\IndexUsuario.js",
+      "PackagePath": "staticwebassets\\js\\IndexUsuario.js"
     },
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\js\\site.js",
@@ -273,6 +281,10 @@
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
     },
     {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-2-Juan-Perez-Garcia.pdf",
+      "PackagePath": "staticwebassets\\liquidaciones\\Liquidacion-2-Juan-Perez-Garcia.pdf"
+    },
+    {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-2-angel-asd.pdf",
       "PackagePath": "staticwebassets\\liquidaciones\\Liquidacion-2-angel-asd.pdf"
     },
@@ -283,6 +295,10 @@
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\reembolsos\\72e6d48d-28bd-4383-9186-0a98c77f8c92.png",
       "PackagePath": "staticwebassets\\reembolsos\\72e6d48d-28bd-4383-9186-0a98c77f8c92.png"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\vouchers-devolucion\\963d0d93-3d99-4b42-9c9c-00bf43ad8dd1.pdf",
+      "PackagePath": "staticwebassets\\vouchers-devolucion\\963d0d93-3d99-4b42-9c9c-00bf43ad8dd1.pdf"
     },
     {
       "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.Dinacen.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",

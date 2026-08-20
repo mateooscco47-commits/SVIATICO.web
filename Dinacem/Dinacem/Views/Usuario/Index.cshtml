@@ -298,27 +298,15 @@
                                 required>
 
                             <option value="">
-
                                 Seleccione...
-
                             </option>
 
                             <option value="1">
-
                                 Administrador
-
                             </option>
 
                             <option value="2">
-
-                                Supervisor
-
-                            </option>
-
-                            <option value="3">
-
-                                Representante
-
+                                Empleado
                             </option>
 
                         </select>
@@ -1036,9 +1024,7 @@
                                             required>
 
                                         <option value="">
-
                                             Seleccione...
-
                                         </option>
 
                                         @if (item.IdRol == 1)
@@ -1054,31 +1040,16 @@
                                             </option>
                                         }
 
-
                                         @if (item.IdRol == 2)
                                         {
                                             <option value="2" selected>
-                                                Supervisor
+                                                Empleado
                                             </option>
                                         }
                                         else
                                         {
                                             <option value="2">
-                                                Supervisor
-                                            </option>
-                                        }
-
-
-                                        @if (item.IdRol == 3)
-                                        {
-                                            <option value="3" selected>
-                                                Representante
-                                            </option>
-                                        }
-                                        else
-                                        {
-                                            <option value="3">
-                                                Representante
+                                                Empleado
                                             </option>
                                         }
 

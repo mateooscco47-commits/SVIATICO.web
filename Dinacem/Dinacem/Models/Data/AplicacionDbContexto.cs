@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Dinacem.Models;
+
 namespace Dinacem.Models
 {
     public class AplicacionDbContexto : DbContext
     {
-        public AplicacionDbContexto(DbContextOptions<AplicacionDbContexto> options)
+        public AplicacionDbContexto(
+            DbContextOptions<AplicacionDbContexto> options)
             : base(options)
         {
         }
@@ -18,100 +19,210 @@ namespace Dinacem.Models
         public DbSet<TipoGasto> TipoGastos { get; set; }
         public DbSet<TipoComprobante> TipoComprobantes { get; set; }
         public DbSet<Gasto> Gastos { get; set; }
-
         public DbSet<DevolucionSaldo> DevolucionesSaldo { get; set; }
         public DbSet<Reembolso> Reembolsos { get; set; }
         public DbSet<EstadoReembolso> EstadoReembolsos { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(
+            ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
 
-            // Nombres reales de tablas en SQL Server
-            modelBuilder.Entity<Rol>().ToTable("Roles");
-            modelBuilder.Entity<Usuario>().ToTable("Usuarios");
-            modelBuilder.Entity<EstadoSolicitud>().ToTable("EstadoSolicitud");
-            modelBuilder.Entity<Solicitud>().ToTable("Solicitudes");
-            modelBuilder.Entity<EstadoRendicion>().ToTable("EstadoRendicion");
-            modelBuilder.Entity<Rendicion>().ToTable("Rendiciones");
-            modelBuilder.Entity<TipoGasto>().ToTable("TipoGasto");
-            modelBuilder.Entity<TipoComprobante>().ToTable("TipoComprobante");
-            modelBuilder.Entity<Gasto>().ToTable("Gastos");
-            modelBuilder.Entity<EstadoReembolso>().ToTable("EstadoReembolso");
-            // Llaves primarias
-            modelBuilder.Entity<Rol>().HasKey(x => x.IdRol);
-            modelBuilder.Entity<Usuario>().HasKey(x => x.IdUsuario);
-            modelBuilder.Entity<EstadoSolicitud>().HasKey(x => x.IdEstadoSolicitud);
-            modelBuilder.Entity<Solicitud>().HasKey(x => x.IdSolicitud);
-            modelBuilder.Entity<EstadoRendicion>().HasKey(x => x.IdEstadoRendicion);
-            modelBuilder.Entity<Rendicion>().HasKey(x => x.IdRendicion);
-            modelBuilder.Entity<TipoGasto>().HasKey(x => x.IdTipoGasto);
-            modelBuilder.Entity<TipoComprobante>().HasKey(x => x.IdTipoComprobante);
-            modelBuilder.Entity<Gasto>().HasKey(x => x.IdGasto);
-            modelBuilder.Entity<EstadoReembolso>().HasKey(x => x.IdEstadoReembolso);
-            // Relaciones
+            // =====================================
+            // NOMBRES DE TABLAS
+            // =====================================
+
+            modelBuilder.Entity<Rol>()
+                .ToTable("Roles");
+
+            modelBuilder.Entity<Usuario>()
+                .ToTable("Usuarios");
+
+            modelBuilder.Entity<EstadoSolicitud>()
+                .ToTable("EstadoSolicitud");
+
+            modelBuilder.Entity<Solicitud>()
+                .ToTable("Solicitudes");
+
+            modelBuilder.Entity<EstadoRendicion>()
+                .ToTable("EstadoRendicion");
+
+            modelBuilder.Entity<Rendicion>()
+                .ToTable("Rendiciones");
+
+            modelBuilder.Entity<TipoGasto>()
+                .ToTable("TipoGasto");
+
+            modelBuilder.Entity<TipoComprobante>()
+                .ToTable("TipoComprobante");
+
+            modelBuilder.Entity<Gasto>()
+                .ToTable("Gastos");
+
+            modelBuilder.Entity<DevolucionSaldo>()
+                .ToTable("DevolucionesSaldo");
+
             modelBuilder.Entity<Reembolso>()
-            .HasOne(x => x.EstadoReembolso)
-            .WithMany()
-            .HasForeignKey(x => x.IdEstadoReembolso)
-            .OnDelete(DeleteBehavior.Restrict);
+                .ToTable("Reembolsos");
 
+            modelBuilder.Entity<EstadoReembolso>()
+                .ToTable("EstadoReembolso");
+
+            // =====================================
+            // LLAVES PRIMARIAS
+            // =====================================
+
+            modelBuilder.Entity<Rol>()
+                .HasKey(x => x.IdRol);
+
+            modelBuilder.Entity<Usuario>()
+                .HasKey(x => x.IdUsuario);
+
+            modelBuilder.Entity<EstadoSolicitud>()
+                .HasKey(x => x.IdEstadoSolicitud);
+
+            modelBuilder.Entity<Solicitud>()
+                .HasKey(x => x.IdSolicitud);
+
+            modelBuilder.Entity<EstadoRendicion>()
+                .HasKey(x => x.IdEstadoRendicion);
+
+            modelBuilder.Entity<Rendicion>()
+                .HasKey(x => x.IdRendicion);
+
+            modelBuilder.Entity<TipoGasto>()
+                .HasKey(x => x.IdTipoGasto);
+
+            modelBuilder.Entity<TipoComprobante>()
+                .HasKey(x => x.IdTipoComprobante);
+
+            modelBuilder.Entity<Gasto>()
+                .HasKey(x => x.IdGasto);
+
+            modelBuilder.Entity<DevolucionSaldo>()
+                .HasKey(x => x.IdDevolucionSaldo);
+
+            modelBuilder.Entity<Reembolso>()
+                .HasKey(x => x.IdReembolso);
+
+            modelBuilder.Entity<EstadoReembolso>()
+                .HasKey(x => x.IdEstadoReembolso);
+
+            // =====================================
+            // RELACIONES
+            // =====================================
+
+            // Usuario -> Rol
             modelBuilder.Entity<Usuario>()
                 .HasOne(x => x.Rol)
                 .WithMany()
                 .HasForeignKey(x => x.IdRol)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
+            // Solicitud -> Usuario
             modelBuilder.Entity<Solicitud>()
                 .HasOne(x => x.Usuario)
                 .WithMany()
                 .HasForeignKey(x => x.IdUsuario)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
+            // Solicitud -> EstadoSolicitud
             modelBuilder.Entity<Solicitud>()
                 .HasOne(x => x.EstadoSolicitud)
                 .WithMany()
                 .HasForeignKey(x => x.IdEstadoSolicitud)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
+            // Solicitud -> Rendicion
+            // Una solicitud tiene como máximo una rendición
             modelBuilder.Entity<Solicitud>()
-            .HasOne(s => s.Rendicion)
-            .WithOne(r => r.Solicitud)
-            .HasForeignKey<Rendicion>(r => r.IdSolicitud)
-            .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(s => s.Rendicion)
+                .WithOne(r => r.Solicitud)
+                .HasForeignKey<Rendicion>(
+                    r => r.IdSolicitud)
+                .OnDelete(DeleteBehavior.NoAction);
 
+            // Rendicion -> Usuario
             modelBuilder.Entity<Rendicion>()
-            .HasOne(x => x.Solicitud)
-            .WithOne(x => x.Rendicion)
-            .HasForeignKey<Rendicion>(x => x.IdSolicitud)
-            .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(r => r.Usuario)
+                .WithMany()
+                .HasForeignKey(r => r.IdUsuario)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Solicitud>()
-            .HasOne(s => s.Rendicion)
-            .WithOne(r => r.Solicitud)
-            .HasForeignKey<Rendicion>(r => r.IdSolicitud)
-            .OnDelete(DeleteBehavior.Restrict);
+            // Rendicion -> EstadoRendicion
+            modelBuilder.Entity<Rendicion>()
+                .HasOne(r => r.EstadoRendicion)
+                .WithMany()
+                .HasForeignKey(r => r.IdEstadoRendicion)
+                .OnDelete(DeleteBehavior.NoAction);
 
+            // Gasto -> Rendicion
             modelBuilder.Entity<Gasto>()
-            .HasOne(x => x.Rendicion)
-            .WithMany(x => x.Gastos)
-            .HasForeignKey(x => x.IdRendicion)
-            .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(x => x.Rendicion)
+                .WithMany(x => x.Gastos)
+                .HasForeignKey(x => x.IdRendicion)
+                .OnDelete(DeleteBehavior.NoAction);
 
+            // Gasto -> TipoGasto
             modelBuilder.Entity<Gasto>()
                 .HasOne(x => x.TipoGasto)
                 .WithMany()
                 .HasForeignKey(x => x.IdTipoGasto)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
+            // Gasto -> TipoComprobante
             modelBuilder.Entity<Gasto>()
                 .HasOne(x => x.TipoComprobante)
                 .WithMany()
                 .HasForeignKey(x => x.IdTipoComprobante)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
-            // Decimales
+            // Reembolso -> Rendicion
+            modelBuilder.Entity<Reembolso>()
+                .HasOne(x => x.Rendicion)
+                .WithMany()
+                .HasForeignKey(x => x.IdRendicion)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Reembolso -> Usuario
+            modelBuilder.Entity<Reembolso>()
+                .HasOne(x => x.Usuario)
+                .WithMany()
+                .HasForeignKey(x => x.IdUsuario)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Reembolso -> EstadoReembolso
+            modelBuilder.Entity<Reembolso>()
+                .HasOne(x => x.EstadoReembolso)
+                .WithMany()
+                .HasForeignKey(x => x.IdEstadoReembolso)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Devolución -> Rendición
+            modelBuilder.Entity<DevolucionSaldo>()
+                .HasOne(x => x.Rendicion)
+                .WithMany()
+                .HasForeignKey(x => x.IdRendicion)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // =====================================
+            // ÍNDICES ÚNICOS
+            // =====================================
+
+            // Una rendición solo puede tener una devolución
+            modelBuilder.Entity<DevolucionSaldo>()
+                .HasIndex(x => x.IdRendicion)
+                .IsUnique();
+
+            // Una rendición solo puede tener un reembolso
+            modelBuilder.Entity<Reembolso>()
+                .HasIndex(x => x.IdRendicion)
+                .IsUnique();
+
+            // =====================================
+            // DECIMALES
+            // =====================================
+
             modelBuilder.Entity<Solicitud>()
                 .Property(x => x.Monto)
                 .HasPrecision(18, 2);
@@ -129,14 +240,19 @@ namespace Dinacem.Models
                 .HasPrecision(18, 2);
 
             modelBuilder.Entity<Gasto>()
+                .Property(x => x.ValorVenta)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Gasto>()
                 .Property(x => x.IGV)
                 .HasPrecision(18, 2);
-            modelBuilder.Entity<DevolucionSaldo>()
-    .HasIndex(d => d.IdRendicion)
-    .IsUnique();
 
             modelBuilder.Entity<DevolucionSaldo>()
-                .Property(d => d.Monto)
+                .Property(x => x.Monto)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Reembolso>()
+                .Property(x => x.Monto)
                 .HasPrecision(18, 2);
         }
     }

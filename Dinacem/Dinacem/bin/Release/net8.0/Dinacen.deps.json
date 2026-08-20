@@ -11,6 +11,7 @@
           "MailKit": "4.17.0",
           "Microsoft.EntityFrameworkCore.Design": "8.0.22",
           "Microsoft.EntityFrameworkCore.SqlServer": "8.0.22",
+          "Microsoft.EntityFrameworkCore.Tools": "8.0.22",
           "QuestPDF": "2026.7.1"
         },
         "runtime": {
@@ -432,6 +433,11 @@
             "assemblyVersion": "8.0.22.0",
             "fileVersion": "8.0.2225.52804"
           }
+        }
+      },
+      "Microsoft.EntityFrameworkCore.Tools/8.0.22": {
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Design": "8.0.22"
         }
       },
       "Microsoft.Extensions.Caching.Abstractions/8.0.0": {
@@ -1186,6 +1192,13 @@
       "sha512": "sha512-Nytrkj0AbbbVg5b9yzl0Fh3xr2301e5qj2AQcNyvTgpK1BjOwrNOxLyxMU1qI/IWdAiWJtdndagzPWIPlNVu6A==",
       "path": "microsoft.entityframeworkcore.sqlserver/8.0.22",
       "hashPath": "microsoft.entityframeworkcore.sqlserver.8.0.22.nupkg.sha512"
+    },
+    "Microsoft.EntityFrameworkCore.Tools/8.0.22": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zlW1dX6HWig21YAhrtQlyjLo9uq4bRxZ8q87jtGLyZvDwEP30J0f5HnMf058v2OL3Zzcb8gWgXdPealdICLaRA==",
+      "path": "microsoft.entityframeworkcore.tools/8.0.22",
+      "hashPath": "microsoft.entityframeworkcore.tools.8.0.22.nupkg.sha512"
     },
     "Microsoft.Extensions.Caching.Abstractions/8.0.0": {
       "type": "package",
