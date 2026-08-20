@@ -555,6 +555,7 @@
                                 <th>IGV</th>
                                 <th>Total</th>
                                 <th>Archivo</th>
+                                <th>Acciones</th>
                             </tr>
 
                         </thead>
@@ -648,6 +649,27 @@
                                             }
                                         </td>
 
+                                        <td>
+                                            @if (rendicion.IdEstadoRendicion == 2)
+                                            {
+                                                <a asp-controller="Gasto"
+                                                   asp-action="EditAdmin"
+                                                   asp-route-id="@item.IdGasto"
+                                                   class="btn btn-warning btn-sm">
+
+                                                    <i class="bi bi-pencil-square"></i>
+                                                    Editar
+
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">
+                                                    Bloqueado
+                                                </span>
+                                            }
+                                        </td>
+
                                     </tr>
                                 }
                             }
@@ -655,7 +677,7 @@
                             {
                                 <tr>
 
-                                    <td colspan="9"
+                                    <td colspan="10"
                                         class="text-center text-muted py-4">
 
                                         No hay gastos registrados.

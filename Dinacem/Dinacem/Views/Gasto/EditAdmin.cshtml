@@ -1,0 +1,801 @@
+﻿@model Dinacem.Models.Gasto
+
+@{
+    ViewData["Title"] = "Editar Gasto";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+
+    var rendicion =
+        ViewBag.Rendicion as Dinacem.Models.Rendicion;
+
+    var tiposGasto =
+        ViewBag.TiposGasto as List<Dinacem.Models.TipoGasto>;
+
+    var tiposComprobante =
+        ViewBag.TiposComprobante as List<Dinacem.Models.TipoComprobante>;
+}
+
+<style>
+    .page-wrapper {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 22px;
+        margin-bottom: 22px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+    }
+
+    .page-title {
+        margin: 0 0 5px;
+        color: #0f172a;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .page-description {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .panel {
+        background: #ffffff;
+        border: 1px solid #dbe1ea;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, .05);
+    }
+
+    .panel-header {
+        padding: 18px 22px;
+        border-bottom: 1px solid #e5e7eb;
+        color: #0d6efd;
+        font-weight: 800;
+    }
+
+    .panel-body {
+        padding: 22px;
+    }
+
+    .form-label {
+        color: #334155;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 44px;
+        border-radius: 9px;
+    }
+
+    .readonly-box {
+        min-height: 44px;
+        padding: 10px 12px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 9px;
+        color: #475569;
+        font-weight: 600;
+    }
+
+    .tax-summary {
+        padding: 14px;
+        background: #f8fafc;
+        border: 1px solid #dbe1ea;
+        border-radius: 10px;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 24px;
+    }
+
+    @@media (max-width: 767.98px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+            .page-header .btn {
+                width: 100%;
+            }
+
+        .page-title {
+            font-size: 23px;
+        }
+
+        .panel-body {
+            padding: 16px;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+            .actions .btn {
+                width: 100%;
+            }
+    }
+</style>
+
+<div class="page-wrapper">
+
+    <div class="page-header">
+
+        <div>
+            <h1 class="page-title">
+                <i class="bi bi-pencil-square me-2"></i>
+                Editar Gasto
+            </h1>
+
+            <p class="page-description">
+                Corrija la información del gasto registrado por el empleado.
+            </p>
+        </div>
+
+        <a asp-controller="Rendicion"
+           asp-action="DetalleAdmin"
+           asp-route-id="@Model.IdRendicion"
+           class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Regresar
+
+        </a>
+
+    </div>
+
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            @Html.Raw(TempData["error"])
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+        </div>
+    }
+
+    @if (TempData["mensaje"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["mensaje"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+        </div>
+    }
+
+    <div class="panel">
+
+        <div class="panel-header">
+            INFORMACIÓN DEL GASTO
+        </div>
+
+        <div class="panel-body">
+
+            <form asp-controller="Gasto"
+                  asp-action="EditAdmin"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <input type="hidden"
+                       asp-for="IdGasto" />
+
+                <input type="hidden"
+                       asp-for="IdRendicion" />
+
+                <div class="row g-3">
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Rendición
+                        </label>
+
+                        <div class="readonly-box">
+                            #@Model.IdRendicion
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Fecha del gasto
+                        </label>
+
+                        <input asp-for="Fecha"
+                               type="date"
+                               class="form-control"
+                               min="@rendicion?.FechaInicio.ToString("yyyy-MM-dd")"
+                               max="@rendicion?.FechaFin.ToString("yyyy-MM-dd")"
+                               required />
+
+                    </div>
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Tipo de gasto
+                        </label>
+
+                        <select asp-for="IdTipoGasto"
+                                class="form-select"
+                                required>
+
+                            <option value="">
+                                Seleccione...
+                            </option>
+
+                            @if (tiposGasto != null)
+                            {
+                                foreach (var item in tiposGasto)
+                                {
+                                    <option value="@item.IdTipoGasto">
+                                        @item.Nombre
+                                    </option>
+                                }
+                            }
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Tipo de comprobante
+                        </label>
+
+                        <select asp-for="IdTipoComprobante"
+                                class="form-select"
+                                required>
+
+                            <option value="">
+                                Seleccione...
+                            </option>
+
+                            @if (tiposComprobante != null)
+                            {
+                                foreach (var item in tiposComprobante)
+                                {
+                                    <option value="@item.IdTipoComprobante">
+                                        @item.Nombre
+                                    </option>
+                                }
+                            }
+
+                        </select>
+
+                    </div>
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Serie
+                        </label>
+
+                        <input asp-for="Serie"
+                               class="form-control"
+                               maxlength="20" />
+
+                    </div>
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Número
+                        </label>
+
+                        <input asp-for="Numero"
+                               class="form-control"
+                               maxlength="30" />
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label class="form-label">
+                            Detalle
+                        </label>
+
+                        <input asp-for="Detalle"
+                               class="form-control"
+                               maxlength="500" />
+
+                    </div>
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Monto total
+                        </label>
+
+                        <input asp-for="MontoTotal"
+                               id="montoTotal"
+                               type="number"
+                               min="0.01"
+                               step="0.01"
+                               class="form-control"
+                               required />
+
+                    </div>
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label d-block">
+                            Exoneración IGV
+                        </label>
+
+                        <div class="form-check mt-2">
+
+                            <input asp-for="ExoneracionIGV"
+                                   id="exoneracionIGV"
+                                   class="form-check-input" />
+
+                            <label class="form-check-label"
+                                   for="exoneracionIGV">
+
+                                Exonerado de IGV
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            Valor de venta
+                        </label>
+
+                        <input asp-for="ValorVenta"
+                               id="valorVenta"
+                               type="number"
+                               step="0.01"
+                               class="form-control"
+                               readonly />
+
+                    </div>
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            IGV
+                        </label>
+
+                        <input asp-for="IGV"
+                               id="igvCalculado"
+                               type="number"
+                               step="0.01"
+                               class="form-control"
+                               readonly />
+
+                    </div>
+
+                    <div class="col-12 col-md-8">
+
+                        <div class="tax-summary">
+
+                            <div class="row text-center">
+
+                                <div class="col-4">
+
+                                    <small class="text-muted d-block">
+                                        Valor venta
+                                    </small>
+
+                                    <strong id="resumenValorVenta">
+                                        S/ @Model.ValorVenta.ToString("N2")
+                                    </strong>
+
+                                </div>
+
+                                <div class="col-4">
+
+                                    <small class="text-muted d-block">
+                                        IGV
+                                    </small>
+
+                                    <strong id="resumenIgv">
+                                        S/ @Model.IGV.ToString("N2")
+                                    </strong>
+
+                                </div>
+
+                                <div class="col-4">
+
+                                    <small class="text-muted d-block">
+                                        Total
+                                    </small>
+
+                                    <strong id="resumenTotal"
+                                            class="text-primary">
+                                        S/ @Model.MontoTotal.ToString("N2")
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <hr />
+
+                        <h5 class="fw-bold">
+                            Datos del proveedor
+                        </h5>
+
+                    </div>
+
+                    <div class="col-12 col-md-4">
+
+                        <label class="form-label">
+                            RUC
+                        </label>
+
+                        <div class="input-group">
+
+                            <input asp-for="Ruc"
+                                   id="ruc"
+                                   class="form-control"
+                                   maxlength="11"
+                                   inputmode="numeric"
+                                   required />
+
+                            <button type="button"
+                                    id="btnConsultarRuc"
+                                    class="btn btn-outline-primary">
+
+                                Buscar
+
+                            </button>
+
+                        </div>
+
+                        <div id="mensajeRuc"
+                             class="form-text">
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 col-md-8">
+
+                        <label class="form-label">
+                            Razón social
+                        </label>
+
+                        <input asp-for="RazonSocial"
+                               id="razonSocial"
+                               class="form-control"
+                               maxlength="250"
+                               readonly />
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <label class="form-label">
+                            Domicilio fiscal
+                        </label>
+
+                        <input asp-for="DomicilioFiscal"
+                               id="domicilioFiscal"
+                               class="form-control"
+                               maxlength="300"
+                               required />
+
+                        <small class="text-muted">
+                            Puede corregir manualmente el domicilio fiscal.
+                        </small>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <hr />
+
+                        <h5 class="fw-bold">
+                            Comprobante
+                        </h5>
+
+                    </div>
+
+                    <div class="col-12 col-md-6">
+
+                        <label class="form-label">
+                            Comprobante actual
+                        </label>
+
+                        @if (!string.IsNullOrWhiteSpace(
+                        Model.Comprobante))
+                        {
+                            <div>
+                                <a href="@Model.Comprobante"
+                                   target="_blank"
+                                   rel="noopener"
+                                   class="btn btn-outline-primary">
+
+                                    <i class="bi bi-paperclip"></i>
+                                    Ver comprobante actual
+
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-muted">
+                                No tiene comprobante adjunto.
+                            </div>
+                        }
+
+                    </div>
+
+                    <div class="col-12 col-md-6">
+
+                        <label class="form-label">
+                            Reemplazar comprobante
+                        </label>
+
+                        <input type="file"
+                               name="archivo"
+                               class="form-control"
+                               accept=".pdf,.jpg,.jpeg,.png" />
+
+                        <small class="text-muted">
+                            Déjelo vacío si desea conservar el comprobante actual.
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <div class="actions">
+
+                    <a asp-controller="Rendicion"
+                       asp-action="DetalleAdmin"
+                       asp-route-id="@Model.IdRendicion"
+                       class="btn btn-outline-secondary">
+
+                        Cancelar
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-warning">
+
+                        <i class="bi bi-save me-1"></i>
+                        Guardar corrección
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const monto =
+                document.getElementById("montoTotal");
+
+            const exonerado =
+                document.getElementById("exoneracionIGV");
+
+            const valorVenta =
+                document.getElementById("valorVenta");
+
+            const igv =
+                document.getElementById("igvCalculado");
+
+            const resumenValor =
+                document.getElementById("resumenValorVenta");
+
+            const resumenIgv =
+                document.getElementById("resumenIgv");
+
+            const resumenTotal =
+                document.getElementById("resumenTotal");
+
+            function calcular() {
+
+                const total =
+                    parseFloat(monto?.value) || 0;
+
+                let base = 0;
+                let impuesto = 0;
+
+                if (total > 0) {
+
+                    if (exonerado?.checked) {
+
+                        base = total;
+                        impuesto = 0;
+
+                    }
+                    else {
+
+                        base =
+                            Math.round(
+                                (total / 1.18) * 100
+                            ) / 100;
+
+                        impuesto =
+                            Math.round(
+                                (total - base) * 100
+                            ) / 100;
+
+                    }
+
+                }
+
+                if (valorVenta) {
+                    valorVenta.value =
+                        base.toFixed(2);
+                }
+
+                if (igv) {
+                    igv.value =
+                        impuesto.toFixed(2);
+                }
+
+                if (resumenValor) {
+                    resumenValor.textContent =
+                        `S/ ${base.toFixed(2)}`;
+                }
+
+                if (resumenIgv) {
+                    resumenIgv.textContent =
+                        `S/ ${impuesto.toFixed(2)}`;
+                }
+
+                if (resumenTotal) {
+                    resumenTotal.textContent =
+                        `S/ ${total.toFixed(2)}`;
+                }
+
+            }
+
+            monto?.addEventListener(
+                "input",
+                calcular);
+
+            exonerado?.addEventListener(
+                "change",
+                calcular);
+
+
+            const ruc =
+                document.getElementById("ruc");
+
+            const boton =
+                document.getElementById("btnConsultarRuc");
+
+            const razonSocial =
+                document.getElementById("razonSocial");
+
+            const domicilio =
+                document.getElementById("domicilioFiscal");
+
+            const mensaje =
+                document.getElementById("mensajeRuc");
+
+            boton?.addEventListener(
+                "click",
+                async function () {
+
+                    const valor =
+                        ruc?.value.trim() ?? "";
+
+                    if (!/^\d{11}$/.test(valor)) {
+
+                        mensaje.textContent =
+                            "Ingrese un RUC válido de 11 dígitos.";
+
+                        mensaje.className =
+                            "form-text text-danger";
+
+                        return;
+
+                    }
+
+                    boton.disabled = true;
+                    boton.textContent = "Buscando...";
+
+                    try {
+
+                        const url =
+                            '@Url.Action("ConsultarRuc", "Gasto")' +
+                            '?ruc=' +
+                            encodeURIComponent(valor);
+
+                        const response =
+                            await fetch(url);
+
+                        const data =
+                            await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(
+                                data.mensaje ??
+                                "No se encontró el RUC."
+                            );
+                        }
+
+                        razonSocial.value =
+                            data.razonSocial ?? "";
+
+                        if (!domicilio.value.trim()) {
+                            domicilio.value =
+                                data.domicilioFiscal ?? "";
+                        }
+
+                        mensaje.textContent =
+                            `Estado: ${data.estado ?? "-"} | ` +
+                            `Condición: ${data.condicion ?? "-"}`;
+
+                        mensaje.className =
+                            "form-text text-success";
+
+                    }
+                    catch (error) {
+
+                        mensaje.textContent =
+                            error.message;
+
+                        mensaje.className =
+                            "form-text text-danger";
+
+                    }
+                    finally {
+
+                        boton.disabled = false;
+                        boton.textContent = "Buscar";
+
+                    }
+
+                });
+
+            ruc?.addEventListener(
+                "input",
+                function () {
+
+                    this.value =
+                        this.value
+                            .replace(/\D/g, "")
+                            .slice(0, 11);
+
+                });
+
+        });
+</script>

@@ -1,4 +1,6 @@
+wwwroot\comprobantes\847eefdb-5ceb-4efd-a72e-86b6c2e705d0.png
 wwwroot\comprobantes\85e15cd6-0754-441c-8446-5ad25eff7ace.pdf
+wwwroot\comprobantes\db0b7479-7453-4819-92f3-6300b34ef1e7.png
 wwwroot\css\Admin.css
 wwwroot\css\dashboard-admin.css
 wwwroot\css\dashboard-empleado.css
@@ -67,8 +69,12 @@ wwwroot\lib\jquery-validation\LICENSE.md
 wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js
 wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js
 wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+wwwroot\liquidaciones\Liquidacion-1-lucas-altamiza.pdf
 wwwroot\liquidaciones\Liquidacion-2-angel-asd.pdf
 wwwroot\liquidaciones\Liquidacion-2-Juan-Perez-Garcia.pdf
+wwwroot\liquidaciones\Liquidacion-2-lucas-altamizaa.pdf
 wwwroot\liquidaciones\Liquidacion-3-angel-asd.pdf
 wwwroot\reembolsos\72e6d48d-28bd-4383-9186-0a98c77f8c92.png
+wwwroot\vouchers-devolucion\35369ae1-ef62-46e5-a6ce-348542b21f69.png
 wwwroot\vouchers-devolucion\963d0d93-3d99-4b42-9c9c-00bf43ad8dd1.pdf
+wwwroot\vouchers-devolucion\c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.png

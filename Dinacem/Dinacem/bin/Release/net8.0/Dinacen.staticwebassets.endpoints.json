@@ -167,6 +167,88 @@
       ]
     },
     {
+      "Route": "comprobantes/847eefdb-5ceb-4efd-a72e-86b6c2e705d0.cwmvdk87bn.png",
+      "AssetFile": "comprobantes/847eefdb-5ceb-4efd-a72e-86b6c2e705d0.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "760459"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rMKbhbq+HFMRFu0HH1Gd+1Z/a7lvYC26ogagm5ZEGXE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 20 Aug 2026 05:36:10 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "cwmvdk87bn"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-rMKbhbq+HFMRFu0HH1Gd+1Z/a7lvYC26ogagm5ZEGXE="
+        },
+        {
+          "Name": "label",
+          "Value": "comprobantes/847eefdb-5ceb-4efd-a72e-86b6c2e705d0.png"
+        }
+      ]
+    },
+    {
+      "Route": "comprobantes/847eefdb-5ceb-4efd-a72e-86b6c2e705d0.png",
+      "AssetFile": "comprobantes/847eefdb-5ceb-4efd-a72e-86b6c2e705d0.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "760459"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rMKbhbq+HFMRFu0HH1Gd+1Z/a7lvYC26ogagm5ZEGXE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 20 Aug 2026 05:36:10 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-rMKbhbq+HFMRFu0HH1Gd+1Z/a7lvYC26ogagm5ZEGXE="
+        }
+      ]
+    },
+    {
       "Route": "comprobantes/85e15cd6-0754-441c-8446-5ad25eff7ace.pdf",
       "AssetFile": "comprobantes/85e15cd6-0754-441c-8446-5ad25eff7ace.pdf",
       "Selectors": [],
@@ -245,6 +327,88 @@
         {
           "Name": "label",
           "Value": "comprobantes/85e15cd6-0754-441c-8446-5ad25eff7ace.pdf"
+        }
+      ]
+    },
+    {
+      "Route": "comprobantes/db0b7479-7453-4819-92f3-6300b34ef1e7.png",
+      "AssetFile": "comprobantes/db0b7479-7453-4819-92f3-6300b34ef1e7.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "91238"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yiwYh4spq+cnRhr2ahtLtErbpaDhAKURGqhgCxdOy5E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 20 Aug 2026 08:56:35 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yiwYh4spq+cnRhr2ahtLtErbpaDhAKURGqhgCxdOy5E="
+        }
+      ]
+    },
+    {
+      "Route": "comprobantes/db0b7479-7453-4819-92f3-6300b34ef1e7.urapyupot1.png",
+      "AssetFile": "comprobantes/db0b7479-7453-4819-92f3-6300b34ef1e7.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "91238"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yiwYh4spq+cnRhr2ahtLtErbpaDhAKURGqhgCxdOy5E=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 20 Aug 2026 08:56:35 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "urapyupot1"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yiwYh4spq+cnRhr2ahtLtErbpaDhAKURGqhgCxdOy5E="
+        },
+        {
+          "Name": "label",
+          "Value": "comprobantes/db0b7479-7453-4819-92f3-6300b34ef1e7.png"
         }
       ]
     },
@@ -5743,6 +5907,88 @@
       ]
     },
     {
+      "Route": "liquidaciones/Liquidacion-1-lucas-altamiza.nnw9nxth2c.pdf",
+      "AssetFile": "liquidaciones/Liquidacion-1-lucas-altamiza.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "332267"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"k7jcxDMpcaBvsgRahi3az5sDcKahxqfERc548Ha4bjY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 20 Aug 2026 05:36:52 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "nnw9nxth2c"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-k7jcxDMpcaBvsgRahi3az5sDcKahxqfERc548Ha4bjY="
+        },
+        {
+          "Name": "label",
+          "Value": "liquidaciones/Liquidacion-1-lucas-altamiza.pdf"
+        }
+      ]
+    },
+    {
+      "Route": "liquidaciones/Liquidacion-1-lucas-altamiza.pdf",
+      "AssetFile": "liquidaciones/Liquidacion-1-lucas-altamiza.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "332267"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"k7jcxDMpcaBvsgRahi3az5sDcKahxqfERc548Ha4bjY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 20 Aug 2026 05:36:52 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-k7jcxDMpcaBvsgRahi3az5sDcKahxqfERc548Ha4bjY="
+        }
+      ]
+    },
+    {
       "Route": "liquidaciones/Liquidacion-2-Juan-Perez-Garcia.jmsfq8n5yo.pdf",
       "AssetFile": "liquidaciones/Liquidacion-2-Juan-Perez-Garcia.pdf",
       "Selectors": [],
@@ -5903,6 +6149,88 @@
         {
           "Name": "label",
           "Value": "liquidaciones/Liquidacion-2-angel-asd.pdf"
+        }
+      ]
+    },
+    {
+      "Route": "liquidaciones/Liquidacion-2-lucas-altamizaa.16irs3ve38.pdf",
+      "AssetFile": "liquidaciones/Liquidacion-2-lucas-altamizaa.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "120175"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uYxeDpW2RhcyekKqJrks/OEcDnRgDRIFvfLl0Jk6Yr0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 20 Aug 2026 08:57:02 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "16irs3ve38"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-uYxeDpW2RhcyekKqJrks/OEcDnRgDRIFvfLl0Jk6Yr0="
+        },
+        {
+          "Name": "label",
+          "Value": "liquidaciones/Liquidacion-2-lucas-altamizaa.pdf"
+        }
+      ]
+    },
+    {
+      "Route": "liquidaciones/Liquidacion-2-lucas-altamizaa.pdf",
+      "AssetFile": "liquidaciones/Liquidacion-2-lucas-altamizaa.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "120175"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"uYxeDpW2RhcyekKqJrks/OEcDnRgDRIFvfLl0Jk6Yr0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 20 Aug 2026 08:57:02 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-uYxeDpW2RhcyekKqJrks/OEcDnRgDRIFvfLl0Jk6Yr0="
         }
       ]
     },
@@ -6071,6 +6399,88 @@
       ]
     },
     {
+      "Route": "vouchers-devolucion/35369ae1-ef62-46e5-a6ce-348542b21f69.fdscqr1o4z.png",
+      "AssetFile": "vouchers-devolucion/35369ae1-ef62-46e5-a6ce-348542b21f69.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1148226"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"XS8IpWffZ0HcUK+3lO3knl4suJDDgLtN263g0Zv8dhY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 20 Aug 2026 05:36:33 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "fdscqr1o4z"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-XS8IpWffZ0HcUK+3lO3knl4suJDDgLtN263g0Zv8dhY="
+        },
+        {
+          "Name": "label",
+          "Value": "vouchers-devolucion/35369ae1-ef62-46e5-a6ce-348542b21f69.png"
+        }
+      ]
+    },
+    {
+      "Route": "vouchers-devolucion/35369ae1-ef62-46e5-a6ce-348542b21f69.png",
+      "AssetFile": "vouchers-devolucion/35369ae1-ef62-46e5-a6ce-348542b21f69.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1148226"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"XS8IpWffZ0HcUK+3lO3knl4suJDDgLtN263g0Zv8dhY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 20 Aug 2026 05:36:33 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-XS8IpWffZ0HcUK+3lO3knl4suJDDgLtN263g0Zv8dhY="
+        }
+      ]
+    },
+    {
       "Route": "vouchers-devolucion/963d0d93-3d99-4b42-9c9c-00bf43ad8dd1.pdf",
       "AssetFile": "vouchers-devolucion/963d0d93-3d99-4b42-9c9c-00bf43ad8dd1.pdf",
       "Selectors": [],
@@ -6149,6 +6559,88 @@
         {
           "Name": "label",
           "Value": "vouchers-devolucion/963d0d93-3d99-4b42-9c9c-00bf43ad8dd1.pdf"
+        }
+      ]
+    },
+    {
+      "Route": "vouchers-devolucion/c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.1a5c75a4zb.png",
+      "AssetFile": "vouchers-devolucion/c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "320323"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Rx+Q3Evn7qiI7vzbmFXx6rvfmvPrg+bzLLwKh+z8oU4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 20 Aug 2026 08:56:58 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "1a5c75a4zb"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Rx+Q3Evn7qiI7vzbmFXx6rvfmvPrg+bzLLwKh+z8oU4="
+        },
+        {
+          "Name": "label",
+          "Value": "vouchers-devolucion/c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.png"
+        }
+      ]
+    },
+    {
+      "Route": "vouchers-devolucion/c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.png",
+      "AssetFile": "vouchers-devolucion/c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "320323"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Rx+Q3Evn7qiI7vzbmFXx6rvfmvPrg+bzLLwKh+z8oU4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 20 Aug 2026 08:56:58 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Rx+Q3Evn7qiI7vzbmFXx6rvfmvPrg+bzLLwKh+z8oU4="
         }
       ]
     }

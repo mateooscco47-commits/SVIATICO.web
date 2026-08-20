@@ -1,0 +1,440 @@
+﻿@model Dinacem.Models.Usuario
+
+@{
+    ViewData["Title"] = "Mi Perfil";
+    Layout = "~/Views/Shared/_LayoutEmpleado.cshtml";
+}
+
+<style>
+    .perfil-wrapper {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .perfil-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 22px;
+        margin-bottom: 22px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+    }
+
+    .perfil-title {
+        margin: 0 0 5px;
+        color: #0f172a;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .perfil-description {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .perfil-card {
+        overflow: hidden;
+        height: 100%;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(15, 23, 42, .06);
+    }
+
+    .perfil-card-header {
+        padding: 18px 20px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        color: #0f172a;
+        font-size: 17px;
+        font-weight: 800;
+    }
+
+    .perfil-card-body {
+        padding: 22px;
+    }
+
+    .form-label {
+        color: #334155;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 44px;
+        border-radius: 10px;
+    }
+
+    .readonly-box {
+        min-height: 44px;
+        padding: 10px 12px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        color: #475569;
+        font-weight: 600;
+    }
+
+    .perfil-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 12px;
+        color: #1e3a8a;
+    }
+
+        .perfil-info i {
+            font-size: 24px;
+        }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 22px;
+    }
+
+    .password-help {
+        margin-top: 5px;
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    @@media (max-width: 767.98px) {
+        .perfil-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 18px;
+        }
+
+            .perfil-header .btn {
+                width: 100%;
+            }
+
+        .perfil-title {
+            font-size: 23px;
+        }
+
+        .perfil-card-body {
+            padding: 16px;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+            .actions .btn {
+                width: 100%;
+            }
+    }
+</style>
+
+<div class="perfil-wrapper">
+
+    <div class="perfil-header">
+        <div>
+            <h1 class="perfil-title">
+                <i class="bi bi-person-circle me-2"></i>
+                Mi Perfil
+            </h1>
+
+            <p class="perfil-description">
+                Actualice sus datos personales y cambie su contraseña cuando lo necesite.
+            </p>
+        </div>
+
+        <a asp-controller="Empleado"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Volver al panel
+        </a>
+    </div>
+
+    @if (TempData["mensaje"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["mensaje"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["error"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+        </div>
+    }
+
+    <div class="row g-4">
+
+        <!-- DATOS PERSONALES -->
+        <div class="col-12 col-lg-7">
+
+            <div class="perfil-card">
+
+                <div class="perfil-card-header">
+                    <i class="bi bi-person-lines-fill me-2"></i>
+                    Datos personales
+                </div>
+
+                <div class="perfil-card-body">
+
+                    <div class="perfil-info">
+                        <i class="bi bi-info-circle-fill"></i>
+
+                        <div>
+                            Puede modificar sus datos personales.
+                            El usuario de acceso, rol y estado son administrados por el sistema.
+                        </div>
+                    </div>
+
+                    <form asp-controller="Empleado"
+                          asp-action="ActualizarPerfil"
+                          method="post">
+
+                        <div class="row g-3">
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">
+                                    Usuario de acceso
+                                </label>
+
+                                <div class="readonly-box">
+                                    @Model.UsuarioAcceso
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">
+                                    Rol
+                                </label>
+
+                                <div class="readonly-box">
+                                    @(Model.Rol?.Nombre ?? "Sin rol")
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">
+                                    Nombres
+                                </label>
+
+                                <input type="text"
+                                       name="nombres"
+                                       class="form-control"
+                                       maxlength="100"
+                                       value="@Model.Nombres"
+                                       required />
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">
+                                    Apellidos
+                                </label>
+
+                                <input type="text"
+                                       name="apellidos"
+                                       class="form-control"
+                                       maxlength="100"
+                                       value="@Model.Apellidos"
+                                       required />
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">
+                                    Correo
+                                </label>
+
+                                <input type="email"
+                                       name="correo"
+                                       class="form-control"
+                                       maxlength="150"
+                                       value="@Model.Correo"
+                                       required />
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">
+                                    Celular
+                                </label>
+
+                                <input type="tel"
+                                       name="celular"
+                                       class="form-control"
+                                       maxlength="20"
+                                       value="@Model.Celular"
+                                       placeholder="Ej. 999999999" />
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">
+                                    Zona
+                                </label>
+
+                                <input type="text"
+                                       name="zona"
+                                       class="form-control"
+                                       maxlength="100"
+                                       value="@Model.Zona"
+                                       placeholder="Ej. Huancayo" />
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">
+                                    Estado
+                                </label>
+
+                                <div class="readonly-box">
+                                    @if (Model.Estado)
+                                    {
+                                        <span class="badge bg-success">
+                                            Activo
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            Inactivo
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="actions">
+
+                            <a asp-controller="Empleado"
+                               asp-action="Index"
+                               class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i>
+                                Regresar
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                <i class="bi bi-save-fill me-1"></i>
+                                Guardar cambios
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CAMBIO DE CONTRASEÑA -->
+        <div class="col-12 col-lg-5">
+
+            <div class="perfil-card">
+
+                <div class="perfil-card-header">
+                    <i class="bi bi-shield-lock-fill me-2"></i>
+                    Cambiar contraseña
+                </div>
+
+                <div class="perfil-card-body">
+
+                    <form asp-controller="Empleado"
+                          asp-action="CambiarContrasenia"
+                          method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Contraseña actual
+                            </label>
+
+                            <input type="password"
+                                   name="contraseniaActual"
+                                   class="form-control"
+                                   autocomplete="current-password"
+                                   required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Nueva contraseña
+                            </label>
+
+                            <input type="password"
+                                   name="nuevaContrasenia"
+                                   class="form-control"
+                                   minlength="6"
+                                   autocomplete="new-password"
+                                   required />
+
+                            <div class="password-help">
+                                Debe tener al menos 6 caracteres.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Confirmar nueva contraseña
+                            </label>
+
+                            <input type="password"
+                                   name="confirmarContrasenia"
+                                   class="form-control"
+                                   minlength="6"
+                                   autocomplete="new-password"
+                                   required />
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            La nueva contraseña debe ser diferente a la actual.
+                        </div>
+
+                        <div class="actions">
+
+                            <button type="submit"
+                                    class="btn btn-warning">
+                                <i class="bi bi-key-fill me-1"></i>
+                                Cambiar contraseña
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

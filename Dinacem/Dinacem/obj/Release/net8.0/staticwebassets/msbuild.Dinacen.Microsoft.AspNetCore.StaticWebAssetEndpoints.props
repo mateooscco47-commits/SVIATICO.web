@@ -1,5 +1,17 @@
 ﻿<Project>
   <ItemGroup>
+    <StaticWebAssetEndpoint Include="_content/Dinacen/comprobantes/847eefdb-5ceb-4efd-a72e-86b6c2e705d0.cwmvdk87bn.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\847eefdb-5ceb-4efd-a72e-86b6c2e705d0.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"cwmvdk87bn"},{"Name":"integrity","Value":"sha256-rMKbhbq\u002BHFMRFu0HH1Gd\u002B1Z/a7lvYC26ogagm5ZEGXE="},{"Name":"label","Value":"_content/Dinacen/comprobantes/847eefdb-5ceb-4efd-a72e-86b6c2e705d0.png"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"760459"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022rMKbhbq\u002BHFMRFu0HH1Gd\u002B1Z/a7lvYC26ogagm5ZEGXE=\u0022"},{"Name":"Last-Modified","Value":"Thu, 20 Aug 2026 05:36:10 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Dinacen/comprobantes/847eefdb-5ceb-4efd-a72e-86b6c2e705d0.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\847eefdb-5ceb-4efd-a72e-86b6c2e705d0.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-rMKbhbq\u002BHFMRFu0HH1Gd\u002B1Z/a7lvYC26ogagm5ZEGXE="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"760459"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022rMKbhbq\u002BHFMRFu0HH1Gd\u002B1Z/a7lvYC26ogagm5ZEGXE=\u0022"},{"Name":"Last-Modified","Value":"Thu, 20 Aug 2026 05:36:10 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/Dinacen/comprobantes/85e15cd6-0754-441c-8446-5ad25eff7ace.pdf">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\85e15cd6-0754-441c-8446-5ad25eff7ace.pdf'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
@@ -11,6 +23,18 @@
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"v20wry6ocs"},{"Name":"integrity","Value":"sha256-Z\u002BsgB2xujgA4EVZken3Jy0KpCq4amEJfMvTE6vfPnk4="},{"Name":"label","Value":"_content/Dinacen/comprobantes/85e15cd6-0754-441c-8446-5ad25eff7ace.pdf"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"42791"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022Z\u002BsgB2xujgA4EVZken3Jy0KpCq4amEJfMvTE6vfPnk4=\u0022"},{"Name":"Last-Modified","Value":"Fri, 31 Jul 2026 06:22:56 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Dinacen/comprobantes/db0b7479-7453-4819-92f3-6300b34ef1e7.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\db0b7479-7453-4819-92f3-6300b34ef1e7.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-yiwYh4spq\u002BcnRhr2ahtLtErbpaDhAKURGqhgCxdOy5E="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"91238"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022yiwYh4spq\u002BcnRhr2ahtLtErbpaDhAKURGqhgCxdOy5E=\u0022"},{"Name":"Last-Modified","Value":"Thu, 20 Aug 2026 08:56:35 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Dinacen/comprobantes/db0b7479-7453-4819-92f3-6300b34ef1e7.urapyupot1.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\db0b7479-7453-4819-92f3-6300b34ef1e7.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"urapyupot1"},{"Name":"integrity","Value":"sha256-yiwYh4spq\u002BcnRhr2ahtLtErbpaDhAKURGqhgCxdOy5E="},{"Name":"label","Value":"_content/Dinacen/comprobantes/db0b7479-7453-4819-92f3-6300b34ef1e7.png"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"91238"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022yiwYh4spq\u002BcnRhr2ahtLtErbpaDhAKURGqhgCxdOy5E=\u0022"},{"Name":"Last-Modified","Value":"Thu, 20 Aug 2026 08:56:35 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/Dinacen/css/Admin.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\Admin.css'))</AssetFile>
@@ -840,6 +864,18 @@
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-hjIBkvmgxQXbNXK3B9YQ3t06RwLuQSQzC/dpvuB/lMk="}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"1117"},{"Name":"Content-Type","Value":"text/plain"},{"Name":"ETag","Value":"\u0022hjIBkvmgxQXbNXK3B9YQ3t06RwLuQSQzC/dpvuB/lMk=\u0022"},{"Name":"Last-Modified","Value":"Sat, 27 Jun 2026 20:55:00 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Dinacen/liquidaciones/Liquidacion-1-lucas-altamiza.nnw9nxth2c.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-1-lucas-altamiza.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"nnw9nxth2c"},{"Name":"integrity","Value":"sha256-k7jcxDMpcaBvsgRahi3az5sDcKahxqfERc548Ha4bjY="},{"Name":"label","Value":"_content/Dinacen/liquidaciones/Liquidacion-1-lucas-altamiza.pdf"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"332267"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022k7jcxDMpcaBvsgRahi3az5sDcKahxqfERc548Ha4bjY=\u0022"},{"Name":"Last-Modified","Value":"Thu, 20 Aug 2026 05:36:52 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Dinacen/liquidaciones/Liquidacion-1-lucas-altamiza.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-1-lucas-altamiza.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-k7jcxDMpcaBvsgRahi3az5sDcKahxqfERc548Ha4bjY="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"332267"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022k7jcxDMpcaBvsgRahi3az5sDcKahxqfERc548Ha4bjY=\u0022"},{"Name":"Last-Modified","Value":"Thu, 20 Aug 2026 05:36:52 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/Dinacen/liquidaciones/Liquidacion-2-angel-asd.pdf">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-2-angel-asd.pdf'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
@@ -863,6 +899,18 @@
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-q2juumJ9i3R4QjbM3LTC4yMXo5EbygQmZtYAzVugHvM="}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"35207"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022q2juumJ9i3R4QjbM3LTC4yMXo5EbygQmZtYAzVugHvM=\u0022"},{"Name":"Last-Modified","Value":"Wed, 19 Aug 2026 06:48:13 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Dinacen/liquidaciones/Liquidacion-2-lucas-altamizaa.16irs3ve38.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-2-lucas-altamizaa.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"16irs3ve38"},{"Name":"integrity","Value":"sha256-uYxeDpW2RhcyekKqJrks/OEcDnRgDRIFvfLl0Jk6Yr0="},{"Name":"label","Value":"_content/Dinacen/liquidaciones/Liquidacion-2-lucas-altamizaa.pdf"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"120175"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022uYxeDpW2RhcyekKqJrks/OEcDnRgDRIFvfLl0Jk6Yr0=\u0022"},{"Name":"Last-Modified","Value":"Thu, 20 Aug 2026 08:57:02 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Dinacen/liquidaciones/Liquidacion-2-lucas-altamizaa.pdf">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-2-lucas-altamizaa.pdf'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-uYxeDpW2RhcyekKqJrks/OEcDnRgDRIFvfLl0Jk6Yr0="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"120175"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022uYxeDpW2RhcyekKqJrks/OEcDnRgDRIFvfLl0Jk6Yr0=\u0022"},{"Name":"Last-Modified","Value":"Thu, 20 Aug 2026 08:57:02 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/Dinacen/liquidaciones/Liquidacion-3-angel-asd.fc63zy9c0w.pdf">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-3-angel-asd.pdf'))</AssetFile>
@@ -888,6 +936,18 @@
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-6nfznEUscSRmkf\u002BUjbQmZ\u002BFDULygac1tgfFWt9BBBhA="}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"35120"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u00226nfznEUscSRmkf\u002BUjbQmZ\u002BFDULygac1tgfFWt9BBBhA=\u0022"},{"Name":"Last-Modified","Value":"Fri, 24 Jul 2026 10:15:57 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Dinacen/vouchers-devolucion/35369ae1-ef62-46e5-a6ce-348542b21f69.fdscqr1o4z.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\35369ae1-ef62-46e5-a6ce-348542b21f69.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"fdscqr1o4z"},{"Name":"integrity","Value":"sha256-XS8IpWffZ0HcUK\u002B3lO3knl4suJDDgLtN263g0Zv8dhY="},{"Name":"label","Value":"_content/Dinacen/vouchers-devolucion/35369ae1-ef62-46e5-a6ce-348542b21f69.png"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"1148226"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022XS8IpWffZ0HcUK\u002B3lO3knl4suJDDgLtN263g0Zv8dhY=\u0022"},{"Name":"Last-Modified","Value":"Thu, 20 Aug 2026 05:36:33 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Dinacen/vouchers-devolucion/35369ae1-ef62-46e5-a6ce-348542b21f69.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\35369ae1-ef62-46e5-a6ce-348542b21f69.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-XS8IpWffZ0HcUK\u002B3lO3knl4suJDDgLtN263g0Zv8dhY="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"1148226"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022XS8IpWffZ0HcUK\u002B3lO3knl4suJDDgLtN263g0Zv8dhY=\u0022"},{"Name":"Last-Modified","Value":"Thu, 20 Aug 2026 05:36:33 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/Dinacen/vouchers-devolucion/963d0d93-3d99-4b42-9c9c-00bf43ad8dd1.pdf">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\963d0d93-3d99-4b42-9c9c-00bf43ad8dd1.pdf'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
@@ -899,6 +959,18 @@
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"xbo1k8tgx4"},{"Name":"integrity","Value":"sha256-k0pvPgwLstS4T0pqlNZ1wbRFr9SjxIu4rykjdKvDuGo="},{"Name":"label","Value":"_content/Dinacen/vouchers-devolucion/963d0d93-3d99-4b42-9c9c-00bf43ad8dd1.pdf"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"196602"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022k0pvPgwLstS4T0pqlNZ1wbRFr9SjxIu4rykjdKvDuGo=\u0022"},{"Name":"Last-Modified","Value":"Wed, 19 Aug 2026 06:48:13 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Dinacen/vouchers-devolucion/c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.1a5c75a4zb.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"1a5c75a4zb"},{"Name":"integrity","Value":"sha256-Rx\u002BQ3Evn7qiI7vzbmFXx6rvfmvPrg\u002BbzLLwKh\u002Bz8oU4="},{"Name":"label","Value":"_content/Dinacen/vouchers-devolucion/c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.png"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"320323"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022Rx\u002BQ3Evn7qiI7vzbmFXx6rvfmvPrg\u002BbzLLwKh\u002Bz8oU4=\u0022"},{"Name":"Last-Modified","Value":"Thu, 20 Aug 2026 08:56:58 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/Dinacen/vouchers-devolucion/c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.png">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.png'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-Rx\u002BQ3Evn7qiI7vzbmFXx6rvfmvPrg\u002BbzLLwKh\u002Bz8oU4="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=3600, must-revalidate"},{"Name":"Content-Length","Value":"320323"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022Rx\u002BQ3Evn7qiI7vzbmFXx6rvfmvPrg\u002BbzLLwKh\u002Bz8oU4=\u0022"},{"Name":"Last-Modified","Value":"Thu, 20 Aug 2026 08:56:58 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
   </ItemGroup>
 </Project>

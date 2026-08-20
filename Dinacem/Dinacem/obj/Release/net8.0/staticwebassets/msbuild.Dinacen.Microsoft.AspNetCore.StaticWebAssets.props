@@ -1,5 +1,23 @@
 ﻿<Project>
   <ItemGroup>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\847eefdb-5ceb-4efd-a72e-86b6c2e705d0.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>Dinacen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Dinacen</BasePath>
+      <RelativePath>comprobantes/847eefdb-5ceb-4efd-a72e-86b6c2e705d0.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>cwmvdk87bn</Fingerprint>
+      <Integrity>rMKbhbq+HFMRFu0HH1Gd+1Z/a7lvYC26ogagm5ZEGXE=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\847eefdb-5ceb-4efd-a72e-86b6c2e705d0.png'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\85e15cd6-0754-441c-8446-5ad25eff7ace.pdf'))">
       <SourceType>Package</SourceType>
       <SourceId>Dinacen</SourceId>
@@ -17,6 +35,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\85e15cd6-0754-441c-8446-5ad25eff7ace.pdf'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\db0b7479-7453-4819-92f3-6300b34ef1e7.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>Dinacen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Dinacen</BasePath>
+      <RelativePath>comprobantes/db0b7479-7453-4819-92f3-6300b34ef1e7.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>urapyupot1</Fingerprint>
+      <Integrity>yiwYh4spq+cnRhr2ahtLtErbpaDhAKURGqhgCxdOy5E=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\db0b7479-7453-4819-92f3-6300b34ef1e7.png'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\css\Admin.css'))">
       <SourceType>Package</SourceType>
@@ -1260,6 +1296,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\lib\jquery\LICENSE.txt'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-1-lucas-altamiza.pdf'))">
+      <SourceType>Package</SourceType>
+      <SourceId>Dinacen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Dinacen</BasePath>
+      <RelativePath>liquidaciones/Liquidacion-1-lucas-altamiza.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>nnw9nxth2c</Fingerprint>
+      <Integrity>k7jcxDMpcaBvsgRahi3az5sDcKahxqfERc548Ha4bjY=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-1-lucas-altamiza.pdf'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-2-angel-asd.pdf'))">
       <SourceType>Package</SourceType>
       <SourceId>Dinacen</SourceId>
@@ -1295,6 +1349,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-2-Juan-Perez-Garcia.pdf'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-2-lucas-altamizaa.pdf'))">
+      <SourceType>Package</SourceType>
+      <SourceId>Dinacen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Dinacen</BasePath>
+      <RelativePath>liquidaciones/Liquidacion-2-lucas-altamizaa.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>16irs3ve38</Fingerprint>
+      <Integrity>uYxeDpW2RhcyekKqJrks/OEcDnRgDRIFvfLl0Jk6Yr0=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-2-lucas-altamizaa.pdf'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-3-angel-asd.pdf'))">
       <SourceType>Package</SourceType>
@@ -1332,6 +1404,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\reembolsos\72e6d48d-28bd-4383-9186-0a98c77f8c92.png'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\35369ae1-ef62-46e5-a6ce-348542b21f69.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>Dinacen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Dinacen</BasePath>
+      <RelativePath>vouchers-devolucion/35369ae1-ef62-46e5-a6ce-348542b21f69.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>fdscqr1o4z</Fingerprint>
+      <Integrity>XS8IpWffZ0HcUK+3lO3knl4suJDDgLtN263g0Zv8dhY=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\35369ae1-ef62-46e5-a6ce-348542b21f69.png'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\963d0d93-3d99-4b42-9c9c-00bf43ad8dd1.pdf'))">
       <SourceType>Package</SourceType>
       <SourceId>Dinacen</SourceId>
@@ -1349,6 +1439,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\963d0d93-3d99-4b42-9c9c-00bf43ad8dd1.pdf'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.png'))">
+      <SourceType>Package</SourceType>
+      <SourceId>Dinacen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Dinacen</BasePath>
+      <RelativePath>vouchers-devolucion/c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.png</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>1a5c75a4zb</Fingerprint>
+      <Integrity>Rx+Q3Evn7qiI7vzbmFXx6rvfmvPrg+bzLLwKh+z8oU4=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.png'))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>
 </Project>

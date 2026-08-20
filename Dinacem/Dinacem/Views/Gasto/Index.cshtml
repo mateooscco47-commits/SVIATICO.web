@@ -12,8 +12,23 @@
     var totalValorVenta = Model?.Sum(x => x.ValorVenta) ?? 0;
     var totalIgv = Model?.Sum(x => x.IGV) ?? 0;
     var totalRendido = rendicion?.Total ?? 0;
-    var saldoDisponible = rendicion?.Saldo ?? 0;
-    var devolucion = ViewBag.DevolucionSaldo as Dinacem.Models.DevolucionSaldo;
+
+    var saldoOriginal = rendicion?.Saldo ?? 0;
+
+    var devolucion =
+        ViewBag.DevolucionSaldo as Dinacem.Models.DevolucionSaldo;
+
+    decimal saldoPendiente = saldoOriginal;
+
+    if (devolucion != null && saldoOriginal > 0)
+    {
+        saldoPendiente = saldoOriginal - devolucion.Monto;
+
+        if (saldoPendiente < 0)
+        {
+            saldoPendiente = 0;
+        }
+    }
 }
 
 <style>
@@ -849,11 +864,22 @@
 
                     <div class="summary-card">
                         <div class="small-label summary-blue">
-                            Saldo Disponible
+                            Saldo Pendiente
                         </div>
+
                         <div class="summary-value summary-blue">
-                            S/ @saldoDisponible.ToString("N2")
+                            S/ @saldoPendiente.ToString("N2")
                         </div>
+
+                        @if (saldoOriginal > 0 &&
+                        devolucion != null &&
+                        saldoPendiente == 0)
+                        {
+                            <div class="mt-2 text-success fw-semibold">
+                                <i class="bi bi-check-circle-fill me-1"></i>
+                                Saldo devuelto completamente
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

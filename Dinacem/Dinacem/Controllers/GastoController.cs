@@ -584,6 +584,808 @@ namespace Dinacem.Controllers
                 });
         }
 
+
+        // =========================================
+        // EDITAR GASTO - ADMINISTRADOR
+        // =========================================
+        [HttpGet]
+        public async Task<IActionResult> EditAdmin(int id)
+        {
+            var idRol =
+                HttpContext.Session.GetInt32("IdRol");
+
+            if (idRol != 1)
+            {
+                TempData["error"] =
+                    "No tiene permisos para editar gastos.";
+
+                return RedirectToAction(
+                    "Index",
+                    "Home");
+            }
+
+            var gasto =
+                await _context.Gastos
+                    .Include(g => g.Rendicion)
+                        .ThenInclude(r => r!.Solicitud)
+                    .Include(g => g.TipoGasto)
+                    .Include(g => g.TipoComprobante)
+                    .FirstOrDefaultAsync(g =>
+                        g.IdGasto == id);
+
+            if (gasto == null)
+            {
+                TempData["error"] =
+                    "No se encontró el gasto.";
+
+                return RedirectToAction(
+                    "IndexAdmin",
+                    "Rendicion");
+            }
+
+            if (gasto.Rendicion == null)
+            {
+                TempData["error"] =
+                    "No se encontró la rendición asociada al gasto.";
+
+                return RedirectToAction(
+                    "IndexAdmin",
+                    "Rendicion");
+            }
+
+            // Solo se permite corregir mientras está pendiente de revisión.
+            if (gasto.Rendicion.IdEstadoRendicion != 2)
+            {
+                TempData["error"] =
+                    "Solo se pueden editar gastos de una rendición pendiente de revisión.";
+
+                return RedirectToAction(
+                    "DetalleAdmin",
+                    "Rendicion",
+                    new
+                    {
+                        id = gasto.IdRendicion
+                    });
+            }
+
+            ViewBag.TiposGasto =
+                await _context.TipoGastos
+                    .OrderBy(t => t.Nombre)
+                    .ToListAsync();
+
+            ViewBag.TiposComprobante =
+                await _context.TipoComprobantes
+                    .OrderBy(t => t.Nombre)
+                    .ToListAsync();
+
+            ViewBag.Rendicion =
+                gasto.Rendicion;
+
+            return View(gasto);
+        }
+
+
+        // =========================================
+        // GUARDAR EDICIÓN DE GASTO - ADMINISTRADOR
+        // =========================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAdmin(
+            Gasto modelo,
+            IFormFile? archivo)
+        {
+            var idRol =
+                HttpContext.Session.GetInt32("IdRol");
+
+            if (idRol != 1)
+            {
+                TempData["error"] =
+                    "No tiene permisos para editar gastos.";
+
+                return RedirectToAction(
+                    "Index",
+                    "Home");
+            }
+
+            var gasto =
+                await _context.Gastos
+                    .Include(g => g.Rendicion)
+                        .ThenInclude(r => r!.Solicitud)
+                    .FirstOrDefaultAsync(g =>
+                        g.IdGasto == modelo.IdGasto);
+
+            if (gasto == null)
+            {
+                TempData["error"] =
+                    "No se encontró el gasto.";
+
+                return RedirectToAction(
+                    "IndexAdmin",
+                    "Rendicion");
+            }
+
+            if (gasto.Rendicion == null ||
+                gasto.Rendicion.Solicitud == null)
+            {
+                TempData["error"] =
+                    "No se encontró la información de la rendición.";
+
+                return RedirectToAction(
+                    "IndexAdmin",
+                    "Rendicion");
+            }
+
+            var rendicion =
+                gasto.Rendicion;
+
+            // No modificar rendiciones ya aprobadas o finalizadas.
+            if (rendicion.IdEstadoRendicion != 2)
+            {
+                TempData["error"] =
+                    "Solo se pueden editar gastos de una rendición pendiente de revisión.";
+
+                return RedirectToAction(
+                    "DetalleAdmin",
+                    "Rendicion",
+                    new
+                    {
+                        id = gasto.IdRendicion
+                    });
+            }
+
+            // =========================================
+            // LIMPIAR CAMPOS
+            // =========================================
+
+            modelo.Ruc =
+                modelo.Ruc?.Trim();
+
+            modelo.RazonSocial =
+                modelo.RazonSocial?.Trim();
+
+            modelo.DomicilioFiscal =
+                modelo.DomicilioFiscal?.Trim();
+
+            modelo.Serie =
+                modelo.Serie?.Trim();
+
+            modelo.Numero =
+                modelo.Numero?.Trim();
+
+            modelo.Detalle =
+                modelo.Detalle?.Trim();
+
+            ModelState.Remove(
+                nameof(modelo.RazonSocial));
+
+            ModelState.Remove(
+                nameof(modelo.DomicilioFiscal));
+
+            ModelState.Remove(
+                nameof(modelo.ValorVenta));
+
+            ModelState.Remove(
+                nameof(modelo.IGV));
+
+            ModelState.Remove(
+                nameof(modelo.Comprobante));
+
+            ModelState.Remove(
+                nameof(modelo.Rendicion));
+
+            ModelState.Remove(
+                nameof(modelo.TipoGasto));
+
+            ModelState.Remove(
+                nameof(modelo.TipoComprobante));
+
+            // =========================================
+            // VALIDAR FECHA
+            // =========================================
+
+            if (modelo.Fecha == default)
+            {
+                ModelState.AddModelError(
+                    nameof(modelo.Fecha),
+                    "Debe ingresar la fecha del gasto.");
+            }
+            else if (
+                modelo.Fecha.Date <
+                    rendicion.FechaInicio.Date ||
+                modelo.Fecha.Date >
+                    rendicion.FechaFin.Date)
+            {
+                ModelState.AddModelError(
+                    nameof(modelo.Fecha),
+                    $"La fecha del gasto debe estar entre " +
+                    $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
+                    $"{rendicion.FechaFin:dd/MM/yyyy}.");
+            }
+
+            // =========================================
+            // VALIDAR MONTO TOTAL
+            // =========================================
+
+            if (modelo.MontoTotal <= 0)
+            {
+                ModelState.AddModelError(
+                    nameof(modelo.MontoTotal),
+                    "El monto total debe ser mayor que cero.");
+            }
+
+            // =========================================
+            // CALCULAR VALOR DE VENTA E IGV
+            // =========================================
+
+            if (modelo.MontoTotal > 0)
+            {
+                if (modelo.ExoneracionIGV)
+                {
+                    modelo.ValorVenta =
+                        Math.Round(
+                            modelo.MontoTotal,
+                            2,
+                            MidpointRounding.AwayFromZero);
+
+                    modelo.IGV = 0;
+                }
+                else
+                {
+                    modelo.ValorVenta =
+                        Math.Round(
+                            modelo.MontoTotal / 1.18m,
+                            2,
+                            MidpointRounding.AwayFromZero);
+
+                    modelo.IGV =
+                        Math.Round(
+                            modelo.MontoTotal -
+                            modelo.ValorVenta,
+                            2,
+                            MidpointRounding.AwayFromZero);
+                }
+            }
+
+            // =========================================
+            // VALIDAR TIPO DE GASTO Y LÍMITE DIARIO
+            // EXCLUYENDO EL GASTO QUE SE ESTÁ EDITANDO
+            // =========================================
+
+            var tipoGasto =
+                await _context.TipoGastos
+                    .FirstOrDefaultAsync(t =>
+                        t.IdTipoGasto ==
+                        modelo.IdTipoGasto);
+
+            if (tipoGasto == null)
+            {
+                ModelState.AddModelError(
+                    nameof(modelo.IdTipoGasto),
+                    "El tipo de gasto seleccionado no existe.");
+            }
+            else if (modelo.Fecha != default)
+            {
+                decimal limiteDiario = 0;
+
+                if (tipoGasto.Nombre.Equals(
+                    "Hospedaje",
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    limiteDiario = 50;
+                }
+                else if (tipoGasto.Nombre.Equals(
+                    "Alimentación",
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    limiteDiario = 40;
+                }
+
+                if (limiteDiario > 0)
+                {
+                    DateTime inicioDia =
+                        modelo.Fecha.Date;
+
+                    DateTime finDia =
+                        inicioDia.AddDays(1);
+
+                    decimal montoRegistradoEseDia =
+                        await _context.Gastos
+                            .Where(g =>
+                                g.IdRendicion ==
+                                    gasto.IdRendicion &&
+                                g.IdGasto !=
+                                    gasto.IdGasto &&
+                                g.IdTipoGasto ==
+                                    modelo.IdTipoGasto &&
+                                g.Fecha >= inicioDia &&
+                                g.Fecha < finDia)
+                            .SumAsync(g =>
+                                (decimal?)g.MontoTotal) ?? 0;
+
+                    decimal nuevoTotalDelDia =
+                        montoRegistradoEseDia +
+                        modelo.MontoTotal;
+
+                    if (nuevoTotalDelDia >
+                        limiteDiario)
+                    {
+                        decimal disponible =
+                            limiteDiario -
+                            montoRegistradoEseDia;
+
+                        if (disponible < 0)
+                        {
+                            disponible = 0;
+                        }
+
+                        ModelState.AddModelError(
+                            nameof(modelo.MontoTotal),
+                            $"El límite diario para " +
+                            $"{tipoGasto.Nombre} es " +
+                            $"S/ {limiteDiario:N2}. " +
+                            $"Solo puede dejar este gasto hasta " +
+                            $"S/ {disponible:N2}.");
+                    }
+                }
+            }
+
+            // =========================================
+            // VALIDAR TIPO DE COMPROBANTE
+            // =========================================
+
+            var tipoComprobanteExiste =
+                await _context.TipoComprobantes
+                    .AnyAsync(t =>
+                        t.IdTipoComprobante ==
+                        modelo.IdTipoComprobante);
+
+            if (!tipoComprobanteExiste)
+            {
+                ModelState.AddModelError(
+                    nameof(modelo.IdTipoComprobante),
+                    "El tipo de comprobante seleccionado no existe.");
+            }
+
+            // =========================================
+            // VALIDAR RUC
+            // =========================================
+
+            if (string.IsNullOrWhiteSpace(
+                    modelo.Ruc) ||
+                modelo.Ruc.Length != 11 ||
+                !modelo.Ruc.All(char.IsDigit))
+            {
+                ModelState.AddModelError(
+                    nameof(modelo.Ruc),
+                    "El RUC debe contener exactamente 11 dígitos.");
+            }
+
+            // =========================================
+            // CONSULTAR RUC
+            // =========================================
+
+            if (ModelState.IsValid)
+            {
+                var domicilioIngresado =
+                    modelo.DomicilioFiscal;
+
+                var consultaRuc =
+                    await _rucService.ConsultarAsync(
+                        modelo.Ruc!);
+
+                if (!consultaRuc.Exito)
+                {
+                    ModelState.AddModelError(
+                        nameof(modelo.Ruc),
+                        consultaRuc.Mensaje ??
+                        "No se pudo validar el RUC.");
+                }
+                else
+                {
+                    modelo.Ruc =
+                        string.IsNullOrWhiteSpace(
+                            consultaRuc.Ruc)
+                            ? modelo.Ruc
+                            : consultaRuc.Ruc.Trim();
+
+                    modelo.RazonSocial =
+                        consultaRuc.RazonSocial?.Trim();
+
+                    if (string.IsNullOrWhiteSpace(
+                            domicilioIngresado))
+                    {
+                        modelo.DomicilioFiscal =
+                            consultaRuc.DomicilioFiscal?
+                                .Trim();
+                    }
+                    else
+                    {
+                        modelo.DomicilioFiscal =
+                            domicilioIngresado.Trim();
+                    }
+                }
+            }
+
+            // =========================================
+            // VALIDAR RAZÓN SOCIAL
+            // =========================================
+
+            if (string.IsNullOrWhiteSpace(
+                    modelo.RazonSocial))
+            {
+                ModelState.AddModelError(
+                    nameof(modelo.RazonSocial),
+                    "No se encontró la razón social del RUC.");
+            }
+            else if (modelo.RazonSocial.Length > 250)
+            {
+                ModelState.AddModelError(
+                    nameof(modelo.RazonSocial),
+                    "La razón social no puede superar los 250 caracteres.");
+            }
+
+            // =========================================
+            // VALIDAR DOMICILIO FISCAL
+            // =========================================
+
+            if (string.IsNullOrWhiteSpace(
+                    modelo.DomicilioFiscal))
+            {
+                ModelState.AddModelError(
+                    nameof(modelo.DomicilioFiscal),
+                    "Debe ingresar el domicilio fiscal.");
+            }
+            else if (
+                modelo.DomicilioFiscal.Length > 300)
+            {
+                ModelState.AddModelError(
+                    nameof(modelo.DomicilioFiscal),
+                    "El domicilio fiscal no puede superar los 300 caracteres.");
+            }
+
+            // =========================================
+            // MOSTRAR ERRORES
+            // =========================================
+
+            if (!ModelState.IsValid)
+            {
+                var errores =
+                    ModelState
+                        .Where(x =>
+                            x.Value != null &&
+                            x.Value.Errors.Count > 0)
+                        .Select(x =>
+                            $"{x.Key}: " +
+                            $"{string.Join(
+                                ", ",
+                                x.Value!.Errors.Select(e =>
+                                    string.IsNullOrWhiteSpace(
+                                        e.ErrorMessage)
+                                        ? "Valor no válido."
+                                        : e.ErrorMessage))}");
+
+                TempData["error"] =
+                    string.Join(
+                        "<br>",
+                        errores);
+
+                return RedirectToAction(
+                    nameof(EditAdmin),
+                    new
+                    {
+                        id = gasto.IdGasto
+                    });
+            }
+
+            // =========================================
+            // VALIDAR NUEVO COMPROBANTE
+            // =========================================
+
+            string? nuevaRutaComprobante = null;
+            string? nuevaRutaFisica = null;
+
+            if (archivo != null &&
+                archivo.Length > 0)
+            {
+                string[] extensionesPermitidas =
+                {
+                    ".pdf",
+                    ".jpg",
+                    ".jpeg",
+                    ".png"
+                };
+
+                var extension =
+                    Path.GetExtension(
+                        archivo.FileName)
+                    .ToLowerInvariant();
+
+                if (!extensionesPermitidas
+                    .Contains(extension))
+                {
+                    TempData["error"] =
+                        "El comprobante debe ser PDF, JPG, JPEG o PNG.";
+
+                    return RedirectToAction(
+                        nameof(EditAdmin),
+                        new
+                        {
+                            id = gasto.IdGasto
+                        });
+                }
+
+                const long tamanioMaximo =
+                    5 * 1024 * 1024;
+
+                if (archivo.Length >
+                    tamanioMaximo)
+                {
+                    TempData["error"] =
+                        "El comprobante no debe superar los 5 MB.";
+
+                    return RedirectToAction(
+                        nameof(EditAdmin),
+                        new
+                        {
+                            id = gasto.IdGasto
+                        });
+                }
+
+                var nombreArchivo =
+                    $"{Guid.NewGuid()}{extension}";
+
+                var carpeta =
+                    Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "comprobantes");
+
+                Directory.CreateDirectory(
+                    carpeta);
+
+                nuevaRutaFisica =
+                    Path.Combine(
+                        carpeta,
+                        nombreArchivo);
+
+                await using var stream =
+                    new FileStream(
+                        nuevaRutaFisica,
+                        FileMode.Create);
+
+                await archivo.CopyToAsync(
+                    stream);
+
+                nuevaRutaComprobante =
+                    $"/comprobantes/{nombreArchivo}";
+            }
+
+            // =========================================
+            // ACTUALIZAR GASTO
+            // =========================================
+
+            var comprobanteAnterior =
+                gasto.Comprobante;
+
+            gasto.Fecha =
+                modelo.Fecha;
+
+            gasto.IdTipoGasto =
+                modelo.IdTipoGasto;
+
+            gasto.IdTipoComprobante =
+                modelo.IdTipoComprobante;
+
+            gasto.Ruc =
+                modelo.Ruc;
+
+            gasto.RazonSocial =
+                modelo.RazonSocial;
+
+            gasto.DomicilioFiscal =
+                modelo.DomicilioFiscal;
+
+            gasto.Serie =
+                modelo.Serie;
+
+            gasto.Numero =
+                modelo.Numero;
+
+            gasto.Detalle =
+                modelo.Detalle;
+
+            gasto.MontoTotal =
+                modelo.MontoTotal;
+
+            gasto.ValorVenta =
+                modelo.ValorVenta;
+
+            gasto.IGV =
+                modelo.IGV;
+
+            gasto.ExoneracionIGV =
+                modelo.ExoneracionIGV;
+
+            if (!string.IsNullOrWhiteSpace(
+                    nuevaRutaComprobante))
+            {
+                gasto.Comprobante =
+                    nuevaRutaComprobante;
+            }
+
+            try
+            {
+                // =========================================
+                // 1. GUARDAR CAMBIOS DEL GASTO
+                // =========================================
+
+                await _context.SaveChangesAsync();
+
+
+                // =========================================
+                // 2. RECALCULAR TOTAL Y SALDO
+                // =========================================
+
+                await ActualizarTotalesRendicion(
+                    gasto.IdRendicion);
+
+
+                // =========================================
+                // 3. RECARGAR RENDICIÓN ACTUALIZADA
+                // =========================================
+
+                var rendicionActualizada =
+                    await _context.Rendiciones
+                        .Include(r => r.Solicitud)
+                        .Include(r => r.Usuario)
+                        .FirstOrDefaultAsync(r =>
+                            r.IdRendicion ==
+                            gasto.IdRendicion);
+
+                if (rendicionActualizada == null)
+                {
+                    TempData["error"] =
+                        "El gasto fue actualizado, pero no se pudo cargar la rendición para regenerar el PDF.";
+
+                    return RedirectToAction(
+                        "DetalleAdmin",
+                        "Rendicion",
+                        new
+                        {
+                            id = gasto.IdRendicion
+                        });
+                }
+
+
+                // =========================================
+                // 4. RECARGAR TODOS LOS GASTOS
+                // CON LOS DATOS YA ACTUALIZADOS
+                // =========================================
+
+                var gastosActualizados =
+                    await _context.Gastos
+                        .Include(g => g.TipoGasto)
+                        .Include(g => g.TipoComprobante)
+                        .Where(g =>
+                            g.IdRendicion ==
+                            gasto.IdRendicion)
+                        .OrderBy(g => g.Fecha)
+                        .ToListAsync();
+
+
+                // =========================================
+                // 5. OBTENER DEVOLUCIÓN
+                // =========================================
+
+                var devolucionActualizada =
+                    await _context.DevolucionesSaldo
+                        .FirstOrDefaultAsync(d =>
+                            d.IdRendicion ==
+                            gasto.IdRendicion);
+
+
+                // =========================================
+                // 6. REGENERAR PDF
+                // =========================================
+
+                var resultadoPdf =
+                    await _rendicionPdfService
+                        .GenerarAsync(
+                            rendicionActualizada,
+                            gastosActualizados,
+                            devolucionActualizada);
+
+
+                // =========================================
+                // 7. ACTUALIZAR RUTA DEL PDF
+                //
+                // Se agrega una versión a la URL para evitar
+                // que el navegador muestre una copia antigua
+                // almacenada en caché.
+                // =========================================
+
+                rendicionActualizada.ArchivoPdf =
+                    $"{resultadoPdf.RutaPublica}?v={DateTime.Now.Ticks}";
+
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                if (!string.IsNullOrWhiteSpace(
+                        nuevaRutaFisica) &&
+                    System.IO.File.Exists(
+                        nuevaRutaFisica))
+                {
+                    System.IO.File.Delete(
+                        nuevaRutaFisica);
+                }
+
+                TempData["error"] =
+                    "No se pudo actualizar completamente el gasto y regenerar el PDF. " +
+                    ex.Message;
+
+                return RedirectToAction(
+                    nameof(EditAdmin),
+                    new
+                    {
+                        id = gasto.IdGasto
+                    });
+            }
+
+            // =========================================
+            // ELIMINAR COMPROBANTE ANTERIOR
+            // SOLO DESPUÉS DE GUARDAR CORRECTAMENTE
+            // =========================================
+
+            if (!string.IsNullOrWhiteSpace(
+                    nuevaRutaComprobante) &&
+                !string.IsNullOrWhiteSpace(
+                    comprobanteAnterior))
+            {
+                var rutaRelativaAnterior =
+                    comprobanteAnterior
+                        .TrimStart('/')
+                        .Replace(
+                            '/',
+                            Path.DirectorySeparatorChar);
+
+                var rutaAnterior =
+                    Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        rutaRelativaAnterior);
+
+                if (System.IO.File.Exists(
+                        rutaAnterior))
+                {
+                    try
+                    {
+                        System.IO.File.Delete(
+                            rutaAnterior);
+                    }
+                    catch
+                    {
+                        // La edición ya fue guardada.
+                        // Si no se puede borrar el archivo antiguo,
+                        // no se interrumpe la operación.
+                    }
+                }
+            }
+
+            TempData["mensaje"] =
+                "El gasto fue corregido correctamente por el administrador.";
+
+            return RedirectToAction(
+                "DetalleAdmin",
+                "Rendicion",
+                new
+                {
+                    id = gasto.IdRendicion
+                });
+        }
+
+
         // =========================================
         // ELIMINAR GASTO
         // =========================================
