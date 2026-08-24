@@ -3,43 +3,468 @@
 @{
     ViewData["Title"] = "Reporte de Reembolsos";
     Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+
+    var cantidadReembolsos = Model?.Count ?? 0;
+
+    var totalReembolsado = Model?.Sum(x => x.Monto) ?? 0;
+
+    var pendientes = Model?.Count(x =>
+        x.Estado == "Pendiente") ?? 0;
+
+    var aprobados = Model?.Count(x =>
+        x.Estado == "Aprobado") ?? 0;
+
+    var pagados = Model?.Count(x =>
+        x.Estado == "Pagado") ?? 0;
+
+    var rechazados = Model?.Count(x =>
+        x.Estado == "Rechazado") ?? 0;
 }
 
-<div class="container-fluid">
+<style>
 
-   <!-- ===========================================
-    ENCABEZADO DEL REPORTE
-=========================================== -->
+    /* =========================================================
+           CONTENEDOR
+           ========================================================= */
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+    .reporte-page {
+        width: 100%;
+        padding: 4px 0 30px 0;
+    }
 
-    <div class="d-flex align-items-center">
 
-        <a asp-controller="Reporte"
-           asp-action="Index"
-           class="btn btn-outline-primary rounded-pill me-3">
+    /* =========================================================
+           ENCABEZADO
+           ========================================================= */
 
-            <i class="bi bi-arrow-left-circle"></i>
+    .reporte-header {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 22px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    }
 
-            Volver
+    .reporte-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
 
-        </a>
+    .reporte-title-area {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
 
-        <div>
+    .reporte-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        background: #eaf3fb;
+        color: #0c4a8a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
 
-            <h2 class="fw-bold text-primary mb-0">
+    .reporte-title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: #1e293b;
+    }
 
-                <i class="bi bi-cash-coin me-2"></i>
+    .reporte-description {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: #64748b;
+    }
 
-                Reporte de Reembolsos
 
-            </h2>
+    /* =========================================================
+           BOTONES
+           ========================================================= */
 
-            <small class="text-muted">
+    .btn-reporte-back {
+        border: 1px solid #cbd5e1;
+        color: #334155;
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 8px 14px;
+        font-size: 13px;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
 
-                Sistema de Viáticos DINACEN
+        .btn-reporte-back:hover {
+            background: #f1f5f9;
+            color: #0c4a8a;
+            border-color: #0c4a8a;
+        }
 
-            </small>
+    .btn-reporte-pdf {
+        background: #b91c1c;
+        border: 1px solid #b91c1c;
+        color: #ffffff;
+        border-radius: 8px;
+        padding: 9px 17px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all .2s ease;
+        white-space: nowrap;
+    }
+
+        .btn-reporte-pdf:hover {
+            background: #991b1b;
+            border-color: #991b1b;
+            color: #ffffff;
+        }
+
+
+    /* =========================================================
+           INDICADORES
+           ========================================================= */
+
+    .indicador-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        padding: 18px;
+        height: 100%;
+        box-shadow: 0 2px 7px rgba(15, 23, 42, 0.04);
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+        .indicador-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px rgba(15, 23, 42, 0.08);
+        }
+
+    .indicador-label {
+        display: block;
+        font-size: 12px;
+        color: #64748b;
+        margin-bottom: 5px;
+    }
+
+    .indicador-value {
+        margin: 0;
+        font-size: 23px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .indicador-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+    }
+
+    .icon-blue {
+        background: #eaf3fb;
+        color: #0c4a8a;
+    }
+
+    .icon-green {
+        background: #ecfdf3;
+        color: #15803d;
+    }
+
+    .icon-yellow {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .icon-red {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+
+    /* =========================================================
+           TABLA
+           ========================================================= */
+
+    .reporte-box {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        overflow: hidden;
+        box-shadow: 0 2px 7px rgba(15, 23, 42, 0.04);
+    }
+
+    .reporte-box-header {
+        padding: 14px 18px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        background: #ffffff;
+    }
+
+        .reporte-box-header i {
+            color: #0c4a8a;
+            font-size: 17px;
+        }
+
+        .reporte-box-header span {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+    .tabla-reporte {
+        margin: 0;
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+        .tabla-reporte thead th {
+            background: #f1f5f9;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 12px 16px;
+            border-bottom: 1px solid #cbd5e1;
+            white-space: nowrap;
+        }
+
+        .tabla-reporte tbody td {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #334155;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+
+        .tabla-reporte tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .tabla-reporte tfoot th {
+            background: #f1f5f9;
+            color: #1e293b;
+            font-size: 13px;
+            padding: 13px 16px;
+            border-top: 1px solid #cbd5e1;
+        }
+
+
+    /* =========================================================
+           USUARIO
+           ========================================================= */
+
+    .usuario-info {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .usuario-icon {
+        width: 31px;
+        height: 31px;
+        border-radius: 7px;
+        background: #eaf3fb;
+        color: #0c4a8a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+
+
+    /* =========================================================
+           MOTIVO
+           ========================================================= */
+
+    .motivo {
+        color: #475569;
+        max-width: 350px;
+    }
+
+
+    /* =========================================================
+           MONTO
+           ========================================================= */
+
+    .monto {
+        font-weight: 700;
+        color: #15803d;
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+           ESTADOS
+           ========================================================= */
+
+    .estado {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 9px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .estado-pendiente {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .estado-aprobado {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .estado-pagado {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .estado-rechazado {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    .estado-default {
+        background: #e2e8f0;
+        color: #475569;
+    }
+
+
+    /* =========================================================
+           VACÍO
+           ========================================================= */
+
+    .empty-report {
+        padding: 55px 20px;
+        text-align: center;
+        color: #64748b;
+    }
+
+        .empty-report i {
+            display: block;
+            font-size: 38px;
+            margin-bottom: 10px;
+            color: #94a3b8;
+        }
+
+
+    /* =========================================================
+           RESPONSIVE
+           ========================================================= */
+
+    @@media (max-width: 768px) {
+
+        .reporte-header-content {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .reporte-title-area {
+            align-items: flex-start;
+        }
+
+        .reporte-title {
+            font-size: 19px;
+        }
+
+        .btn-reporte-pdf {
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-reporte-back {
+            flex: 1;
+            text-align: center;
+        }
+    }
+
+</style>
+
+
+<div class="container-fluid reporte-page">
+
+
+    <!-- =========================================================
+         ENCABEZADO
+         ========================================================= -->
+
+    <div class="reporte-header">
+
+        <div class="reporte-header-content">
+
+
+            <!-- INFORMACIÓN -->
+
+            <div class="reporte-title-area">
+
+                <div class="reporte-icon">
+
+                    <i class="bi bi-cash-coin"></i>
+
+                </div>
+
+                <div>
+
+                    <h1 class="reporte-title">
+
+                        Reporte de Reembolsos
+
+                    </h1>
+
+                    <p class="reporte-description">
+
+                        Seguimiento de las solicitudes y pagos de reembolso registrados.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCIONES -->
+
+            <div class="d-flex align-items-center gap-2">
+
+                <a asp-controller="Reporte"
+                   asp-action="Index"
+                   class="btn-reporte-back">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+
+                    Volver
+
+                </a>
+
+
+                <a asp-controller="Reporte"
+                   asp-action="ExportarReembolsosPdf"
+                   class="btn-reporte-pdf">
+
+                    <i class="bi bi-file-earmark-pdf-fill me-1"></i>
+
+                    Exportar PDF
+
+                </a>
+
+            </div>
 
         </div>
 
@@ -47,194 +472,274 @@
 
 
 
-    <div>
+    <!-- =========================================================
+         INDICADORES
+         ========================================================= -->
 
-        <a asp-controller="Reporte"
-           asp-action="ExportarReembolsosPdf"
-           class="btn btn-danger rounded-pill">
+    <div class="row g-3 mb-4">
 
-            <i class="bi bi-file-earmark-pdf-fill"></i>
 
-            Exportar PDF
+        <!-- TOTAL REEMBOLSOS -->
 
-        </a>
+        <div class="col-md-3">
+
+            <div class="indicador-card">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <span class="indicador-label">
+
+                            Reembolsos
+
+                        </span>
+
+                        <h2 class="indicador-value">
+
+                            @cantidadReembolsos
+
+                        </h2>
+
+                    </div>
+
+                    <div class="indicador-icon icon-blue">
+
+                        <i class="bi bi-wallet2"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TOTAL -->
+
+        <div class="col-md-3">
+
+            <div class="indicador-card">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <span class="indicador-label">
+
+                            Total reembolsado
+
+                        </span>
+
+                        <h2 class="indicador-value">
+
+                            S/ @totalReembolsado.ToString("N2")
+
+                        </h2>
+
+                    </div>
+
+                    <div class="indicador-icon icon-green">
+
+                        <i class="bi bi-cash-stack"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PENDIENTES -->
+
+        <div class="col-md-3">
+
+            <div class="indicador-card">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <span class="indicador-label">
+
+                            Pendientes
+
+                        </span>
+
+                        <h2 class="indicador-value">
+
+                            @pendientes
+
+                        </h2>
+
+                    </div>
+
+                    <div class="indicador-icon icon-yellow">
+
+                        <i class="bi bi-hourglass-split"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PAGADOS -->
+
+        <div class="col-md-3">
+
+            <div class="indicador-card">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <span class="indicador-label">
+
+                            Pagados
+
+                        </span>
+
+                        <h2 class="indicador-value">
+
+                            @pagados
+
+                        </h2>
+
+                    </div>
+
+                    <div class="indicador-icon icon-green">
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
-</div>
 
-<hr class="mb-4" />
 
+    <!-- =========================================================
+         TABLA
+         ========================================================= -->
 
+    <div class="reporte-box">
 
-    <!-- TARJETAS -->
 
-    <div class="row mb-4">
-
-        <div class="col-md-3">
-
-            <div class="card shadow-sm border-0">
-
-                <div class="card-body">
-
-                    <small class="text-muted">
-
-                        Reembolsos
-
-                    </small>
-
-                    <h3 class="fw-bold text-primary">
-
-                        @Model.Count
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <div class="col-md-3">
-
-            <div class="card shadow-sm border-0">
-
-                <div class="card-body">
-
-                    <small class="text-muted">
-
-                        Total Reembolsado
-
-                    </small>
-
-                    <h3 class="fw-bold text-success">
-
-                        S/ @(Model.Sum(x => x.Monto).ToString("N2"))
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <div class="col-md-3">
-
-            <div class="card shadow-sm border-0">
-
-                <div class="card-body">
-
-                    <small class="text-muted">
-
-                        Pendientes
-
-                    </small>
-
-                    <h3 class="fw-bold text-warning">
-
-                        @Model.Count(x => x.Estado == "Pendiente")
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <div class="col-md-3">
-
-            <div class="card shadow-sm border-0">
-
-                <div class="card-body">
-
-                    <small class="text-muted">
-
-                        Pagados
-
-                    </small>
-
-                    <h3 class="fw-bold text-success">
-
-                        @Model.Count(x => x.Estado == "Pagado")
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- TABLA -->
-
-    <div class="card shadow-sm">
-
-        <div class="card-header fw-bold">
+        <div class="reporte-box-header">
 
             <i class="bi bi-table"></i>
 
-            Detalle de Reembolsos
+            <span>
+
+                Detalle de reembolsos
+
+            </span>
 
         </div>
 
-        <div class="card-body table-responsive">
 
-            <table class="table table-hover align-middle">
+        <div class="table-responsive">
 
-                <thead class="table-light">
+            <table class="tabla-reporte">
+
+
+                <thead>
 
                     <tr>
 
-                        <th>Usuario</th>
+                        <th>
 
-                        <th>Motivo</th>
+                            Usuario
 
-                        <th>Monto</th>
+                        </th>
 
-                        <th>Estado</th>
+                        <th>
 
-                        <th>Fecha</th>
+                            Motivo
+
+                        </th>
+
+                        <th class="text-end">
+
+                            Monto
+
+                        </th>
+
+                        <th>
+
+                            Estado
+
+                        </th>
+
+                        <th>
+
+                            Fecha
+
+                        </th>
 
                     </tr>
 
                 </thead>
 
+
                 <tbody>
 
-                    @if (Model.Any())
+                    @if (Model != null && Model.Any())
                     {
                         foreach (var item in Model)
                         {
-
                             <tr>
 
+
+                                <!-- USUARIO -->
+
                                 <td>
 
-                                    @item.Usuario
+                                    <div class="usuario-info">
+
+                                        <span class="usuario-icon">
+
+                                            <i class="bi bi-person-fill"></i>
+
+                                        </span>
+
+                                        @item.Usuario
+
+                                    </div>
 
                                 </td>
 
+
+                                <!-- MOTIVO -->
+
                                 <td>
 
-                                    @item.Motivo
+                                    <div class="motivo">
+
+                                        @item.Motivo
+
+                                    </div>
 
                                 </td>
 
-                                <td>
 
-                                    <span class="fw-bold text-success">
+                                <!-- MONTO -->
+
+                                <td class="text-end">
+
+                                    <span class="monto">
 
                                         S/ @item.Monto.ToString("N2")
 
@@ -242,52 +747,80 @@
 
                                 </td>
 
+
+                                <!-- ESTADO -->
+
                                 <td>
 
                                     @switch (item.Estado)
                                     {
                                         case "Pendiente":
-                                            <span class="badge bg-warning text-dark">
+
+                                            <span class="estado estado-pendiente">
+
+                                                <i class="bi bi-hourglass-split me-1"></i>
 
                                                 Pendiente
 
                                             </span>
+
                                             break;
 
+
                                         case "Aprobado":
-                                            <span class="badge bg-primary">
+
+                                            <span class="estado estado-aprobado">
+
+                                                <i class="bi bi-check2 me-1"></i>
 
                                                 Aprobado
 
                                             </span>
+
                                             break;
 
+
                                         case "Pagado":
-                                            <span class="badge bg-success">
+
+                                            <span class="estado estado-pagado">
+
+                                                <i class="bi bi-check-circle-fill me-1"></i>
 
                                                 Pagado
 
                                             </span>
+
                                             break;
 
+
                                         case "Rechazado":
-                                            <span class="badge bg-danger">
+
+                                            <span class="estado estado-rechazado">
+
+                                                <i class="bi bi-x-circle-fill me-1"></i>
 
                                                 Rechazado
 
                                             </span>
+
                                             break;
 
+
                                         default:
-                                            <span class="badge bg-secondary">
+
+                                            <span class="estado estado-default">
 
                                                 @item.Estado
 
                                             </span>
+
                                             break;
                                     }
 
                                 </td>
+
+
+                                <!-- FECHA -->
 
                                 <td>
 
@@ -296,34 +829,58 @@
                                 </td>
 
                             </tr>
-
                         }
                     }
                     else
                     {
-
                         <tr>
 
-                            <td colspan="5"
-                                class="text-center py-5">
+                            <td colspan="5">
 
-                                <i class="bi bi-wallet2 text-secondary fs-1"></i>
+                                <div class="empty-report">
 
-                                <br />
+                                    <i class="bi bi-wallet2"></i>
 
-                                <strong>
+                                    <strong>
 
-                                    No existen reembolsos registrados.
+                                        No existen reembolsos registrados.
 
-                                </strong>
+                                    </strong>
+
+                                </div>
 
                             </td>
 
                         </tr>
-
                     }
 
                 </tbody>
+
+
+                @if (Model != null && Model.Any())
+                {
+                    <tfoot>
+
+                        <tr>
+
+                            <th colspan="2">
+
+                                TOTAL REEMBOLSADO
+
+                            </th>
+
+                            <th class="text-end">
+
+                                S/ @totalReembolsado.ToString("N2")
+
+                            </th>
+
+                            <th colspan="2"></th>
+
+                        </tr>
+
+                    </tfoot>
+                }
 
             </table>
 

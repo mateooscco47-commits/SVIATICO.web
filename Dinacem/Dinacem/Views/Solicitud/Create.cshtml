@@ -6,280 +6,901 @@
 }
 
 <style>
-    .page-wrapper {
+
+    /* =========================================================
+           CONTENEDOR PRINCIPAL
+           ========================================================= */
+
+    .solicitud-create-page {
         width: 100%;
-        max-width: 1100px;
+        max-width: 1200px;
         margin: 0 auto;
+        padding: 25px 30px 40px;
+        color: #263238;
     }
 
-    .page-header {
+
+    /* =========================================================
+           ENCABEZADO
+           ========================================================= */
+
+    .solicitud-create-header {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        gap: 16px;
-        padding: 22px;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 22px 25px;
         margin-bottom: 22px;
         background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+        border: 1px solid #dce8f2;
+        border-radius: 12px;
+        box-shadow: 0 3px 12px rgba(12, 74, 138, 0.07);
     }
 
-    .page-title {
-        margin: 0 0 5px;
-        color: #0f172a;
-        font-size: 28px;
-        font-weight: 800;
+
+    .create-header-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
     }
 
-    .page-description {
+
+    .create-header-icon {
+        width: 54px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: #e7f2ff;
+        color: #3186dc;
+        font-size: 26px;
+    }
+
+
+    .create-header-text h1 {
         margin: 0;
-        color: #64748b;
-        font-size: 14px;
+        color: #174f7c;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.2px;
     }
 
-    .form-card {
+
+    .create-header-text p {
+        margin: 5px 0 0;
+        color: #71808c;
+        font-size: 13.5px;
+        line-height: 1.5;
+    }
+
+
+    /* =========================================================
+           BOTÓN VOLVER AL PANEL
+           ========================================================= */
+
+    .btn-volver-panel {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 42px;
+        padding: 0 16px;
+        border: 1px solid #d7e0e6;
+        border-radius: 7px;
         background: #ffffff;
-        border: 1px solid #dbe1ea;
-        border-radius: 16px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .06);
+        color: #5f6f79;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+
+        .btn-volver-panel:hover {
+            background: #f4f7f9;
+            border-color: #c7d2d9;
+            color: #40515b;
+        }
+
+
+    /* =========================================================
+           MENSAJES
+           ========================================================= */
+
+    .mensaje-create {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        margin-bottom: 18px;
+        border-radius: 8px;
+        font-size: 13.5px;
+        font-weight: 500;
+    }
+
+
+        .mensaje-create i {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+
+        .mensaje-create .btn-close {
+            margin-left: auto;
+        }
+
+
+    .mensaje-success {
+        background: #edf9f0;
+        border: 1px solid #c9e9d1;
+        color: #327942;
+    }
+
+
+    .mensaje-error {
+        background: #fff0f0;
+        border: 1px solid #f0cccc;
+        color: #b83b3b;
+    }
+
+
+    /* =========================================================
+           TARJETA DEL FORMULARIO
+           ========================================================= */
+
+    .formulario-card {
+        background: #ffffff;
+        border: 1px solid #dce5eb;
+        border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
         overflow: hidden;
     }
 
-    .form-card-header {
-        padding: 18px 22px;
-        color: #ffffff;
-        background: #0d6efd;
-        font-size: 18px;
-        font-weight: 800;
+
+    /* =========================================================
+           CABECERA DEL FORMULARIO
+           ========================================================= */
+
+    .formulario-card-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 17px 21px;
+        background: #f3f8fc;
+        border-bottom: 1px solid #dce8f2;
+        color: #174f7c;
+        font-size: 15px;
+        font-weight: 700;
     }
 
-    .form-card-body {
-        padding: 24px;
+
+        .formulario-card-header i {
+            color: #3186dc;
+            font-size: 19px;
+        }
+
+
+    /* =========================================================
+           CUERPO
+           ========================================================= */
+
+    .formulario-card-body {
+        padding: 25px;
     }
 
-    .form-label {
-        color: #334155;
+
+    /* =========================================================
+           INFORMACIÓN DEL FORMULARIO
+           ========================================================= */
+
+    .formulario-intro {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 22px;
+        padding: 12px 14px;
+        background: #f8fbfd;
+        border: 1px solid #e2ebf1;
+        border-radius: 8px;
+        color: #687983;
+        font-size: 12.5px;
+        line-height: 1.55;
+    }
+
+
+        .formulario-intro i {
+            margin-top: 1px;
+            color: #3186dc;
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+
+
+    /* =========================================================
+           GRUPOS DE CAMPOS
+           ========================================================= */
+
+    .campo-grupo {
+        margin-bottom: 20px;
+    }
+
+
+    .campo-label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 7px;
+        color: #40535e;
+        font-size: 12.5px;
+        font-weight: 700;
+    }
+
+
+        .campo-label i {
+            color: #3186dc;
+            font-size: 14px;
+        }
+
+
+    .campo-obligatorio {
+        color: #d9534f;
+        font-size: 12px;
+    }
+
+
+    /* =========================================================
+           INPUTS
+           ========================================================= */
+
+    .formulario-card .form-control {
+        min-height: 45px;
+        padding: 9px 12px;
+        border: 1px solid #d5dfe6;
+        border-radius: 7px;
+        color: #34454f;
+        background: #ffffff;
+        font-size: 13.5px;
+        box-shadow: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+
+        .formulario-card .form-control::placeholder {
+            color: #a2adb5;
+        }
+
+
+        .formulario-card .form-control:focus {
+            border-color: #72b1ed;
+            box-shadow: 0 0 0 3px rgba(77, 157, 245, 0.12);
+        }
+
+
+    textarea.form-control {
+        min-height: 125px;
+        resize: vertical;
+        line-height: 1.55;
+    }
+
+
+    /* =========================================================
+           INPUT FECHA
+           ========================================================= */
+
+    input[type="date"].form-control {
+        color: #465761;
+    }
+
+
+    /* =========================================================
+           INPUT MONTO
+           ========================================================= */
+
+    .monto-group {
+        display: flex;
+        align-items: stretch;
+    }
+
+
+    .monto-prefix {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 48px;
+        border: 1px solid #d5dfe6;
+        border-right: none;
+        border-radius: 7px 0 0 7px;
+        background: #f3f7fa;
+        color: #526572;
         font-size: 13px;
         font-weight: 700;
     }
 
-    .form-control {
-        min-height: 44px;
+
+    .monto-input {
+        border-radius: 0 7px 7px 0 !important;
     }
 
-    textarea.form-control {
-        min-height: 120px;
+
+    /* =========================================================
+           AYUDA DEL CAMPO
+           ========================================================= */
+
+    .campo-ayuda {
+        display: block;
+        margin-top: 5px;
+        color: #8b989f;
+        font-size: 11px;
     }
 
-    .action-buttons {
+
+    /* =========================================================
+           VALIDACIONES
+           ========================================================= */
+
+    .text-danger {
+        display: block;
+        margin-top: 5px;
+        color: #c34646 !important;
+        font-size: 11.5px;
+    }
+
+
+    .validation-summary-errors {
+        margin-bottom: 20px;
+        padding: 12px 15px;
+        background: #fff0f0;
+        border: 1px solid #f0cccc;
+        border-left: 4px solid #d9534f;
+        border-radius: 7px;
+        color: #b83b3b;
+        font-size: 13px;
+    }
+
+
+        .validation-summary-errors ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+
+    /* =========================================================
+           SEPARADOR
+           ========================================================= */
+
+    .formulario-separador {
+        height: 1px;
+        margin: 5px 0 22px;
+        background: #e7edf1;
+    }
+
+
+    /* =========================================================
+           BOTONES
+           ========================================================= */
+
+    .formulario-actions {
         display: flex;
+        align-items: center;
         justify-content: flex-end;
         flex-wrap: wrap;
         gap: 10px;
-        margin-top: 24px;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e7edf1;
     }
 
-    .validation-summary-valid {
-        display: none;
+
+    .btn-regresar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 43px;
+        padding: 0 17px;
+        border: 1px solid #d5dfe5;
+        border-radius: 7px;
+        background: #ffffff;
+        color: #5f6f79;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s ease, border-color 0.2s ease;
     }
 
-    @@media (max-width: 767.98px) {
-        .page-header {
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 18px;
+
+        .btn-regresar:hover {
+            background: #f4f7f9;
+            border-color: #c6d1d8;
+            color: #40515b;
         }
 
-            .page-header .btn {
-                width: 100%;
-            }
 
-        .page-title {
-            font-size: 23px;
-        }
-
-        .form-card-body {
-            padding: 17px;
-        }
-
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr;
-        }
-
-            .action-buttons .btn {
-                width: 100%;
-            }
+    .btn-enviar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 43px;
+        padding: 0 20px;
+        border: none;
+        border-radius: 7px;
+        background: #4d9df5;
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 600;
+        box-shadow: none;
+        transition: background 0.2s ease, transform 0.2s ease;
     }
+
+
+        .btn-enviar:hover {
+            background: #3186dc;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+
+        .btn-enviar i {
+            font-size: 15px;
+        }
+
+
+    /* =========================================================
+           PIE DEL FORMULARIO
+           ========================================================= */
+
+    .formulario-footer {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-top: 17px;
+        color: #89969e;
+        font-size: 11.5px;
+    }
+
+
+        .formulario-footer i {
+            color: #68b878;
+            font-size: 14px;
+        }
+
+
+    /* =========================================================
+           ADAPTACIÓN
+           ========================================================= */
+
+    .solicitud-create-header {
+        flex-wrap: wrap;
+    }
+
+
+    .create-header-content {
+        min-width: 250px;
+        flex: 1 1 500px;
+    }
+
+
+    .btn-volver-panel {
+        flex-shrink: 0;
+    }
+
+
+    .formulario-actions {
+        flex-wrap: wrap;
+    }
+
 </style>
 
-<div class="page-wrapper">
 
-    <!-- La barra del empleado se carga desde _LayoutEmpleado.cshtml -->
+<div class="solicitud-create-page">
 
-    <div class="page-header">
-        <div>
-            <h1 class="page-title">
-                <i class="bi bi-file-earmark-plus me-2"></i>
-                Nueva Solicitud de Viáticos
-            </h1>
 
-            <p class="page-description">
-                Complete los datos del viaje y envíe la solicitud para aprobación.
-            </p>
+    <!-- =========================================================
+         ENCABEZADO
+         ========================================================= -->
+
+    <div class="solicitud-create-header">
+
+
+        <div class="create-header-content">
+
+            <div class="create-header-icon">
+
+                <i class="bi bi-file-earmark-plus-fill"></i>
+
+            </div>
+
+
+            <div class="create-header-text">
+
+                <h1>
+                    Nueva Solicitud de Viáticos
+                </h1>
+
+                <p>
+                    Complete los datos del viaje y envíe la solicitud
+                    para su revisión y aprobación.
+                </p>
+
+            </div>
+
         </div>
+
 
         <a asp-controller="Empleado"
            asp-action="Index"
-           class="btn btn-outline-secondary">
+           class="btn-volver-panel">
+
             <i class="bi bi-arrow-left"></i>
+
             Volver al panel
+
         </a>
+
+
     </div>
 
+
+    <!-- =========================================================
+         MENSAJES
+         ========================================================= -->
     @if (TempData["mensaje"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show">
-            @TempData["mensaje"]
+        <div class="mensaje-create mensaje-success">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            <span>
+                @TempData["mensaje"]
+            </span>
 
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="alert"
                     aria-label="Cerrar">
             </button>
+
         </div>
     }
+
 
     @if (TempData["error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show">
-            @Html.Raw(TempData["error"])
+        <div class="mensaje-create mensaje-error">
+
+            <i class="bi bi-exclamation-circle-fill"></i>
+
+            <span>
+                @Html.Raw(TempData["error"])
+            </span>
 
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="alert"
                     aria-label="Cerrar">
             </button>
+
         </div>
     }
 
-    <div class="form-card">
-        <div class="form-card-header">
-            <i class="bi bi-card-checklist me-2"></i>
+
+    <!-- =========================================================
+         FORMULARIO
+         ========================================================= -->
+
+    <div class="formulario-card">
+
+
+        <!-- CABECERA -->
+
+        <div class="formulario-card-header">
+
+            <i class="bi bi-card-checklist"></i>
+
             Datos de la solicitud
+
         </div>
 
-        <div class="form-card-body">
+
+        <!-- CUERPO -->
+
+        <div class="formulario-card-body">
+
+
+            <!-- INFORMACIÓN -->
+
+            <div class="formulario-intro">
+
+                <i class="bi bi-info-circle-fill"></i>
+
+                <span>
+                    Ingrese la información correspondiente al viaje.
+                    Verifique las fechas, destino, motivo y monto antes
+                    de enviar la solicitud.
+                </span>
+
+            </div>
+
+
             <form asp-controller="Solicitud"
                   asp-action="Create"
                   method="post">
 
-                <div asp-validation-summary="ModelOnly"
-                     class="alert alert-danger"></div>
 
-                <div class="row g-3">
-                    <div class="col-12 col-md-6">
+                @Html.AntiForgeryToken()
+
+
+                <!-- =================================================
+                     VALIDACIONES GENERALES
+                     ================================================= -->
+
+                <div asp-validation-summary="ModelOnly"
+                     class="validation-summary-valid">
+                </div>
+
+
+                <!-- =================================================
+                     FECHAS
+                     ================================================= -->
+
+                <div class="row">
+
+
+                    <!-- FECHA INICIO -->
+
+                    <div class="col-12 col-md-6 campo-grupo">
+
                         <label asp-for="FechaInicio"
-                               class="form-label">
+                               class="campo-label">
+
+                            <i class="bi bi-calendar-event"></i>
+
                             Fecha de inicio
+
+                            <span class="campo-obligatorio">
+                                *
+                            </span>
+
                         </label>
+
 
                         <input asp-for="FechaInicio"
                                type="date"
                                class="form-control"
                                required />
 
+
                         <span asp-validation-for="FechaInicio"
-                              class="text-danger small"></span>
+                              class="text-danger">
+                        </span>
+
                     </div>
 
-                    <div class="col-12 col-md-6">
+
+                    <!-- FECHA FIN -->
+
+                    <div class="col-12 col-md-6 campo-grupo">
+
                         <label asp-for="FechaFin"
-                               class="form-label">
+                               class="campo-label">
+
+                            <i class="bi bi-calendar-check"></i>
+
                             Fecha de fin
+
+                            <span class="campo-obligatorio">
+                                *
+                            </span>
+
                         </label>
+
 
                         <input asp-for="FechaFin"
                                type="date"
                                class="form-control"
                                required />
 
+
                         <span asp-validation-for="FechaFin"
-                              class="text-danger small"></span>
+                              class="text-danger">
+                        </span>
+
                     </div>
 
-                    <div class="col-12">
-                        <label asp-for="Destino"
-                               class="form-label">
-                            Destino
-                        </label>
 
-                        <input asp-for="Destino"
-                               class="form-control"
-                               maxlength="200"
-                               placeholder="Ejemplo: Lima"
+                </div>
+
+
+                <!-- =================================================
+                     SEPARADOR
+                     ================================================= -->
+
+                <div class="formulario-separador"></div>
+
+
+                <!-- =================================================
+                     DESTINO
+                     ================================================= -->
+
+                <div class="campo-grupo">
+
+                    <label asp-for="Destino"
+                           class="campo-label">
+
+                        <i class="bi bi-geo-alt"></i>
+
+                        Destino
+
+                        <span class="campo-obligatorio">
+                            *
+                        </span>
+
+                    </label>
+
+
+                    <input asp-for="Destino"
+                           class="form-control"
+                           maxlength="200"
+                           placeholder="Ejemplo: Lima"
+                           required />
+
+
+                    <span class="campo-ayuda">
+                        Indique la ciudad, localidad o lugar donde realizará la actividad.
+                    </span>
+
+
+                    <span asp-validation-for="Destino"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- =================================================
+                     MOTIVO
+                     ================================================= -->
+
+                <div class="campo-grupo">
+
+                    <label asp-for="Motivo"
+                           class="campo-label">
+
+                        <i class="bi bi-chat-left-text"></i>
+
+                        Motivo del viaje
+
+                        <span class="campo-obligatorio">
+                            *
+                        </span>
+
+                    </label>
+
+
+                    <textarea asp-for="Motivo"
+                              class="form-control"
+                              rows="5"
+                              maxlength="500"
+                              placeholder="Describa claramente el motivo y finalidad del viaje..."
+                              required></textarea>
+
+
+                    <span class="campo-ayuda">
+                        Explique brevemente la actividad que realizará durante el viaje.
+                    </span>
+
+
+                    <span asp-validation-for="Motivo"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- =================================================
+                     MONTO
+                     ================================================= -->
+
+                <div class="campo-grupo">
+
+                    <label asp-for="Monto"
+                           class="campo-label">
+
+                        <i class="bi bi-cash-stack"></i>
+
+                        Monto solicitado
+
+                        <span class="campo-obligatorio">
+                            *
+                        </span>
+
+                    </label>
+
+
+                    <div class="monto-group">
+
+                        <span class="monto-prefix">
+                            S/
+                        </span>
+
+
+                        <input asp-for="Monto"
+                               type="number"
+                               min="0.01"
+                               step="0.01"
+                               class="form-control monto-input"
+                               placeholder="0.00"
                                required />
 
-                        <span asp-validation-for="Destino"
-                              class="text-danger small"></span>
                     </div>
 
-                    <div class="col-12">
-                        <label asp-for="Motivo"
-                               class="form-label">
-                            Motivo del viaje
-                        </label>
 
-                        <textarea asp-for="Motivo"
-                                  class="form-control"
-                                  rows="5"
-                                  maxlength="500"
-                                  placeholder="Describa el motivo del viaje"
-                                  required></textarea>
+                    <span class="campo-ayuda">
+                        Ingrese el monto total de viáticos solicitado.
+                    </span>
 
-                        <span asp-validation-for="Motivo"
-                              class="text-danger small"></span>
-                    </div>
 
-                    <div class="col-12 col-md-6">
-                        <label asp-for="Monto"
-                               class="form-label">
-                            Monto solicitado (S/)
-                        </label>
+                    <span asp-validation-for="Monto"
+                          class="text-danger">
+                    </span>
 
-                        <div class="input-group">
-                            <span class="input-group-text">S/</span>
-
-                            <input asp-for="Monto"
-                                   type="number"
-                                   min="0.01"
-                                   step="0.01"
-                                   class="form-control"
-                                   placeholder="0.00"
-                                   required />
-                        </div>
-
-                        <span asp-validation-for="Monto"
-                              class="text-danger small"></span>
-                    </div>
                 </div>
 
-                <div class="action-buttons">
+
+                <!-- =================================================
+                     BOTONES
+                     ================================================= -->
+
+                <div class="formulario-actions">
+
+
                     <a asp-controller="Solicitud"
                        asp-action="MisSolicitudes"
-                       class="btn btn-outline-secondary">
+                       class="btn-regresar">
+
                         <i class="bi bi-arrow-left"></i>
+
                         Regresar
+
                     </a>
 
+
                     <button type="submit"
-                            class="btn btn-primary">
+                            class="btn-enviar">
+
                         <i class="bi bi-send-fill"></i>
+
                         Enviar solicitud
+
                     </button>
+
+
                 </div>
+
+
+                <!-- =================================================
+                     PIE
+                     ================================================= -->
+
+                <div class="formulario-footer">
+
+                    <i class="bi bi-shield-check"></i>
+
+                    <span>
+                        Revise la información antes de enviar la solicitud.
+                    </span>
+
+                </div>
+
+
             </form>
+
         </div>
+
     </div>
+
 </div>

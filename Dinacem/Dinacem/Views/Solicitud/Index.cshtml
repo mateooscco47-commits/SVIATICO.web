@@ -11,17 +11,28 @@
 }
 
 <style>
+
+    /* ============================================================
+           CONTENEDOR PRINCIPAL
+           ============================================================ */
+
     .page-wrapper {
         width: 100%;
         max-width: 1600px;
         margin: 0 auto;
+        padding: 0;
     }
+
+
+    /* ============================================================
+           ENCABEZADO
+           ============================================================ */
 
     .page-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 16px;
+        gap: 20px;
         padding: 22px;
         margin-bottom: 24px;
         background: #ffffff;
@@ -32,16 +43,49 @@
 
     .page-title {
         margin: 0 0 5px;
-        color: #0f172a;
+        color: #17365d;
         font-size: 28px;
         font-weight: 800;
+        letter-spacing: -0.3px;
     }
+
+        .page-title i {
+            color: #0c4a8a;
+            font-size: 1.55rem;
+        }
 
     .page-description {
         margin: 0;
         color: #64748b;
         font-size: 14px;
+        font-weight: 500;
     }
+
+
+    /* ============================================================
+           BOTÓN VOLVER
+           ============================================================ */
+
+    .page-header-actions {
+        display: flex;
+        align-items: center;
+    }
+
+        .page-header-actions .btn {
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all .2s ease;
+        }
+
+            .page-header-actions .btn:hover {
+                transform: translateY(-1px);
+            }
+
+
+    /* ============================================================
+           TARJETAS RESUMEN
+           ============================================================ */
 
     .summary-card {
         height: 100%;
@@ -65,6 +109,11 @@
         font-size: 26px;
         font-weight: 800;
     }
+
+
+    /* ============================================================
+           PANEL
+           ============================================================ */
 
     .panel {
         background: #ffffff;
@@ -94,6 +143,11 @@
         padding: 20px;
     }
 
+
+    /* ============================================================
+           TABLA
+           ============================================================ */
+
     .table {
         min-width: 1100px;
         font-size: 14px;
@@ -110,6 +164,11 @@
         .table td {
             vertical-align: middle;
         }
+
+
+    /* ============================================================
+           ESTADOS
+           ============================================================ */
 
     .estado {
         display: inline-flex;
@@ -140,12 +199,159 @@
         border: 1px solid #fca5a5;
     }
 
+
+    /* ============================================================
+           ACCIONES
+           ============================================================ */
+
     .acciones {
         display: flex;
         justify-content: flex-end;
         flex-wrap: wrap;
         gap: 6px;
     }
+
+
+    /* ============================================================
+           BUSCADOR Y FILTROS
+           ============================================================ */
+
+    .solicitudes-search {
+        width: 100%;
+        display: flex;
+        align-items: flex-end;
+        gap: 14px;
+        margin-bottom: 22px;
+        padding: 16px 18px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, .05);
+    }
+
+
+    /* ============================================================
+           BUSCADOR
+           ============================================================ */
+
+    .search-box {
+        position: relative;
+        width: 50%;
+        min-width: 300px;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #64748b;
+        font-size: 1rem;
+        pointer-events: none;
+    }
+
+    .search-input {
+        width: 100%;
+        height: 42px;
+        padding: 8px 42px 8px 40px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #1e293b;
+        font-size: .92rem;
+        outline: none;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+        .search-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .search-input:focus {
+            border-color: #0c4a8a;
+            box-shadow: 0 0 0 3px rgba(12, 74, 138, .10);
+        }
+
+
+    /* ============================================================
+           BOTÓN X
+           ============================================================ */
+
+    .search-clear {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 6px;
+        background: transparent;
+        color: #94a3b8;
+        cursor: pointer;
+        transition: background .2s ease, color .2s ease;
+    }
+
+        .search-clear:hover {
+            background: #f1f5f9;
+            color: #dc2626;
+        }
+
+
+    /* ============================================================
+           FILTROS DE FECHA
+           ============================================================ */
+
+    .date-filter {
+        width: 170px;
+    }
+
+    .date-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #475569;
+        font-size: .78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+    }
+
+    .date-filter .form-control {
+        height: 42px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        color: #334155;
+        font-size: .88rem;
+        outline: none;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+        .date-filter .form-control:focus {
+            border-color: #0c4a8a;
+            box-shadow: 0 0 0 3px rgba(12, 74, 138, .10);
+        }
+
+
+    /* ============================================================
+           BOTÓN LIMPIAR
+           ============================================================ */
+
+    #limpiarFiltros {
+        height: 42px;
+        padding: 0 15px;
+        border-radius: 8px;
+        font-size: .86rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+
+    /* ============================================================
+           MODALES
+           ============================================================ */
 
     .modal-content {
         border: 0;
@@ -164,13 +370,23 @@
         font-size: 13px;
     }
 
-    @@media (max-width: 991.98px) {
+
+    /* ============================================================
+           RESPONSIVE - TABLET
+           ============================================================ */
+
+    @@media screen and (max-width: 991.98px) {
+
         .page-header {
             align-items: flex-start;
             flex-direction: column;
         }
 
-            .page-header .btn {
+        .page-header-actions {
+            width: 100%;
+        }
+
+            .page-header-actions .btn {
                 width: 100%;
             }
 
@@ -178,9 +394,33 @@
             align-items: flex-start;
             flex-direction: column;
         }
+
+        .solicitudes-search {
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            width: 100%;
+            min-width: 100%;
+        }
+
+        .date-filter {
+            flex: 1;
+            min-width: 160px;
+        }
     }
 
-    @@media (max-width: 767.98px) {
+
+    /* ============================================================
+           RESPONSIVE - CELULAR
+           ============================================================ */
+
+    @@media screen and (max-width: 767.98px) {
+
+        .page-wrapper {
+            padding: 0 12px;
+        }
+
         .page-header {
             padding: 18px;
             border-radius: 13px;
@@ -210,7 +450,57 @@
             .modal-footer .btn {
                 width: 100%;
             }
+
+        .solicitudes-search {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+            padding: 14px;
+        }
+
+        .search-box {
+            width: 100%;
+            min-width: 100%;
+        }
+
+        .date-filter {
+            width: 100%;
+            min-width: 100%;
+        }
+
+        #limpiarFiltros {
+            width: 100%;
+        }
     }
+
+
+    /* ============================================================
+           RESPONSIVE - CELULAR PEQUEÑO
+           ============================================================ */
+
+    @@media screen and (max-width: 480px) {
+
+        .page-title {
+            font-size: 20px;
+        }
+
+        .page-description {
+            font-size: 13px;
+        }
+
+        .page-header {
+            padding: 15px;
+        }
+
+        .panel-body {
+            padding: 10px;
+        }
+
+        .search-input {
+            font-size: 14px;
+        }
+    }
+
 </style>
 
 <div class="page-wrapper">
@@ -274,296 +564,472 @@
         </div>
     }
 
-    <!-- RESUMEN -->
+   <!-- RESUMEN -->
 
-    <div class="row g-3 mb-4">
+<div class="row g-3 mb-4">
 
-        <div class="col-12 col-sm-6 col-xl-3">
-            <div class="summary-card">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="summary-card">
 
-                <div class="summary-label">
-                    Total de solicitudes
-                </div>
-
-                <div class="summary-value">
-                    @totalSolicitudes
-                </div>
-
+            <div class="summary-label">
+                Total de solicitudes
             </div>
-        </div>
 
-        <div class="col-12 col-sm-6 col-xl-3">
-            <div class="summary-card">
-
-                <div class="summary-label text-warning">
-                    Pendientes
-                </div>
-
-                <div class="summary-value">
-                    @pendientes
-                </div>
-
+            <div class="summary-value">
+                @totalSolicitudes
             </div>
+
         </div>
-
-        <div class="col-12 col-sm-6 col-xl-3">
-            <div class="summary-card">
-
-                <div class="summary-label text-success">
-                    Aprobadas
-                </div>
-
-                <div class="summary-value">
-                    @aprobadas
-                </div>
-
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6 col-xl-3">
-            <div class="summary-card">
-
-                <div class="summary-label text-danger">
-                    Rechazadas
-                </div>
-
-                <div class="summary-value">
-                    @rechazadas
-                </div>
-
-            </div>
-        </div>
-
     </div>
 
-    <!-- LISTADO -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="summary-card">
 
-    <div class="panel">
-
-        <div class="panel-header">
-
-            <div>
-                <h2 class="panel-title">
-                    Listado de solicitudes
-                </h2>
-
-                <small class="text-muted">
-                    En celular, deslice horizontalmente para ver todas las columnas.
-                </small>
+            <div class="summary-label text-warning">
+                Pendientes
             </div>
 
-            <span class="badge bg-primary">
-                @totalSolicitudes registro(s)
-            </span>
+            <div class="summary-value">
+                @pendientes
+            </div>
 
         </div>
+    </div>
 
-        <div class="panel-body">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="summary-card">
 
-            <div class="table-responsive">
+            <div class="summary-label text-success">
+                Aprobadas
+            </div>
 
-                <table class="table table-hover table-bordered align-middle mb-0">
+            <div class="summary-value">
+                @aprobadas
+            </div>
 
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Empleado</th>
-                            <th>Fecha</th>
-                            <th>Periodo</th>
-                            <th>Destino</th>
-                            <th>Motivo</th>
-                            <th>Monto</th>
-                            <th>Estado</th>
-                            <th>Observación</th>
-                            <th class="text-end">Acciones</th>
-                        </tr>
-                    </thead>
+        </div>
+    </div>
 
-                    <tbody>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="summary-card">
 
-                        @if (Model != null && Model.Any())
+            <div class="summary-label text-danger">
+                Rechazadas
+            </div>
+
+            <div class="summary-value">
+                @rechazadas
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+        <!-- ============================================================
+     BUSCADOR Y FILTROS
+     ============================================================ -->
+
+        <div class="solicitudes-search">
+
+            <!-- BUSCADOR GENERAL -->
+
+            <div class="search-box">
+
+                <i class="bi bi-search search-icon"></i>
+
+                <input type="search"
+                       id="buscadorSolicitudes"
+                       class="search-input"
+                       placeholder="Buscar solicitudes ..."
+                       autocomplete="off" />
+
+                <button type="button"
+                        id="limpiarBusqueda"
+                        class="search-clear"
+                        aria-label="Limpiar búsqueda">
+
+                    <i class="bi bi-x-lg"></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- FECHA DESDE -->
+
+            <div class="date-filter">
+
+                <label for="fechaDesde" class="date-label">
+                    <i class="bi bi-calendar3 me-1"></i>
+                    Desde
+                </label>
+
+                <input type="date"
+                       id="fechaDesde"
+                       class="form-control" />
+
+            </div>
+
+
+            <!-- FECHA HASTA -->
+
+            <div class="date-filter">
+
+                <label for="fechaHasta" class="date-label">
+                    <i class="bi bi-calendar3 me-1"></i>
+                    Hasta
+                </label>
+
+                <input type="date"
+                       id="fechaHasta"
+                       class="form-control" />
+
+            </div>
+
+
+            <!-- LIMPIAR FILTROS -->
+
+            <button type="button"
+                    id="limpiarFiltros"
+                    class="btn btn-outline-secondary">
+
+                <i class="bi bi-arrow-counterclockwise me-1"></i>
+
+                Limpiar
+
+            </button>
+
+        </div>
+    <!-- =================================================
+     TABLA DE SOLICITUDES
+     ================================================= -->
+
+<div class="panel-body">
+
+    <div class="table-responsive">
+
+        <table id="tablaSolicitudes"
+               class="table table-hover table-bordered align-middle mb-0">
+
+            <!-- =================================================
+                 CABECERA
+                 ================================================= -->
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Empleado</th>
+
+                    <th>Fecha</th>
+
+                    <th>Periodo</th>
+
+                    <th>Destino</th>
+
+                    <th>Motivo</th>
+
+                    <th>Monto</th>
+
+                    <th>Estado</th>
+
+                    <th>Observación</th>
+
+                    <th class="text-end">
+                        Acciones
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <!-- =================================================
+                 CUERPO
+                 ================================================= -->
+
+            <tbody>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
                         {
-                            foreach (var item in Model)
-                            {
-                                <tr>
+                            <tr data-fecha="@item.Fecha.ToString("yyyy-MM-dd")">
 
-                                    <td>
-                                        <strong>
-                                            #@item.IdSolicitud
-                                        </strong>
-                                    </td>
+                                <td>
 
-                                    <td>
-                                        <strong>
-                                            @item.Usuario?.Nombres
-                                            @item.Usuario?.Apellidos
-                                        </strong>
-
-                                        @if (!string.IsNullOrWhiteSpace(item.Usuario?.Correo))
-                                        {
-                                            <br />
-
-                                            <small class="text-muted">
-                                                @item.Usuario.Correo
-                                            </small>
-                                        }
-                                    </td>
-
-                                    <td>
-                                        @item.Fecha.ToString("dd/MM/yyyy")
-                                    </td>
-
-                                    <td>
-                                        @item.FechaInicio.ToString("dd/MM/yyyy")
-
-                                        <br />
-
-                                        <small class="text-muted">
-                                            hasta @item.FechaFin.ToString("dd/MM/yyyy")
-                                        </small>
-                                    </td>
-
-                                    <td>
-                                        @item.Destino
-                                    </td>
-
-                                    <td>
-                                        @item.Motivo
-                                    </td>
-
-                                    <td>
-                                        <strong>
-                                            S/ @item.Monto.ToString("N2")
-                                        </strong>
-                                    </td>
-
-                                    <td>
-                                        @if (item.IdEstadoSolicitud == 1)
-                                        {
-                                            <span class="estado estado-pendiente">
-
-                                                <i class="bi bi-clock-fill"></i>
-                                                Pendiente
-
-                                            </span>
-                                        }
-                                        else if (item.IdEstadoSolicitud == 2)
-                                        {
-                                            <span class="estado estado-aprobado">
-
-                                                <i class="bi bi-check-circle-fill"></i>
-                                                Aprobada
-
-                                            </span>
-                                        }
-                                        else if (item.IdEstadoSolicitud == 3)
-                                        {
-                                            <span class="estado estado-rechazado">
-
-                                                <i class="bi bi-x-circle-fill"></i>
-                                                Rechazada
-
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="estado bg-secondary text-white">
-                                                Sin estado
-                                            </span>
-                                        }
-                                    </td>
-
-                                    <td>
-                                        @if (item.IdEstadoSolicitud == 3 &&
-                                       !string.IsNullOrWhiteSpace(item.Observaciones))
-                                        {
-                                            <div class="observacion-rechazo">
-                                                @item.Observaciones
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted">
-                                                —
-                                            </span>
-                                        }
-                                    </td>
-
-                                    <td>
-                                        <div class="acciones">
-
-                                            @if (item.IdEstadoSolicitud == 1)
-                                            {
-                                                <form asp-controller="Solicitud"
-                                                      asp-action="Aprobar"
-                                                      method="post"
-                                                      class="d-inline">
-
-                                                    <input type="hidden"
-                                                           name="id"
-                                                           value="@item.IdSolicitud" />
-
-                                                    <button type="submit"
-                                                            class="btn btn-success btn-sm"
-                                                            onclick="return confirm('¿Desea aprobar esta solicitud?');">
-
-                                                        <i class="bi bi-check-circle"></i>
-                                                        Aprobar
-
-                                                    </button>
-
-                                                </form>
-
-                                                <button type="button"
-                                                        class="btn btn-danger btn-sm"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#modalRechazar-@item.IdSolicitud">
-
-                                                    <i class="bi bi-x-circle"></i>
-                                                    Rechazar
-
-                                                </button>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted small">
-
-                                                    <i class="bi bi-lock-fill"></i>
-                                                    Procesada
-
-                                                </span>
-                                            }
-
-                                        </div>
-                                    </td>
-
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-
-                                <td colspan="10"
-                                    class="text-center text-muted py-5">
-
-                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                                    No hay solicitudes registradas.
+                                    <strong>
+                                        #@item.IdSolicitud
+                                    </strong>
 
                                 </td>
 
-                            </tr>
-                        }
 
-                    </tbody>
+                            <!-- =================================
+                                 EMPLEADO
+                                 ================================= -->
 
-                </table>
+                            <td>
 
-            </div>
+                                <strong>
 
-        </div>
+                                    @item.Usuario?.Nombres
+                                    @item.Usuario?.Apellidos
+
+                                </strong>
+
+                                @if (!string.IsNullOrWhiteSpace(item.Usuario?.Correo))
+                                {
+                                    <br />
+
+                                    <small class="text-muted">
+
+                                        @item.Usuario.Correo
+
+                                    </small>
+                                }
+
+                            </td>
+
+
+                            <!-- =================================
+                                 FECHA
+                                 ================================= -->
+
+                            <td>
+
+                                @item.Fecha.ToString("dd/MM/yyyy")
+
+                            </td>
+
+
+                            <!-- =================================
+                                 PERIODO
+                                 ================================= -->
+
+                            <td>
+
+                                @item.FechaInicio.ToString("dd/MM/yyyy")
+
+                                <br />
+
+                                <small class="text-muted">
+
+                                    hasta
+                                    @item.FechaFin.ToString("dd/MM/yyyy")
+
+                                </small>
+
+                            </td>
+
+
+                            <!-- =================================
+                                 DESTINO
+                                 ================================= -->
+
+                            <td>
+
+                                @item.Destino
+
+                            </td>
+
+
+                            <!-- =================================
+                                 MOTIVO
+                                 ================================= -->
+
+                            <td>
+
+                                @item.Motivo
+
+                            </td>
+
+
+                            <!-- =================================
+                                 MONTO
+                                 ================================= -->
+
+                            <td>
+
+                                <strong>
+
+                                    S/ @item.Monto.ToString("N2")
+
+                                </strong>
+
+                            </td>
+
+
+                            <!-- =================================
+                                 ESTADO
+                                 ================================= -->
+
+                            <td>
+
+                                @if (item.IdEstadoSolicitud == 1)
+                                {
+                                    <span class="estado estado-pendiente">
+
+                                        <i class="bi bi-clock-fill"></i>
+
+                                        Pendiente
+
+                                    </span>
+                                }
+                                else if (item.IdEstadoSolicitud == 2)
+                                {
+                                    <span class="estado estado-aprobado">
+
+                                        <i class="bi bi-check-circle-fill"></i>
+
+                                        Aprobada
+
+                                    </span>
+                                }
+                                else if (item.IdEstadoSolicitud == 3)
+                                {
+                                    <span class="estado estado-rechazado">
+
+                                        <i class="bi bi-x-circle-fill"></i>
+
+                                        Rechazada
+
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="estado bg-secondary text-white">
+
+                                        Sin estado
+
+                                    </span>
+                                }
+
+                            </td>
+
+
+                            <!-- =================================
+                                 OBSERVACIÓN
+                                 ================================= -->
+
+                            <td>
+
+                                @if (item.IdEstadoSolicitud == 3 &&
+                               !string.IsNullOrWhiteSpace(item.Observaciones))
+                                {
+                                    <div class="observacion-rechazo">
+
+                                        @item.Observaciones
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">
+
+                                        —
+
+                                    </span>
+                                }
+
+                            </td>
+
+
+                            <!-- =================================
+                                 ACCIONES
+                                 ================================= -->
+
+                            <td>
+
+                                <div class="acciones">
+
+                                    @if (item.IdEstadoSolicitud == 1)
+                                    {
+                                        <!-- APROBAR -->
+
+                                        <form asp-controller="Solicitud"
+                                              asp-action="Aprobar"
+                                              method="post"
+                                              class="d-inline">
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@item.IdSolicitud" />
+
+                                            <button type="submit"
+                                                    class="btn btn-success btn-sm"
+                                                    onclick="return confirm('¿Desea aprobar esta solicitud?');">
+
+                                                <i class="bi bi-check-circle"></i>
+
+                                                Aprobar
+
+                                            </button>
+
+                                        </form>
+
+
+                                        <!-- RECHAZAR -->
+
+                                        <button type="button"
+                                                class="btn btn-danger btn-sm"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalRechazar-@item.IdSolicitud">
+
+                                            <i class="bi bi-x-circle"></i>
+
+                                            Rechazar
+
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">
+
+                                            <i class="bi bi-lock-fill"></i>
+
+                                            Procesada
+
+                                        </span>
+                                    }
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <!-- =============================================
+                         SIN SOLICITUDES
+                         ============================================= -->
+
+                    <tr>
+
+                        <td colspan="10"
+                            class="text-center text-muted py-5">
+
+                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+
+                            No hay solicitudes registradas.
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
 
     </div>
+
+</div>
 
     <!-- BOTÓN INFERIOR -->
 
@@ -695,4 +1161,9 @@
 
         </div>
     }
+}
+@section Scripts {
+
+    <script src="~/js/IndexSolicitud.js"></script>
+
 }

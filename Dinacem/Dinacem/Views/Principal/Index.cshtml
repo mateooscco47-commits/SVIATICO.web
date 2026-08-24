@@ -20,319 +20,1028 @@
 }
 
 <style>
+
+    /* ============================================================
+           TIPOGRAFÍA Y VARIABLES GENERALES
+           ============================================================ */
+
     .dashboard-container {
+        --dinacen-blue: #0C4A8A;
+        --dinacen-blue-dark: #083763;
+        --dinacen-blue-light: #1D70B8;
+        --text-dark: #0f172a;
+        --text-medium: #334155;
+        --text-muted: #64748b;
+        --text-light: #94a3b8;
+        --border: #e2e8f0;
+        --border-light: #edf2f7;
+        --success: #15803d;
+        --warning: #b45309;
+        --danger: #b91c1c;
+        --purple: #6d28d9;
         width: 100%;
-        max-width: 1500px;
+        max-width: 1600px;
         margin: 0 auto;
+        padding: 0;
+        font-family: "Segoe UI", Roboto, Arial, sans-serif;
+        color: var(--text-dark);
+        /* Entrada general */
+        animation: dashboardFadeIn .55s ease both;
     }
+
+
+    /* ============================================================
+           FONDO GENERAL
+           ============================================================ */
+
+    body {
+        background: radial-gradient( circle at 10% 10%, rgba(12, 74, 138, .035), transparent 28% ), radial-gradient( circle at 90% 20%, rgba(29, 78, 216, .035), transparent 30% ), #f5f7fa;
+    }
+
+
+    /* ============================================================
+           ENCABEZADO PRINCIPAL
+           ============================================================ */
 
     .dashboard-header {
         position: relative;
         overflow: hidden;
-        background:
-            linear-gradient(
-                135deg,
-                #0d6efd 0%,
-                #2563eb 55%,
-                #1d4ed8 100%
-            );
+        background: linear-gradient( 135deg, #073763 0%, #0C4A8A 42%, #155E9E 72%, #1D4ED8 100% );
         color: #ffffff;
-        border-radius: 18px;
-        padding: 32px;
-        margin-bottom: 26px;
-        box-shadow: 0 12px 30px rgba(37, 99, 235, .18);
+        border-radius: 20px;
+        padding: 32px 34px;
+        margin-bottom: 28px;
+        border: 1px solid rgba(255,255,255,.10);
+        box-shadow: 0 18px 45px rgba(12, 74, 138, .20), inset 0 1px 0 rgba(255,255,255,.08);
+        isolation: isolate;
     }
 
-    .dashboard-header::after {
-        content: "";
-        position: absolute;
-        width: 240px;
-        height: 240px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, .10);
-        right: -70px;
-        top: -100px;
-    }
+
+        /* brillo superior */
+
+        .dashboard-header::before {
+            content: "";
+            position: absolute;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            right: -120px;
+            top: -190px;
+            background: radial-gradient( circle, rgba(255,255,255,.14) 0%, rgba(255,255,255,.04) 45%, transparent 70% );
+            animation: headerFloat 8s ease-in-out infinite;
+            z-index: -1;
+        }
+
+
+        /* círculo inferior */
+
+        .dashboard-header::after {
+            content: "";
+            position: absolute;
+            width: 230px;
+            height: 230px;
+            border-radius: 50%;
+            right: 18%;
+            bottom: -170px;
+            background: rgba(255,255,255,.055);
+            animation: headerFloatReverse 10s ease-in-out infinite;
+            z-index: -1;
+        }
+
 
     .dashboard-header-content {
         position: relative;
-        z-index: 1;
+        z-index: 2;
     }
+
+
+    .dashboard-welcome {
+        position: relative;
+        z-index: 2;
+    }
+
+
+    /* ============================================================
+           SALUDO
+           ============================================================ */
+
+    .dashboard-greeting {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 7px;
+        color: rgba(255,255,255,.78);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+    }
+
+
+        .dashboard-greeting::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #60a5fa;
+            box-shadow: 0 0 0 4px rgba(96,165,250,.15), 0 0 12px rgba(96,165,250,.7);
+            animation: pulseDot 2s infinite;
+        }
+
+
+    /* ============================================================
+           TÍTULO
+           ============================================================ */
 
     .dashboard-title {
-        margin: 0 0 8px;
-        font-size: 30px;
+        margin: 0;
+        color: #ffffff;
+        font-size: 31px;
+        line-height: 1.2;
         font-weight: 800;
+        letter-spacing: -.7px;
+        text-shadow: 0 2px 8px rgba(0,0,0,.12);
     }
 
+
     .dashboard-subtitle {
-        margin: 0;
-        color: rgba(255, 255, 255, .88);
-        font-size: 15px;
+        margin: 9px 0 0;
+        color: rgba(255,255,255,.84);
+        font-size: 14px;
+        line-height: 1.55;
+        max-width: 650px;
     }
+
+
+    /* ============================================================
+           FECHA
+           ============================================================ */
 
     .dashboard-date {
         display: inline-flex;
         align-items: center;
-        gap: 7px;
-        margin-top: 18px;
-        padding: 8px 13px;
-        background: rgba(255, 255, 255, .15);
-        border: 1px solid rgba(255, 255, 255, .22);
-        border-radius: 20px;
-        font-size: 13px;
+        gap: 8px;
+        margin-top: 19px;
+        padding: 9px 14px;
+        background: rgba(255,255,255,.11);
+        border: 1px solid rgba(255,255,255,.18);
+        border-radius: 30px;
+        color: rgba(255,255,255,.94);
+        font-size: 12px;
         font-weight: 600;
+        backdrop-filter: blur(8px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+        transition: background .25s ease, transform .25s ease;
     }
 
-    .section-title {
-        color: #0f172a;
-        font-size: 20px;
+
+        .dashboard-date:hover {
+            background: rgba(255,255,255,.17);
+            transform: translateY(-2px);
+        }
+
+
+        .dashboard-date i {
+            font-size: 14px;
+        }
+
+
+    /* ============================================================
+           SECCIONES
+           ============================================================ */
+
+    .dashboard-section {
+        margin-bottom: 30px;
+    }
+
+
+    .section-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 17px;
+    }
+
+
+        .section-heading h2 {
+            position: relative;
+            margin: 0;
+            padding-left: 13px;
+            color: var(--text-dark);
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -.25px;
+        }
+
+
+            .section-heading h2::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 3px;
+                bottom: 3px;
+                width: 4px;
+                border-radius: 5px;
+                background: linear-gradient( 180deg, #0C4A8A, #1D70B8 );
+            }
+
+
+        .section-heading span {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+
+    /* ============================================================
+           INDICADORES EJECUTIVOS
+           ============================================================ */
+
+    .executive-card {
+        position: relative;
+        height: 100%;
+        min-height: 150px;
+        overflow: hidden;
+        background: linear-gradient( 145deg, #ffffff 0%, #fbfdff 100% );
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        padding: 22px;
+        box-shadow: 0 5px 16px rgba(15,23,42,.045), 0 1px 2px rgba(15,23,42,.04);
+        transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease, border-color .28s ease;
+    }
+
+
+        .executive-card:hover {
+            transform: translateY(-6px);
+            border-color: #bfdbfe;
+            box-shadow: 0 18px 35px rgba(15,23,42,.10), 0 4px 10px rgba(12,74,138,.06);
+        }
+
+
+        /* círculo decorativo */
+
+        .executive-card::after {
+            content: "";
+            position: absolute;
+            width: 105px;
+            height: 105px;
+            border-radius: 50%;
+            right: -48px;
+            bottom: -50px;
+            opacity: .55;
+            transition: transform .4s ease, opacity .3s ease;
+        }
+
+
+        .executive-card:hover::after {
+            transform: scale(1.25);
+            opacity: .75;
+        }
+
+
+    .executive-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+
+    /* ============================================================
+           ICONOS INDICADORES
+           ============================================================ */
+
+    .executive-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 13px;
+        font-size: 21px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.55);
+        transition: transform .3s ease;
+    }
+
+
+    .executive-card:hover .executive-icon {
+        transform: scale(1.08) rotate(-3deg);
+    }
+
+
+    .executive-trend {
+        color: #94a3b8;
+        font-size: 16px;
+        transition: transform .25s ease;
+    }
+
+
+    .executive-card:hover .executive-trend {
+        transform: translate(2px,-2px);
+    }
+
+
+    /* ============================================================
+           TEXTOS INDICADORES
+           ============================================================ */
+
+    .executive-label {
+        display: block;
+        margin-top: 17px;
+        color: var(--text-muted);
+        font-size: 11px;
         font-weight: 800;
-        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: .55px;
     }
 
-    .section-description {
-        color: #64748b;
-        font-size: 14px;
+
+    .executive-number {
+        display: block;
+        margin-top: 4px;
+        color: var(--text-dark);
+        font-size: 30px;
+        line-height: 1.15;
+        font-weight: 800;
+        letter-spacing: -.6px;
+    }
+
+
+    .executive-description {
+        display: block;
+        margin-top: 5px;
+        color: var(--text-light);
+        font-size: 11px;
+    }
+
+
+    /* ============================================================
+           COLORES INDICADORES
+           ============================================================ */
+
+    .executive-users .executive-icon {
+        color: #1d4ed8;
+        background: #dbeafe;
+    }
+
+    .executive-users::after {
+        background: #dbeafe;
+    }
+
+
+    .executive-total .executive-icon {
+        color: #7c3aed;
+        background: #ede9fe;
+    }
+
+    .executive-total::after {
+        background: #ede9fe;
+    }
+
+
+    .executive-pending .executive-icon {
+        color: #b45309;
+        background: #fef3c7;
+    }
+
+    .executive-pending::after {
+        background: #fef3c7;
+    }
+
+
+    .executive-approved .executive-icon {
+        color: #15803d;
+        background: #dcfce7;
+    }
+
+    .executive-approved::after {
+        background: #dcfce7;
+    }
+
+
+    /* ============================================================
+           PANELES
+           ============================================================ */
+
+    .dashboard-panel {
+        height: 100%;
+        background: linear-gradient( 145deg, #ffffff, #fbfcfe );
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        padding: 23px;
+        box-shadow: 0 5px 18px rgba(15,23,42,.045), 0 1px 2px rgba(15,23,42,.03);
+        transition: box-shadow .25s ease, transform .25s ease;
+    }
+
+
+        .dashboard-panel:hover {
+            box-shadow: 0 12px 28px rgba(15,23,42,.07);
+        }
+
+
+    .panel-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 15px;
         margin-bottom: 20px;
     }
+
+
+        .panel-heading h3 {
+            margin: 0;
+            color: var(--text-dark);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+
+        .panel-heading span {
+            display: block;
+            margin-top: 4px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+
+    /* ============================================================
+           RESUMEN ECONÓMICO
+           ============================================================ */
+
+    .economic-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+
+    .economic-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border-light);
+        transition: padding-left .2s ease, background .2s ease;
+    }
+
+
+        .economic-item:hover {
+            padding-left: 5px;
+        }
+
+
+        .economic-item:first-child {
+            padding-top: 0;
+        }
+
+
+        .economic-item:last-child {
+            padding-bottom: 0;
+            border-bottom: 0;
+        }
+
+
+    .economic-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #475569;
+        font-size: 13px;
+    }
+
+
+    .economic-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        font-size: 14px;
+    }
+
+
+    .economic-value {
+        color: var(--text-dark);
+        font-size: 15px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+
+    .economic-item.total {
+        margin-top: 4px;
+        padding-top: 17px;
+        border-top: 1px solid var(--border);
+    }
+
+
+        .economic-item.total .economic-label {
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+
+        .economic-item.total .economic-value {
+            font-size: 18px;
+            color: var(--dinacen-blue);
+        }
+
+
+    .economic-blue {
+        color: #1d4ed8;
+        background: #dbeafe;
+    }
+
+
+    .economic-green {
+        color: #15803d;
+        background: #dcfce7;
+    }
+
+
+    .economic-orange {
+        color: #b45309;
+        background: #fef3c7;
+    }
+
+
+    .economic-red {
+        color: #b91c1c;
+        background: #fee2e2;
+    }
+
+
+    /* ============================================================
+           GRÁFICOS
+           ============================================================ */
+
+    .chart-container,
+    .chart-container-small {
+        position: relative;
+        width: 100%;
+        height: 285px;
+    }
+
+
+    /* ============================================================
+           ESTADOS
+           ============================================================ */
+
+    .status-summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 17px;
+    }
+
+
+    .status-item {
+        text-align: center;
+        padding: 11px 7px;
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        border-radius: 11px;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+
+        .status-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(15,23,42,.06);
+        }
+
+
+    .status-number {
+        display: block;
+        color: var(--text-dark);
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+
+    .status-label {
+        display: block;
+        margin-top: 3px;
+        color: var(--text-muted);
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+
+    .status-pending {
+        border-top: 3px solid #f59e0b;
+    }
+
+
+    .status-approved {
+        border-top: 3px solid #22c55e;
+    }
+
+
+    .status-rejected {
+        border-top: 3px solid #ef4444;
+    }
+
+
+    /* ============================================================
+           MÓDULOS
+           ============================================================ */
 
     .module-card {
         display: flex;
         flex-direction: column;
         height: 100%;
-        min-height: 220px;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 24px;
+        min-height: 210px;
+        padding: 23px;
         color: inherit;
         text-decoration: none;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
-        transition:
-            transform .2s ease,
-            box-shadow .2s ease,
-            border-color .2s ease;
+        background: linear-gradient( 145deg, #ffffff, #fbfcff );
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        box-shadow: 0 5px 18px rgba(15,23,42,.045);
+        transition: transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .28s ease, border-color .28s ease;
     }
 
-    .module-card:hover {
-        color: inherit;
-        transform: translateY(-5px);
-        border-color: #93c5fd;
-        box-shadow: 0 14px 28px rgba(15, 23, 42, .11);
+
+        .module-card:hover {
+            color: inherit;
+            transform: translateY(-7px);
+            border-color: #bfdbfe;
+            box-shadow: 0 18px 34px rgba(15,23,42,.10);
+        }
+
+
+    .module-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
     }
+
 
     .module-icon {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 58px;
-        height: 58px;
-        border-radius: 15px;
-        margin-bottom: 22px;
-        font-size: 27px;
+        width: 54px;
+        height: 54px;
+        border-radius: 14px;
+        font-size: 23px;
+        transition: transform .3s ease, box-shadow .3s ease;
     }
+
+
+    .module-card:hover .module-icon {
+        transform: scale(1.08) rotate(-4deg);
+        box-shadow: 0 8px 16px rgba(15,23,42,.08);
+    }
+
+
+    .module-arrow {
+        color: #94a3b8;
+        font-size: 15px;
+        transition: transform .25s ease, color .25s ease;
+    }
+
+
+    .module-card:hover .module-arrow {
+        color: #2563eb;
+        transform: translate(3px,-3px);
+    }
+
+
+    .module-content {
+        margin-top: 21px;
+    }
+
+
+        .module-content h3 {
+            margin: 0 0 7px;
+            color: var(--text-dark);
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -.15px;
+        }
+
+
+        .module-content p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+
+    /* ============================================================
+           COLORES MÓDULOS
+           ============================================================ */
 
     .icon-users {
         color: #1d4ed8;
         background: #dbeafe;
     }
 
+
     .icon-requests {
         color: #92400e;
         background: #fef3c7;
     }
+
 
     .icon-expenses {
         color: #166534;
         background: #dcfce7;
     }
 
+
     .icon-reports {
         color: #6b21a8;
         background: #f3e8ff;
     }
 
-    .module-card h4 {
-        color: #0f172a;
-        font-size: 19px;
-        font-weight: 800;
-        margin-bottom: 8px;
-    }
 
-    .module-card p {
-        color: #64748b;
-        font-size: 14px;
-        line-height: 1.55;
-        margin-bottom: 20px;
-    }
+    /* ============================================================
+           ACCESOS RÁPIDOS
+           ============================================================ */
 
-    .module-link {
+    .quick-list {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: auto;
-        color: #2563eb;
-        font-size: 13px;
-        font-weight: 700;
+        flex-direction: column;
+        gap: 10px;
     }
 
-    .summary-panel {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
-    }
-
-    .summary-card {
-        position: relative;
-        height: 100%;
-        min-height: 135px;
-        padding: 20px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 14px;
-    }
-
-    .summary-card::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 18px;
-        bottom: 18px;
-        width: 4px;
-        border-radius: 0 4px 4px 0;
-    }
-
-    .summary-users::before {
-        background: #2563eb;
-    }
-
-    .summary-requests::before {
-        background: #f59e0b;
-    }
-
-    .summary-expenses::before {
-        background: #10b981;
-    }
-
-    .summary-approved::before {
-        background: #7c3aed;
-    }
-
-    .summary-label {
-        color: #64748b;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .4px;
-    }
-
-    .summary-number {
-        margin-top: 5px;
-        color: #0f172a;
-        font-size: 31px;
-        font-weight: 800;
-    }
-
-    .summary-footer {
-        margin-top: 6px;
-        color: #94a3b8;
-        font-size: 12px;
-    }
-
-    .quick-panel {
-        height: 100%;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 24px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
-    }
 
     .quick-action {
         display: flex;
         align-items: center;
-        gap: 13px;
-        padding: 14px;
+        gap: 12px;
+        padding: 12px;
         color: #334155;
         text-decoration: none;
-        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        border: 1px solid var(--border);
         border-radius: 12px;
-        margin-bottom: 12px;
-        transition:
-            background .2s ease,
-            border-color .2s ease;
+        transition: background .25s ease, border-color .25s ease, transform .25s ease, box-shadow .25s ease;
     }
 
-    .quick-action:last-child {
-        margin-bottom: 0;
-    }
 
-    .quick-action:hover {
-        color: #1d4ed8;
-        background: #eff6ff;
-        border-color: #bfdbfe;
-    }
+        .quick-action:hover {
+            color: #1d4ed8;
+            background: linear-gradient( 90deg, #eff6ff, #ffffff );
+            border-color: #bfdbfe;
+            transform: translateX(4px);
+            box-shadow: 0 5px 12px rgba(37,99,235,.07);
+        }
+
 
     .quick-action-icon {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         flex: 0 0 auto;
-        width: 41px;
-        height: 41px;
+        width: 40px;
+        height: 40px;
         color: #2563eb;
         background: #dbeafe;
-        border-radius: 11px;
-        font-size: 19px;
+        border-radius: 10px;
+        font-size: 18px;
+        transition: transform .25s ease;
     }
 
-    .quick-action-title {
-        font-size: 14px;
+
+    .quick-action:hover .quick-action-icon {
+        transform: scale(1.08);
+    }
+
+
+    .quick-action span {
+        flex: 1;
+        font-size: 13px;
         font-weight: 700;
     }
 
-    .quick-action-description {
-        color: #64748b;
-        font-size: 12px;
+
+    .quick-action > i:last-child {
+        color: #94a3b8;
+        font-size: 13px;
+        transition: transform .2s ease, color .2s ease;
     }
 
-    @@media (max-width: 991.98px) {
+
+    .quick-action:hover > i:last-child {
+        color: #2563eb;
+        transform: translateX(3px);
+    }
+
+
+    /* ============================================================
+           SEPARADOR
+           ============================================================ */
+
+    .dashboard-divider {
+        height: 1px;
+        margin: 5px 0 25px;
+        background: linear-gradient( 90deg, transparent, #dbe3ec, transparent );
+        border: 0;
+    }
+
+
+    /* ============================================================
+           ANIMACIONES
+           ============================================================ */
+
+    @@keyframes dashboardFadeIn {
+
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+    @@keyframes headerFloat {
+
+        0%,
+        100% {
+            transform: translate(0,0);
+        }
+
+        50% {
+            transform: translate(-15px,18px);
+        }
+    }
+
+
+    @@keyframes headerFloatReverse {
+
+        0%,
+        100% {
+            transform: translate(0,0);
+        }
+
+        50% {
+            transform: translate(20px,-15px);
+        }
+    }
+
+
+    @@keyframes pulseDot {
+
+        0%,
+        100% {
+            box-shadow: 0 0 0 4px rgba(96,165,250,.15), 0 0 12px rgba(96,165,250,.7);
+        }
+
+        50% {
+            box-shadow: 0 0 0 7px rgba(96,165,250,.08), 0 0 18px rgba(96,165,250,.9);
+        }
+    }
+
+
+    /* ============================================================
+           ACCESIBILIDAD
+           ============================================================ */
+
+    @@media (prefers-reduced-motion: reduce) {
+
+        .dashboard-container,
+        .dashboard-header::before,
+        .dashboard-header::after,
+        .dashboard-greeting::before {
+            animation: none !important;
+        }
+
+        .executive-card,
+        .module-card,
+        .quick-action,
+        .dashboard-date {
+            transition: none !important;
+        }
+    }
+
+
+    /* ============================================================
+           RESPONSIVE - LAPTOP
+           ============================================================ */
+
+    @@media (max-width: 1199.98px) {
+
         .dashboard-header {
-            padding: 26px;
+            padding: 28px;
         }
 
         .dashboard-title {
-            font-size: 26px;
+            font-size: 28px;
         }
 
-        .module-card {
-            min-height: 200px;
+        .executive-card {
+            min-height: 145px;
+        }
+
+        .executive-number {
+            font-size: 28px;
         }
     }
 
-    @@media (max-width: 767.98px) {
+
+    /* ============================================================
+           RESPONSIVE - TABLET
+           ============================================================ */
+
+    @@media (max-width: 991.98px) {
+
         .dashboard-container {
             padding: 0;
         }
 
         .dashboard-header {
-            border-radius: 14px;
-            padding: 22px 18px;
-            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 25px;
         }
 
         .dashboard-title {
-            font-size: 23px;
+            font-size: 25px;
+        }
+
+        .chart-container,
+        .chart-container-small {
+            height: 270px;
+        }
+
+        .module-card {
+            min-height: 195px;
+        }
+    }
+
+
+    /* ============================================================
+           RESPONSIVE - MÓVIL
+           ============================================================ */
+
+    @@media (max-width: 767.98px) {
+
+        .dashboard-header {
+            padding: 22px 18px;
+            margin-bottom: 21px;
+        }
+
+        .dashboard-title {
+            font-size: 22px;
         }
 
         .dashboard-subtitle {
-            font-size: 14px;
+            font-size: 13px;
         }
 
-        .section-title {
+        .dashboard-date {
+            margin-top: 15px;
+            font-size: 11px;
+        }
+
+        .section-heading {
+            display: block;
+        }
+
+            .section-heading h2 {
+                font-size: 18px;
+            }
+
+            .section-heading span {
+                display: block;
+                margin-top: 5px;
+            }
+
+        .dashboard-panel {
+            padding: 19px;
+        }
+
+        .executive-card {
+            min-height: 135px;
+            padding: 19px;
+        }
+
+        .executive-number {
+            font-size: 25px;
+        }
+
+        .chart-container,
+        .chart-container-small {
+            height: 250px;
+        }
+
+        .status-summary {
+            gap: 7px;
+        }
+
+        .status-number {
             font-size: 18px;
         }
 
@@ -340,90 +1049,145 @@
             min-height: auto;
             padding: 20px;
         }
-
-        .module-icon {
-            width: 50px;
-            height: 50px;
-            font-size: 23px;
-            margin-bottom: 16px;
-        }
-
-        .module-card h4 {
-            font-size: 17px;
-        }
-
-        .summary-panel,
-        .quick-panel {
-            padding: 18px;
-        }
-
-        .summary-card {
-            min-height: 115px;
-            padding: 17px;
-        }
-
-        .summary-number {
-            font-size: 27px;
-        }
     }
 
+
+    /* ============================================================
+           RESPONSIVE - MÓVIL PEQUEÑO
+           ============================================================ */
+
     @@media (max-width: 575.98px) {
+
         .dashboard-header {
+            border-radius: 14px;
             padding: 20px 16px;
+        }
+
+        .dashboard-title {
+            font-size: 20px;
+        }
+
+        .dashboard-greeting {
+            font-size: 10px;
+        }
+
+        .dashboard-subtitle {
+            font-size: 12px;
         }
 
         .dashboard-date {
             align-items: flex-start;
-            border-radius: 12px;
+            border-radius: 11px;
+            line-height: 1.4;
+        }
+
+        .executive-card {
+            min-height: 128px;
+        }
+
+        .executive-icon {
+            width: 42px;
+            height: 42px;
+            font-size: 18px;
+        }
+
+        .executive-label {
+            margin-top: 13px;
+            font-size: 10px;
+        }
+
+        .executive-number {
+            font-size: 23px;
+        }
+
+        .executive-description {
+            font-size: 10px;
+        }
+
+        .economic-item {
+            align-items: flex-start;
+        }
+
+        .economic-label {
+            font-size: 12px;
+        }
+
+        .economic-value {
+            font-size: 13px;
+        }
+
+        .chart-container,
+        .chart-container-small {
+            height: 225px;
+        }
+
+        .status-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 12px;
+        }
+
+        .status-label {
+            margin-top: 0;
         }
 
         .module-card {
-            flex-direction: row;
-            flex-wrap: wrap;
-            align-items: flex-start;
-            gap: 14px;
+            padding: 18px;
         }
 
         .module-icon {
-            margin-bottom: 0;
+            width: 47px;
+            height: 47px;
+            font-size: 20px;
         }
 
         .module-content {
-            flex: 1;
-            min-width: 180px;
-        }
-
-        .module-link {
-            width: 100%;
-            padding-top: 4px;
+            margin-top: 16px;
         }
     }
-</style>
 
+</style>
 <div class="dashboard-container">
 
-    <!-- ENCABEZADO -->
+    <!-- =====================================================
+         ENCABEZADO PRINCIPAL
+         ===================================================== -->
 
     <section class="dashboard-header">
 
         <div class="dashboard-header-content">
 
-            <h1 class="dashboard-title">
-                Bienvenido, Administrador
-            </h1>
+            <div class="dashboard-welcome">
 
-            <p class="dashboard-subtitle">
-                Panel de control del Sistema de Viáticos DINACEN.
-                Gestione usuarios, solicitudes, rendiciones y reportes.
-            </p>
+                <span class="dashboard-greeting">
+                    Panel principal
+                </span>
+
+                <h1 class="dashboard-title">
+                    Bienvenido, Administrador
+                </h1>
+
+                <p class="dashboard-subtitle">
+                    Resumen ejecutivo de la gestión de viáticos DINACEN.
+                </p>
+
+            </div>
+
 
             <div class="dashboard-date">
 
                 <i class="bi bi-calendar3"></i>
 
-                @DateTime.Now.ToString(
-                         "dddd, dd 'de' MMMM 'de' yyyy",
-                         new System.Globalization.CultureInfo("es-PE"))
+                <span>
+                    @DateTime.Now.ToString(
+                        "dddd, dd 'de' MMMM 'de' yyyy",
+                        new System.Globalization.CultureInfo("es-PE"))
+                </span>
 
             </div>
 
@@ -431,19 +1195,526 @@
 
     </section>
 
-    <!-- MÓDULOS -->
 
-    <section>
+    <!-- =====================================================
+         INDICADORES PRINCIPALES
+         ===================================================== -->
 
-        <h2 class="section-title">
-            Módulos del sistema
-        </h2>
+    <section class="dashboard-section">
 
-        <p class="section-description">
-            Seleccione una opción para comenzar.
-        </p>
+        <div class="section-heading">
 
-        <div class="row g-4">
+            <div>
+
+                <h2 class="section-title">
+                    Resumen ejecutivo
+                </h2>
+
+                <p class="section-description">
+                    Indicadores generales de la gestión de viáticos.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-3">
+
+
+            <!-- =================================================
+                 TOTAL SOLICITUDES
+                 ================================================= -->
+
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <div class="executive-card executive-users">
+
+                    <div class="executive-top">
+
+                        <div class="executive-icon">
+
+                            <i class="bi bi-file-earmark-text-fill"></i>
+
+                        </div>
+
+                        <div class="executive-trend">
+
+                            <i class="bi bi-file-text"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="executive-label">
+                        Total solicitudes
+                    </span>
+
+
+                    <strong class="executive-number">
+                        @Model.TotalSolicitudes
+                    </strong>
+
+
+                    <span class="executive-description">
+                        Solicitudes registradas
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 SOLICITUDES PENDIENTES
+                 ================================================= -->
+
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <div class="executive-card executive-total">
+
+                    <div class="executive-top">
+
+                        <div class="executive-icon">
+
+                            <i class="bi bi-clock-history"></i>
+
+                        </div>
+
+                        <div class="executive-trend">
+
+                            <i class="bi bi-hourglass-split"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="executive-label">
+                        Pendientes
+                    </span>
+
+
+                    <strong class="executive-number">
+                        @Model.SolicitudesPendientes
+                    </strong>
+
+
+                    <span class="executive-description">
+                        Solicitudes por revisar
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 SOLICITUDES APROBADAS
+                 ================================================= -->
+
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <div class="executive-card executive-approved">
+
+                    <div class="executive-top">
+
+                        <div class="executive-icon">
+
+                            <i class="bi bi-check-circle-fill"></i>
+
+                        </div>
+
+                        <div class="executive-trend">
+
+                            <i class="bi bi-check2"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="executive-label">
+                        Aprobadas
+                    </span>
+
+
+                    <strong class="executive-number">
+                        @Model.SolicitudesAprobadas
+                    </strong>
+
+
+                    <span class="executive-description">
+                        Solicitudes aprobadas
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 TOTAL GASTADO
+                 ================================================= -->
+
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <div class="executive-card executive-pending">
+
+                    <div class="executive-top">
+
+                        <div class="executive-icon">
+
+                            <i class="bi bi-cash-stack"></i>
+
+                        </div>
+
+                        <div class="executive-trend">
+
+                            <i class="bi bi-wallet2"></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <span class="executive-label">
+                        Total gastado
+                    </span>
+
+
+                    <strong class="executive-number">
+
+                        S/
+                        @Model.TotalGastado.ToString("N2")
+
+                    </strong>
+
+
+                    <span class="executive-description">
+                        Monto ejecutado
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RESUMEN ECONÓMICO + ESTADOS
+         ===================================================== -->
+
+    <section class="dashboard-section dashboard-bottom">
+
+        <div class="row g-3">
+
+
+            <!-- =================================================
+                 RESUMEN ECONÓMICO
+                 ================================================= -->
+
+            <div class="col-12 col-xl-7">
+
+                <div class="dashboard-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <h3>
+                                Resumen económico
+                            </h3>
+
+                            <span>
+                                Situación financiera de los viáticos
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="economic-list">
+
+
+                        <!-- TOTAL SOLICITADO -->
+
+                        <div class="economic-item">
+
+                            <div class="economic-label">
+
+                                <div class="economic-icon economic-blue">
+
+                                    <i class="bi bi-arrow-up-circle"></i>
+
+                                </div>
+
+                                <span>
+                                    Total solicitado
+                                </span>
+
+                            </div>
+
+
+                            <strong class="economic-value">
+
+                                S/
+                                @Model.TotalSolicitado.ToString("N2")
+
+                            </strong>
+
+                        </div>
+
+
+                        <!-- TOTAL RENDIDO -->
+
+                        <div class="economic-item">
+
+                            <div class="economic-label">
+
+                                <div class="economic-icon economic-green">
+
+                                    <i class="bi bi-receipt"></i>
+
+                                </div>
+
+                                <span>
+                                    Total rendido
+                                </span>
+
+                            </div>
+
+
+                            <strong class="economic-value">
+
+                                S/
+                                @Model.TotalRendido.ToString("N2")
+
+                            </strong>
+
+                        </div>
+
+
+                        <!-- TOTAL GASTADO -->
+
+                        <div class="economic-item">
+
+                            <div class="economic-label">
+
+                                <div class="economic-icon economic-orange">
+
+                                    <i class="bi bi-cash-stack"></i>
+
+                                </div>
+
+                                <span>
+                                    Total gastado
+                                </span>
+
+                            </div>
+
+
+                            <strong class="economic-value">
+
+                                S/
+                                @Model.TotalGastado.ToString("N2")
+
+                            </strong>
+
+                        </div>
+
+
+                        <!-- SALDO PENDIENTE -->
+
+                        <div class="economic-item total">
+
+                            <div class="economic-label">
+
+                                <div class="economic-icon economic-red">
+
+                                    <i class="bi bi-exclamation-circle"></i>
+
+                                </div>
+
+                                <span>
+                                    Saldo pendiente
+                                </span>
+
+                            </div>
+
+
+                            <strong class="economic-value">
+
+                                S/
+                                @Model.SaldoPendiente.ToString("N2")
+
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ESTADO DE SOLICITUDES
+                 ================================================= -->
+
+            <div class="col-12 col-xl-5">
+
+                <div class="dashboard-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+
+                            <h3>
+                                Estado de solicitudes
+                            </h3>
+
+                            <span>
+                                Distribución actual
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-container">
+
+                        <canvas id="estadoSolicitudesChart"></canvas>
+
+                    </div>
+
+
+                    <!-- RESUMEN DE ESTADOS -->
+
+                    <div class="status-summary">
+
+
+                        <div class="status-item status-pending">
+
+                            <span class="status-number">
+                                @Model.SolicitudesPendientes
+                            </span>
+
+                            <span class="status-label">
+                                Pendientes
+                            </span>
+
+                        </div>
+
+
+                        <div class="status-item status-approved">
+
+                            <span class="status-number">
+                                @Model.SolicitudesAprobadas
+                            </span>
+
+                            <span class="status-label">
+                                Aprobadas
+                            </span>
+
+                        </div>
+
+
+                        <div class="status-item status-rejected">
+
+                            <span class="status-number">
+                                @Model.SolicitudesRechazadas
+                            </span>
+
+                            <span class="status-label">
+                                Rechazadas
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ACTIVIDAD MENSUAL
+         ===================================================== -->
+
+    <section class="dashboard-section">
+
+        <div class="dashboard-panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h3>
+                        Comportamiento mensual
+                    </h3>
+
+                    <span>
+                        Monto solicitado por mes
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="chart-container">
+
+                <canvas id="montosMensualesChart"></canvas>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MÓDULOS PRINCIPALES
+         ===================================================== -->
+
+    <section class="dashboard-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <h2 class="section-title">
+                    Módulos principales
+                </h2>
+
+                <p class="section-description">
+                    Acceda rápidamente a las principales funciones administrativas.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-3">
+
+
+            <!-- USUARIOS -->
 
             <div class="col-12 col-sm-6 col-xl-3">
 
@@ -451,34 +1722,37 @@
                    asp-action="Index"
                    class="module-card">
 
-                    <div class="module-icon icon-users">
-                        <i class="bi bi-people-fill"></i>
+                    <div class="module-top">
+
+                        <div class="module-icon icon-users">
+
+                            <i class="bi bi-people-fill"></i>
+
+                        </div>
+
+                        <i class="bi bi-arrow-up-right module-arrow"></i>
+
                     </div>
+
 
                     <div class="module-content">
 
-                        <h4>
+                        <h3>
                             Usuarios
-                        </h4>
+                        </h3>
 
                         <p>
-                            Registre, edite, active o desactive
-                            usuarios del sistema.
+                            Administre usuarios, accesos y permisos del sistema.
                         </p>
-
-                    </div>
-
-                    <div class="module-link">
-
-                        <span>Administrar usuarios</span>
-
-                        <i class="bi bi-arrow-right"></i>
 
                     </div>
 
                 </a>
 
             </div>
+
+
+            <!-- SOLICITUDES -->
 
             <div class="col-12 col-sm-6 col-xl-3">
 
@@ -486,34 +1760,37 @@
                    asp-action="Index"
                    class="module-card">
 
-                    <div class="module-icon icon-requests">
-                        <i class="bi bi-file-earmark-text-fill"></i>
+                    <div class="module-top">
+
+                        <div class="module-icon icon-requests">
+
+                            <i class="bi bi-file-earmark-text-fill"></i>
+
+                        </div>
+
+                        <i class="bi bi-arrow-up-right module-arrow"></i>
+
                     </div>
+
 
                     <div class="module-content">
 
-                        <h4>
+                        <h3>
                             Solicitudes
-                        </h4>
+                        </h3>
 
                         <p>
-                            Revise, apruebe o rechace las solicitudes
-                            de viáticos registradas.
+                            Revise y gestione las solicitudes de viáticos.
                         </p>
-
-                    </div>
-
-                    <div class="module-link">
-
-                        <span>Gestionar solicitudes</span>
-
-                        <i class="bi bi-arrow-right"></i>
 
                     </div>
 
                 </a>
 
             </div>
+
+
+            <!-- RENDICIONES -->
 
             <div class="col-12 col-sm-6 col-xl-3">
 
@@ -521,34 +1798,37 @@
                    asp-action="IndexAdmin"
                    class="module-card">
 
-                    <div class="module-icon icon-expenses">
-                        <i class="bi bi-wallet-fill"></i>
+                    <div class="module-top">
+
+                        <div class="module-icon icon-expenses">
+
+                            <i class="bi bi-wallet-fill"></i>
+
+                        </div>
+
+                        <i class="bi bi-arrow-up-right module-arrow"></i>
+
                     </div>
+
 
                     <div class="module-content">
 
-                        <h4>
+                        <h3>
                             Rendiciones
-                        </h4>
+                        </h3>
 
                         <p>
-                            Revise gastos, comprobantes, devoluciones
-                            y liquidaciones enviadas.
+                            Revise gastos, comprobantes y liquidaciones registradas.
                         </p>
-
-                    </div>
-
-                    <div class="module-link">
-
-                        <span>Revisar rendiciones</span>
-
-                        <i class="bi bi-arrow-right"></i>
 
                     </div>
 
                 </a>
 
             </div>
+
+
+            <!-- REPORTES -->
 
             <div class="col-12 col-sm-6 col-xl-3">
 
@@ -556,28 +1836,28 @@
                    asp-action="Index"
                    class="module-card">
 
-                    <div class="module-icon icon-reports">
-                        <i class="bi bi-bar-chart-fill"></i>
+                    <div class="module-top">
+
+                        <div class="module-icon icon-reports">
+
+                            <i class="bi bi-bar-chart-fill"></i>
+
+                        </div>
+
+                        <i class="bi bi-arrow-up-right module-arrow"></i>
+
                     </div>
+
 
                     <div class="module-content">
 
-                        <h4>
+                        <h3>
                             Reportes
-                        </h4>
+                        </h3>
 
                         <p>
-                            Consulte información consolidada y genere
-                            reportes del sistema.
+                            Consulte información y genere reportes de gestión.
                         </p>
-
-                    </div>
-
-                    <div class="module-link">
-
-                        <span>Ver reportes</span>
-
-                        <i class="bi bi-arrow-right"></i>
 
                     </div>
 
@@ -589,205 +1869,88 @@
 
     </section>
 
-    <!-- RESUMEN -->
 
-    <section class="mt-5">
+    <!-- =====================================================
+         ESTADO OPERATIVO
+         ===================================================== -->
 
-        <div class="row g-4">
+    <section class="dashboard-section">
 
-            <div class="col-12 col-xl-8">
+        <div class="dashboard-panel">
 
-                <div class="summary-panel">
+            <div class="panel-heading">
 
-                    <h2 class="section-title">
-                        Resumen del sistema
-                    </h2>
+                <div>
 
-                    <p class="section-description">
-                        Indicadores principales del sistema de viáticos.
-                    </p>
+                    <h3>
+                        Estado operativo
+                    </h3>
 
-                    <div class="row g-3">
-
-                        <div class="col-12 col-sm-6">
-
-                            <div class="summary-card summary-users">
-
-                                <div class="summary-label">
-                                    Usuarios registrados
-                                </div>
-
-                                <div class="summary-number">
-                                    @totalUsuarios
-                                </div>
-
-                                <div class="summary-footer">
-                                    Usuarios existentes en el sistema
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-12 col-sm-6">
-
-                            <div class="summary-card summary-requests">
-
-                                <div class="summary-label">
-                                    Solicitudes pendientes
-                                </div>
-
-                                <div class="summary-number">
-                                    @solicitudesPendientes
-                                </div>
-
-                                <div class="summary-footer">
-                                    Solicitudes por revisar
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-12 col-sm-6">
-
-                            <div class="summary-card summary-expenses">
-
-                                <div class="summary-label">
-                                    Rendiciones en revisión
-                                </div>
-
-                                <div class="summary-number">
-                                    @rendicionesPendientes
-                                </div>
-
-                                <div class="summary-footer">
-                                    Rendiciones enviadas por empleados
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="col-12 col-sm-6">
-
-                            <div class="summary-card summary-approved">
-
-                                <div class="summary-label">
-                                    Solicitudes aprobadas
-                                </div>
-
-                                <div class="summary-number">
-                                    @solicitudesAprobadas
-                                </div>
-
-                                <div class="summary-footer">
-                                    Solicitudes aprobadas registradas
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
+                    <span>
+                        Información relevante para la gestión
+                    </span>
 
                 </div>
 
             </div>
 
-            <!-- ACCESOS RÁPIDOS -->
 
-            <div class="col-12 col-xl-4">
+            <div class="row g-3">
 
-                <div class="quick-panel">
 
-                    <h2 class="section-title">
-                        Accesos rápidos
-                    </h2>
+                <!-- RECHAZADAS -->
 
-                    <p class="section-description">
-                        Acciones frecuentes del administrador.
-                    </p>
+                <div class="col-12 col-md-4">
 
-                    <a asp-controller="Usuario"
-                       asp-action="Index"
-                       class="quick-action">
+                    <div class="status-item status-rejected">
 
-                        <div class="quick-action-icon">
-                            <i class="bi bi-person-plus-fill"></i>
-                        </div>
+                        <span class="status-number">
+                            @Model.SolicitudesRechazadas
+                        </span>
 
-                        <div>
-                            <div class="quick-action-title">
-                                Gestionar usuarios
-                            </div>
+                        <span class="status-label">
+                            Solicitudes rechazadas
+                        </span>
 
-                            <div class="quick-action-description">
-                                Registrar o actualizar usuarios
-                            </div>
-                        </div>
+                    </div>
 
-                    </a>
+                </div>
 
-                    <a asp-controller="Solicitud"
-                       asp-action="Index"
-                       class="quick-action">
 
-                        <div class="quick-action-icon">
-                            <i class="bi bi-file-earmark-check"></i>
-                        </div>
+                <!-- FINALIZADAS -->
 
-                        <div>
-                            <div class="quick-action-title">
-                                Revisar solicitudes
-                            </div>
+                <div class="col-12 col-md-4">
 
-                            <div class="quick-action-description">
-                                Aprobar o rechazar solicitudes
-                            </div>
-                        </div>
+                    <div class="status-item status-approved">
 
-                    </a>
+                        <span class="status-number">
+                            @Model.SolicitudesFinalizadas
+                        </span>
 
-                    <a asp-controller="Rendicion"
-                       asp-action="IndexAdmin"
-                       class="quick-action">
+                        <span class="status-label">
+                            Solicitudes finalizadas
+                        </span>
 
-                        <div class="quick-action-icon">
-                            <i class="bi bi-search"></i>
-                        </div>
+                    </div>
 
-                        <div>
-                            <div class="quick-action-title">
-                                Revisar rendiciones
-                            </div>
+                </div>
 
-                            <div class="quick-action-description">
-                                Consultar liquidaciones pendientes
-                            </div>
-                        </div>
 
-                    </a>
+                <!-- RENDICIONES -->
 
-                    <a asp-controller="Reporte"
-                       asp-action="Index"
-                       class="quick-action">
+                <div class="col-12 col-md-4">
 
-                        <div class="quick-action-icon">
-                            <i class="bi bi-file-earmark-bar-graph"></i>
-                        </div>
+                    <div class="status-item status-pending">
 
-                        <div>
-                            <div class="quick-action-title">
-                                Generar reportes
-                            </div>
+                        <span class="status-number">
+                            @Model.RendicionesPendientes
+                        </span>
 
-                            <div class="quick-action-description">
-                                Consultar información consolidada
-                            </div>
-                        </div>
+                        <span class="status-label">
+                            Rendiciones pendientes
+                        </span>
 
-                    </a>
+                    </div>
 
                 </div>
 
@@ -797,4 +1960,234 @@
 
     </section>
 
-</div>
+
+    
+
+
+<!-- =========================================================
+     CHART.JS
+     ========================================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+
+    // =========================================================
+    // GRÁFICO: ESTADO DE SOLICITUDES
+    // =========================================================
+
+    const estadoCanvas =
+        document.getElementById("estadoSolicitudesChart");
+
+
+    if (estadoCanvas) {
+
+        new Chart(estadoCanvas, {
+
+            type: "doughnut",
+
+            data: {
+
+                labels: [
+                    "Pendientes",
+                    "Aprobadas",
+                    "Rechazadas",
+                    "Finalizadas"
+                ],
+
+                datasets: [{
+
+                    data: [
+
+                            @Model.SolicitudesPendientes,
+
+                            @Model.SolicitudesAprobadas,
+
+                            @Model.SolicitudesRechazadas,
+
+                        @Model.SolicitudesFinalizadas
+
+                    ],
+
+                    borderWidth: 2,
+
+                    hoverOffset: 8
+
+                }]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                cutout: "68%",
+
+                animation: {
+
+                    animateRotate: true,
+
+                    animateScale: true,
+
+                    duration: 900
+
+                },
+
+                plugins: {
+
+                    legend: {
+
+                        position: "bottom",
+
+                        labels: {
+
+                            padding: 16,
+
+                            usePointStyle: true,
+
+                            font: {
+
+                                size: 12,
+
+                                weight: "600"
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+    // =========================================================
+    // GRÁFICO: COMPORTAMIENTO MENSUAL
+    // =========================================================
+
+    const mensualCanvas =
+        document.getElementById("montosMensualesChart");
+
+
+    if (mensualCanvas) {
+
+        new Chart(mensualCanvas, {
+
+            type: "bar",
+
+            data: {
+
+                labels: [
+
+                        @foreach (var mes in Model.Meses)
+                    {
+                        @: "@mes",
+                    }
+
+                    ],
+
+                datasets: [{
+
+                    label: "Monto solicitado",
+
+                    data: [
+
+                            @foreach (var monto in Model.MontosMensuales)
+                        {
+                            @: @monto.ToString(
+                                            System.Globalization.CultureInfo.InvariantCulture),
+                            }
+
+                    ],
+
+                        borderWidth: 1,
+
+                        borderRadius: 7,
+
+                        borderSkipped: false
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    animation: {
+
+                        duration: 900,
+
+                        easing: "easeOutQuart"
+
+                    },
+
+                    plugins: {
+
+                        legend: {
+
+                            display: false
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            ticks: {
+
+                                callback: function (value) {
+
+                                    return "S/ " +
+                                        Number(value).toLocaleString(
+                                            "es-PE",
+                                            {
+                                                minimumFractionDigits: 0
+                                            }
+                                        );
+
+                                }
+
+                            }
+
+                        },
+
+                        x: {
+
+                            grid: {
+
+                                display: false
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+</script>
+    @section Scripts {
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="~/js/IndexPrincipal.js"></script>
+
+    }

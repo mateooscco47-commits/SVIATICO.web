@@ -3,153 +3,828 @@
 @{
     ViewData["Title"] = "Reporte de Rendiciones";
     Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+
+    var totalRendiciones = Model?.Count ?? 0;
+
+    var totalEntregado =
+        Model?.Sum(x => x.MontoEntregado) ?? 0;
+
+    var totalGastado =
+        Model?.Sum(x => x.Gastado) ?? 0;
+
+    var totalDevuelto =
+        Model?.Sum(x => x.Devuelto) ?? 0;
+
+    var totalDiferencia =
+        Model?.Sum(x => x.Diferencia) ?? 0;
+
+    var rendicionesAprobadas =
+        Model?.Count(x =>
+            x.Estado == "Aprobado" ||
+            x.Estado == "Conforme") ?? 0;
+
+    var rendicionesPendientes =
+        totalRendiciones - rendicionesAprobadas;
 }
 
 
+<style>
 
-<div class="container-fluid">
+    /* =========================================================
+           CONTENEDOR
+           ========================================================= */
+
+    .reporte-rendiciones {
+        width: 100%;
+        padding: 5px 0 25px;
+    }
 
 
-    <!-- ===========================================
-    ENCABEZADO DEL REPORTE
-=========================================== -->
+    /* =========================================================
+               ENCABEZADO
+               ========================================================= */
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+    .reporte-header {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 22px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    }
 
-    <div class="d-flex align-items-center">
+    .reporte-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
 
-        <a asp-controller="Reporte"
-           asp-action="Index"
-           class="btn btn-outline-primary rounded-pill me-3">
+    .reporte-title-area {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
 
-            <i class="bi bi-arrow-left-circle"></i>
+    .reporte-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        background: #eaf3fb;
+        color: #0c4a8a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
 
-            Volver
+    .reporte-title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: #1e293b;
+    }
 
-        </a>
+    .reporte-description {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: #64748b;
+    }
 
-        <div>
 
-            <h2 class="fw-bold text-primary mb-0">
 
-                <i class="bi bi-wallet2 me-2"></i>
+    /* =========================================================
+               BOTONES
+               ========================================================= */
 
-                Reporte de Rendiciones
+    .btn-reporte-back {
+        border: 1px solid #cbd5e1;
+        color: #334155;
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 8px 14px;
+        font-size: 13px;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
+
+        .btn-reporte-back:hover {
+            background: #f1f5f9;
+            color: #0c4a8a;
+            border-color: #0c4a8a;
+        }
+
+    .btn-reporte-pdf {
+        background: #b91c1c;
+        border: 1px solid #b91c1c;
+        color: #ffffff;
+        border-radius: 8px;
+        padding: 9px 17px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all .2s ease;
+        white-space: nowrap;
+    }
+
+        .btn-reporte-pdf:hover {
+            background: #991b1b;
+            border-color: #991b1b;
+            color: #ffffff;
+        }
+
+    /* =========================================================
+           INDICADORES
+           ========================================================= */
+
+    .indicadores {
+        margin-top: 20px;
+    }
+
+    .indicador-card {
+        height: 100%;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 13px;
+        padding: 18px;
+        box-shadow: 0 3px 10px rgba(0,0,0,.04);
+        transition: .2s ease;
+    }
+
+        .indicador-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,.07);
+        }
+
+    .indicador-contenido {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .indicador-label {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    .indicador-valor {
+        color: #111827;
+        font-size: 21px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .indicador-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+    }
+
+    .icon-azul {
+        background: #eaf3fb;
+        color: #0c4a8a;
+    }
+
+    .icon-verde {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .icon-amarillo {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .icon-rojo {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+
+    /* =========================================================
+           TARJETA DE TABLA
+           ========================================================= */
+
+    .tabla-card {
+        margin-top: 20px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(0,0,0,.05);
+    }
+
+    .tabla-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .tabla-titulo {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #111827;
+        font-size: 15px;
+        font-weight: 700;
+        margin: 0;
+    }
+
+        .tabla-titulo i {
+            color: #0c4a8a;
+            font-size: 17px;
+        }
+
+    .tabla-contador {
+        background: #eaf3fb;
+        color: #0c4a8a;
+        border-radius: 20px;
+        padding: 4px 10px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+
+    /* =========================================================
+           TABLA
+           ========================================================= */
+
+    .tabla-wrapper {
+        overflow-x: auto;
+    }
+
+    .tabla-rendiciones {
+        width: 100%;
+        margin: 0;
+        border-collapse: collapse;
+        min-width: 900px;
+    }
+
+        .tabla-rendiciones thead th {
+            background: #f8fafc;
+            color: #334155;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .2px;
+            padding: 13px 14px;
+            border-bottom: 1px solid #cbd5e1;
+            white-space: nowrap;
+        }
+
+        .tabla-rendiciones tbody td {
+            padding: 13px 14px;
+            color: #334155;
+            font-size: 12.5px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+
+        .tabla-rendiciones tbody tr {
+            transition: background .15s ease;
+        }
+
+            .tabla-rendiciones tbody tr:hover {
+                background: #f8fafc;
+            }
+
+            .tabla-rendiciones tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+
+    /* =========================================================
+           USUARIO
+           ========================================================= */
+
+    .usuario-cell {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .usuario-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        background: #eaf3fb;
+        color: #0c4a8a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        flex-shrink: 0;
+    }
+
+
+    /* =========================================================
+           SOLICITUD
+           ========================================================= */
+
+    .solicitud-badge {
+        display: inline-flex;
+        align-items: center;
+        background: #f1f5f9;
+        color: #334155;
+        border-radius: 6px;
+        padding: 5px 8px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+
+    /* =========================================================
+           MONTOS
+           ========================================================= */
+
+    .monto {
+        font-weight: 600;
+        color: #1e293b;
+        white-space: nowrap;
+    }
+
+    .monto-gastado {
+        color: #0c4a8a;
+    }
+
+    .monto-devuelto {
+        color: #15803d;
+    }
+
+    .monto-diferencia {
+        color: #b91c1c;
+    }
+
+
+    /* =========================================================
+           ESTADOS
+           ========================================================= */
+
+    .estado {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 10.5px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .estado-aprobado {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .estado-pendiente {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .estado-rechazado {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .estado-default {
+        background: #e2e8f0;
+        color: #334155;
+    }
+
+
+    /* =========================================================
+           TOTAL
+           ========================================================= */
+
+    .tabla-footer td {
+        background: #f8fafc;
+        border-top: 1px solid #cbd5e1;
+        padding: 14px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .tabla-footer .total-rojo {
+        color: #b91c1c;
+    }
+
+
+    /* =========================================================
+           SIN REGISTROS
+           ========================================================= */
+
+    .sin-registros {
+        text-align: center;
+        padding: 55px 20px !important;
+        color: #64748b !important;
+    }
+
+        .sin-registros i {
+            font-size: 38px;
+            display: block;
+            margin-bottom: 10px;
+            color: #94a3b8;
+        }
+
+
+    /* =========================================================
+           RESPONSIVE
+           ========================================================= */
+
+    @@media (max-width: 768px) {
+
+        .reporte-header {
+            padding: 17px;
+        }
+
+        .reporte-header-left {
+            align-items: flex-start;
+        }
+
+        .reporte-title {
+            font-size: 20px;
+        }
+
+        .btn-pdf {
+            width: 100%;
+            text-align: center;
+        }
+
+        .reporte-header-content {
+            align-items: stretch;
+        }
+
+            .reporte-header-content > div:last-child {
+                width: 100%;
+            }
+    }
+
+</style>
+
+
+<div class="container-fluid reporte-rendiciones">
+
+    <!-- =========================================================
+     ENCABEZADO
+     ========================================================= -->
+
+    <div class="reporte-header">
+
+        <div class="reporte-header-content">
+
+
+            <!-- INFORMACIÓN -->
+
+            <div class="reporte-title-area">
+
+                <div class="reporte-icon">
+
+                    <i class="bi bi-wallet2"></i>
+
+                </div>
+
+                <div>
+
+                    <h1 class="reporte-title">
+
+                        Reporte de Rendiciones
+
+                    </h1>
+
+                    <p class="reporte-description">
+
+                        Resumen de las rendiciones registradas en el sistema de viáticos.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCIONES -->
+
+            <div class="d-flex align-items-center gap-2">
+
+                <a asp-controller="Reporte"
+                   asp-action="Index"
+                   class="btn-reporte-back">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+
+                    Volver
+
+                </a>
+
+
+                <a asp-controller="Reporte"
+                   asp-action="ExportarRendicionesPdf"
+                   class="btn-reporte-pdf">
+
+                    <i class="bi bi-file-earmark-pdf-fill me-1"></i>
+
+                    Exportar PDF
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+            
+
+    <!-- =========================================================
+         INDICADORES
+         ========================================================= -->
+
+    <div class="row g-3 indicadores">
+
+        <!-- TOTAL RENDICIONES -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="indicador-card">
+
+                <div class="indicador-contenido">
+
+                    <div>
+
+                        <div class="indicador-label">
+                            Total de rendiciones
+                        </div>
+
+                        <h3 class="indicador-valor">
+                            @totalRendiciones
+                        </h3>
+
+                    </div>
+
+                    <div class="indicador-icon icon-azul">
+
+                        <i class="bi bi-wallet2"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TOTAL ENTREGADO -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="indicador-card">
+
+                <div class="indicador-contenido">
+
+                    <div>
+
+                        <div class="indicador-label">
+                            Total entregado
+                        </div>
+
+                        <h3 class="indicador-valor">
+                            S/ @totalEntregado.ToString("N2")
+                        </h3>
+
+                    </div>
+
+                    <div class="indicador-icon icon-azul">
+
+                        <i class="bi bi-cash-stack"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TOTAL GASTADO -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="indicador-card">
+
+                <div class="indicador-contenido">
+
+                    <div>
+
+                        <div class="indicador-label">
+                            Total gastado
+                        </div>
+
+                        <h3 class="indicador-valor">
+                            S/ @totalGastado.ToString("N2")
+                        </h3>
+
+                    </div>
+
+                    <div class="indicador-icon icon-verde">
+
+                        <i class="bi bi-graph-down-arrow"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TOTAL DEVUELTO -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="indicador-card">
+
+                <div class="indicador-contenido">
+
+                    <div>
+
+                        <div class="indicador-label">
+                            Total devuelto
+                        </div>
+
+                        <h3 class="indicador-valor">
+                            S/ @totalDevuelto.ToString("N2")
+                        </h3>
+
+                    </div>
+
+                    <div class="indicador-icon icon-verde">
+
+                        <i class="bi bi-arrow-return-left"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         SEGUNDA FILA DE INDICADORES
+         ========================================================= -->
+
+    <div class="row g-3 indicadores">
+
+        <!-- DIFERENCIA -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="indicador-card">
+
+                <div class="indicador-contenido">
+
+                    <div>
+
+                        <div class="indicador-label">
+                            Diferencia total
+                        </div>
+
+                        <h3 class="indicador-valor">
+                            S/ @totalDiferencia.ToString("N2")
+                        </h3>
+
+                    </div>
+
+                    <div class="indicador-icon icon-rojo">
+
+                        <i class="bi bi-exclamation-triangle"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- APROBADAS -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="indicador-card">
+
+                <div class="indicador-contenido">
+
+                    <div>
+
+                        <div class="indicador-label">
+                            Rendiciones aprobadas
+                        </div>
+
+                        <h3 class="indicador-valor">
+                            @rendicionesAprobadas
+                        </h3>
+
+                    </div>
+
+                    <div class="indicador-icon icon-verde">
+
+                        <i class="bi bi-check-circle"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PENDIENTES -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="indicador-card">
+
+                <div class="indicador-contenido">
+
+                    <div>
+
+                        <div class="indicador-label">
+                            Pendientes
+                        </div>
+
+                        <h3 class="indicador-valor">
+                            @rendicionesPendientes
+                        </h3>
+
+                    </div>
+
+                    <div class="indicador-icon icon-amarillo">
+
+                        <i class="bi bi-clock-history"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         TABLA
+         ========================================================= -->
+
+    <div class="tabla-card">
+
+        <div class="tabla-header">
+
+            <h2 class="tabla-titulo">
+
+                <i class="bi bi-table"></i>
+
+                Detalle de rendiciones
 
             </h2>
 
-            <small class="text-muted">
+            <span class="tabla-contador">
 
-                Sistema de Viáticos DINACEN
+                @totalRendiciones registros
 
-            </small>
-
-        </div>
-
-    </div>
-
-
-
-    <div>
-
-        <a asp-controller="Reporte"
-           asp-action="ExportarRendicionesPdf"
-           class="btn btn-danger rounded-pill">
-
-            <i class="bi bi-file-earmark-pdf-fill"></i>
-
-            Exportar PDF
-
-        </a>
-
-    </div>
-
-</div>
-
-<hr class="mb-4" />
-
-
-
-
-   <!-- INDICADORES -->
-<div class="row g-4 mb-4">
-
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <small class="text-muted">Total entregado</small>
-                <h4 class="fw-bold">
-                    S/ @(Model.Sum(x => x.MontoEntregado).ToString("N2"))
-                </h4>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <small class="text-muted">Total gastado</small>
-                <h4 class="fw-bold text-primary">
-                    S/ @(Model.Sum(x => x.Gastado).ToString("N2"))
-                </h4>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <small class="text-muted">Total devuelto</small>
-                <h4 class="fw-bold text-success">
-                    S/ @(Model.Sum(x => x.Devuelto).ToString("N2"))
-                </h4>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <small class="text-muted">Saldo pendiente</small>
-                <h4 class="fw-bold text-danger">
-                    S/ @(Model.Sum(x => x.Diferencia).ToString("N2"))
-                </h4>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-
-
-
-
-    <!-- TABLA -->
-
-
-    <div class="card shadow-sm">
-
-
-        <div class="card-header">
-
-            <strong>
-                Detalle de rendiciones
-            </strong>
-
+            </span>
 
         </div>
 
 
+        <div class="tabla-wrapper">
 
+            <table class="tabla-rendiciones">
 
-        <div class="card-body table-responsive">
-
-
-            <table class="table table-hover align-middle">
-
-
-                <thead class="table-light">
-
+                <thead>
 
                     <tr>
 
@@ -157,31 +832,25 @@
                             Usuario
                         </th>
 
-
                         <th>
                             Solicitud
                         </th>
 
-
-                        <th>
+                        <th class="text-end">
                             Monto entregado
                         </th>
 
-
-                        <th>
+                        <th class="text-end">
                             Gastado
                         </th>
 
-
-                        <th>
+                        <th class="text-end">
                             Devuelto
                         </th>
 
-
-                        <th>
+                        <th class="text-end">
                             Diferencia
                         </th>
-
 
                         <th>
                             Estado
@@ -189,129 +858,216 @@
 
                     </tr>
 
-
                 </thead>
-
-
 
 
                 <tbody>
 
-
-                @if(Model != null && Model.Any())
-                {
-
-
-                    foreach(var item in Model)
+                    @if (Model != null && Model.Any())
                     {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <!-- USUARIO -->
+
+                                <td>
+
+                                    <div class="usuario-cell">
+
+                                        <span class="usuario-icon">
+
+                                            <i class="bi bi-person"></i>
+
+                                        </span>
+
+                                        <span>
+
+                                            @item.Usuario
+
+                                        </span>
+
+                                    </div>
+
+                                </td>
 
 
+                                <!-- SOLICITUD -->
+
+                                <td>
+
+                                    <span class="solicitud-badge">
+
+                                        @item.Solicitud
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- ENTREGADO -->
+
+                                <td class="text-end">
+
+                                    <span class="monto">
+
+                                        S/ @item.MontoEntregado.ToString("N2")
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- GASTADO -->
+
+                                <td class="text-end">
+
+                                    <span class="monto monto-gastado">
+
+                                        S/ @item.Gastado.ToString("N2")
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- DEVUELTO -->
+
+                                <td class="text-end">
+
+                                    <span class="monto monto-devuelto">
+
+                                        S/ @item.Devuelto.ToString("N2")
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- DIFERENCIA -->
+
+                                <td class="text-end">
+
+                                    <span class="monto monto-diferencia">
+
+                                        S/ @item.Diferencia.ToString("N2")
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- ESTADO -->
+
+                                <td>
+
+                                    @if (item.Estado == "Aprobado" ||
+                                         item.Estado == "Conforme")
+                                    {
+                                        <span class="estado estado-aprobado">
+
+                                            <i class="bi bi-check-circle-fill"></i>
+
+                                            @item.Estado
+
+                                        </span>
+                                    }
+                                    else if (item.Estado == "Pendiente")
+                                    {
+                                        <span class="estado estado-pendiente">
+
+                                            <i class="bi bi-clock-fill"></i>
+
+                                            @item.Estado
+
+                                        </span>
+                                    }
+                                    else if (item.Estado == "Rechazado")
+                                    {
+                                        <span class="estado estado-rechazado">
+
+                                            <i class="bi bi-x-circle-fill"></i>
+
+                                            @item.Estado
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="estado estado-default">
+
+                                            @item.Estado
+
+                                        </span>
+                                    }
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
                         <tr>
 
+                            <td colspan="7"
+                                class="sin-registros">
 
-                            <td>
-                                @item.Usuario
-                            </td>
+                                <i class="bi bi-inbox"></i>
 
+                                <strong>
+                                    No existen rendiciones registradas.
+                                </strong>
 
-
-                            <td>
-                                @item.Solicitud
-                            </td>
-
-
-
-                            <td>
-                                S/
-                                @item.MontoEntregado.ToString("N2")
-                            </td>
-
-
-
-                            <td>
-                                S/
-                                @item.Gastado.ToString("N2")
-                            </td>
-
-
-
-                            <td>
-                                S/
-                                @item.Devuelto.ToString("N2")
-                            </td>
-
-
-
-                            <td>
-                                S/
-                                @item.Diferencia.ToString("N2")
-                            </td>
-
-
-
-                            <td>
-
-
-                                @if(item.Estado == "Aprobado" ||
-                                    item.Estado == "Conforme")
-                                {
-
-                                    <span class="badge bg-success">
-
-                                        @item.Estado
-
-                                    </span>
-
-                                }
-                                else
-                                {
-
-                                    <span class="badge bg-warning text-dark">
-
-                                        @item.Estado
-
-                                    </span>
-
-                                }
-
+                                <div class="mt-1">
+                                    No hay información disponible para mostrar.
+                                </div>
 
                             </td>
-
 
                         </tr>
-
-
                     }
-
-
-                }
-                else
-                {
-
-                    <tr>
-
-                        <td colspan="7"
-                            class="text-center">
-
-                            No existen rendiciones registradas
-
-                        </td>
-
-                    </tr>
-
-                }
-
 
                 </tbody>
 
 
-            </table>
+                @if (Model != null && Model.Any())
+                {
+                    <tfoot>
 
+                        <tr class="tabla-footer">
+
+                            <td colspan="2">
+                                TOTALES
+                            </td>
+
+                            <td class="text-end">
+                                S/ @totalEntregado.ToString("N2")
+                            </td>
+
+                            <td class="text-end">
+                                S/ @totalGastado.ToString("N2")
+                            </td>
+
+                            <td class="text-end">
+                                S/ @totalDevuelto.ToString("N2")
+                            </td>
+
+                            <td class="text-end total-rojo">
+                                S/ @totalDiferencia.ToString("N2")
+                            </td>
+
+                            <td></td>
+
+                        </tr>
+
+                    </tfoot>
+                }
+
+            </table>
 
         </div>
 
-
     </div>
-
 
 </div>

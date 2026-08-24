@@ -3,306 +3,536 @@
     Layout = "~/Views/Shared/_LayoutEmpleado.cshtml";
 }
 
+<style>
 
-<link rel="stylesheet"
-      href="~/css/dashboard-empleado.css"
-      asp-append-version="true">
+    /* =========================================================
+           CONTENEDOR PRINCIPAL
+           ========================================================= */
+
+    .dashboard-empleado {
+        width: 100%;
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 25px 30px 40px;
+        color: #263238;
+    }
 
 
-<div class="dashboard-empleado container-fluid">
+    /* =========================================================
+           ENCABEZADO
+           ========================================================= */
+
+    .header-dashboard {
+        background: #ffffff;
+        border: 1px solid #dce8f2;
+        border-radius: 12px;
+        padding: 25px 28px;
+        margin-bottom: 28px;
+        box-shadow: 0 3px 12px rgba(12, 74, 138, 0.07);
+    }
 
 
-    <!-- ENCABEZADO -->
+        .header-dashboard h1 {
+            margin: 0;
+            color: #0C4A8A;
+            font-size: 27px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+
+        .header-dashboard p {
+            margin: 6px 0 0;
+            color: #657786;
+            font-size: 14px;
+        }
+
+
+    /* =========================================================
+           CONTENEDOR DE TARJETAS
+           ========================================================= */
+
+    .dashboard-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        width: 100%;
+    }
+
+
+    /* =========================================================
+           TARJETAS
+           ========================================================= */
+
+    .card-dashboard {
+        position: relative;
+        flex: 1 1 300px;
+        min-width: 280px;
+        min-height: 315px;
+        display: flex;
+        flex-direction: column;
+        padding: 27px;
+        background: #ffffff;
+        border: 1px solid #dfe7ed;
+        border-radius: 13px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+
+        .card-dashboard:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 9px 22px rgba(0, 0, 0, 0.09);
+        }
+
+
+        /* =========================================================
+           FRANJA SUPERIOR
+           ========================================================= */
+
+        .card-dashboard::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: #4d9df5;
+        }
+
+
+        .card-dashboard:nth-child(2)::before {
+            background: #68b878;
+        }
+
+
+        .card-dashboard:nth-child(3)::before {
+            background: #e5bd45;
+        }
+
+
+    /* =========================================================
+           PARTE SUPERIOR
+           ========================================================= */
+
+    .card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+
+    /* =========================================================
+           ICONOS GRANDES
+           ========================================================= */
+
+    .icon-container {
+        width: 68px;
+        height: 68px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        font-size: 32px;
+        flex-shrink: 0;
+    }
+
+
+    /* =========================================================
+           ICONO AZUL
+           ========================================================= */
+
+    .icon-blue {
+        background: #e6f2ff;
+        color: #3186dc;
+    }
+
+
+    /* =========================================================
+           ICONO VERDE
+           ========================================================= */
+
+    .icon-green {
+        background: #e9f8ed;
+        color: #4ca866;
+    }
+
+
+    /* =========================================================
+           ICONO DORADO
+           ========================================================= */
+
+    .icon-gold {
+        background: #fff7dc;
+        color: #d1a52e;
+    }
+
+
+    /* =========================================================
+           NÚMERO
+           ========================================================= */
+
+    .card-number {
+        color: #b1bbc4;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+
+    /* =========================================================
+           CONTENIDO
+           ========================================================= */
+
+    .card-content {
+        flex: 1;
+    }
+
+
+        .card-content h4 {
+            margin: 0 0 10px;
+            color: #174f7c;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+
+        .card-content p {
+            margin: 0;
+            max-width: 400px;
+            color: #687985;
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+
+    /* =========================================================
+           FOOTER
+           ========================================================= */
+
+    .card-footer {
+        margin-top: 25px;
+    }
+
+
+    /* =========================================================
+           BOTONES
+           ========================================================= */
+
+    .dashboard-button {
+        width: 100%;
+        min-height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 17px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-size: 13.5px;
+        font-weight: 600;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+
+        .dashboard-button:hover {
+            text-decoration: none;
+        }
+
+
+        .dashboard-button i {
+            font-size: 17px;
+            transition: transform 0.2s ease;
+        }
+
+
+        .dashboard-button:hover i {
+            transform: translateX(5px);
+        }
+
+
+    /* =========================================================
+           BOTÓN AZUL
+           ========================================================= */
+
+    .button-blue {
+        background: #4d9df5;
+        color: #ffffff;
+    }
+
+
+        .button-blue:hover {
+            background: #3186dc;
+            color: #ffffff;
+        }
+
+
+    /* =========================================================
+           BOTÓN VERDE
+           ========================================================= */
+
+    .button-green {
+        background: #68b878;
+        color: #ffffff;
+    }
+
+
+        .button-green:hover {
+            background: #4ca866;
+            color: #ffffff;
+        }
+
+
+    /* =========================================================
+           BOTÓN DORADO
+           ========================================================= */
+
+    .button-gold {
+        background: #e5bd45;
+        color: #ffffff;
+    }
+
+
+        .button-gold:hover {
+            background: #d1a52e;
+            color: #ffffff;
+        }
+
+
+    /* =========================================================
+           PANTALLAS MEDIANAS
+           ========================================================= */
+
+    @@media (max-width: 1000px) {
+
+        .dashboard-empleado {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .card-dashboard {
+            flex: 1 1 45%;
+        }
+    }
+
+
+    /* =========================================================
+           CELULAR
+           ========================================================= */
+
+    @@media (max-width: 650px) {
+
+        .dashboard-empleado {
+            padding: 18px 15px 30px;
+        }
+
+        .header-dashboard {
+            padding: 21px;
+        }
+
+            .header-dashboard h1 {
+                font-size: 23px;
+            }
+
+        .card-dashboard {
+            flex: 1 1 100%;
+            min-width: 100%;
+        }
+    }
+
+</style>
+
+
+<div class="dashboard-empleado">
+
+
+    <!-- =========================================================
+         ENCABEZADO
+         ========================================================= -->
 
     <div class="header-dashboard">
 
-
         <h1>
-
             Sistema de Viáticos
-
         </h1>
 
-
         <p>
-
             Panel de gestión del representante
-
         </p>
-
 
     </div>
 
 
+    <!-- =========================================================
+         TARJETAS PRINCIPALES
+         ========================================================= -->
 
-    <!-- TARJETAS -->
-
-
-    <div class="row g-4">
-
-
-        <!-- NUEVA SOLICITUD -->
+    <div class="dashboard-grid">
 
 
-        <div class="col-12 col-md-6 col-xl-4">
+        <!-- =====================================================
+             NUEVA SOLICITUD
+             ===================================================== -->
 
+        <div class="card-dashboard">
 
-            <div class="card-dashboard">
+            <div class="card-top">
 
-
-                <div class="icon-container bg-primary">
-
+                <div class="icon-container icon-blue">
 
                     <i class="bi bi-file-earmark-plus-fill"></i>
 
-
                 </div>
 
+                <span class="card-number">
+                    01
+                </span>
 
+            </div>
+
+
+            <div class="card-content">
 
                 <h4>
-
                     Nueva Solicitud
-
                 </h4>
 
-
-
                 <p>
-
-                    Registra una nueva solicitud de viáticos.
-
+                    Registra una nueva solicitud de viáticos
+                    para tus actividades institucionales.
                 </p>
 
+            </div>
 
+
+            <div class="card-footer">
 
                 <a asp-controller="Solicitud"
                    asp-action="Create"
-                   class="btn btn-primary">
+                   class="dashboard-button button-blue">
 
-                    Registrar Solicitud
+                    <span>
+                        Registrar solicitud
+                    </span>
 
                     <i class="bi bi-arrow-right"></i>
 
                 </a>
 
-
             </div>
-
 
         </div>
 
 
+        <!-- =====================================================
+             MIS SOLICITUDES
+             ===================================================== -->
 
+        <div class="card-dashboard">
 
+            <div class="card-top">
 
-
-        <!-- MIS SOLICITUDES -->
-
-
-        <div class="col-12 col-md-6 col-xl-4">
-
-
-            <div class="card-dashboard">
-
-
-                <div class="icon-container bg-success">
-
+                <div class="icon-container icon-green">
 
                     <i class="bi bi-folder-check"></i>
 
-
                 </div>
 
+                <span class="card-number">
+                    02
+                </span>
 
+            </div>
+
+
+            <div class="card-content">
 
                 <h4>
-
                     Mis Solicitudes
-
                 </h4>
 
-
-
                 <p>
-
-                    Consulta el estado de tus solicitudes enviadas.
-
+                    Consulta tus solicitudes y revisa
+                    el estado de cada trámite.
                 </p>
 
+            </div>
 
+
+            <div class="card-footer">
 
                 <a asp-controller="Solicitud"
                    asp-action="MisSolicitudes"
-                   class="btn btn-success">
+                   class="dashboard-button button-green">
 
-
-                    Consultar
-
-                    <i class="bi bi-search"></i>
-
-
-                </a>
-
-
-            </div>
-
-
-        </div>
-
-
-
-
-
-
-        <!-- RENDICION -->
-
-
-        <div class="col-12 col-md-6 col-xl-4">
-
-
-            <div class="card-dashboard">
-
-
-                <div class="icon-container bg-warning">
-
-
-                    <i class="bi bi-wallet-fill"></i>
-
-
-                </div>
-
-
-
-                <h4>
-
-                    Rendición de Gastos
-
-                </h4>
-
-
-
-                <p>
-
-                    Registra los gastos de una solicitud aprobada.
-
-                </p>
-
-
-
-                <a asp-controller="Rendicion"
-                   asp-action="Index"
-                   class="btn btn-warning">
-
-
-                    Gestionar
-
+                    <span>
+                        Consultar solicitudes
+                    </span>
 
                     <i class="bi bi-arrow-right"></i>
 
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             RENDICIÓN
+             ===================================================== -->
+
+        <div class="card-dashboard">
+
+            <div class="card-top">
+
+                <div class="icon-container icon-gold">
+
+                    <i class="bi bi-wallet-fill"></i>
+
+                </div>
+
+                <span class="card-number">
+                    03
+                </span>
+
+            </div>
+
+
+            <div class="card-content">
+
+                <h4>
+                    Rendición de Gastos
+                </h4>
+
+                <p>
+                    Registra los gastos y comprobantes
+                    correspondientes a una solicitud aprobada.
+                </p>
+
+            </div>
+
+
+            <div class="card-footer">
+
+                <a asp-controller="Rendicion"
+                   asp-action="Index"
+                   class="dashboard-button button-gold">
+
+                    <span>
+                        Gestionar rendición
+                    </span>
+
+                    <i class="bi bi-arrow-right"></i>
 
                 </a>
 
-
             </div>
-
-
-        </div>
-
-
-
-    </div>
-
-
-
-
-
-    <!-- INFORMACION -->
-
-
-    <div class="info-panel mt-5">
-
-
-        <div class="row text-center">
-
-
-            <div class="col-12 col-md-4">
-
-
-                <i class="bi bi-clock-history"></i>
-
-
-                <h3>
-
-                    Solicitudes
-
-                </h3>
-
-
-                <p>
-
-                    Consulta tus solicitudes pendientes.
-
-                </p>
-
-
-            </div>
-
-
-
-            <div class="col-12 col-md-4">
-
-
-                <i class="bi bi-receipt"></i>
-
-
-                <h3>
-
-                    Gastos
-
-                </h3>
-
-
-                <p>
-
-                    Registra tus comprobantes.
-
-                </p>
-
-
-            </div>
-
-
-
-            <div class="col-12 col-md-4">
-
-
-                <i class="bi bi-check-circle"></i>
-
-
-                <h3>
-
-                    Estados
-
-                </h3>
-
-
-                <p>
-
-                    Revisa aprobaciones.
-
-                </p>
-
-
-            </div>
-
 
         </div>
 
 
     </div>
-
-
-
 
 </div>

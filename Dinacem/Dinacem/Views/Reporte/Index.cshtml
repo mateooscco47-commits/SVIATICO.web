@@ -1,793 +1,1200 @@
 ﻿@model Dinacem.Models.ReporteGeneral
 
-
 @{
-    ViewData["Title"] = "Reporte General de Viáticos";
+    ViewData["Title"] = "Reportes de Viáticos";
     Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
 }
 
 
+<style>
 
-<div class="container-fluid">
+    /* ============================================================
+           CONTENEDOR PRINCIPAL
+           ============================================================ */
+
+    .reportes-container {
+        width: 100%;
+        max-width: 1600px;
+        margin: 0 auto;
+    }
 
 
-   <!-- ===========================================
-    ENCABEZADO DEL MÓDULO DE REPORTES
-=========================================== -->
+    /* ============================================================
+           ENCABEZADO
+           ============================================================ */
 
-<div class="card shadow-sm border-0 mb-4">
+    .reportes-header {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient( 135deg, #073763 0%, #0C4A8A 45%, #155E9E 75%, #1D4ED8 100% );
+        color: #ffffff;
+        border-radius: 20px;
+        padding: 30px 32px;
+        margin-bottom: 25px;
+        box-shadow: 0 16px 40px rgba(12,74,138,.18);
+    }
 
-    <div class="card-body">
 
-        <div class="d-flex justify-content-between align-items-center flex-wrap">
+        .reportes-header::before {
+            content: "";
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            right: -110px;
+            top: -170px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.08);
+        }
 
-            <div>
 
-                <span class="badge bg-primary mb-2">
+    .reportes-header-content {
+        position: relative;
+        z-index: 2;
+    }
 
-                    MÓDULO DE REPORTES
 
-                </span>
+    .reportes-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 11px;
+        margin-bottom: 10px;
+        background: rgba(255,255,255,.12);
+        border: 1px solid rgba(255,255,255,.18);
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: .6px;
+        text-transform: uppercase;
+    }
 
-                <h2 class="fw-bold text-dark mb-1">
 
-                    <i class="bi bi-bar-chart-line-fill text-primary me-2"></i>
+    .reportes-title {
+        margin: 0;
+        font-size: 29px;
+        font-weight: 800;
+        letter-spacing: -.5px;
+    }
 
-                    Reporte General de Viáticos
 
-                </h2>
+    .reportes-description {
+        max-width: 700px;
+        margin: 8px 0 0;
+        color: rgba(255,255,255,.84);
+        font-size: 14px;
+        line-height: 1.55;
+    }
 
-                <p class="text-muted mb-0">
 
-                    Consulte indicadores, estadísticas y el estado general de los viáticos registrados en el sistema DINACEN.
+    /* ============================================================
+           FILTROS
+           ============================================================ */
 
-                </p>
+    .reportes-panel {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 17px;
+        padding: 22px;
+        box-shadow: 0 5px 18px rgba(15,23,42,.045);
+    }
 
-            </div>
 
-            <div class="mt-3 mt-md-0">
+    .reportes-panel-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
 
-                <a asp-controller="Reporte"
-                   asp-action="ExportarGeneralPdf"
-                   class="btn btn-danger rounded-pill px-4">
 
-                    <i class="bi bi-file-earmark-pdf-fill"></i>
+    .reportes-panel-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        color: #0C4A8A;
+        background: #dbeafe;
+        font-size: 17px;
+    }
 
-                    Exportar PDF
 
-                </a>
+    .reportes-panel-title h2 {
+        margin: 0;
+        color: #0f172a;
+        font-size: 16px;
+        font-weight: 800;
+    }
 
-            </div>
+
+    .reportes-panel-title span {
+        display: block;
+        margin-top: 2px;
+        color: #64748b;
+        font-size: 11px;
+    }
+
+
+    .reportes-label {
+        margin-bottom: 6px;
+        color: #334155;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+
+    .reportes-input {
+        height: 43px;
+        border: 1px solid #dbe3ec;
+        border-radius: 10px;
+        font-size: 13px;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+
+        .reportes-input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.10);
+        }
+
+
+    .reportes-search-btn {
+        height: 43px;
+        border: 0;
+        border-radius: 10px;
+        background: #0C4A8A;
+        font-size: 13px;
+        font-weight: 700;
+        transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+
+        .reportes-search-btn:hover {
+            background: #083763;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 16px rgba(12,74,138,.18);
+        }
+
+
+    /* ============================================================
+           INDICADORES
+           ============================================================ */
+
+    .reportes-indicator {
+        position: relative;
+        height: 100%;
+        overflow: hidden;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 19px;
+        box-shadow: 0 5px 16px rgba(15,23,42,.045);
+        transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+
+        .reportes-indicator:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 13px 28px rgba(15,23,42,.08);
+        }
+
+
+    .reportes-indicator-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+
+    .reportes-indicator-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 11px;
+        font-size: 18px;
+    }
+
+
+    .reportes-indicator-label {
+        display: block;
+        margin-top: 14px;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .45px;
+    }
+
+
+    .reportes-indicator-value {
+        display: block;
+        margin-top: 4px;
+        color: #0f172a;
+        font-size: 25px;
+        font-weight: 800;
+    }
+
+
+    .indicator-blue {
+        color: #1d4ed8;
+        background: #dbeafe;
+    }
+
+
+    .indicator-green {
+        color: #15803d;
+        background: #dcfce7;
+    }
+
+
+    .indicator-purple {
+        color: #6d28d9;
+        background: #ede9fe;
+    }
+
+
+    .indicator-red {
+        color: #b91c1c;
+        background: #fee2e2;
+    }
+
+
+    /* ============================================================
+           TABLA
+           ============================================================ */
+
+    .reportes-table-wrapper {
+        overflow-x: auto;
+    }
+
+
+    .reportes-table {
+        margin: 0;
+        font-size: 12px;
+    }
+
+
+        .reportes-table thead th {
+            padding: 13px 11px;
+            color: #475569;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            white-space: nowrap;
+        }
+
+
+        .reportes-table tbody td {
+            padding: 13px 11px;
+            color: #334155;
+            border-color: #edf2f7;
+            vertical-align: middle;
+        }
+
+
+        .reportes-table tbody tr {
+            transition: background .2s ease;
+        }
+
+
+            .reportes-table tbody tr:hover {
+                background: #f8fbff;
+            }
+
+
+    .reporte-codigo {
+        color: #0C4A8A;
+        font-weight: 800;
+    }
+
+
+    .reporte-monto {
+        color: #0f172a;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+
+    .reporte-estado {
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+
+    /* ============================================================
+           ACCESOS A REPORTES
+           ============================================================ */
+
+    .reportes-section-title {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 15px;
+    }
+
+
+        .reportes-section-title h2 {
+            margin: 0;
+            color: #0f172a;
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+
+        .reportes-section-title i {
+            color: #0C4A8A;
+            font-size: 20px;
+        }
+
+
+    .report-card {
+        display: block;
+        height: 100%;
+        padding: 20px;
+        color: inherit;
+        text-decoration: none;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 5px 16px rgba(15,23,42,.045);
+        transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    }
+
+
+        .report-card:hover {
+            color: inherit;
+            transform: translateY(-5px);
+            border-color: #bfdbfe;
+            box-shadow: 0 15px 30px rgba(15,23,42,.09);
+        }
+
+
+    .report-card-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 13px;
+        font-size: 21px;
+    }
+
+
+    .report-card h3 {
+        margin: 15px 0 6px;
+        color: #0f172a;
+        font-size: 15px;
+        font-weight: 800;
+    }
+
+
+    .report-card p {
+        margin: 0;
+        color: #64748b;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+
+    .report-card-arrow {
+        display: block;
+        margin-top: 15px;
+        color: #94a3b8;
+        font-size: 12px;
+        transition: color .2s ease, transform .2s ease;
+    }
+
+
+    .report-card:hover .report-card-arrow {
+        color: #2563eb;
+        transform: translateX(3px);
+    }
+
+
+    /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+
+    @@media (max-width: 767.98px) {
+
+        .reportes-header {
+            padding: 24px 20px;
+            border-radius: 16px;
+        }
+
+
+        .reportes-title {
+            font-size: 23px;
+        }
+
+
+        .reportes-description {
+            font-size: 13px;
+        }
+
+
+        .reportes-panel {
+            padding: 18px;
+        }
+
+
+        .reportes-indicator {
+            padding: 17px;
+        }
+    }
+
+
+    @@media (max-width: 575.98px) {
+
+        .reportes-header {
+            padding: 21px 17px;
+        }
+
+
+        .reportes-title {
+            font-size: 21px;
+        }
+
+
+        .reportes-indicator-value {
+            font-size: 22px;
+        }
+
+
+        .report-card {
+            padding: 18px;
+        }
+    }
+
+</style>
+
+
+<div class="reportes-container">
+
+
+    <!-- =========================================================
+         ENCABEZADO
+         ========================================================= -->
+
+    <section class="reportes-header">
+
+        <div class="reportes-header-content">
+
+            <span class="reportes-badge">
+
+                <i class="bi bi-bar-chart-line-fill"></i>
+
+                Centro de reportes
+
+            </span>
+
+
+            <h1 class="reportes-title">
+
+                Reportes de Viáticos
+
+            </h1>
 
         </div>
 
-    </div>
-
-</div>
+    </section>
 
 
+    <!-- =========================================================
+         FILTROS
+         ========================================================= -->
 
+    <section class="dashboard-section">
 
+        <div class="reportes-panel">
 
-    <!-- FILTROS -->
+            <div class="reportes-panel-title">
 
-    <div class="card shadow-sm mb-4">
+                <div class="reportes-panel-icon">
 
+                    <i class="bi bi-funnel-fill"></i>
 
-        <div class="card-header">
+                </div>
 
-            <strong>
+                <div>
 
-                Filtros de búsqueda
+                    <h2>
+                        Filtros de búsqueda
+                    </h2>
 
-            </strong>
+                    <span>
+                        Seleccione el período que desea consultar
+                    </span>
 
+                </div>
 
-        </div>
-
-
-
-        <div class="card-body">
+            </div>
 
 
             <form method="get"
                   asp-action="Index">
 
-
                 <div class="row g-3">
 
 
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-4">
 
-
-                        <label class="form-label">
-
-                            Fecha inicio
-
+                        <label class="reportes-label">
+                            Fecha de inicio
                         </label>
-
 
                         <input type="date"
                                name="fechaInicio"
-                               class="form-control"
+                               class="form-control reportes-input"
                                value="@Model.FechaInicio?.ToString("yyyy-MM-dd")" />
-
 
                     </div>
 
 
+                    <div class="col-12 col-md-4">
 
-
-
-                    <div class="col-md-4">
-
-
-                        <label class="form-label">
-
-                            Fecha fin
-
+                        <label class="reportes-label">
+                            Fecha de fin
                         </label>
-
 
                         <input type="date"
                                name="fechaFin"
-                               class="form-control"
+                               class="form-control reportes-input"
                                value="@Model.FechaFin?.ToString("yyyy-MM-dd")" />
-
 
                     </div>
 
 
+                    <div class="col-12 col-md-4 d-flex align-items-end">
 
+                        <button type="submit"
+                                class="btn btn-primary reportes-search-btn w-100">
 
+                            <i class="bi bi-search me-1"></i>
 
-                    <div class="col-md-4 d-flex align-items-end">
-
-
-                        <button class="btn btn-primary w-100">
-
-
-                            <i class="bi bi-search"></i>
-
-                            Buscar
-
+                            Consultar reporte
 
                         </button>
 
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         INDICADORES
+         ========================================================= -->
+
+    <section class="dashboard-section">
+
+        <div class="row g-3">
+
+
+            <!-- SOLICITUDES -->
+
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <div class="reportes-indicator">
+
+                    <div class="reportes-indicator-top">
+
+                        <div class="reportes-indicator-icon indicator-blue">
+
+                            <i class="bi bi-file-earmark-text-fill"></i>
+
+                        </div>
 
                     </div>
 
 
-
-                </div>
-
-
-            </form>
-
-
-        </div>
-
-
-    </div>
-
-
-
-
-
-
-
-    <!-- INDICADORES -->
-
-
-    <div class="row g-4 mb-4">
-
-
-        <div class="col-md-3">
-
-
-            <div class="card shadow-sm border-0">
-
-
-                <div class="card-body">
-
-
-                    <small class="text-muted">
+                    <span class="reportes-indicator-label">
 
                         Solicitudes
 
-                    </small>
+                    </span>
 
 
-                    <h3 class="fw-bold">
+                    <strong class="reportes-indicator-value">
 
                         @Model.TotalSolicitudes
 
-                    </h3>
-
+                    </strong>
 
                 </div>
-
 
             </div>
 
 
-        </div>
+            <!-- APROBADAS -->
+
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <div class="reportes-indicator">
+
+                    <div class="reportes-indicator-top">
+
+                        <div class="reportes-indicator-icon indicator-green">
+
+                            <i class="bi bi-check-circle-fill"></i>
+
+                        </div>
+
+                    </div>
 
 
+                    <span class="reportes-indicator-label">
+
+                        Solicitudes aprobadas
+
+                    </span>
 
 
-
-        <div class="col-md-3">
-
-
-            <div class="card shadow-sm border-0">
-
-
-                <div class="card-body">
-
-
-                    <small class="text-muted">
-
-                        Aprobadas
-
-                    </small>
-
-
-                    <h3 class="fw-bold text-success">
+                    <strong class="reportes-indicator-value">
 
                         @Model.SolicitudesAprobadas
 
-                    </h3>
-
+                    </strong>
 
                 </div>
-
 
             </div>
 
 
-        </div>
+            <!-- TOTAL SOLICITADO -->
+
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <div class="reportes-indicator">
+
+                    <div class="reportes-indicator-top">
+
+                        <div class="reportes-indicator-icon indicator-purple">
+
+                            <i class="bi bi-cash-stack"></i>
+
+                        </div>
+
+                    </div>
 
 
-
-
-
-        <div class="col-md-3">
-
-
-            <div class="card shadow-sm border-0">
-
-
-                <div class="card-body">
-
-
-                    <small class="text-muted">
+                    <span class="reportes-indicator-label">
 
                         Total solicitado
 
-                    </small>
+                    </span>
 
 
-                    <h4 class="fw-bold">
+                    <strong class="reportes-indicator-value">
 
-                        S/
-                        @Model.TotalSolicitado.ToString("N2")
+                        S/ @Model.TotalSolicitado.ToString("N2")
 
-                    </h4>
-
+                    </strong>
 
                 </div>
-
 
             </div>
 
 
-        </div>
+            <!-- SALDO -->
+
+            <div class="col-12 col-sm-6 col-xl-3">
+
+                <div class="reportes-indicator">
+
+                    <div class="reportes-indicator-top">
+
+                        <div class="reportes-indicator-icon indicator-red">
+
+                            <i class="bi bi-wallet2"></i>
+
+                        </div>
+
+                    </div>
 
 
-
-
-
-        <div class="col-md-3">
-
-
-            <div class="card shadow-sm border-0">
-
-
-                <div class="card-body">
-
-
-                    <small class="text-muted">
+                    <span class="reportes-indicator-label">
 
                         Saldo pendiente
 
-                    </small>
+                    </span>
 
 
-                    <h4 class="fw-bold text-danger">
+                    <strong class="reportes-indicator-value">
 
-                        S/
-                        @Model.SaldoPendiente.ToString("N2")
+                        S/ @Model.SaldoPendiente.ToString("N2")
 
-                    </h4>
-
+                    </strong>
 
                 </div>
-
 
             </div>
 
 
         </div>
 
+    </section>
 
 
-    </div>
+    <!-- =========================================================
+         DETALLE
+         ========================================================= -->
+
+    <section class="dashboard-section">
+
+        <div class="reportes-panel">
 
 
+            <div class="reportes-panel-title">
+
+                <div class="reportes-panel-icon">
+
+                    <i class="bi bi-list-ul"></i>
+
+                </div>
+
+                <div>
+
+                    <h2>
+                        Detalle de solicitudes
+                    </h2>
+
+                    <span>
+                        Registros incluidos en el período seleccionado
+                    </span>
+
+                </div>
+
+            </div>
 
 
+            <div class="reportes-table-wrapper">
 
+                <table class="table reportes-table align-middle">
 
-
-
-    <!-- TABLA -->
-
-
-
-    <div class="card shadow-sm">
-
-
-        <div class="card-header">
-
-
-            <strong>
-
-                Detalle de solicitudes
-
-            </strong>
-
-
-        </div>
-
-
-
-        <div class="card-body table-responsive">
-
-
-            <table class="table table-hover align-middle">
-
-
-                <thead class="table-light">
-
-
-                    <tr>
-
-
-                        <th>
-                            Código
-                        </th>
-
-
-                        <th>
-                            Usuario
-                        </th>
-
-
-                        <th>
-                            Motivo
-                        </th>
-
-
-                        <th>
-                            Destino
-                        </th>
-
-
-                        <th>
-                            Salida
-                        </th>
-
-
-                        <th>
-                            Retorno
-                        </th>
-
-
-                        <th>
-                            Monto
-                        </th>
-
-
-                        <th>
-                            Estado
-                        </th>
-
-
-                    </tr>
-
-
-                </thead>
-
-
-
-                <tbody>
-
-
-                @if(Model.Detalles != null &&
-                    Model.Detalles.Any())
-                {
-
-
-                    foreach(var item in Model.Detalles)
-                    {
+                    <thead>
 
                         <tr>
 
+                            <th>Código</th>
 
-                            <td>
+                            <th>Usuario</th>
 
-                                SOL-@item.IdSolicitud.ToString("000")
+                            <th>Motivo</th>
 
-                            </td>
+                            <th>Destino</th>
 
+                            <th>Salida</th>
 
+                            <th>Retorno</th>
 
-                            <td>
+                            <th>Monto</th>
 
-                                @item.Usuario
-
-                            </td>
-
-
-
-                            <td>
-
-                                @item.Motivo
-
-                            </td>
-
-
-
-                            <td>
-
-                                @item.Destino
-
-                            </td>
-
-
-
-                            <td>
-
-                                @item.FechaInicio.ToString("dd/MM/yyyy")
-
-                            </td>
-
-
-
-                            <td>
-
-                                @item.FechaFin.ToString("dd/MM/yyyy")
-
-                            </td>
-
-
-
-                            <td>
-
-                                S/
-                                @item.MontoSolicitado.ToString("N2")
-
-                            </td>
-
-
-
-                            <td>
-
-
-                                @if(item.Estado=="Aprobado")
-                                {
-
-                                    <span class="badge bg-success">
-
-                                        @item.Estado
-
-                                    </span>
-
-                                }
-                                else if(item.Estado=="Pendiente")
-                                {
-
-                                    <span class="badge bg-warning text-dark">
-
-                                        @item.Estado
-
-                                    </span>
-
-                                }
-                                else
-                                {
-
-                                    <span class="badge bg-secondary">
-
-                                        @item.Estado
-
-                                    </span>
-
-                                }
-
-
-                            </td>
-
+                            <th>Estado</th>
 
                         </tr>
 
-                    }
+                    </thead>
 
 
-                }
-                else
-                {
+                    <tbody>
 
-                    <tr>
+                        @if (Model.Detalles != null &&
+                             Model.Detalles.Any())
+                        {
 
-                        <td colspan="8"
-                            class="text-center text-muted">
+                            foreach (var item in Model.Detalles)
+                            {
 
-                            No existen registros
+                                <tr>
 
-                        </td>
+                                    <td>
+
+                                        <span class="reporte-codigo">
+
+                                            SOL-@item.IdSolicitud.ToString("000")
+
+                                        </span>
+
+                                    </td>
 
 
-                    </tr>
+                                    <td>
 
-                }
+                                        @item.Usuario
+
+                                    </td>
 
 
-                </tbody>
+                                    <td>
+
+                                        @item.Motivo
+
+                                    </td>
 
 
-            </table>
+                                    <td>
 
+                                        @item.Destino
+
+                                    </td>
+
+
+                                    <td>
+
+                                        @item.FechaInicio.ToString("dd/MM/yyyy")
+
+                                    </td>
+
+
+                                    <td>
+
+                                        @item.FechaFin.ToString("dd/MM/yyyy")
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="reporte-monto">
+
+                                            S/ @item.MontoSolicitado.ToString("N2")
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+
+                                        @if (item.Estado == "Aprobado")
+                                        {
+
+                                            <span class="badge bg-success reporte-estado">
+
+                                                @item.Estado
+
+                                            </span>
+
+                                        }
+                                        else if (item.Estado == "Pendiente")
+                                        {
+
+                                            <span class="badge bg-warning text-dark reporte-estado">
+
+                                                @item.Estado
+
+                                            </span>
+
+                                        }
+                                        else if (item.Estado == "Rechazado")
+                                        {
+
+                                            <span class="badge bg-danger reporte-estado">
+
+                                                @item.Estado
+
+                                            </span>
+
+                                        }
+                                        else
+                                        {
+
+                                            <span class="badge bg-secondary reporte-estado">
+
+                                                @item.Estado
+
+                                            </span>
+
+                                        }
+
+                                    </td>
+
+                                </tr>
+
+                            }
+
+                        }
+                        else
+                        {
+
+                            <tr>
+
+                                <td colspan="8"
+                                    class="text-center text-muted py-4">
+
+                                    <i class="bi bi-inbox fs-4 d-block mb-2"></i>
+
+                                    No existen registros para el período seleccionado.
+
+                                </td>
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         ACCESOS A REPORTES
+         ========================================================= -->
+
+    <section class="dashboard-section">
+
+
+        <div class="reportes-section-title">
+
+            <i class="bi bi-grid-fill"></i>
+
+            <h2>
+                Reportes disponibles
+            </h2>
 
         </div>
 
 
-    </div>
+        <div class="row g-3">
 
 
+            <!-- RENDICIONES -->
 
-</div>
-<!-- =======================================================
-     ACCESOS RÁPIDOS A REPORTES
-======================================================== -->
+            <div class="col-12 col-md-6 col-xl-3">
 
-<div class="row mb-4">
+                <a asp-controller="Reporte"
+                   asp-action="Rendiciones"
+                   class="report-card">
 
-    <div class="col-12">
+                    <div class="report-card-icon indicator-green">
 
-        <h4 class="fw-bold text-primary mb-3">
+                        <i class="bi bi-wallet2"></i>
 
-            <i class="bi bi-grid"></i>
-
-            Módulo de Reportes
-
-        </h4>
-
-    </div>
-
-    <!-- DASHBOARD -->
-
-    <div class="col-lg-4 col-md-6 mb-3">
-
-        <a asp-controller="Reporte"
-           asp-action="Dashboard"
-           class="text-decoration-none">
-
-            <div class="card shadow-sm border-0 h-100 report-card">
-
-                <div class="card-body text-center">
-
-                    <i class="bi bi-speedometer2 display-4 text-primary"></i>
-
-                    <h5 class="mt-3">
-
-                        Dashboard Ejecutivo
-
-                    </h5>
-
-                    <small class="text-muted">
-
-                        Indicadores y gráficos generales.
-
-                    </small>
-
-                </div>
-
-            </div>
-
-        </a>
-
-    </div>
+                    </div>
 
 
-
-    <!-- RENDICIONES -->
-
-    <div class="col-lg-4 col-md-6 mb-3">
-
-        <a asp-controller="Reporte"
-           asp-action="Rendiciones"
-           class="text-decoration-none">
-
-            <div class="card shadow-sm border-0 h-100 report-card">
-
-                <div class="card-body text-center">
-
-                    <i class="bi bi-wallet2 display-4 text-success"></i>
-
-                    <h5 class="mt-3">
-
+                    <h3>
                         Rendiciones
-
-                    </h5>
-
-                    <small class="text-muted">
-
-                        Control del dinero entregado y rendido.
-
-                    </small>
-
-                </div>
-
-            </div>
-
-        </a>
-
-    </div>
+                    </h3>
 
 
+                    <p>
+                        Control del dinero entregado,
+                        rendido y liquidado.
+                    </p>
 
-    <!-- GASTOS -->
 
-    <div class="col-lg-4 col-md-6 mb-3">
+                    <span class="report-card-arrow">
 
-        <a asp-controller="Reporte"
-           asp-action="Gastos"
-           class="text-decoration-none">
+                        Ver reporte
 
-            <div class="card shadow-sm border-0 h-100 report-card">
+                        <i class="bi bi-arrow-right"></i>
 
-                <div class="card-body text-center">
+                    </span>
 
-                    <i class="bi bi-cash-stack display-4 text-warning"></i>
-
-                    <h5 class="mt-3">
-
-                        Gastos por Tipo
-
-                    </h5>
-
-                    <small class="text-muted">
-
-                        Alimentación, transporte, hospedaje, etc.
-
-                    </small>
-
-                </div>
+                </a>
 
             </div>
 
-        </a>
 
-    </div>
+            <!-- GASTOS -->
 
+            <div class="col-12 col-md-6 col-xl-3">
 
+                <a asp-controller="Reporte"
+                   asp-action="Gastos"
+                   class="report-card">
 
-    <!-- USUARIOS -->
+                    <div class="report-card-icon indicator-purple">
 
-    <div class="col-lg-4 col-md-6 mb-3">
+                        <i class="bi bi-cash-stack"></i>
 
-        <a asp-controller="Reporte"
-           asp-action="Usuarios"
-           class="text-decoration-none">
-
-            <div class="card shadow-sm border-0 h-100 report-card">
-
-                <div class="card-body text-center">
-
-                    <i class="bi bi-people-fill display-4 text-info"></i>
-
-                    <h5 class="mt-3">
-
-                        Reporte por Usuario
-
-                    </h5>
-
-                    <small class="text-muted">
-
-                        Estadísticas por trabajador.
-
-                    </small>
-
-                </div>
-
-            </div>
-
-        </a>
-
-    </div>
+                    </div>
 
 
+                    <h3>
+                        Gastos por tipo
+                    </h3>
 
-    <!-- PENDIENTES -->
 
-    <div class="col-lg-4 col-md-6 mb-3">
+                    <p>
+                        Consulte alimentación,
+                        transporte, hospedaje y otros gastos.
+                    </p>
 
-        <a asp-controller="Reporte"
-           asp-action="Pendientes"
-           class="text-decoration-none">
 
-            <div class="card shadow-sm border-0 h-100 report-card">
+                    <span class="report-card-arrow">
 
-                <div class="card-body text-center">
+                        Ver reporte
 
-                    <i class="bi bi-hourglass-split display-4 text-danger"></i>
+                        <i class="bi bi-arrow-right"></i>
 
-                    <h5 class="mt-3">
+                    </span>
 
-                        Solicitudes Pendientes
-
-                    </h5>
-
-                    <small class="text-muted">
-
-                        Solicitudes que esperan aprobación.
-
-                    </small>
-
-                </div>
+                </a>
 
             </div>
 
-        </a>
 
-    </div>
+            <!-- USUARIOS -->
+
+            <div class="col-12 col-md-6 col-xl-3">
+
+                <a asp-controller="Reporte"
+                   asp-action="Usuarios"
+                   class="report-card">
+
+                    <div class="report-card-icon indicator-blue">
+
+                        <i class="bi bi-people-fill"></i>
+
+                    </div>
 
 
+                    <h3>
+                        Reporte por usuario
+                    </h3>
 
-    <!-- REEMBOLSOS -->
 
-    <div class="col-lg-4 col-md-6 mb-3">
+                    <p>
+                        Analice los viáticos y gastos
+                        registrados por trabajador.
+                    </p>
 
-        <a asp-controller="Reporte"
-           asp-action="Reembolsos"
-           class="text-decoration-none">
 
-            <div class="card shadow-sm border-0 h-100 report-card">
+                    <span class="report-card-arrow">
 
-                <div class="card-body text-center">
+                        Ver reporte
 
-                    <i class="bi bi-cash-coin display-4 text-secondary"></i>
+                        <i class="bi bi-arrow-right"></i>
 
-                    <h5 class="mt-3">
+                    </span>
 
+                </a>
+
+            </div>
+
+
+            <!-- REEMBOLSOS -->
+
+            <div class="col-12 col-md-6 col-xl-3">
+
+                <a asp-controller="Reporte"
+                   asp-action="Reembolsos"
+                   class="report-card">
+
+                    <div class="report-card-icon indicator-red">
+
+                        <i class="bi bi-cash-coin"></i>
+
+                    </div>
+
+
+                    <h3>
                         Reembolsos
+                    </h3>
 
-                    </h5>
 
-                    <small class="text-muted">
+                    <p>
+                        Seguimiento de solicitudes,
+                        pagos y operaciones de reembolso.
+                    </p>
 
-                        Seguimiento de reembolsos realizados.
 
-                    </small>
+                    <span class="report-card-arrow">
+
+                        Ver reporte
+
+                        <i class="bi bi-arrow-right"></i>
+
+                    </span>
+
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         EXPORTACIÓN
+         ========================================================= -->
+
+    <section class="dashboard-section">
+
+        <div class="reportes-panel">
+
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+
+                <div>
+
+                    <div class="reportes-panel-title mb-0">
+
+                        <div class="reportes-panel-icon">
+
+                            <i class="bi bi-file-earmark-pdf-fill"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                Exportar información
+                            </h2>
+
+                            <span>
+                                Genere el reporte general en formato PDF.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <a asp-controller="Reporte"
+                       asp-action="ExportarGeneralPdf"
+                       class="btn btn-danger rounded-pill px-4">
+
+                        <i class="bi bi-file-earmark-pdf-fill me-1"></i>
+
+                        Exportar PDF
+
+                    </a>
 
                 </div>
 
             </div>
 
-        </a>
+        </div>
 
-    </div>
+    </section>
+
 
 </div>

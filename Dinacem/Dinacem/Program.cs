@@ -42,6 +42,7 @@ builder.Services.AddScoped<CorreoService>();
 builder.Services.AddScoped<RendicionPdfService>();
 
 builder.Services.AddScoped<ReporteService>();
+builder.Services.AddScoped<ReportePdfService>();
 
 // ======================================
 // Sesiones

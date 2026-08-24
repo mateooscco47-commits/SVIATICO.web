@@ -37,19 +37,10 @@ namespace Dinacem.Controllers
         public async Task<IActionResult> Create(
             Usuario usuario)
         {
-            // Validar rol
-            if (usuario.IdRol != 1 &&
-                usuario.IdRol != 2)
-            {
-                TempData["error"] =
-                    $"El rol seleccionado no es válido. " +
-                    $"IdRol recibido: {usuario.IdRol}";
+            // =====================================
+            // VALIDAR ROL
+            // =====================================
 
-                return RedirectToAction(
-                    nameof(Index));
-            }
-
-            // Verificar que el rol realmente exista
             var existeRol =
                 await _context.Roles
                     .AnyAsync(r =>
@@ -58,14 +49,18 @@ namespace Dinacem.Controllers
 
             if (!existeRol)
             {
-                TempData["error"] =
+                TempData["ErrorUsuario"] =
                     "El rol seleccionado no existe o está desactivado.";
 
                 return RedirectToAction(
                     nameof(Index));
             }
 
-            // Limpiar textos
+
+            // =====================================
+            // LIMPIAR TEXTOS
+            // =====================================
+
             usuario.UsuarioAcceso =
                 usuario.UsuarioAcceso?.Trim();
 
@@ -84,58 +79,70 @@ namespace Dinacem.Controllers
             usuario.Zona =
                 usuario.Zona?.Trim();
 
-            // Validaciones básicas
+
+            // =====================================
+            // VALIDAR CAMPOS OBLIGATORIOS
+            // =====================================
+
             if (string.IsNullOrWhiteSpace(
-                    usuario.UsuarioAcceso))
+                usuario.UsuarioAcceso))
             {
-                TempData["error"] =
+                TempData["ErrorUsuario"] =
                     "Debe ingresar el usuario de acceso.";
 
                 return RedirectToAction(
                     nameof(Index));
             }
 
+
             if (string.IsNullOrWhiteSpace(
-                    usuario.Nombres))
+                usuario.Nombres))
             {
-                TempData["error"] =
+                TempData["ErrorUsuario"] =
                     "Debe ingresar los nombres.";
 
                 return RedirectToAction(
                     nameof(Index));
             }
 
+
             if (string.IsNullOrWhiteSpace(
-                    usuario.Apellidos))
+                usuario.Apellidos))
             {
-                TempData["error"] =
+                TempData["ErrorUsuario"] =
                     "Debe ingresar los apellidos.";
 
                 return RedirectToAction(
                     nameof(Index));
             }
 
+
             if (string.IsNullOrWhiteSpace(
-                    usuario.Correo))
+                usuario.Correo))
             {
-                TempData["error"] =
+                TempData["ErrorUsuario"] =
                     "Debe ingresar el correo.";
 
                 return RedirectToAction(
                     nameof(Index));
             }
 
+
             if (string.IsNullOrWhiteSpace(
-                    usuario.Contrasenia))
+                usuario.Contrasenia))
             {
-                TempData["error"] =
+                TempData["ErrorUsuario"] =
                     "Debe ingresar una contraseña.";
 
                 return RedirectToAction(
                     nameof(Index));
             }
 
-            // Usuario de acceso único
+
+            // =====================================
+            // USUARIO DE ACCESO ÚNICO
+            // =====================================
+
             var usuarioAccesoExiste =
                 await _context.Usuarios
                     .AnyAsync(u =>
@@ -144,41 +151,64 @@ namespace Dinacem.Controllers
 
             if (usuarioAccesoExiste)
             {
-                TempData["error"] =
+                TempData["ErrorUsuario"] =
                     "El usuario de acceso ya está registrado.";
 
                 return RedirectToAction(
                     nameof(Index));
             }
 
-            // Correo único
+
+            // =====================================
+            // CORREO ÚNICO
+            // =====================================
+
             var correoExiste =
                 await _context.Usuarios
                     .AnyAsync(u =>
-                        u.Correo == usuario.Correo);
+                        u.Correo ==
+                        usuario.Correo);
 
             if (correoExiste)
             {
-                TempData["error"] =
+                TempData["ErrorUsuario"] =
                     "El correo ya está registrado.";
 
                 return RedirectToAction(
                     nameof(Index));
             }
 
-            // Usuario nuevo siempre activo
+
+            // =====================================
+            // USUARIO NUEVO ACTIVO
+            // =====================================
+
             usuario.Estado = true;
 
-            // Evitar que EF intente insertar una navegación Rol
+
+            // =====================================
+            // EVITAR INSERTAR ROL
+            // =====================================
+
             usuario.Rol = null;
 
-            _context.Usuarios.Add(
-                usuario);
+
+            // =====================================
+            // GUARDAR
+            // =====================================
+
+            _context.Usuarios.Add(usuario);
 
             await _context.SaveChangesAsync();
 
-            TempData["mensaje"] =
+
+            // =====================================
+            // NOTIFICACIÓN
+            // =====================================
+
+            TempData["SuccessUsuario"] =
                 "Usuario registrado correctamente.";
+
 
             return RedirectToAction(
                 nameof(Index));
@@ -187,11 +217,37 @@ namespace Dinacem.Controllers
         // =====================================
         // EDITAR USUARIO
         // =====================================
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var usuario =
+                await _context.Usuarios
+                    .FirstOrDefaultAsync(u =>
+                        u.IdUsuario == id);
+
+            if (usuario == null)
+            {
+                TempData["error"] =
+                    "No se encontró el usuario seleccionado.";
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
+
+            return View(usuario);
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             Usuario modelo)
         {
+            // =====================================
+            // BUSCAR USUARIO
+            // =====================================
+
             var usuario =
                 await _context.Usuarios
                     .FirstOrDefaultAsync(u =>
@@ -207,8 +263,14 @@ namespace Dinacem.Controllers
                     nameof(Index));
             }
 
+
+            // =====================================
+            // VALIDAR ROL
+            // =====================================
+
             if (modelo.IdRol != 1 &&
-                modelo.IdRol != 2)
+                modelo.IdRol != 2 &&
+                modelo.IdRol != 3)
             {
                 TempData["error"] =
                     "El rol seleccionado no es válido.";
@@ -216,6 +278,12 @@ namespace Dinacem.Controllers
                 return RedirectToAction(
                     nameof(Index));
             }
+
+
+            // =====================================
+            // VERIFICAR QUE EL ROL EXISTA
+            // Y ESTÉ ACTIVO
+            // =====================================
 
             var existeRol =
                 await _context.Roles
@@ -231,6 +299,11 @@ namespace Dinacem.Controllers
                 return RedirectToAction(
                     nameof(Index));
             }
+
+
+            // =====================================
+            // LIMPIAR TEXTOS
+            // =====================================
 
             modelo.UsuarioAcceso =
                 modelo.UsuarioAcceso?.Trim();
@@ -250,6 +323,41 @@ namespace Dinacem.Controllers
             modelo.Zona =
                 modelo.Zona?.Trim();
 
+
+            // =====================================
+            // VALIDAR USUARIO DE ACCESO
+            // =====================================
+
+            if (string.IsNullOrWhiteSpace(
+                    modelo.UsuarioAcceso))
+            {
+                TempData["error"] =
+                    "Debe ingresar el usuario de acceso.";
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
+
+
+            // =====================================
+            // VALIDAR CORREO
+            // =====================================
+
+            if (string.IsNullOrWhiteSpace(
+                    modelo.Correo))
+            {
+                TempData["error"] =
+                    "Debe ingresar el correo.";
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
+
+
+            // =====================================
+            // USUARIO DE ACCESO ÚNICO
+            // =====================================
+
             var usuarioAccesoExiste =
                 await _context.Usuarios
                     .AnyAsync(u =>
@@ -267,6 +375,11 @@ namespace Dinacem.Controllers
                     nameof(Index));
             }
 
+
+            // =====================================
+            // CORREO ÚNICO
+            // =====================================
+
             var correoExiste =
                 await _context.Usuarios
                     .AnyAsync(u =>
@@ -283,6 +396,11 @@ namespace Dinacem.Controllers
                 return RedirectToAction(
                     nameof(Index));
             }
+
+
+            // =====================================
+            // ACTUALIZAR DATOS
+            // =====================================
 
             usuario.UsuarioAcceso =
                 modelo.UsuarioAcceso;
@@ -305,8 +423,12 @@ namespace Dinacem.Controllers
             usuario.Zona =
                 modelo.Zona;
 
-            // Solo cambia la contraseña
-            // si se envió una nueva
+
+            // =====================================
+            // CONTRASEÑA
+            // SOLO CAMBIA SI SE INGRESA UNA NUEVA
+            // =====================================
+
             if (!string.IsNullOrWhiteSpace(
                     modelo.Contrasenia))
             {
@@ -314,7 +436,17 @@ namespace Dinacem.Controllers
                     modelo.Contrasenia;
             }
 
+
+            // =====================================
+            // GUARDAR CAMBIOS
+            // =====================================
+
             await _context.SaveChangesAsync();
+
+
+            // =====================================
+            // NOTIFICACIÓN
+            // =====================================
 
             TempData["mensaje"] =
                 "Usuario actualizado correctamente.";
@@ -322,14 +454,12 @@ namespace Dinacem.Controllers
             return RedirectToAction(
                 nameof(Index));
         }
-
         // =====================================
         // DESACTIVAR
         // =====================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Desactivar(
-            int id)
+        public async Task<IActionResult> Desactivar(int id)
         {
             var usuario =
                 await _context.Usuarios
@@ -338,31 +468,29 @@ namespace Dinacem.Controllers
 
             if (usuario == null)
             {
-                TempData["error"] =
+                TempData["ErrorUsuario"] =
                     "No se encontró el usuario.";
 
-                return RedirectToAction(
-                    nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
 
             usuario.Estado = false;
 
             await _context.SaveChangesAsync();
 
-            TempData["mensaje"] =
+            TempData["SuccessUsuario"] =
                 "Usuario desactivado correctamente.";
 
-            return RedirectToAction(
-                nameof(Index));
+            return RedirectToAction(nameof(Index));
         }
+
 
         // =====================================
         // ACTIVAR
         // =====================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Activar(
-            int id)
+        public async Task<IActionResult> Activar(int id)
         {
             var usuario =
                 await _context.Usuarios
@@ -371,22 +499,20 @@ namespace Dinacem.Controllers
 
             if (usuario == null)
             {
-                TempData["error"] =
+                TempData["ErrorUsuario"] =
                     "No se encontró el usuario.";
 
-                return RedirectToAction(
-                    nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
 
             usuario.Estado = true;
 
             await _context.SaveChangesAsync();
 
-            TempData["mensaje"] =
+            TempData["SuccessUsuario"] =
                 "Usuario activado correctamente.";
 
-            return RedirectToAction(
-                nameof(Index));
+            return RedirectToAction(nameof(Index));
         }
     }
 }

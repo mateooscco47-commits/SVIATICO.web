@@ -38,15 +38,32 @@ namespace Dinacem.Controllers
                     "Home");
             }
 
-            bool tieneSolicitudEnProceso =
+            // ============================================================
+            // VALIDAR SOLICITUD SIN RENDIR
+            // ============================================================
+
+            bool tieneSolicitudSinRendir =
                 await _context.Solicitudes.AnyAsync(s =>
                     s.IdUsuario == idUsuario.Value &&
-                    s.IdEstadoSolicitud == 1);
+                    (
+                        // 1 = Pendiente de aprobación
+                        s.IdEstadoSolicitud == 1
 
-            if (tieneSolicitudEnProceso)
+                        ||
+
+                        // 2 = Aprobada pero todavía sin rendición
+                        (
+                            s.IdEstadoSolicitud == 2 &&
+                            !_context.Rendiciones.Any(r =>
+                                r.IdSolicitud == s.IdSolicitud)
+                        )
+                    )
+                );
+
+            if (tieneSolicitudSinRendir)
             {
                 TempData["error"] =
-                    "No puede registrar una nueva solicitud porque tiene una solicitud pendiente de aprobación.";
+                    "No puede registrar una nueva solicitud porque tiene una solicitud pendiente de rendición.";
 
                 return RedirectToAction(nameof(MisSolicitudes));
             }
@@ -71,15 +88,33 @@ namespace Dinacem.Controllers
                     "Home");
             }
 
-            bool tieneSolicitudPendiente =
+            // ============================================================
+            // VALIDAR SOLICITUD SIN RENDIR
+            // ============================================================
+
+            bool tieneSolicitudSinRendir =
                 await _context.Solicitudes.AnyAsync(s =>
                     s.IdUsuario == idUsuario.Value &&
-                    s.IdEstadoSolicitud == 1);
+                    (
+                        // 1 = Pendiente de aprobación
+                        s.IdEstadoSolicitud == 1
 
-            if (tieneSolicitudPendiente)
+                        ||
+
+                        // 2 = Aprobada pero todavía sin rendición
+                        (
+                            s.IdEstadoSolicitud == 2 &&
+                            !_context.Rendiciones.Any(r =>
+                                r.IdSolicitud == s.IdSolicitud)
+                        )
+                    )
+                );
+
+            if (tieneSolicitudSinRendir)
             {
                 TempData["error"] =
-                    "No puede registrar una nueva solicitud porque ya tiene una solicitud pendiente.";
+                    
+                    "No puede registrar una nueva solicitud porque tiene una solicitud pendiente de aprobación o rendición.";
 
                 return RedirectToAction(nameof(MisSolicitudes));
             }

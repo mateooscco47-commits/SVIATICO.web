@@ -3,41 +3,406 @@
 @{
     ViewData["Title"] = "Reporte de Gastos";
     Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+
+    var cantidadTipos = Model?.Count ?? 0;
+
+    var totalGastado = Model?.Sum(x => x.Total) ?? 0;
+
+    var promedio = cantidadTipos > 0
+        ? Model!.Average(x => x.Total)
+        : 0;
 }
 
-<!-- ===========================================
-    ENCABEZADO DEL REPORTE
-=========================================== -->
+<style>
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+    /* =========================================================
+           CONTENEDOR
+           ========================================================= */
 
-    <div class="d-flex align-items-center">
+    .reporte-page {
+        width: 100%;
+        padding: 4px 0 30px 0;
+    }
 
-        <a asp-controller="Reporte"
-           asp-action="Index"
-           class="btn btn-outline-primary rounded-pill me-3">
 
-            <i class="bi bi-arrow-left-circle"></i>
+    /* =========================================================
+           ENCABEZADO
+           ========================================================= */
 
-            Volver
+    .reporte-header {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 22px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    }
 
-        </a>
+    .reporte-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
 
-        <div>
+    .reporte-title-area {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
 
-            <h2 class="fw-bold text-primary mb-0">
+    .reporte-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        background: #eaf3fb;
+        color: #0c4a8a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
 
-                <i class="bi bi-cash-stack me-2"></i>
+    .reporte-title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: #1e293b;
+    }
 
-                Reporte de Gastos por Tipo
+    .reporte-description {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: #64748b;
+    }
 
-            </h2>
 
-            <small class="text-muted">
+    /* =========================================================
+           BOTONES
+           ========================================================= */
 
-                Sistema de Viáticos DINACEN
+    .btn-reporte-back {
+        border: 1px solid #cbd5e1;
+        color: #334155;
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 8px 14px;
+        font-size: 13px;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
 
-            </small>
+        .btn-reporte-back:hover {
+            background: #f1f5f9;
+            color: #0c4a8a;
+            border-color: #0c4a8a;
+        }
+
+    .btn-reporte-pdf {
+        background: #b91c1c;
+        border: 1px solid #b91c1c;
+        color: #ffffff;
+        border-radius: 8px;
+        padding: 9px 17px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all .2s ease;
+        white-space: nowrap;
+    }
+
+        .btn-reporte-pdf:hover {
+            background: #991b1b;
+            border-color: #991b1b;
+            color: #ffffff;
+        }
+
+
+    /* =========================================================
+           INDICADORES
+           ========================================================= */
+
+    .indicador-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        padding: 18px;
+        height: 100%;
+        box-shadow: 0 2px 7px rgba(15, 23, 42, 0.04);
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+        .indicador-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px rgba(15, 23, 42, 0.08);
+        }
+
+    .indicador-label {
+        display: block;
+        font-size: 12px;
+        color: #64748b;
+        margin-bottom: 5px;
+    }
+
+    .indicador-value {
+        margin: 0;
+        font-size: 23px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .indicador-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+    }
+
+    .icon-blue {
+        background: #eaf3fb;
+        color: #0c4a8a;
+    }
+
+    .icon-green {
+        background: #ecfdf3;
+        color: #15803d;
+    }
+
+    .icon-purple {
+        background: #f3e8ff;
+        color: #7e22ce;
+    }
+
+
+    /* =========================================================
+           CONTENEDORES
+           ========================================================= */
+
+    .reporte-box {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 11px;
+        height: 100%;
+        overflow: hidden;
+        box-shadow: 0 2px 7px rgba(15, 23, 42, 0.04);
+    }
+
+    .reporte-box-header {
+        padding: 14px 18px;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        background: #ffffff;
+    }
+
+        .reporte-box-header i {
+            color: #0c4a8a;
+            font-size: 17px;
+        }
+
+        .reporte-box-header span {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+    .reporte-box-body {
+        padding: 18px;
+    }
+
+
+    /* =========================================================
+           TABLA
+           ========================================================= */
+
+    .tabla-reporte {
+        margin: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+    }
+
+        .tabla-reporte thead th {
+            background: #f1f5f9;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 11px 15px;
+            border-bottom: 1px solid #cbd5e1;
+        }
+
+        .tabla-reporte tbody td {
+            padding: 11px 15px;
+            font-size: 13px;
+            color: #334155;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+
+        .tabla-reporte tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .tabla-reporte tfoot th {
+            background: #f1f5f9;
+            color: #1e293b;
+            font-size: 13px;
+            padding: 12px 15px;
+            border-top: 1px solid #cbd5e1;
+        }
+
+    .tipo-gasto {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-weight: 500;
+    }
+
+    .tipo-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        background: #eaf3fb;
+        color: #0c4a8a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+
+    .monto {
+        font-weight: 600;
+        color: #1e293b;
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+           ESTADO VACÍO
+           ========================================================= */
+
+    .empty-report {
+        min-height: 330px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #64748b;
+    }
+
+        .empty-report i {
+            display: block;
+            font-size: 38px;
+            margin-bottom: 10px;
+            color: #94a3b8;
+        }
+
+
+    /* =========================================================
+           RESPONSIVE
+           ========================================================= */
+
+    @@media (max-width: 768px) {
+
+        .reporte-header-content {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .reporte-title-area {
+            align-items: flex-start;
+        }
+
+        .reporte-title {
+            font-size: 19px;
+        }
+
+        .btn-reporte-pdf {
+            display: block;
+            text-align: center;
+            width: 100%;
+        }
+
+        .reporte-box-body {
+            padding: 10px;
+        }
+    }
+
+</style>
+
+
+<div class="container-fluid reporte-page">
+
+
+    <!-- =========================================================
+         ENCABEZADO
+         ========================================================= -->
+
+    <div class="reporte-header">
+
+        <div class="reporte-header-content">
+
+
+            <!-- INFORMACIÓN -->
+
+            <div class="reporte-title-area">
+
+                <div class="reporte-icon">
+
+                    <i class="bi bi-cash-stack"></i>
+
+                </div>
+
+                <div>
+
+                    <h1 class="reporte-title">
+
+                        Reporte de Gastos por Tipo
+
+                    </h1>
+
+                    <p class="reporte-description">
+
+                        Distribución de los gastos registrados en el sistema de viáticos.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCIONES -->
+
+            <div class="d-flex align-items-center gap-2">
+
+                <a asp-controller="Reporte"
+                   asp-action="Index"
+                   class="btn-reporte-back">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+
+                    Volver
+
+                </a>
+
+
+                <a asp-controller="Reporte"
+                   asp-action="ExportarGastosPdf"
+                   class="btn-reporte-pdf">
+
+                    <i class="bi bi-file-earmark-pdf-fill me-1"></i>
+
+                    Exportar PDF
+
+                </a>
+
+            </div>
 
         </div>
 
@@ -45,47 +410,42 @@
 
 
 
-    <div>
+    <!-- =========================================================
+         INDICADORES
+         ========================================================= -->
 
-        <a asp-controller="Reporte"
-           asp-action="ExportarGastosPdf"
-           class="btn btn-danger rounded-pill">
-
-            <i class="bi bi-file-earmark-pdf-fill"></i>
-
-            Exportar PDF
-
-        </a>
-
-    </div>
-
-</div>
-
-<hr class="mb-4" />
+    <div class="row g-3 mb-4">
 
 
-
-    <!-- TARJETAS -->
-
-    <div class="row mb-4">
+        <!-- TIPOS DE GASTO -->
 
         <div class="col-md-4">
 
-            <div class="card shadow-sm border-0">
+            <div class="indicador-card">
 
-                <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
 
-                    <small class="text-muted">
+                    <div>
 
-                        Tipos de gasto
+                        <span class="indicador-label">
 
-                    </small>
+                            Tipos de gasto
 
-                    <h3 class="fw-bold">
+                        </span>
 
-                        @Model.Count
+                        <h2 class="indicador-value">
 
-                    </h3>
+                            @cantidadTipos
+
+                        </h2>
+
+                    </div>
+
+                    <div class="indicador-icon icon-blue">
+
+                        <i class="bi bi-tags-fill"></i>
+
+                    </div>
 
                 </div>
 
@@ -95,24 +455,35 @@
 
 
 
+        <!-- TOTAL -->
+
         <div class="col-md-4">
 
-            <div class="card shadow-sm border-0">
+            <div class="indicador-card">
 
-                <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
 
-                    <small class="text-muted">
+                    <div>
 
-                        Total Gastado
+                        <span class="indicador-label">
 
-                    </small>
+                            Total gastado
 
-                    <h3 class="fw-bold text-success">
+                        </span>
 
-                        S/
-                        @(Model.Sum(x => x.Total).ToString("N2"))
+                        <h2 class="indicador-value">
 
-                    </h3>
+                            S/ @totalGastado.ToString("N2")
+
+                        </h2>
+
+                    </div>
+
+                    <div class="indicador-icon icon-green">
+
+                        <i class="bi bi-cash-stack"></i>
+
+                    </div>
 
                 </div>
 
@@ -122,26 +493,35 @@
 
 
 
+        <!-- PROMEDIO -->
+
         <div class="col-md-4">
 
-            <div class="card shadow-sm border-0">
+            <div class="indicador-card">
 
-                <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
 
-                    <small class="text-muted">
+                    <div>
 
-                        Promedio
+                        <span class="indicador-label">
 
-                    </small>
+                            Promedio por tipo
 
-                    <h3 class="fw-bold text-primary">
+                        </span>
 
-                        S/
-                        @(Model.Any()
-                            ? Model.Average(x => x.Total).ToString("N2")
-                            : "0.00")
+                        <h2 class="indicador-value">
 
-                    </h3>
+                            S/ @promedio.ToString("N2")
+
+                        </h2>
+
+                    </div>
+
+                    <div class="indicador-icon icon-purple">
+
+                        <i class="bi bi-calculator-fill"></i>
+
+                    </div>
 
                 </div>
 
@@ -153,23 +533,58 @@
 
 
 
-    <div class="row">
+    <!-- =========================================================
+         CONTENIDO
+         ========================================================= -->
 
-        <!-- GRÁFICO -->
+    <div class="row g-3">
+
+
+        <!-- =====================================================
+             GRÁFICO
+             ===================================================== -->
 
         <div class="col-lg-6">
 
-            <div class="card shadow-sm">
+            <div class="reporte-box">
 
-                <div class="card-header fw-bold">
+                <div class="reporte-box-header">
 
-                    Gráfico de Gastos
+                    <i class="bi bi-bar-chart-fill"></i>
+
+                    <span>
+
+                        Distribución de gastos
+
+                    </span>
 
                 </div>
 
-                <div class="card-body">
 
-                    <canvas id="graficoGastos"></canvas>
+                <div class="reporte-box-body">
+
+                    @if (Model != null && Model.Any())
+                    {
+                        <div style="height:360px;">
+
+                            <canvas id="graficoGastos"></canvas>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-report">
+
+                            <div>
+
+                                <i class="bi bi-bar-chart"></i>
+
+                                No existen datos para mostrar.
+
+                            </div>
+
+                        </div>
+                    }
 
                 </div>
 
@@ -179,37 +594,56 @@
 
 
 
-        <!-- TABLA -->
+        <!-- =====================================================
+             TABLA
+             ===================================================== -->
 
         <div class="col-lg-6">
 
-            <div class="card shadow-sm">
+            <div class="reporte-box">
 
-                <div class="card-header fw-bold">
+                <div class="reporte-box-header">
 
-                    Detalle
+                    <i class="bi bi-table"></i>
+
+                    <span>
+
+                        Detalle de gastos
+
+                    </span>
 
                 </div>
 
-                <div class="card-body table-responsive">
 
-                    <table class="table table-hover">
+                <div class="table-responsive">
 
-                        <thead class="table-light">
+                    <table class="tabla-reporte">
+
+
+                        <thead>
 
                             <tr>
 
-                                <th>Tipo de Gasto</th>
+                                <th>
 
-                                <th>Total</th>
+                                    Tipo de gasto
+
+                                </th>
+
+                                <th class="text-end">
+
+                                    Total
+
+                                </th>
 
                             </tr>
 
                         </thead>
 
+
                         <tbody>
 
-                            @if (Model.Any())
+                            @if (Model != null && Model.Any())
                             {
                                 foreach (var item in Model)
                                 {
@@ -217,14 +651,23 @@
 
                                         <td>
 
-                                            @item.TipoGasto
+                                            <div class="tipo-gasto">
+
+                                                <span class="tipo-icon">
+
+                                                    <i class="bi bi-receipt"></i>
+
+                                                </span>
+
+                                                @item.TipoGasto
+
+                                            </div>
 
                                         </td>
 
-                                        <td>
+                                        <td class="text-end monto">
 
-                                            S/
-                                            @item.Total.ToString("N2")
+                                            S/ @item.Total.ToString("N2")
 
                                         </td>
 
@@ -235,10 +678,20 @@
                             {
                                 <tr>
 
-                                    <td colspan="2"
-                                        class="text-center">
+                                    <td colspan="2">
 
-                                        No existen gastos registrados.
+                                        <div class="empty-report"
+                                             style="min-height:250px;">
+
+                                            <div>
+
+                                                <i class="bi bi-inbox"></i>
+
+                                                No existen gastos registrados.
+
+                                            </div>
+
+                                        </div>
 
                                     </td>
 
@@ -246,6 +699,30 @@
                             }
 
                         </tbody>
+
+
+                        @if (Model != null && Model.Any())
+                        {
+                            <tfoot>
+
+                                <tr>
+
+                                    <th>
+
+                                        TOTAL
+
+                                    </th>
+
+                                    <th class="text-end">
+
+                                        S/ @totalGastado.ToString("N2")
+
+                                    </th>
+
+                                </tr>
+
+                            </tfoot>
+                        }
 
                     </table>
 
@@ -261,65 +738,109 @@
 
 
 
-@section Scripts{
+<!-- =============================================================
+     SCRIPTS
+     ============================================================= -->
+@section Scripts {
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
+    <script>
 
-const ctx =
-document.getElementById('graficoGastos');
+        const canvasGastos =
+            document.getElementById("graficoGastos");
 
-new Chart(ctx, {
 
-    type: 'bar',
+        if (canvasGastos) {
 
-    data: {
+            new Chart(canvasGastos, {
 
-        labels: [
+                type: "bar",
 
-            @foreach (var item in Model)
-            {
-                <text>'@item.TipoGasto',</text>
-            }
+                data: {
 
-        ],
+                    labels: [
 
-        datasets: [{
+                                @foreach (var item in Model ?? new List<Dinacem.Models.Reporte.ReporteGasto>())
+                        {
+                            <text>
+                                @Html.Raw(
+                                System.Text.Json.JsonSerializer.Serialize(
+                                item.TipoGasto
+                                )
+                                ),
+                            </text>
+                                }
 
-            label: 'Monto (S/)',
+                            ],
 
-            data: [
+                    datasets: [
 
-                @foreach (var item in Model)
-                {
-                    <text>@item.Total,</text>
+                        {
+
+                            label: "Monto gastado (S/)",
+
+                            data: [
+
+                                        @foreach (var item in Model ?? new List<Dinacem.Models.Reporte.ReporteGasto>())
+                                {
+                                    <text>
+                                        @item.Total.ToString(
+                                        System.Globalization.CultureInfo.InvariantCulture
+                                        ),
+                                    </text>
+                                        }
+
+                                    ]
+
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+
+                            display: false
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            ticks: {
+
+                                callback: function (value) {
+
+                                    return "S/ " + value;
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
                 }
 
-            ]
-
-        }]
-
-    },
-
-    options: {
-
-        responsive: true,
-
-        plugins: {
-
-            legend: {
-
-                display: false
-
-            }
+            });
 
         }
 
-    }
-
-});
-
-</script>
+    </script>
 
 }

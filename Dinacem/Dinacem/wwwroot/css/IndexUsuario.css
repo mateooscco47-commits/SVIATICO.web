@@ -15,22 +15,63 @@
 }
 
 
-/* =========================================================
-   ENCABEZADO DE PÁGINA
-   ========================================================= */
+/* ============================================================
+           ENCABEZADO
+           ============================================================ */
 
 .page-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 24px;
+    align-items: center;
+    gap: 20px;
     padding: 22px;
-    background: #fff;
+    margin-bottom: 24px;
+    background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 16px;
     box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
 }
+
+.page-title {
+    margin: 0 0 5px;
+    color: #17365d;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+}
+
+    .page-title i {
+        color: #0c4a8a;
+        font-size: 1.55rem;
+    }
+
+.page-description {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+/* ============================================================
+           BOTÓN VOLVER
+           ============================================================ */
+
+.page-header-actions {
+    display: flex;
+    align-items: center;
+}
+
+    .page-header-actions .btn {
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all .2s ease;
+    }
+
+        .page-header-actions .btn:hover {
+            transform: translateY(-1px);
+        }
 
 
 /* =========================================================

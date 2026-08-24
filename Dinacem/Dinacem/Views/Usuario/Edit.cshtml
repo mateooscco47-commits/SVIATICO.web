@@ -1,2 +1,937 @@
-<h2>Eliminar Usuario</h2>
-<p>Confirmación de eliminación</p>
+@model Dinacem.Models.Usuario
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+}
+
+<style>
+
+    /* =========================================================
+           CONTENEDOR PRINCIPAL
+           ========================================================= */
+
+    .usuario-edit-wrapper {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+
+    /* =========================================================
+           ENCABEZADO
+           ========================================================= */
+
+    .usuario-edit-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 20px 24px;
+        margin-bottom: 22px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+    }
+
+    .usuario-edit-title-area {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+
+    /* =========================================================
+           ICONO ENCABEZADO
+           ========================================================= */
+
+    .usuario-edit-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: #eaf3fb;
+        color: #0c4a8a;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+
+    /* =========================================================
+           TÍTULOS
+           ========================================================= */
+
+    .usuario-edit-title {
+        margin: 0;
+        color: #17365d;
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.2px;
+    }
+
+    .usuario-edit-description {
+        margin: 5px 0 0;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+
+    /* =========================================================
+           BOTÓN VOLVER
+           ========================================================= */
+
+    .btn-volver-usuario {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 38px;
+        padding: 8px 15px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #475569;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all .2s ease;
+    }
+
+        .btn-volver-usuario:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            color: #1e293b;
+            transform: translateY(-1px);
+        }
+
+
+    /* =========================================================
+           TARJETA PRINCIPAL
+           ========================================================= */
+
+    .usuario-edit-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+    }
+
+
+    /* =========================================================
+           CABECERA TARJETA
+           ========================================================= */
+
+    .usuario-edit-card-header {
+        display: flex;
+        align-items: center;
+        padding: 15px 22px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        color: #1e293b;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+        .usuario-edit-card-header i {
+            color: #0c4a8a;
+        }
+
+
+    /* =========================================================
+           CUERPO
+           ========================================================= */
+
+    .usuario-edit-card-body {
+        padding: 26px;
+    }
+
+
+    /* =========================================================
+           FORMULARIO
+           ========================================================= */
+
+    .usuario-edit-form .form-label {
+        display: block;
+        margin-bottom: 7px;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+           CAMPOS
+           ========================================================= */
+
+    .usuario-edit-form .form-control,
+    .usuario-edit-form .form-select {
+        width: 100%;
+        min-height: 43px;
+        padding: 8px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #1e293b;
+        font-size: 13px;
+        transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+
+        /* =========================================================
+           PLACEHOLDER
+           ========================================================= */
+
+        .usuario-edit-form .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+
+        /* =========================================================
+           FOCUS
+           ========================================================= */
+
+        .usuario-edit-form .form-control:focus,
+        .usuario-edit-form .form-select:focus {
+            border-color: #0c4a8a;
+            box-shadow: 0 0 0 3px rgba(12, 74, 138, .10);
+            outline: none;
+        }
+
+
+        /* =========================================================
+           VALIDACIÓN
+           ========================================================= */
+
+        .usuario-edit-form .form-control.is-valid,
+        .usuario-edit-form .form-select.is-valid {
+            border-color: #22c55e;
+        }
+
+        .usuario-edit-form .form-control.is-invalid,
+        .usuario-edit-form .form-select.is-invalid {
+            border-color: #ef4444;
+        }
+
+    .usuario-edit-form .text-danger {
+        display: block;
+        margin-top: 5px;
+        color: #dc2626 !important;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+
+    /* =========================================================
+           CONTRASEÑA
+           ========================================================= */
+
+    .password-help {
+        margin-top: 6px;
+        color: #64748b;
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
+
+    /* =========================================================
+           SEPARADOR ACCIONES
+           ========================================================= */
+
+    .usuario-edit-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        margin-top: 26px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+
+    /* =========================================================
+       BOTONES
+       ========================================================= */
+
+    .usuario-edit-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding-top: 22px;
+        margin-top: 22px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+
+    /* =========================================================
+       BOTÓN CANCELAR
+       ========================================================= */
+
+    .btn-cancelar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 9px 18px;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #dc2626;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+        .btn-cancelar:hover {
+            background: #fef2f2;
+            border-color: #fca5a5;
+            color: #b91c1c;
+            transform: translateY(-1px);
+        }
+
+
+    /* =========================================================
+       BOTÓN GUARDAR
+       ========================================================= */
+
+    .btn-guardar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 9px 20px;
+        border: 1px solid #0c4a8a;
+        border-radius: 8px;
+        background: #0c4a8a;
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+        .btn-guardar:hover {
+            background: #083763;
+            border-color: #083763;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+
+    /* =========================================================
+           SWEETALERT
+           ========================================================= */
+
+    .swal2-popup {
+        border-radius: 14px !important;
+        padding: 1.6rem !important;
+    }
+
+    .swal2-title {
+        color: #1e293b !important;
+        font-size: 20px !important;
+        font-weight: 700 !important;
+    }
+
+    .swal2-html-container {
+        color: #64748b !important;
+        font-size: 14px !important;
+    }
+
+    .swal2-confirm {
+        border-radius: 8px !important;
+        padding: 9px 18px !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+    }
+
+    .swal2-cancel {
+        border-radius: 8px !important;
+        padding: 9px 18px !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+    }
+
+
+    /* =========================================================
+           RESPONSIVE
+           ========================================================= */
+
+    @@media (max-width: 768px) {
+
+        .usuario-edit-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .usuario-edit-title {
+            font-size: 20px;
+        }
+
+        .usuario-edit-description {
+            font-size: 12px;
+        }
+
+        .usuario-edit-card-body {
+            padding: 18px;
+        }
+
+        .usuario-edit-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-cancelar,
+        .btn-guardar {
+            width: 100%;
+        }
+
+        .btn-volver-usuario {
+            width: 100%;
+        }
+    }
+    /* =========================================================
+       SWEETALERT - CONFIRMACIÓN USUARIO
+       ========================================================= */
+
+    .swal-usuario-popup {
+        border-radius: 14px !important;
+        padding: 25px !important;
+    }
+
+    .swal-usuario-title {
+        color: #1e293b !important;
+        font-size: 20px !important;
+        font-weight: 700 !important;
+    }
+
+    .swal-usuario-text {
+        color: #64748b !important;
+        font-size: 14px !important;
+    }
+
+
+    /* =========================================================
+       BOTÓN CONFIRMAR
+       ========================================================= */
+
+    .swal-btn-confirmar {
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 9px 16px !important;
+        margin: 0 4px !important;
+        color: #ffffff !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: all .2s ease !important;
+    }
+
+    .swal-btn-guardar {
+        background: #0c4a8a !important;
+    }
+
+        .swal-btn-guardar:hover {
+            background: #083763 !important;
+            transform: translateY(-1px);
+        }
+
+
+    /* =========================================================
+       BOTÓN CANCELAR SWEETALERT
+       ========================================================= */
+
+    .swal-btn-cancelar {
+        border: 1px solid #fecaca !important;
+        border-radius: 8px !important;
+        padding: 9px 16px !important;
+        margin: 0 4px !important;
+        background: #ffffff !important;
+        color: #dc2626 !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        transition: all .2s ease !important;
+    }
+
+        .swal-btn-cancelar:hover {
+            background: #fef2f2 !important;
+            border-color: #fca5a5 !important;
+            color: #b91c1c !important;
+        }
+
+</style>
+
+
+<div class="usuario-edit-wrapper">
+
+
+    <!-- =========================================================
+         ENCABEZADO
+         ========================================================= -->
+
+    <div class="usuario-edit-header">
+
+        <div class="usuario-edit-title-area">
+
+            <div class="usuario-edit-icon">
+
+                <i class="bi bi-person-gear"></i>
+
+            </div>
+
+            <div>
+
+                <h1 class="usuario-edit-title">
+                    Editar usuario
+                </h1>
+
+                <p class="usuario-edit-description">
+                    Modifique los datos y permisos del usuario seleccionado.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a asp-controller="Usuario"
+           asp-action="Index"
+           class="btn-volver-usuario">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Volver
+
+        </a>
+
+    </div>
+
+
+
+    <!-- =========================================================
+         TARJETA
+         ========================================================= -->
+
+    <div class="usuario-edit-card">
+
+
+        <!-- CABECERA -->
+
+        <div class="usuario-edit-card-header">
+
+            <i class="bi bi-person-vcard me-2"></i>
+
+            Información del usuario
+
+        </div>
+
+
+        <!-- CUERPO -->
+
+        <div class="usuario-edit-card-body">
+
+
+            <form asp-controller="Usuario"
+                  asp-action="Edit"
+                  method="post"
+                  class="usuario-edit-form"
+                  id="formEditarUsuario">
+
+                @Html.AntiForgeryToken()
+
+
+                <input type="hidden"
+                       asp-for="IdUsuario" />
+
+
+                <!-- =================================================
+                     ERRORES
+                     ================================================= -->
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+
+                <div class="row g-4">
+
+
+                    <!-- USUARIO -->
+
+                    <div class="col-md-6">
+
+                        <label asp-for="UsuarioAcceso"
+                               class="form-label">
+
+                            Usuario de acceso
+
+                        </label>
+
+                        <input asp-for="UsuarioAcceso"
+                               class="form-control"
+                               autocomplete="username" />
+
+                        <span asp-validation-for="UsuarioAcceso"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- ROL -->
+
+                    <div class="col-md-6">
+
+                        <label asp-for="IdRol"
+                               class="form-label">
+
+                            Rol
+
+                        </label>
+
+                        <select asp-for="IdRol"
+                                class="form-select">
+
+                            <option value="">
+                                Seleccione un rol
+                            </option>
+
+                            <option value="1">
+                                Administrador
+                            </option>
+
+                            <option value="2">
+                                Supervisor
+                            </option>
+
+                            <option value="3">
+                                Representante
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="IdRol"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- NOMBRES -->
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Nombres"
+                               class="form-label">
+
+                            Nombres
+
+                        </label>
+
+                        <input asp-for="Nombres"
+                               class="form-control" />
+
+                        <span asp-validation-for="Nombres"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- APELLIDOS -->
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Apellidos"
+                               class="form-label">
+
+                            Apellidos
+
+                        </label>
+
+                        <input asp-for="Apellidos"
+                               class="form-control" />
+
+                        <span asp-validation-for="Apellidos"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- CORREO -->
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Correo"
+                               class="form-label">
+
+                            Correo electrónico
+
+                        </label>
+
+                        <input asp-for="Correo"
+                               type="email"
+                               class="form-control" />
+
+                        <span asp-validation-for="Correo"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- CELULAR -->
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Celular"
+                               class="form-label">
+
+                            Celular
+
+                        </label>
+
+                        <input asp-for="Celular"
+                               class="form-control celular-input"
+                               maxlength="9"
+                               inputmode="numeric" />
+
+                        <span asp-validation-for="Celular"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- ZONA -->
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Zona"
+                               class="form-label">
+
+                            Zona
+
+                        </label>
+
+                        <input asp-for="Zona"
+                               class="form-control" />
+
+                        <span asp-validation-for="Zona"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- CONTRASEÑA -->
+
+                    <div class="col-md-6">
+
+                        <label asp-for="Contrasenia"
+                               class="form-label">
+
+                            Nueva contraseña
+
+                        </label>
+
+                        <input asp-for="Contrasenia"
+                               type="password"
+                               class="form-control"
+                               autocomplete="new-password" />
+
+                        <div class="password-help">
+
+                            <i class="bi bi-info-circle me-1"></i>
+
+                            Déjelo vacío si no desea cambiar la contraseña.
+
+                        </div>
+
+                        <span asp-validation-for="Contrasenia"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =================================================
+     BOTONES
+     ================================================= -->
+
+                <div class="usuario-edit-actions">
+
+                    <a asp-controller="Usuario"
+                       asp-action="Index"
+                       class="btn-cancelar">
+
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn-guardar"
+                            id="btnGuardarCambios">
+
+                        <i class="bi bi-check-circle me-1"></i>
+                        Guardar cambios
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+
+    <!-- =========================================================
+         SWEETALERT2
+         ========================================================= -->
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            /* =====================================================
+               CONFIRMAR GUARDAR CAMBIOS
+               ===================================================== */
+
+            const formulario =
+                document.querySelector(".usuario-edit-form");
+
+            const btnGuardar =
+                document.getElementById("btnGuardarCambios");
+
+
+            if (formulario && btnGuardar) {
+
+                formulario.addEventListener("submit", function (event) {
+
+                    /*
+                     * Evitamos que el formulario se envíe
+                     * inmediatamente.
+                     */
+                    event.preventDefault();
+
+
+                    /* =================================================
+                       VALIDACIÓN HTML
+                       ================================================= */
+
+                    if (!formulario.checkValidity()) {
+
+                        formulario.reportValidity();
+
+                        return;
+
+                    }
+
+
+                    /* =================================================
+                       CONFIRMACIÓN
+                       ================================================= */
+
+                    Swal.fire({
+
+                        icon: "question",
+
+                        title: "¿Guardar cambios?",
+
+                        html: `
+                                    <div style="
+                                        font-size:14px;
+                                        color:#64748b;
+                                        line-height:1.6;
+                                    ">
+                                        ¿Está seguro de que desea guardar
+                                        los cambios realizados en este usuario?
+                                        <br>
+                                        <strong style="color:#334155;">
+                                            La información será actualizada.
+                                        </strong>
+                                    </div>
+                                `,
+
+                        showCancelButton: true,
+
+                        confirmButtonText:
+                            '<i class="bi bi-check-circle me-1"></i> Sí, guardar cambios',
+
+                        cancelButtonText:
+                            '<i class="bi bi-x-circle me-1"></i> Cancelar',
+
+                        reverseButtons: true,
+
+                        focusCancel: true,
+
+                        buttonsStyling: false,
+
+                        customClass: {
+
+                            popup:
+                                "swal-usuario-popup",
+
+                            title:
+                                "swal-usuario-title",
+
+                            htmlContainer:
+                                "swal-usuario-text",
+
+                            confirmButton:
+                                "swal-btn-confirmar swal-btn-guardar",
+
+                            cancelButton:
+                                "swal-btn-cancelar"
+
+                        }
+
+                    }).then(function (resultado) {
+
+                        if (resultado.isConfirmed) {
+
+                            /*
+                             * Ahora sí enviamos el formulario.
+                             */
+                            formulario.submit();
+
+                        }
+
+                    });
+
+                });
+
+            }
+
+        });
+
+    </script>
+
+}

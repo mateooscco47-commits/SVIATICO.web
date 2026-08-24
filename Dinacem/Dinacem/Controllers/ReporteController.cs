@@ -6,36 +6,17 @@ namespace Dinacen.Controllers
 {
     public class ReporteController : Controller
     {
-
         private readonly ReporteService _reporteService;
+        private readonly ReportePdfService _reportePdfService;
 
 
         public ReporteController(
-            ReporteService reporteService)
+            ReporteService reporteService,
+            ReportePdfService reportePdfService)
         {
             _reporteService = reporteService;
+            _reportePdfService = reportePdfService;
         }
-
-
-
-        // =====================================================
-        // DASHBOARD EJECUTIVO
-        // =====================================================
-
-        public async Task<IActionResult> Dashboard()
-        {
-
-            var reporte =
-                await _reporteService
-                .ObtenerDashboard();
-
-
-            return View(reporte);
-
-        }
-
-
-
 
 
         // =====================================================
@@ -46,30 +27,57 @@ namespace Dinacen.Controllers
             DateTime? fechaInicio,
             DateTime? fechaFin)
         {
-
-
             var reporte =
                 await _reporteService
-                .ObtenerReporteGeneral(
-                    fechaInicio,
-                    fechaFin);
-
+                    .ObtenerReporteGeneral(
+                        fechaInicio,
+                        fechaFin);
 
 
             reporte.Detalles =
                 await _reporteService
-                .ObtenerDetalleReporte(
-                    fechaInicio,
-                    fechaFin);
-
+                    .ObtenerDetalleReporte(
+                        fechaInicio,
+                        fechaFin);
 
 
             return View(reporte);
-
         }
 
 
+        // =====================================================
+        // PDF REPORTE GENERAL
+        // =====================================================
 
+        [HttpGet]
+        public async Task<IActionResult> ExportarGeneralPdf(
+            DateTime? fechaInicio,
+            DateTime? fechaFin)
+        {
+            var reporte =
+                await _reporteService
+                    .ObtenerReporteGeneral(
+                        fechaInicio,
+                        fechaFin);
+
+
+            reporte.Detalles =
+                await _reporteService
+                    .ObtenerDetalleReporte(
+                        fechaInicio,
+                        fechaFin);
+
+
+            var pdf =
+                _reportePdfService
+                    .GenerarReporteGeneral(reporte);
+
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"Reporte-General-Viaticos-{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        }
 
 
         // =====================================================
@@ -78,38 +86,76 @@ namespace Dinacen.Controllers
 
         public async Task<IActionResult> Rendiciones()
         {
-
             var reporte =
                 await _reporteService
-                .ObtenerReporteRendiciones();
+                    .ObtenerReporteRendiciones();
 
 
             return View(reporte);
-
         }
 
 
+        // =====================================================
+        // PDF RENDICIONES
+        // =====================================================
 
+        [HttpGet]
+        public async Task<IActionResult> ExportarRendicionesPdf()
+        {
+            var reporte =
+                await _reporteService
+                    .ObtenerReporteRendiciones();
+
+
+            var pdf =
+                _reportePdfService
+                    .GenerarReporteRendiciones(reporte);
+
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"Reporte-Rendiciones-{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        }
 
 
         // =====================================================
-        // REPORTE DE GASTOS POR TIPO
+        // REPORTE DE GASTOS
         // =====================================================
 
         public async Task<IActionResult> Gastos()
         {
-
             var reporte =
                 await _reporteService
-                .ObtenerReporteGastos();
+                    .ObtenerReporteGastos();
 
 
             return View(reporte);
-
         }
 
 
+        // =====================================================
+        // PDF GASTOS
+        // =====================================================
 
+        [HttpGet]
+        public async Task<IActionResult> ExportarGastosPdf()
+        {
+            var reporte =
+                await _reporteService
+                    .ObtenerReporteGastos();
+
+
+            var pdf =
+                _reportePdfService
+                    .GenerarReporteGastos(reporte);
+
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"Reporte-Gastos-{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        }
 
 
         // =====================================================
@@ -118,55 +164,75 @@ namespace Dinacen.Controllers
 
         public async Task<IActionResult> Usuarios()
         {
-
             var reporte =
                 await _reporteService
-                .ObtenerReporteUsuarios();
+                    .ObtenerReporteUsuarios();
 
 
             return View(reporte);
-
         }
 
 
-
-
-
         // =====================================================
-        // SOLICITUDES PENDIENTES
+        // PDF USUARIOS
         // =====================================================
 
-        public async Task<IActionResult> Pendientes()
+        [HttpGet]
+        public async Task<IActionResult> ExportarUsuariosPdf()
         {
-
             var reporte =
                 await _reporteService
-                .ObtenerSolicitudesPendientes();
+                    .ObtenerReporteUsuarios();
 
 
-            return View(reporte);
+            var pdf =
+                _reportePdfService
+                    .GenerarReporteUsuarios(reporte);
 
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"Reporte-Usuarios-{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
 
 
-
-
-
         // =====================================================
-        // REEMBOLSOS
+        // REPORTE DE REEMBOLSOS
         // =====================================================
 
         public async Task<IActionResult> Reembolsos()
         {
-
             var reporte =
                 await _reporteService
-                .ObtenerReporteReembolsos();
+                    .ObtenerReporteReembolsos();
 
 
             return View(reporte);
-
         }
 
+
+        // =====================================================
+        // PDF REEMBOLSOS
+        // =====================================================
+
+        [HttpGet]
+        public async Task<IActionResult> ExportarReembolsosPdf()
+        {
+            var reporte =
+                await _reporteService
+                    .ObtenerReporteReembolsos();
+
+
+            var pdf =
+                _reportePdfService
+                    .GenerarReporteReembolsos(reporte);
+
+
+            return File(
+                pdf,
+                "application/pdf",
+                $"Reporte-Reembolsos-{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        }
     }
 }

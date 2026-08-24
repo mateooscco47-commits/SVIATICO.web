@@ -46,6 +46,8 @@
 
         public decimal SaldoPendiente { get; set; }
 
+        public int TotalUsuarios { get; set; }
+
 
 
         // ==========================================
@@ -69,6 +71,7 @@
 
         public List<decimal> MontosMensuales { get; set; }
             = new List<decimal>();
+
 
 
 

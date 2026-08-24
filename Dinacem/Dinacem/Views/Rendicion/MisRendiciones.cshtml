@@ -6,316 +6,815 @@
 }
 
 <style>
-    .card-rendiciones {
-        border: 0;
-        border-radius: 14px;
-        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+
+    /* =========================================================
+           CONTENEDOR PRINCIPAL
+           ========================================================= */
+
+    .rendiciones-page {
+        width: 100%;
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 25px 30px 40px;
+        color: #263238;
     }
 
-    .page-title {
-        color: #0f172a;
-        font-weight: 800;
+
+    /* =========================================================
+           ENCABEZADO
+           ========================================================= */
+
+    .rendiciones-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        background: #ffffff;
+        border: 1px solid #dce8f2;
+        border-radius: 12px;
+        padding: 22px 25px;
+        margin-bottom: 22px;
+        box-shadow: 0 3px 12px rgba(12, 74, 138, 0.07);
     }
 
-    .table th {
-        font-size: 12px;
-        text-transform: uppercase;
-        color: #64748b;
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .header-icon {
+        width: 52px;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: #e7f2ff;
+        color: #3186dc;
+        font-size: 25px;
+        flex-shrink: 0;
+    }
+
+    .header-text h1 {
+        margin: 0;
+        color: #174f7c;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+           BOTÓN VOLVER
+           ========================================================= */
+
+    .btn-volver-header {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 43px;
+        padding: 0 18px;
+        border: 1px solid #d8e0e5;
+        border-radius: 7px;
+        background: #ffffff;
+        color: #5f6f79;
+        font-size: 13.5px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+        .btn-volver-header:hover {
+            background: #f4f7f9;
+            border-color: #c7d1d8;
+            color: #40515b;
+        }
+
+
+    /* =========================================================
+           MENSAJES
+           ========================================================= */
+
+    .mensaje-sistema {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 8px;
+        padding: 12px 15px;
+        margin-bottom: 18px;
+        font-size: 13.5px;
+        font-weight: 500;
+    }
+
+        .mensaje-sistema i {
+            font-size: 18px;
+        }
+
+    .mensaje-exito {
+        background: #edf9f0;
+        border: 1px solid #c9e9d1;
+        color: #327942;
+    }
+
+    .mensaje-error {
+        background: #fff0f0;
+        border: 1px solid #f0cccc;
+        color: #b83b3b;
+    }
+
+    .mensaje-sistema .btn-close {
+        margin-left: auto;
+    }
+
+
+    /* =========================================================
+           TARJETA
+           ========================================================= */
+
+    .rendiciones-card {
+        background: #ffffff;
+        border: 1px solid #dce5eb;
+        border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+        overflow: hidden;
+    }
+
+
+    /* =========================================================
+           CABECERA TABLA
+           ========================================================= */
+
+    .tabla-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 17px 20px;
+        border-bottom: 1px solid #e4ebf0;
+        background: #ffffff;
+    }
+
+    .tabla-titulo {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        color: #174f7c;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+        .tabla-titulo i {
+            color: #3186dc;
+            font-size: 18px;
+        }
+
+
+    /* =========================================================
+           TABLA
+           ========================================================= */
+
+    .tabla-rendiciones {
+        width: 100%;
+        min-width: 1050px;
+        margin: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+        .tabla-rendiciones thead th {
+            background: #f3f7fa;
+            color: #526572;
+            border-bottom: 1px solid #dfe7ed;
+            padding: 13px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.35px;
+            white-space: nowrap;
+        }
+
+        .tabla-rendiciones tbody td {
+            padding: 14px;
+            color: #465660;
+            border-bottom: 1px solid #edf1f4;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .tabla-rendiciones tbody tr {
+            transition: background 0.15s ease;
+        }
+
+            .tabla-rendiciones tbody tr:hover {
+                background: #f8fbfd;
+            }
+
+            .tabla-rendiciones tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+
+    /* =========================================================
+           DATOS
+           ========================================================= */
+
+    .codigo-rendicion {
+        color: #174f7c;
+        font-weight: 700;
         white-space: nowrap;
     }
 
-    .table td {
-        vertical-align: middle;
+    .codigo-solicitud {
+        color: #3186dc;
+        font-weight: 700;
+        white-space: nowrap;
     }
+
+    .destino {
+        color: #263238;
+        font-weight: 600;
+    }
+
+    .fecha-principal {
+        color: #5c6b74;
+        font-weight: 600;
+        white-space: nowrap;
+        font-size: 12.5px;
+    }
+
+    .fecha-secundaria {
+        color: #929da5;
+        font-size: 11.5px;
+    }
+
+    .monto {
+        color: #174f7c;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .saldo {
+        color: #3d8a51;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+
+    /* =========================================================
+           ESTADOS
+           ========================================================= */
 
     .estado {
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 6px;
-        padding: 7px 12px;
+        padding: 6px 10px;
         border-radius: 20px;
-        font-size: 12px;
+        font-size: 11.5px;
         font-weight: 700;
         white-space: nowrap;
     }
 
     .estado-proceso {
-        background: #dbeafe;
-        color: #1d4ed8;
-        border: 1px solid #93c5fd;
+        background: #e7f2ff;
+        color: #3186dc;
+        border: 1px solid #c9e0f7;
     }
 
     .estado-pendiente {
-        background: #fef3c7;
-        color: #92400e;
-        border: 1px solid #fcd34d;
+        background: #fff5d6;
+        color: #a97808;
+        border: 1px solid #f3dfa0;
     }
 
     .estado-aprobada {
-        background: #dcfce7;
-        color: #166534;
-        border: 1px solid #86efac;
+        background: #e8f7ec;
+        color: #3d8a51;
+        border: 1px solid #c9e8d1;
     }
 
     .estado-rechazada {
-        background: #fee2e2;
-        color: #991b1b;
-        border: 1px solid #fca5a5;
+        background: #ffebeb;
+        color: #c34646;
+        border: 1px solid #f0cccc;
     }
+
+    .estado-sin {
+        background: #eef1f3;
+        color: #64727b;
+        border: 1px solid #dce2e6;
+    }
+
+
+    /* =========================================================
+           ACCIONES
+           ========================================================= */
 
     .acciones {
         display: flex;
+        align-items: center;
         flex-wrap: wrap;
         gap: 6px;
     }
+
+        .acciones .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            min-height: 32px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+    .btn-continuar {
+        background: #e7f2ff;
+        border: 1px solid #bcd8f5;
+        color: #3186dc;
+    }
+
+        .btn-continuar:hover {
+            background: #d9ebff;
+            border-color: #9fc7ed;
+            color: #2674c5;
+        }
+
+    .btn-detalle {
+        background: #ffffff;
+        border: 1px solid #d8e0e5;
+        color: #5f6f79;
+    }
+
+        .btn-detalle:hover {
+            background: #f4f7f9;
+            border-color: #c7d1d8;
+            color: #40515b;
+        }
+
+    .btn-pdf {
+        background: #fff7f7;
+        border: 1px solid #e0aaaa;
+        color: #c34646;
+    }
+
+        .btn-pdf:hover {
+            background: #ffebeb;
+            border-color: #d98888;
+            color: #b83b3b;
+        }
+
+
+    /* =========================================================
+           SIN REGISTROS
+           ========================================================= */
+
+    .sin-registros {
+        padding: 55px 20px !important;
+        text-align: center;
+    }
+
+        .sin-registros i {
+            display: block;
+            margin-bottom: 12px;
+            color: #b8c5ce;
+            font-size: 40px;
+        }
+
+        .sin-registros strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #596a75;
+            font-size: 14px;
+        }
+
+        .sin-registros span {
+            color: #929da5;
+            font-size: 12.5px;
+        }
+
+
+    /* =========================================================
+           VOLVER
+           ========================================================= */
+
+    .volver-container {
+        margin-top: 18px;
+    }
+
+    .btn-volver {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 40px;
+        padding: 0 15px;
+        border: 1px solid #d8e0e5;
+        border-radius: 7px;
+        background: #ffffff;
+        color: #5f6f79;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .btn-volver:hover {
+            background: #f4f7f9;
+            border-color: #c7d1d8;
+            color: #40515b;
+        }
+
+
+    /* =========================================================
+           RESPONSIVE
+           ========================================================= */
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    @@media (max-width: 767.98px) {
+
+        .rendiciones-page {
+            padding: 18px 15px 30px;
+        }
+
+        .rendiciones-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 18px;
+        }
+
+        .header-content {
+            width: 100%;
+        }
+
+        .btn-volver-header {
+            width: 100%;
+        }
+
+        .header-text h1 {
+            font-size: 21px;
+        }
+
+        .header-icon {
+            width: 46px;
+            height: 46px;
+            font-size: 21px;
+        }
+    }
+
 </style>
 
-<div class="container-fluid">
 
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+<div class="rendiciones-page">
 
-        <div>
-            <h2 class="page-title mb-1">
-                <i class="bi bi-receipt-cutoff me-2"></i>
-                Mis Rendiciones
-            </h2>
 
-            <p class="text-muted mb-0">
-                Consulte el estado, continúe una rendición en proceso o descargue su liquidación.
-            </p>
-        </div>
+    <!-- =========================================================
+         ENCABEZADO
+         ========================================================= -->
 
-        <a asp-controller="Empleado"
-           asp-action="Index"
-           class="btn btn-outline-secondary mt-3 mt-md-0">
+    <div class="rendiciones-header">
 
-            <i class="bi bi-arrow-left"></i>
-            Volver
+        <div class="header-content">
 
-        </a>
+            <div class="header-icon">
 
-    </div>
+                <i class="bi bi-receipt-cutoff"></i>
 
-    @if (TempData["mensaje"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show">
+            </div>
 
-            @TempData["mensaje"]
+            <div class="header-text">
 
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Cerrar">
-            </button>
-
-        </div>
-    }
-
-    @if (TempData["error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show">
-
-            @Html.Raw(TempData["error"])
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Cerrar">
-            </button>
-
-        </div>
-    }
-
-    <div class="card card-rendiciones">
-
-        <div class="card-header bg-primary text-white py-3">
-
-            <h5 class="mb-0">
-                Historial de rendiciones
-            </h5>
-
-        </div>
-
-        <div class="card-body">
-
-            <div class="table-responsive">
-
-                <table class="table table-hover table-bordered align-middle mb-0">
-
-                    <thead class="table-light">
-
-                        <tr>
-                            <th>#</th>
-                            <th>Solicitud</th>
-                            <th>Destino</th>
-                            <th>Periodo</th>
-                            <th>Fecha de creación</th>
-                            <th>Total gastado</th>
-                            <th>Saldo</th>
-                            <th>Estado</th>
-                            <th style="min-width:280px;">Acciones</th>
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        @if (Model != null && Model.Any())
-                        {
-                            foreach (var item in Model)
-                            {
-                                <tr>
-
-                                    <td>
-                                        <strong>
-                                            #@item.IdRendicion
-                                        </strong>
-                                    </td>
-
-                                    <td>
-                                        #@item.IdSolicitud
-                                    </td>
-
-                                    <td>
-                                        @(item.Solicitud?.Destino ?? "-")
-                                    </td>
-
-                                    <td>
-                                        @item.FechaInicio.ToString("dd/MM/yyyy")
-
-                                        <br />
-
-                                        <small class="text-muted">
-                                            hasta @item.FechaFin.ToString("dd/MM/yyyy")
-                                        </small>
-                                    </td>
-
-                                    <td>
-                                        @item.Fecha.ToString("dd/MM/yyyy")
-                                    </td>
-
-                                    <td>
-                                        <strong>
-                                            S/ @item.Total.ToString("N2")
-                                        </strong>
-                                    </td>
-
-                                    <td>
-                                        S/ @item.Saldo.ToString("N2")
-                                    </td>
-
-                                    <td>
-
-                                        @switch (item.IdEstadoRendicion)
-                                        {
-                                            case 1:
-                                                <span class="estado estado-proceso">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                    En proceso
-                                                </span>
-                                                break;
-
-                                            case 2:
-                                                <span class="estado estado-pendiente">
-                                                    <i class="bi bi-clock-fill"></i>
-                                                    Pendiente de revisión
-                                                </span>
-                                                break;
-
-                                            case 3:
-                                                <span class="estado estado-aprobada">
-                                                    <i class="bi bi-check-circle-fill"></i>
-                                                    Aprobada
-                                                </span>
-                                                break;
-
-                                            case 4:
-                                                <span class="estado estado-rechazada">
-                                                    <i class="bi bi-x-circle-fill"></i>
-                                                    Rechazada
-                                                </span>
-                                                break;
-
-                                            default:
-                                                <span class="estado bg-secondary text-white">
-                                                    Sin estado
-                                                </span>
-                                                break;
-                                        }
-
-                                    </td>
-
-                                    <td>
-
-                                        <div class="acciones">
-
-                                            @if (item.IdEstadoRendicion == 1)
-                                            {
-                                                <a asp-controller="Gasto"
-                                                   asp-action="Index"
-                                                   asp-route-idRendicion="@item.IdRendicion"
-                                                   class="btn btn-primary btn-sm">
-
-                                                    <i class="bi bi-pencil-square"></i>
-                                                    Continuar
-
-                                                </a>
-                                            }
-
-                                            <a asp-controller="Rendicion"
-                                               asp-action="DetalleEmpleado"
-                                               asp-route-id="@item.IdRendicion"
-                                               class="btn btn-outline-secondary btn-sm">
-
-                                                <i class="bi bi-eye"></i>
-                                                Ver detalle
-
-                                            </a>
-
-                                            @if (!string.IsNullOrWhiteSpace(item.ArchivoPdf))
-                                            {
-                                                <a href="@item.ArchivoPdf"
-                                                   target="_blank"
-                                                   rel="noopener"
-                                                   class="btn btn-outline-danger btn-sm">
-
-                                                    <i class="bi bi-file-earmark-pdf"></i>
-                                                    Ver PDF
-
-                                                </a>
-                                            }
-
-                                        </div>
-
-                                    </td>
-
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-
-                                <td colspan="9"
-                                    class="text-center text-muted py-5">
-
-                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-
-                                    No tienes rendiciones registradas.
-
-                                </td>
-
-                            </tr>
-                        }
-
-                    </tbody>
-
-                </table>
+                <h1>
+                    Mis Rendiciones
+                </h1>
 
             </div>
 
         </div>
 
+
+        <a asp-controller="Empleado"
+           asp-action="Index"
+           class="btn-volver-header">
+
+            <i class="bi bi-arrow-left"></i>
+
+            Volver al panel
+
+        </a>
+
     </div>
+
+
+    <!-- =========================================================
+         MENSAJES
+         ========================================================= -->
+    @if (TempData["mensaje"] != null)
+    {
+        <div class="mensaje-sistema mensaje-exito alert">
+
+            <i class="bi bi-check-circle-fill"></i>
+
+            <span>
+                @TempData["mensaje"]
+            </span>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    @if (TempData["error"] != null)
+    {
+        <div class="mensaje-sistema mensaje-error alert">
+
+            <i class="bi bi-exclamation-circle-fill"></i>
+
+            <span>
+                @Html.Raw(TempData["error"])
+            </span>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    <!-- =========================================================
+         TABLA
+         ========================================================= -->
+
+    <div class="rendiciones-card">
+
+        <div class="tabla-header">
+
+            <div class="tabla-titulo">
+
+                <i class="bi bi-list-ul"></i>
+
+                Historial de rendiciones
+
+            </div>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            <table class="tabla-rendiciones">
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+
+                        <th>Solicitud</th>
+
+                        <th>Destino</th>
+
+                        <th>Periodo</th>
+
+                        <th>Fecha de creación</th>
+
+                        <th>Total gastado</th>
+
+                        <th>Saldo</th>
+
+                        <th>Estado</th>
+
+                        <th style="min-width:280px;">
+                            Acciones
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    <span class="codigo-rendicion">
+                                        #@item.IdRendicion
+                                    </span>
+                                </td>
+
+
+                                <td>
+                                    <span class="codigo-solicitud">
+                                        #@item.IdSolicitud
+                                    </span>
+                                </td>
+
+
+                                <td>
+                                    <span class="destino">
+                                        @(item.Solicitud?.Destino ?? "-")
+                                    </span>
+                                </td>
+
+
+                                <td>
+
+                                    <span class="fecha-principal">
+                                        @item.FechaInicio.ToString("dd/MM/yyyy")
+                                    </span>
+
+                                    <br />
+
+                                    <span class="fecha-secundaria">
+                                        hasta @item.FechaFin.ToString("dd/MM/yyyy")
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="fecha-principal">
+                                        @item.Fecha.ToString("dd/MM/yyyy")
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="monto">
+                                        S/ @item.Total.ToString("N2")
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    <span class="saldo">
+                                        S/ @item.Saldo.ToString("N2")
+                                    </span>
+
+                                </td>
+
+
+                                <td>
+
+                                    @if (item.IdEstadoRendicion == 1)
+                                    {
+                                        <span class="estado estado-proceso">
+
+                                            <i class="bi bi-pencil-square"></i>
+
+                                            En proceso
+
+                                        </span>
+                                    }
+                                    else if (item.IdEstadoRendicion == 2)
+                                    {
+                                        <span class="estado estado-pendiente">
+
+                                            <i class="bi bi-clock"></i>
+
+                                            Pendiente de revisión
+
+                                        </span>
+                                    }
+                                    else if (item.IdEstadoRendicion == 3)
+                                    {
+                                        <span class="estado estado-aprobada">
+
+                                            <i class="bi bi-check-circle"></i>
+
+                                            Aprobada
+
+                                        </span>
+                                    }
+                                    else if (item.IdEstadoRendicion == 4)
+                                    {
+                                        <span class="estado estado-rechazada">
+
+                                            <i class="bi bi-x-circle"></i>
+
+                                            Rechazada
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="estado estado-sin">
+
+                                            <i class="bi bi-question-circle"></i>
+
+                                            @(item.EstadoRendicion?.Nombre ?? "Sin estado")
+
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="acciones">
+
+                                        @if (item.IdEstadoRendicion == 1)
+                                        {
+                                            <a asp-controller="Gasto"
+                                               asp-action="Index"
+                                               asp-route-idRendicion="@item.IdRendicion"
+                                               class="btn btn-continuar">
+
+                                                <i class="bi bi-pencil-square"></i>
+
+                                                Continuar
+
+                                            </a>
+                                        }
+
+
+                                        <a asp-controller="Rendicion"
+                                           asp-action="DetalleEmpleado"
+                                           asp-route-id="@item.IdRendicion"
+                                           class="btn btn-detalle">
+
+                                            <i class="bi bi-eye"></i>
+
+                                            Ver detalle
+
+                                        </a>
+
+
+                                        @if (!string.IsNullOrWhiteSpace(item.ArchivoPdf))
+                                        {
+                                            <a href="@item.ArchivoPdf"
+                                               target="_blank"
+                                               rel="noopener"
+                                               class="btn btn-pdf">
+
+                                                <i class="bi bi-file-earmark-pdf"></i>
+
+                                                PDF
+
+                                            </a>
+                                        }
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+
+                            <td colspan="9"
+                                class="sin-registros">
+
+                                <i class="bi bi-inbox"></i>
+
+                                <strong>
+                                    No tienes rendiciones registradas
+                                </strong>
+
+                                <span>
+                                    Las rendiciones de tus solicitudes aparecerán aquí.
+                                </span>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    
 
 </div>

@@ -10,7 +10,8 @@ namespace Dinacem.Services
         private readonly AplicacionDbContexto _context;
 
 
-        public ReporteService(AplicacionDbContexto context)
+        public ReporteService(
+            AplicacionDbContexto context)
         {
             _context = context;
         }
@@ -27,13 +28,21 @@ namespace Dinacem.Services
         {
 
             var query = _context.Solicitudes
+
                 .Include(x => x.Usuario)
+
                 .Include(x => x.EstadoSolicitud)
+
                 .Include(x => x.Rendicion)
                     .ThenInclude(x => x.Gastos)
+
                 .AsQueryable();
 
 
+
+            // =================================================
+            // FILTRO FECHA INICIO
+            // =================================================
 
             if (fechaInicio.HasValue)
             {
@@ -43,6 +52,10 @@ namespace Dinacem.Services
 
 
 
+            // =================================================
+            // FILTRO FECHA FIN
+            // =================================================
+
             if (fechaFin.HasValue)
             {
                 query = query.Where(x =>
@@ -51,18 +64,32 @@ namespace Dinacem.Services
 
 
 
-            var solicitudes = await query.ToListAsync();
+            var solicitudes =
+                await query.ToListAsync();
 
 
 
-            var reporte = new ReporteGeneral();
+            // =================================================
+            // CREAR REPORTE
+            // =================================================
+
+            var reporte =
+                new ReporteGeneral();
 
 
+
+            // =================================================
+            // TOTAL SOLICITUDES
+            // =================================================
 
             reporte.TotalSolicitudes =
                 solicitudes.Count;
 
 
+
+            // =================================================
+            // SOLICITUDES PENDIENTES
+            // =================================================
 
             reporte.SolicitudesPendientes =
                 solicitudes.Count(x =>
@@ -70,11 +97,19 @@ namespace Dinacem.Services
 
 
 
+            // =================================================
+            // SOLICITUDES APROBADAS
+            // =================================================
+
             reporte.SolicitudesAprobadas =
                 solicitudes.Count(x =>
                     x.EstadoSolicitud!.Nombre == "Aprobado");
 
 
+
+            // =================================================
+            // SOLICITUDES RECHAZADAS
+            // =================================================
 
             reporte.SolicitudesRechazadas =
                 solicitudes.Count(x =>
@@ -82,31 +117,62 @@ namespace Dinacem.Services
 
 
 
+            // =================================================
+            // SOLICITUDES FINALIZADAS
+            // =================================================
+
             reporte.SolicitudesFinalizadas =
                 solicitudes.Count(x =>
                     x.EstadoSolicitud!.Nombre == "Finalizado");
 
 
 
+            // =================================================
+            // TOTAL SOLICITADO
+            // =================================================
+
             reporte.TotalSolicitado =
-                solicitudes.Sum(x => x.Monto);
+                solicitudes.Sum(x =>
+                    x.Monto);
 
 
+
+            // =================================================
+            // TOTAL RENDIDO
+            // =================================================
 
             reporte.TotalRendido =
                 solicitudes
-                .Where(x => x.Rendicion != null)
-                .Sum(x => x.Rendicion!.Total);
+
+                .Where(x =>
+                    x.Rendicion != null)
+
+                .Sum(x =>
+                    x.Rendicion!.Total);
 
 
+
+            // =================================================
+            // TOTAL GASTADO
+            // =================================================
 
             reporte.TotalGastado =
                 solicitudes
-                .Where(x => x.Rendicion != null)
-                .SelectMany(x => x.Rendicion!.Gastos)
-                .Sum(x => x.MontoTotal);
+
+                .Where(x =>
+                    x.Rendicion != null)
+
+                .SelectMany(x =>
+                    x.Rendicion!.Gastos)
+
+                .Sum(x =>
+                    x.MontoTotal);
 
 
+
+            // =================================================
+            // SALDO PENDIENTE
+            // =================================================
 
             reporte.SaldoPendiente =
                 reporte.TotalSolicitado -
@@ -114,14 +180,25 @@ namespace Dinacem.Services
 
 
 
+            // =================================================
+            // RENDICIONES PENDIENTES
+            // =================================================
+
             reporte.RendicionesPendientes =
                 solicitudes.Count(x =>
                     x.Rendicion == null);
 
 
 
-            reporte.FechaInicio = fechaInicio;
-            reporte.FechaFin = fechaFin;
+            // =================================================
+            // FECHAS DEL REPORTE
+            // =================================================
+
+            reporte.FechaInicio =
+                fechaInicio;
+
+            reporte.FechaFin =
+                fechaFin;
 
 
 
@@ -138,85 +215,110 @@ namespace Dinacem.Services
 
         public async Task<List<DetalleReporte>>
             ObtenerDetalleReporte(
-            DateTime? fechaInicio,
-            DateTime? fechaFin)
+                DateTime? fechaInicio,
+                DateTime? fechaFin)
         {
 
+            var query =
+                _context.Solicitudes
 
-            var query = _context.Solicitudes
+                .Include(x =>
+                    x.Usuario)
 
-                .Include(x => x.Usuario)
+                .Include(x =>
+                    x.EstadoSolicitud)
 
-                .Include(x => x.EstadoSolicitud)
-
-                .Include(x => x.Rendicion)
+                .Include(x =>
+                    x.Rendicion)
 
                 .AsQueryable();
 
 
 
+            // =================================================
+            // FILTRO FECHA INICIO
+            // =================================================
+
             if (fechaInicio.HasValue)
             {
-                query = query.Where(x =>
-                    x.FechaInicio >= fechaInicio);
+                query =
+                    query.Where(x =>
+                        x.FechaInicio >= fechaInicio.Value);
             }
 
 
+
+            // =================================================
+            // FILTRO FECHA FIN
+            // =================================================
 
             if (fechaFin.HasValue)
             {
-                query = query.Where(x =>
-                    x.FechaFin <= fechaFin);
+                query =
+                    query.Where(x =>
+                        x.FechaFin <= fechaFin.Value);
             }
 
 
 
+            // =================================================
+            // DETALLE
+            // =================================================
+
             return await query
-                .Select(x => new DetalleReporte
-                {
 
-                    IdSolicitud = x.IdSolicitud,
+                .Select(x =>
+                    new DetalleReporte
+                    {
 
-
-                    Usuario =
-                        x.Usuario!.Nombres
-                        + " "
-                        + x.Usuario.Apellidos,
+                        IdSolicitud =
+                            x.IdSolicitud,
 
 
-                    Motivo = x.Motivo,
+                        Usuario =
+                            x.Usuario!.Nombres
+                            + " "
+                            + x.Usuario.Apellidos,
 
 
-                    Destino = x.Destino,
+                        Motivo =
+                            x.Motivo,
 
 
-                    FechaInicio = x.FechaInicio,
+                        Destino =
+                            x.Destino,
 
 
-                    FechaFin = x.FechaFin,
+                        FechaInicio =
+                            x.FechaInicio,
 
 
-                    MontoSolicitado = x.Monto,
+                        FechaFin =
+                            x.FechaFin,
 
 
-                    MontoRendido =
-                        x.Rendicion != null
-                        ? x.Rendicion.Total
-                        : 0,
+                        MontoSolicitado =
+                            x.Monto,
 
 
-                    Saldo =
-                        x.Rendicion != null
-                        ? x.Rendicion.Saldo
-                        : x.Monto,
+                        MontoRendido =
+                            x.Rendicion != null
+                            ? x.Rendicion.Total
+                            : 0,
 
 
-                    Estado =
-                        x.EstadoSolicitud!.Nombre
+                        Saldo =
+                            x.Rendicion != null
+                            ? x.Rendicion.Saldo
+                            : x.Monto,
 
-                })
+
+                        Estado =
+                            x.EstadoSolicitud!.Nombre
+
+                    })
+
                 .ToListAsync();
-
         }
 
 
@@ -231,53 +333,86 @@ namespace Dinacem.Services
             ObtenerDashboard()
         {
 
+            // =================================================
+            // OBTENER RESUMEN GENERAL
+            // =================================================
 
             var reporte =
-                await ObtenerReporteGeneral(null, null);
+                await ObtenerReporteGeneral(
+                    null,
+                    null);
 
 
+
+            // =================================================
+            // TOTAL DE USUARIOS
+            // =================================================
+
+            reporte.TotalUsuarios =
+                await _context.Usuarios
+                    .CountAsync();
+
+
+
+            // =================================================
+            // VIÁTICOS POR MES
+            // =================================================
 
             var mensual =
                 await _context.Solicitudes
 
-                .GroupBy(x => new
-                {
-                    x.Fecha.Year,
-                    x.Fecha.Month
-                })
+                .GroupBy(x =>
+                    new
+                    {
+                        x.Fecha.Year,
+                        x.Fecha.Month
+                    })
 
-                .Select(x => new
-                {
-                    Mes = x.Key.Month,
-                    Total = x.Sum(y => y.Monto)
-                })
+                .Select(x =>
+                    new
+                    {
+                        Mes =
+                            x.Key.Month,
 
-                .OrderBy(x => x.Mes)
+                        Total =
+                            x.Sum(y =>
+                                y.Monto)
+                    })
+
+                .OrderBy(x =>
+                    x.Mes)
 
                 .ToListAsync();
 
 
 
+            // =================================================
+            // PREPARAR DATOS DEL GRÁFICO
+            // =================================================
+
             foreach (var item in mensual)
             {
 
                 reporte.Meses.Add(
+
                     new DateTime(
                         DateTime.Now.Year,
                         item.Mes,
                         1)
+
                     .ToString("MMMM")
                 );
 
 
-                reporte.MontosMensuales
-                    .Add(item.Total);
+                reporte.MontosMensuales.Add(
+                    item.Total
+                );
 
             }
 
 
-            return reporte;
 
+            return reporte;
         }
 
 
@@ -292,58 +427,62 @@ namespace Dinacem.Services
             ObtenerReporteRendiciones()
         {
 
-
             return await _context.Rendiciones
 
-                .Include(x => x.Usuario)
+                .Include(x =>
+                    x.Usuario)
 
-                .Include(x => x.Solicitud)
+                .Include(x =>
+                    x.Solicitud)
 
-                .Include(x => x.Gastos)
+                .Include(x =>
+                    x.Gastos)
 
-                .Include(x => x.DevolucionSaldo)
+                .Include(x =>
+                    x.DevolucionSaldo)
 
-                .Select(x => new ReporteRendicion
-                {
+                .Select(x =>
+                    new ReporteRendicion
+                    {
 
-                    Usuario =
-                    x.Usuario!.Nombres
-                    + " "
-                    + x.Usuario.Apellidos,
-
-
-                    Solicitud =
-                    "SOL-" + x.IdSolicitud,
-
-
-                    MontoEntregado =
-                    x.Solicitud!.Monto,
+                        Usuario =
+                            x.Usuario!.Nombres
+                            + " "
+                            + x.Usuario.Apellidos,
 
 
-                    Gastado =
-                    x.Gastos.Sum(g =>
-                    g.MontoTotal),
+                        Solicitud =
+                            "SOL-" +
+                            x.IdSolicitud,
 
 
-                    Devuelto =
-                    x.DevolucionSaldo != null
-                    ? x.DevolucionSaldo.Monto
-                    : 0,
+                        MontoEntregado =
+                            x.Solicitud!.Monto,
 
 
-                    Diferencia =
-                    x.Solicitud.Monto -
-                    x.Gastos.Sum(g =>
-                    g.MontoTotal),
+                        Gastado =
+                            x.Gastos.Sum(g =>
+                                g.MontoTotal),
 
 
-                    Estado =
-                    x.EstadoRendicion!.Nombre
+                        Devuelto =
+                            x.DevolucionSaldo != null
+                            ? x.DevolucionSaldo.Monto
+                            : 0,
 
 
-                })
+                        Diferencia =
+                            x.Solicitud.Monto -
+                            x.Gastos.Sum(g =>
+                                g.MontoTotal),
+
+
+                        Estado =
+                            x.EstadoRendicion!.Nombre
+
+                    })
+
                 .ToListAsync();
-
         }
 
 
@@ -358,30 +497,32 @@ namespace Dinacem.Services
             ObtenerReporteGastos()
         {
 
-
             return await _context.Gastos
 
-                .Include(x => x.TipoGasto)
+                .Include(x =>
+                    x.TipoGasto)
 
-                .GroupBy(x => x.TipoGasto!.Nombre)
+                .GroupBy(x =>
+                    x.TipoGasto!.Nombre)
 
-                .Select(x => new ReporteGasto
-                {
+                .Select(x =>
+                    new ReporteGasto
+                    {
 
-                    TipoGasto = x.Key,
+                        TipoGasto =
+                            x.Key,
 
 
-                    Total =
-                    x.Sum(g =>
-                    g.MontoTotal)
+                        Total =
+                            x.Sum(g =>
+                                g.MontoTotal)
 
-                })
+                    })
 
                 .OrderByDescending(x =>
                     x.Total)
 
                 .ToListAsync();
-
         }
 
 
@@ -396,44 +537,51 @@ namespace Dinacem.Services
             ObtenerReporteUsuarios()
         {
 
-
             return await _context.Usuarios
 
-                .Select(x => new ReporteUsuario
-                {
+                .Select(x =>
+                    new ReporteUsuario
+                    {
 
-                    Usuario =
-                    x.Nombres
-                    + " "
-                    + x.Apellidos,
-
-
-                    Solicitudes =
-                    _context.Solicitudes
-                    .Count(s =>
-                    s.IdUsuario == x.IdUsuario),
+                        Usuario =
+                            x.Nombres
+                            + " "
+                            + x.Apellidos,
 
 
-                    TotalViaticos =
-                    _context.Solicitudes
-                    .Where(s =>
-                    s.IdUsuario == x.IdUsuario)
-                    .Sum(s =>
-                    s.Monto),
+                        Solicitudes =
+                            _context.Solicitudes
+
+                            .Count(s =>
+                                s.IdUsuario ==
+                                x.IdUsuario),
 
 
-                    RendicionesPendientes =
-                    _context.Rendiciones
-                    .Count(r =>
-                    r.IdUsuario == x.IdUsuario
-                    &&
-                    r.IdEstadoRendicion != 3)
+                        TotalViaticos =
+                            _context.Solicitudes
+
+                            .Where(s =>
+                                s.IdUsuario ==
+                                x.IdUsuario)
+
+                            .Sum(s =>
+                                s.Monto),
 
 
-                })
+                        RendicionesPendientes =
+                            _context.Rendiciones
+
+                            .Count(r =>
+                                r.IdUsuario ==
+                                x.IdUsuario
+
+                                &&
+
+                                r.IdEstadoRendicion != 3)
+
+                    })
 
                 .ToListAsync();
-
         }
 
 
@@ -441,115 +589,57 @@ namespace Dinacem.Services
 
 
         // =====================================================
-        // SOLICITUDES PENDIENTES
-        // =====================================================
-
-        public async Task<List<ReportePendiente>>
-            ObtenerSolicitudesPendientes()
-        {
-
-
-            return await _context.Solicitudes
-
-                .Include(x => x.Usuario)
-
-                .Include(x => x.EstadoSolicitud)
-
-                .Where(x =>
-                x.EstadoSolicitud!.Nombre == "Pendiente")
-
-                .Select(x => new ReportePendiente
-                {
-
-                    IdSolicitud =
-                    x.IdSolicitud,
-
-
-                    Codigo =
-                    "SOL-" + x.IdSolicitud,
-
-
-                    Solicitante =
-                    x.Usuario!.Nombres
-                    + " "
-                    + x.Usuario.Apellidos,
-
-
-                    Destino =
-                    x.Destino,
-
-
-                    Monto =
-                    x.Monto,
-
-
-                    Fecha =
-                    x.Fecha
-
-                })
-
-                .ToListAsync();
-
-        }
-
-
-
-
-
-        // =====================================================
-        // REPORTE REEMBOLSOS
+        // REPORTE DE REEMBOLSOS
         // =====================================================
 
         public async Task<List<ReporteReembolso>>
             ObtenerReporteReembolsos()
         {
 
-
             return await _context.Reembolsos
 
-                .Include(x => x.Usuario)
-
-                .Include(x => x.Rendicion)
-
-                    .ThenInclude(x =>
-                    x.Solicitud)
+                .Include(x =>
+                    x.Usuario)
 
                 .Include(x =>
-                x.EstadoReembolso)
+                    x.Rendicion)
 
-                .Select(x => new ReporteReembolso
-                {
+                    .ThenInclude(x =>
+                        x.Solicitud)
 
-                    Usuario =
-                    x.Usuario!.Nombres
-                    + " "
-                    + x.Usuario.Apellidos,
+                .Include(x =>
+                    x.EstadoReembolso)
 
+                .Select(x =>
+                    new ReporteReembolso
+                    {
 
-                    Motivo =
-                    x.Rendicion!
-                    .Solicitud!
-                    .Motivo,
-
-
-                    Monto =
-                    x.Monto,
+                        Usuario =
+                            x.Usuario!.Nombres
+                            + " "
+                            + x.Usuario.Apellidos,
 
 
-                    Estado =
-                    x.EstadoReembolso!.Nombre,
+                        Motivo =
+                            x.Rendicion!
+                            .Solicitud!
+                            .Motivo,
 
 
-                    Fecha =
-                    x.FechaSolicitud
+                        Monto =
+                            x.Monto,
 
 
-                })
+                        Estado =
+                            x.EstadoReembolso!.Nombre,
+
+
+                        Fecha =
+                            x.FechaSolicitud
+
+                    })
 
                 .ToListAsync();
-
         }
-
-
     }
 }

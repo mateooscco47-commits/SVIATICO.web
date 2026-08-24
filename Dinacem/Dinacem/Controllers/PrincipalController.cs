@@ -1,4 +1,5 @@
 ﻿using Dinacem.Models;
+using Dinacem.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,19 +7,30 @@ namespace Dinacem.Controllers
 {
     public class PrincipalController : Controller
     {
-        private readonly AplicacionDbContexto _context;
+        private readonly ReporteService _reporteService;
+
 
         public PrincipalController(
-            AplicacionDbContexto context)
+            ReporteService reporteService)
         {
-            _context = context;
+            _reporteService = reporteService;
         }
+
+
+        // =====================================================
+        // INICIO / DASHBOARD EJECUTIVO
+        // =====================================================
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            // ================================================
+            // VERIFICAR ROL
+            // ================================================
+
             var idRol =
                 HttpContext.Session.GetInt32("IdRol");
+
 
             if (idRol != 1)
             {
@@ -30,22 +42,17 @@ namespace Dinacem.Controllers
                     "Home");
             }
 
-            ViewBag.TotalUsuarios =
-                await _context.Usuarios.CountAsync();
 
-            ViewBag.SolicitudesPendientes =
-                await _context.Solicitudes.CountAsync(s =>
-                    s.IdEstadoSolicitud == 1);
+            // ================================================
+            // OBTENER DASHBOARD
+            // ================================================
 
-            ViewBag.RendicionesPendientes =
-                await _context.Rendiciones.CountAsync(r =>
-                    r.IdEstadoRendicion == 2);
+            var reporte =
+                await _reporteService
+                    .ObtenerDashboard();
 
-            ViewBag.SolicitudesAprobadas =
-                await _context.Solicitudes.CountAsync(s =>
-                    s.IdEstadoSolicitud == 2);
 
-            return View();
+            return View(reporte);
         }
     }
 }

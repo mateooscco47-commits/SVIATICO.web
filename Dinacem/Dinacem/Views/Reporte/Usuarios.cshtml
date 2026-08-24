@@ -1,45 +1,585 @@
 ﻿@model List<Dinacem.Models.Reporte.ReporteUsuario>
 
 @{
-    ViewData["Title"] = "Reporte por Usuario";
+    ViewData["Title"] = "Reporte por Usuarios";
     Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+
+    var usuarios = Model ?? new List<Dinacem.Models.Reporte.ReporteUsuario>();
+
+    var totalUsuarios = usuarios.Count;
+
+    var totalSolicitudes =
+        usuarios.Sum(x => x.Solicitudes);
+
+    var totalViaticos =
+        usuarios.Sum(x => x.TotalViaticos);
+
+    var totalPendientes =
+        usuarios.Sum(x => x.RendicionesPendientes);
 }
 
-<div class="container-fluid">
+<style>
 
-   <!-- ===========================================
-    ENCABEZADO DEL REPORTE
-=========================================== -->
+    /* =========================================================
+           CONTENEDOR
+           ========================================================= */
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+    .reporte-container {
+        width: 100%;
+        padding: 5px 0 25px 0;
+    }
 
-    <div class="d-flex align-items-center">
 
-        <a asp-controller="Reporte"
-           asp-action="Index"
-           class="btn btn-outline-primary rounded-pill me-3">
+    /* =========================================================
+               ENCABEZADO
+               ========================================================= */
 
-            <i class="bi bi-arrow-left-circle"></i>
+    .reporte-header {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 22px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    }
 
-            Volver
+    .reporte-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
 
-        </a>
+    .reporte-title-area {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
 
-        <div>
+    .reporte-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        background: #eaf3fb;
+        color: #0c4a8a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
 
-            <h2 class="fw-bold text-primary mb-0">
+    .reporte-title {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: #1e293b;
+    }
 
-                <i class="bi bi-people-fill me-2"></i>
+    .reporte-description {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: #64748b;
+    }
 
-                Reporte por Usuarios
+    /* =========================================================
+               BOTONES
+               ========================================================= */
 
-            </h2>
+    .btn-reporte-back {
+        border: 1px solid #cbd5e1;
+        color: #334155;
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 8px 14px;
+        font-size: 13px;
+        text-decoration: none;
+        transition: all .2s ease;
+    }
 
-            <small class="text-muted">
+        .btn-reporte-back:hover {
+            background: #f1f5f9;
+            color: #0c4a8a;
+            border-color: #0c4a8a;
+        }
 
-                Sistema de Viáticos DINACEN
+    .btn-reporte-pdf {
+        background: #b91c1c;
+        border: 1px solid #b91c1c;
+        color: #ffffff;
+        border-radius: 8px;
+        padding: 9px 17px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all .2s ease;
+        white-space: nowrap;
+    }
 
-            </small>
+        .btn-reporte-pdf:hover {
+            background: #991b1b;
+            border-color: #991b1b;
+            color: #ffffff;
+        }
+
+
+    /* =========================================================
+           TARJETAS KPI
+           ========================================================= */
+
+    .kpi-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 13px;
+        min-height: 115px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+        }
+
+    .kpi-body {
+        padding: 20px;
+    }
+
+    .kpi-label {
+        display: block;
+        font-size: 12px;
+        color: #64748b;
+        margin-bottom: 7px;
+    }
+
+    .kpi-value {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+        color: #172033;
+    }
+
+    .kpi-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 19px;
+    }
+
+    .kpi-blue {
+        background: #eaf3fb;
+        color: #0c4a8a;
+    }
+
+    .kpi-green {
+        background: #eaf7ef;
+        color: #15803d;
+    }
+
+    .kpi-cyan {
+        background: #e8f7fa;
+        color: #087f8c;
+    }
+
+    .kpi-red {
+        background: #fef0f0;
+        color: #b91c1c;
+    }
+
+
+    /* =========================================================
+           TARJETAS DE CONTENIDO
+           ========================================================= */
+
+    .content-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        height: 100%;
+    }
+
+    .content-card-header {
+        padding: 15px 18px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+        color: #172033;
+    }
+
+        .content-card-header i {
+            color: #0c4a8a;
+            margin-right: 7px;
+        }
+
+    .chart-container {
+        height: 390px;
+        padding: 20px;
+    }
+
+
+    /* =========================================================
+           TABLA
+           ========================================================= */
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .reporte-table {
+        width: 100%;
+        margin: 0;
+        border-collapse: collapse;
+    }
+
+        .reporte-table thead th {
+            background: #f1f5f9;
+            color: #334155;
+            font-size: 12px;
+            font-weight: 700;
+            border-bottom: 1px solid #cbd5e1;
+            padding: 13px 15px;
+            white-space: nowrap;
+        }
+
+        .reporte-table tbody td {
+            padding: 13px 15px;
+            font-size: 13px;
+            color: #334155;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+        }
+
+        .reporte-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+    .usuario-nombre {
+        font-weight: 600;
+        color: #172033;
+    }
+
+    .monto {
+        font-weight: 700;
+        color: #0c4a8a;
+        white-space: nowrap;
+    }
+
+    .badge-sin-pendientes {
+        background: #dcfce7;
+        color: #166534;
+        font-weight: 600;
+        padding: 6px 10px;
+        border-radius: 7px;
+    }
+
+    .badge-pendientes {
+        background: #fef3c7;
+        color: #92400e;
+        font-weight: 600;
+        padding: 6px 10px;
+        border-radius: 7px;
+    }
+
+
+    /* =========================================================
+           ESTADO VACÍO
+           ========================================================= */
+
+    .empty-state {
+        padding: 55px 20px;
+        text-align: center;
+        color: #64748b;
+    }
+
+        .empty-state i {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 10px;
+            color: #94a3b8;
+        }
+
+
+    /* =========================================================
+           RESPONSIVE
+           ========================================================= */
+
+    @@media (max-width: 768px) {
+
+        .reporte-header {
+            padding: 16px;
+        }
+
+        .reporte-header-left {
+            align-items: flex-start;
+        }
+
+        .reporte-title {
+            font-size: 20px;
+        }
+
+        .btn-pdf {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .chart-container {
+            height: 320px;
+        }
+
+        .kpi-value {
+            font-size: 21px;
+        }
+    }
+
+</style>
+
+
+<div class="container-fluid reporte-container">
+
+
+    <!-- =========================================================
+     ENCABEZADO
+     ========================================================= -->
+
+    <div class="reporte-header">
+
+        <div class="reporte-header-content">
+
+
+            <!-- INFORMACIÓN -->
+
+            <div class="reporte-title-area">
+
+                <div class="reporte-icon">
+
+                    <i class="bi bi-people-fill"></i>
+
+                </div>
+
+                <div>
+
+                    <h1 class="reporte-title">
+
+                        Reporte por Usuarios
+
+                    </h1>
+
+                    <p class="reporte-description">
+
+                        Resumen de viáticos, solicitudes y rendiciones por usuario.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCIONES -->
+
+            <div class="d-flex align-items-center gap-2">
+
+                <a asp-controller="Reporte"
+                   asp-action="Index"
+                   class="btn-reporte-back">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+
+                    Volver
+
+                </a>
+
+
+                <a asp-controller="Reporte"
+                   asp-action="ExportarUsuariosPdf"
+                   class="btn-reporte-pdf">
+
+                    <i class="bi bi-file-earmark-pdf-fill me-1"></i>
+
+                    Exportar PDF
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         INDICADORES
+         ========================================================= -->
+
+    <div class="row g-4 mb-4">
+
+
+        <!-- USUARIOS -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="kpi-card">
+
+                <div class="kpi-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <span class="kpi-label">
+
+                                Usuarios
+
+                            </span>
+
+                            <h3 class="kpi-value">
+
+                                @totalUsuarios
+
+                            </h3>
+
+                        </div>
+
+                        <div class="kpi-icon kpi-blue">
+
+                            <i class="bi bi-people-fill"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SOLICITUDES -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="kpi-card">
+
+                <div class="kpi-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <span class="kpi-label">
+
+                                Solicitudes
+
+                            </span>
+
+                            <h3 class="kpi-value">
+
+                                @totalSolicitudes
+
+                            </h3>
+
+                        </div>
+
+                        <div class="kpi-icon kpi-green">
+
+                            <i class="bi bi-file-earmark-text-fill"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- VIÁTICOS -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="kpi-card">
+
+                <div class="kpi-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <span class="kpi-label">
+
+                                Total de viáticos
+
+                            </span>
+
+                            <h3 class="kpi-value">
+
+                                S/ @totalViaticos.ToString("N2")
+
+                            </h3>
+
+                        </div>
+
+                        <div class="kpi-icon kpi-cyan">
+
+                            <i class="bi bi-cash-stack"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PENDIENTES -->
+
+        <div class="col-xl-3 col-md-6">
+
+            <div class="kpi-card">
+
+                <div class="kpi-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <span class="kpi-label">
+
+                                Rendiciones pendientes
+
+                            </span>
+
+                            <h3 class="kpi-value">
+
+                                @totalPendientes
+
+                            </h3>
+
+                        </div>
+
+                        <div class="kpi-icon kpi-red">
+
+                            <i class="bi bi-exclamation-circle-fill"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
@@ -47,145 +587,46 @@
 
 
 
-    <div>
+    <!-- =========================================================
+         CONTENIDO
+         ========================================================= -->
 
-        <a asp-controller="Reporte"
-           asp-action="ExportarUsuariosPdf"
-           class="btn btn-danger rounded-pill">
-
-            <i class="bi bi-file-earmark-pdf-fill"></i>
-
-            Exportar PDF
-
-        </a>
-
-    </div>
-
-</div>
-
-<hr class="mb-4" />
+    <div class="row g-4">
 
 
-    <!-- KPI -->
+        <!-- =====================================================
+             GRÁFICO
+             ===================================================== -->
 
-    <div class="row mb-4">
+        <div class="col-xl-5">
 
-        <div class="col-md-3">
+            <div class="content-card">
 
-            <div class="card shadow-sm border-0">
+                <div class="content-card-header">
 
-                <div class="card-body">
+                    <i class="bi bi-bar-chart-fill"></i>
 
-                    <small class="text-muted">
-
-                        Usuarios
-
-                    </small>
-
-                    <h3 class="fw-bold text-primary">
-
-                        @Model.Count
-
-                    </h3>
+                    Total de viáticos por usuario
 
                 </div>
 
-            </div>
 
-        </div>
+                <div class="chart-container">
 
-        <div class="col-md-3">
+                    @if (usuarios.Any())
+                    {
+                        <canvas id="graficoUsuarios"></canvas>
+                    }
+                    else
+                    {
+                        <div class="empty-state">
 
-            <div class="card shadow-sm border-0">
+                            <i class="bi bi-bar-chart"></i>
 
-                <div class="card-body">
+                            No existen datos para mostrar.
 
-                    <small class="text-muted">
-
-                        Solicitudes
-
-                    </small>
-
-                    <h3 class="fw-bold text-success">
-
-                        @Model.Sum(x => x.Solicitudes)
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card shadow-sm border-0">
-
-                <div class="card-body">
-
-                    <small class="text-muted">
-
-                        Total Viáticos
-
-                    </small>
-
-                    <h3 class="fw-bold text-info">
-
-                        S/ @(Model.Sum(x => x.TotalViaticos).ToString("N2"))
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card shadow-sm border-0">
-
-                <div class="card-body">
-
-                    <small class="text-muted">
-
-                        Rendiciones Pendientes
-
-                    </small>
-
-                    <h3 class="fw-bold text-danger">
-
-                        @Model.Sum(x => x.RendicionesPendientes)
-
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="row">
-
-        <!-- GRÁFICO -->
-
-        <div class="col-lg-5">
-
-            <div class="card shadow-sm">
-
-                <div class="card-header fw-bold">
-
-                    Total de Viáticos por Usuario
-
-                </div>
-
-                <div class="card-body">
-
-                    <canvas id="graficoUsuarios"></canvas>
+                        </div>
+                    }
 
                 </div>
 
@@ -194,69 +635,97 @@
         </div>
 
 
-        <!-- TABLA -->
 
-        <div class="col-lg-7">
+        <!-- =====================================================
+             TABLA
+             ===================================================== -->
 
-            <div class="card shadow-sm">
+        <div class="col-xl-7">
 
-                <div class="card-header fw-bold">
+            <div class="content-card">
 
-                    Detalle por Usuario
+                <div class="content-card-header">
+
+                    <i class="bi bi-table"></i>
+
+                    Detalle por usuario
 
                 </div>
 
-                <div class="card-body table-responsive">
 
-                    <table class="table table-hover align-middle">
+                <div class="table-wrapper">
 
-                        <thead class="table-light">
+                    <table class="reporte-table">
+
+                        <thead>
 
                             <tr>
 
-                                <th>Usuario</th>
+                                <th>
+                                    Usuario
+                                </th>
 
-                                <th>Solicitudes</th>
+                                <th class="text-center">
+                                    Solicitudes
+                                </th>
 
-                                <th>Total Viáticos</th>
+                                <th class="text-end">
+                                    Total viáticos
+                                </th>
 
-                                <th>Rendiciones Pendientes</th>
+                                <th class="text-center">
+                                    Rendiciones
+                                </th>
 
                             </tr>
 
                         </thead>
 
+
                         <tbody>
 
-                            @if (Model.Any())
+                            @if (usuarios.Any())
                             {
-                                foreach (var item in Model)
+                                foreach (var item in usuarios)
                                 {
                                     <tr>
 
                                         <td>
 
-                                            @item.Usuario
+                                            <span class="usuario-nombre">
+
+                                                @item.Usuario
+
+                                            </span>
 
                                         </td>
 
-                                        <td>
+
+                                        <td class="text-center">
 
                                             @item.Solicitudes
 
                                         </td>
 
-                                        <td>
 
-                                            S/ @item.TotalViaticos.ToString("N2")
+                                        <td class="text-end">
+
+                                            <span class="monto">
+
+                                                S/ @item.TotalViaticos.ToString("N2")
+
+                                            </span>
 
                                         </td>
 
-                                        <td>
+
+                                        <td class="text-center">
 
                                             @if (item.RendicionesPendientes == 0)
                                             {
-                                                <span class="badge bg-success">
+                                                <span class="badge-sin-pendientes">
+
+                                                    <i class="bi bi-check-circle me-1"></i>
 
                                                     Sin pendientes
 
@@ -264,9 +733,11 @@
                                             }
                                             else
                                             {
-                                                <span class="badge bg-warning text-dark">
+                                                <span class="badge-pendientes">
 
-                                                    @item.RendicionesPendientes Pendiente(s)
+                                                    <i class="bi bi-clock me-1"></i>
+
+                                                    @item.RendicionesPendientes pendiente(s)
 
                                                 </span>
                                             }
@@ -280,9 +751,15 @@
                             {
                                 <tr>
 
-                                    <td colspan="4" class="text-center">
+                                    <td colspan="4">
 
-                                        No existen registros.
+                                        <div class="empty-state">
+
+                                            <i class="bi bi-people"></i>
+
+                                            No existen registros de usuarios.
+
+                                        </div>
 
                                     </td>
 
@@ -290,6 +767,46 @@
                             }
 
                         </tbody>
+
+
+                        @if (usuarios.Any())
+                        {
+                            <tfoot>
+
+                                <tr>
+
+                                    <th>
+
+                                        TOTAL
+
+                                    </th>
+
+                                    <th class="text-center">
+
+                                        @totalSolicitudes
+
+                                    </th>
+
+                                    <th class="text-end">
+
+                                        <span class="monto">
+
+                                            S/ @totalViaticos.ToString("N2")
+
+                                        </span>
+
+                                    </th>
+
+                                    <th class="text-center">
+
+                                        @totalPendientes
+
+                                    </th>
+
+                                </tr>
+
+                            </tfoot>
+                        }
 
                     </table>
 
@@ -304,75 +821,133 @@
 </div>
 
 
-@section Scripts{
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@section Scripts {
 
-<script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-const ctx =
-document.getElementById('graficoUsuarios');
+    <script>
 
-new Chart(ctx, {
+        const canvasUsuarios =
+            document.getElementById("graficoUsuarios");
 
-    type: 'bar',
+        if (canvasUsuarios) {
 
-    data: {
+            const etiquetasUsuarios = [
 
-        labels: [
-
-            @foreach (var item in Model)
-            {
-                <text>'@item.Usuario',</text>
-            }
-
-        ],
-
-        datasets: [{
-
-            label: 'Viáticos',
-
-            data: [
-
-                @foreach (var item in Model)
+                        @foreach (var item in usuarios)
                 {
-                    <text>@item.TotalViaticos,</text>
+                    <text>
+                                        @Html.Raw(
+                                                System.Text.Json.JsonSerializer.Serialize(
+                                                        item.Usuario ?? ""
+        )
+        ),
+                    </text>
+                        }
+
+                    ];
+
+
+            const valoresUsuarios = [
+
+                        @foreach (var item in usuarios)
+                {
+                    <text>
+                        @item.TotalViaticos.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture
+                        ),
+                    </text>
+                        }
+
+                    ];
+
+
+            new Chart(canvasUsuarios, {
+
+                type: "bar",
+
+                data: {
+
+                    labels: etiquetasUsuarios,
+
+                    datasets: [
+
+                        {
+
+                            label: "Viáticos (S/)",
+
+                            data: valoresUsuarios,
+
+                            borderWidth: 1,
+
+                            borderRadius: 5
+
+                        }
+
+                    ]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+
+                            display: false
+
+                        }
+
+                    },
+
+
+                    scales: {
+
+                        x: {
+
+                            ticks: {
+
+                                autoSkip: false,
+
+                                maxRotation: 45,
+
+                                minRotation: 0
+
+                            }
+
+                        },
+
+
+                        y: {
+
+                            beginAtZero: true,
+
+                            ticks: {
+
+                                callback: function (value) {
+
+                                    return "S/ " + value;
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
                 }
 
-            ]
-
-        }]
-
-    },
-
-    options: {
-
-        responsive: true,
-
-        plugins: {
-
-            legend: {
-
-                display: false
-
-            }
-
-        },
-
-        scales: {
-
-            y: {
-
-                beginAtZero: true
-
-            }
+            });
 
         }
 
-    }
-
-});
-
-</script>
+    </script>
 
 }
