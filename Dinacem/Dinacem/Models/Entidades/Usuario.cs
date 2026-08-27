@@ -37,8 +37,10 @@ namespace Dinacem.Models
                 ErrorMessage = "El celular debe tener 9 dígitos y comenzar con 9.")]
             public string? Celular { get; set; }
 
-            public string? Zona { get; set; }
+            public int? IdZona { get; set; }
 
+            [ForeignKey("IdZona")]
+            public Zona? Zona { get; set; }
 
         [Required(ErrorMessage = "Ingrese el usuario de acceso.")]
             [StringLength(50, MinimumLength = 4,

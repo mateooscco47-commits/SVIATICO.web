@@ -11,18 +11,36 @@ namespace Dinacem.Controllers
         private readonly CorreoService _correoService;
 
         public SolicitudController(
-    AplicacionDbContexto context,
-    CorreoService correoService)
+            AplicacionDbContexto context,
+            CorreoService correoService)
         {
             _context = context;
             _correoService = correoService;
         }
 
-        // ==========================================
-        // EMPLEADO
-        // ==========================================
+        // =========================================================
+        // VALIDAR SI EL USUARIO TIENE UNA SOLICITUD SIN RENDIR
+        // =========================================================
 
-        // Mostrar formulario
+        private async Task<bool> TieneSolicitudSinRendirAsync(int idUsuario)
+        {
+            return await _context.Solicitudes.AnyAsync(s =>
+                s.IdUsuario == idUsuario &&
+                (
+                    s.IdEstadoSolicitud == 1 ||
+                    (
+                        s.IdEstadoSolicitud == 2 &&
+                        !_context.Rendiciones.Any(r =>
+                            r.IdSolicitud == s.IdSolicitud)
+                    )
+                )
+            );
+        }
+
+        // =========================================================
+        // CREAR SOLICITUD - GET
+        // =========================================================
+
         [HttpGet]
         public async Task<IActionResult> Create()
         {
@@ -30,40 +48,19 @@ namespace Dinacem.Controllers
 
             if (idUsuario == null)
             {
-                TempData["error"] =
+                TempData["errorSolicitud"] =
                     "La sesión ha expirado. Inicie sesión nuevamente.";
 
-                return RedirectToAction(
-                    "Index",
-                    "Home");
+                return RedirectToAction("Index", "Home");
             }
 
-            // ============================================================
-            // VALIDAR SOLICITUD SIN RENDIR
-            // ============================================================
-
-            bool tieneSolicitudSinRendir =
-                await _context.Solicitudes.AnyAsync(s =>
-                    s.IdUsuario == idUsuario.Value &&
-                    (
-                        // 1 = Pendiente de aprobación
-                        s.IdEstadoSolicitud == 1
-
-                        ||
-
-                        // 2 = Aprobada pero todavía sin rendición
-                        (
-                            s.IdEstadoSolicitud == 2 &&
-                            !_context.Rendiciones.Any(r =>
-                                r.IdSolicitud == s.IdSolicitud)
-                        )
-                    )
-                );
+            var tieneSolicitudSinRendir =
+                await TieneSolicitudSinRendirAsync(idUsuario.Value);
 
             if (tieneSolicitudSinRendir)
             {
-                TempData["error"] =
-                    "No puede registrar una nueva solicitud porque tiene una solicitud pendiente de rendición.";
+                TempData["errorSolicitud"] =
+                    "No puede registrar una nueva solicitud porque tiene una solicitud pendiente de aprobación o rendición.";
 
                 return RedirectToAction(nameof(MisSolicitudes));
             }
@@ -71,7 +68,10 @@ namespace Dinacem.Controllers
             return View();
         }
 
-        // Guardar solicitud
+        // =========================================================
+        // CREAR SOLICITUD - POST
+        // =========================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Solicitud solicitud)
@@ -80,44 +80,30 @@ namespace Dinacem.Controllers
 
             if (idUsuario == null)
             {
-                TempData["error"] =
-                    "Su sesión ha expirado. Inicie sesión nuevamente.";
+                TempData["errorSolicitud"] =
+                    "La sesión ha expirado. Inicie sesión nuevamente.";
 
-                return RedirectToAction(
-                    "Index",
-                    "Home");
+                return RedirectToAction("Index", "Home");
             }
 
-            // ============================================================
-            // VALIDAR SOLICITUD SIN RENDIR
-            // ============================================================
+            // -----------------------------------------------------
+            // VALIDAR SOLICITUD ANTERIOR
+            // -----------------------------------------------------
 
-            bool tieneSolicitudSinRendir =
-                await _context.Solicitudes.AnyAsync(s =>
-                    s.IdUsuario == idUsuario.Value &&
-                    (
-                        // 1 = Pendiente de aprobación
-                        s.IdEstadoSolicitud == 1
-
-                        ||
-
-                        // 2 = Aprobada pero todavía sin rendición
-                        (
-                            s.IdEstadoSolicitud == 2 &&
-                            !_context.Rendiciones.Any(r =>
-                                r.IdSolicitud == s.IdSolicitud)
-                        )
-                    )
-                );
+            var tieneSolicitudSinRendir =
+                await TieneSolicitudSinRendirAsync(idUsuario.Value);
 
             if (tieneSolicitudSinRendir)
             {
-                TempData["error"] =
-                    
+                TempData["errorSolicitud"] =
                     "No puede registrar una nueva solicitud porque tiene una solicitud pendiente de aprobación o rendición.";
 
                 return RedirectToAction(nameof(MisSolicitudes));
             }
+
+            // -----------------------------------------------------
+            // VALIDAR FECHAS
+            // -----------------------------------------------------
 
             if (solicitud.FechaInicio.Date >
                 solicitud.FechaFin.Date)
@@ -126,6 +112,10 @@ namespace Dinacem.Controllers
                     nameof(solicitud.FechaFin),
                     "La fecha final no puede ser anterior a la fecha inicial.");
             }
+
+            // -----------------------------------------------------
+            // VALIDAR MONTO
+            // -----------------------------------------------------
 
             if (solicitud.Monto <= 0)
             {
@@ -139,6 +129,10 @@ namespace Dinacem.Controllers
                 return View(solicitud);
             }
 
+            // -----------------------------------------------------
+            // CONFIGURAR SOLICITUD
+            // -----------------------------------------------------
+
             solicitud.IdUsuario = idUsuario.Value;
             solicitud.Fecha = DateTime.Now;
             solicitud.IdEstadoSolicitud = 1;
@@ -148,234 +142,341 @@ namespace Dinacem.Controllers
 
             await _context.SaveChangesAsync();
 
+            // =====================================================
+            // OBTENER DATOS DEL REPRESENTANTE
+            // =====================================================
+
             var empleado = await _context.Usuarios
+                .AsNoTracking()
                 .FirstOrDefaultAsync(u =>
                     u.IdUsuario == solicitud.IdUsuario);
-
-            var correosAdministradores =
-                await _context.Usuarios
-                    .Where(u =>
-                        u.IdRol == 1 &&
-                        u.Estado &&
-                        !string.IsNullOrWhiteSpace(u.Correo))
-                    .Select(u => u.Correo)
-                    .ToListAsync();
 
             var nombreEmpleado = empleado == null
                 ? $"Usuario {solicitud.IdUsuario}"
                 : $"{empleado.Nombres} {empleado.Apellidos}";
 
+            // =====================================================
+            // OBTENER ADMINISTRADORES
+            // =====================================================
+
+            var correosAdministradores =
+                await _context.Usuarios
+                    .AsNoTracking()
+                    .Where(u =>
+                        u.IdRol == 1 &&
+                        u.Estado &&
+                        !string.IsNullOrWhiteSpace(u.Correo))
+                    .Select(u => u.Correo!)
+                    .ToListAsync();
+
+            // =====================================================
+            // PREPARAR CORREO
+            // =====================================================
+
             string asunto =
-    $"Nueva solicitud de viáticos #{solicitud.IdSolicitud}";
+                $"Nueva solicitud de viáticos #{solicitud.IdSolicitud}";
 
             string urlSistema =
                 $"https://TU-DOMINIO.com/Solicitud/Details/{solicitud.IdSolicitud}";
 
-            string contenidoHtml = $"""
+            string contenidoHtml = GenerarCorreoSolicitud(
+                solicitud,
+                nombreEmpleado,
+                urlSistema);
+
+            bool correoEnviado = false;
+
+            if (correosAdministradores.Any())
+            {
+                correoEnviado = await _correoService.EnviarAsync(
+                    correosAdministradores,
+                    asunto,
+                    contenidoHtml);
+            }
+
+            // =====================================================
+            // NOTIFICACIÓN PROPIA DEL MÓDULO SOLICITUD
+            // =====================================================
+
+            TempData["mensajeSolicitud"] =
+                correoEnviado
+                    ? "Solicitud registrada correctamente y notificación enviada a los administradores."
+                    : "Solicitud registrada correctamente, pero no fue posible enviar la notificación por correo.";
+
+            return RedirectToAction(nameof(MisSolicitudes));
+        }
+
+        // =========================================================
+        // MIS SOLICITUDES
+        // =========================================================
+
+        [HttpGet]
+        public async Task<IActionResult> MisSolicitudes()
+        {
+            var idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+
+            if (idUsuario == null)
+            {
+                TempData["errorSolicitud"] =
+                    "La sesión ha expirado. Inicie sesión nuevamente.";
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            var lista = await _context.Solicitudes
+                .AsNoTracking()
+                .Include(x => x.EstadoSolicitud)
+                .Where(x => x.IdUsuario == idUsuario.Value)
+                .OrderByDescending(x => x.Fecha)
+                .ToListAsync();
+
+            return View(lista);
+        }
+
+        // =========================================================
+        // ADMINISTRADOR - TODAS LAS SOLICITUDES
+        // =========================================================
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var lista = await _context.Solicitudes
+                .AsNoTracking()
+                .Include(x => x.Usuario)
+                .Include(x => x.EstadoSolicitud)
+                .OrderByDescending(x => x.Fecha)
+                .ToListAsync();
+
+            return View(lista);
+        }
+
+        // =========================================================
+        // APROBAR SOLICITUD
+        // =========================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Aprobar(int id)
+        {
+            var solicitud = await _context.Solicitudes
+                .FirstOrDefaultAsync(x =>
+                    x.IdSolicitud == id);
+
+            if (solicitud == null)
+            {
+                TempData["errorSolicitud"] =
+                    "Solicitud no encontrada.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // 2 = Aprobada
+            solicitud.IdEstadoSolicitud = 2;
+            solicitud.Observaciones = "Solicitud aprobada.";
+
+            await _context.SaveChangesAsync();
+
+            TempData["mensajeSolicitud"] =
+                "Solicitud aprobada correctamente.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // =========================================================
+        // RECHAZAR SOLICITUD
+        // =========================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Rechazar(
+            int id,
+            string observaciones)
+        {
+            var solicitud = await _context.Solicitudes
+                .FirstOrDefaultAsync(x =>
+                    x.IdSolicitud == id);
+
+            if (solicitud == null)
+            {
+                TempData["errorSolicitud"] =
+                    "Solicitud no encontrada.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (string.IsNullOrWhiteSpace(observaciones))
+            {
+                TempData["errorSolicitud"] =
+                    "Debe ingresar las observaciones del rechazo.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // 3 = Rechazada
+            solicitud.IdEstadoSolicitud = 3;
+            solicitud.Observaciones = observaciones.Trim();
+
+            await _context.SaveChangesAsync();
+
+            TempData["mensajeSolicitud"] =
+                "La solicitud fue rechazada correctamente.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // =========================================================
+        // VER DETALLE
+        // =========================================================
+
+        [HttpGet]
+        public async Task<IActionResult> Details(int id)
+        {
+            var solicitud = await _context.Solicitudes
+                .AsNoTracking()
+                .Include(x => x.Usuario)
+                .Include(x => x.EstadoSolicitud)
+                .FirstOrDefaultAsync(x =>
+                    x.IdSolicitud == id);
+
+            if (solicitud == null)
+            {
+                return NotFound();
+            }
+
+            return View(solicitud);
+        }
+
+        // =========================================================
+        // GENERAR CORREO HTML
+        // =========================================================
+
+        private string GenerarCorreoSolicitud(
+            Solicitud solicitud,
+            string nombreEmpleado,
+            string urlSistema)
+        {
+            return $"""
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Nueva solicitud de viáticos</title>
 </head>
 
 <body style="
     margin:0;
     padding:0;
-    background-color:#eef2f5;
-    font-family:Arial, Helvetica, sans-serif;
+    background:#f1f4f7;
+    font-family:Arial,Helvetica,sans-serif;
+    color:#111111;
 ">
 
-<table width="100%"
-       cellpadding="0"
-       cellspacing="0"
-       border="0"
-       style="
-       background-color:#eef2f5;
-       padding:35px 15px;
-       ">
+<table width="100%" cellpadding="0" cellspacing="0" border="0"
+       style="background:#f1f4f7;padding:35px 15px;">
 
     <tr>
         <td align="center">
 
-            <!-- CONTENEDOR PRINCIPAL -->
-            <table width="650"
-                   cellpadding="0"
-                   cellspacing="0"
-                   border="0"
+            <table width="650" cellpadding="0" cellspacing="0" border="0"
                    style="
                    width:100%;
                    max-width:650px;
-                   background-color:#ffffff;
-                   border-radius:12px;
+                   background:#ffffff;
+                   border-radius:10px;
                    overflow:hidden;
-                   box-shadow:0 4px 15px rgba(0,0,0,0.08);
+                   border:1px solid #dfe3e7;
                    ">
 
-                <!-- ================================= -->
-                <!-- ENCABEZADO                         -->
-                <!-- ================================= -->
-
                 <tr>
                     <td style="
-                        background-color:#ffffff;
-                        padding:22px 30px;
+                        padding:24px;
                         text-align:center;
                         border-bottom:4px solid #C9A227;
+                        background:#ffffff;
                     ">
-
                         <img src="cid:logoDinacen"
-                             alt="Logo"
-                             width="165"
+                             alt="DINACEN"
+                             width="170"
                              style="
-                             width:165px;
-                             max-width:165px;
-                             height:auto;
+                             width:170px;
                              display:block;
                              margin:0 auto;
-                             border:0;
                              ">
-
                     </td>
                 </tr>
 
-
-                <!-- ================================= -->
-                <!-- FRANJA SUPERIOR                    -->
-                <!-- ================================= -->
-
                 <tr>
                     <td style="
-                        background-color:#123B5D;
-                        padding:18px 30px;
+                        background:#123B5D;
+                        padding:20px 25px;
                         text-align:center;
                     ">
-
                         <div style="
                             color:#ffffff;
-                            font-size:19px;
+                            font-size:20px;
                             font-weight:bold;
-                            letter-spacing:0.3px;
                         ">
-
                             Nueva solicitud de viáticos
-
                         </div>
-
                     </td>
                 </tr>
 
-
-                <!-- ================================= -->
-                <!-- CONTENIDO                          -->
-                <!-- ================================= -->
-
                 <tr>
-                    <td style="
-                        padding:30px 32px 35px 32px;
-                    ">
-
-                        <!-- SALUDO -->
+                    <td style="padding:30px 32px;">
 
                         <p style="
-                            margin:0 0 12px 0;
-                            color:#263238;
+                            margin:0 0 15px;
                             font-size:16px;
                             font-weight:bold;
+                            color:#111111;
                         ">
-
                             Estimado administrador:
-
                         </p>
-
-
-                        <!-- MENSAJE -->
 
                         <p style="
-                            margin:0 0 22px 0;
-                            color:#555555;
+                            margin:0 0 22px;
                             font-size:15px;
                             line-height:1.6;
+                            color:#222222;
                         ">
-
                             El representante
-
-                            <strong style="
-                                color:#123B5D;
-                            ">
-
+                            <strong style="color:#123B5D;">
                                 {nombreEmpleado}
-
                             </strong>
-
-                            ha registrado una nueva solicitud que requiere
-                            su revisión.
-
+                            ha registrado una nueva solicitud de viáticos
+                            que requiere su revisión.
                         </p>
-
-
-                        <!-- ================================= -->
-                        <!-- ESTADO                              -->
-                        <!-- ================================= -->
 
                         <table width="100%"
                                cellpadding="0"
                                cellspacing="0"
                                border="0"
-                               style="
-                               margin-bottom:25px;
-                               ">
+                               style="margin-bottom:25px;">
 
                             <tr>
-
                                 <td style="
-                                    background-color:#fff9e6;
+                                    background:#fff8df;
                                     border-left:4px solid #C9A227;
-                                    padding:13px 16px;
-                                    color:#6b5710;
+                                    padding:14px 16px;
+                                    color:#222222;
                                     font-size:14px;
                                 ">
-
                                     <strong>Estado:</strong>
-
-                                    <span style="
-                                        font-weight:bold;
-                                        margin-left:5px;
-                                    ">
-
-                                        Pendiente de revisión
-
-                                    </span>
-
+                                    Pendiente de revisión
                                 </td>
-
                             </tr>
 
                         </table>
 
-
-                        <!-- ================================= -->
-                        <!-- DETALLE                             -->
-                        <!-- ================================= -->
-
                         <div style="
-                            color:#123B5D;
-                            font-size:17px;
+                            font-size:18px;
                             font-weight:bold;
+                            color:#111111;
                             margin-bottom:12px;
                         ">
-
                             Detalle de la solicitud
-
                         </div>
-
-
-                        <!-- ================================= -->
-                        <!-- TABLA DE INFORMACIÓN                -->
-                        <!-- ================================= -->
 
                         <table width="100%"
                                cellpadding="0"
@@ -383,299 +484,199 @@ namespace Dinacem.Controllers
                                border="0"
                                style="
                                border-collapse:collapse;
-                               border:1px solid #dfe5ea;
+                               border:1px solid #d9dee3;
                                ">
 
-                            <!-- SOLICITUD -->
-
                             <tr>
-
-                                <td width="40%"
-                                    style="
-                                    padding:12px 14px;
-                                    background-color:#f5f7f9;
-                                    border-bottom:1px solid #dfe5ea;
-                                    color:#52606d;
-                                    font-size:13px;
-                                    ">
-
-                                    <strong>N.º de solicitud</strong>
-
+                                <td style="
+                                    width:40%;
+                                    padding:13px;
+                                    background:#f4f6f8;
+                                    border-bottom:1px solid #d9dee3;
+                                    font-size:14px;
+                                    font-weight:bold;
+                                    color:#111111;
+                                ">
+                                    N.º de solicitud
                                 </td>
 
                                 <td style="
-                                    padding:12px 14px;
-                                    border-bottom:1px solid #dfe5ea;
-                                    color:#263238;
+                                    padding:13px;
+                                    border-bottom:1px solid #d9dee3;
                                     font-size:14px;
+                                    color:#111111;
                                 ">
-
                                     #{solicitud.IdSolicitud}
-
                                 </td>
-
                             </tr>
 
-
-                            <!-- REPRESENTANTE -->
-
                             <tr>
-
                                 <td style="
-                                    padding:12px 14px;
-                                    background-color:#f5f7f9;
-                                    border-bottom:1px solid #dfe5ea;
-                                    color:#52606d;
-                                    font-size:13px;
+                                    padding:13px;
+                                    background:#f4f6f8;
+                                    border-bottom:1px solid #d9dee3;
+                                    font-size:14px;
+                                    font-weight:bold;
+                                    color:#111111;
                                 ">
-
-                                    <strong>Representante</strong>
-
+                                    Representante
                                 </td>
 
                                 <td style="
-                                    padding:12px 14px;
-                                    border-bottom:1px solid #dfe5ea;
-                                    color:#263238;
+                                    padding:13px;
+                                    border-bottom:1px solid #d9dee3;
                                     font-size:14px;
+                                    color:#111111;
                                 ">
-
                                     {nombreEmpleado}
-
                                 </td>
-
                             </tr>
 
-
-                            <!-- DESTINO -->
-
                             <tr>
-
                                 <td style="
-                                    padding:12px 14px;
-                                    background-color:#f5f7f9;
-                                    border-bottom:1px solid #dfe5ea;
-                                    color:#52606d;
-                                    font-size:13px;
-                                ">
-
-                                    <strong>Destino</strong>
-
-                                </td>
-
-                                <td style="
-                                    padding:12px 14px;
-                                    border-bottom:1px solid #dfe5ea;
-                                    color:#263238;
+                                    padding:13px;
+                                    background:#f4f6f8;
+                                    border-bottom:1px solid #d9dee3;
                                     font-size:14px;
+                                    font-weight:bold;
+                                    color:#111111;
                                 ">
-
-                                    {solicitud.Destino}
-
+                                    Destino
                                 </td>
 
+                                <td style="
+                                    padding:13px;
+                                    border-bottom:1px solid #d9dee3;
+                                    font-size:14px;
+                                    color:#111111;
+                                ">
+                                    {solicitud.Destino}
+                                </td>
                             </tr>
 
-
-                            <!-- MOTIVO -->
-
                             <tr>
-
                                 <td style="
-                                    padding:12px 14px;
-                                    background-color:#f5f7f9;
-                                    border-bottom:1px solid #dfe5ea;
-                                    color:#52606d;
-                                    font-size:13px;
+                                    padding:13px;
+                                    background:#f4f6f8;
+                                    border-bottom:1px solid #d9dee3;
+                                    font-size:14px;
+                                    font-weight:bold;
+                                    color:#111111;
                                 ">
-
-                                    <strong>Motivo</strong>
-
+                                    Motivo
                                 </td>
 
                                 <td style="
-                                    padding:12px 14px;
-                                    border-bottom:1px solid #dfe5ea;
-                                    color:#263238;
+                                    padding:13px;
+                                    border-bottom:1px solid #d9dee3;
                                     font-size:14px;
                                     line-height:1.5;
+                                    color:#111111;
                                 ">
-
                                     {solicitud.Motivo}
-
                                 </td>
-
                             </tr>
 
-
-                            <!-- FECHA INICIO -->
-
                             <tr>
-
                                 <td style="
-                                    padding:12px 14px;
-                                    background-color:#f5f7f9;
-                                    border-bottom:1px solid #dfe5ea;
-                                    color:#52606d;
-                                    font-size:13px;
+                                    padding:13px;
+                                    background:#f4f6f8;
+                                    border-bottom:1px solid #d9dee3;
+                                    font-size:14px;
+                                    font-weight:bold;
+                                    color:#111111;
                                 ">
-
-                                    <strong>Fecha de inicio</strong>
-
+                                    Fecha de inicio
                                 </td>
 
                                 <td style="
-                                    padding:12px 14px;
-                                    border-bottom:1px solid #dfe5ea;
-                                    color:#263238;
+                                    padding:13px;
+                                    border-bottom:1px solid #d9dee3;
                                     font-size:14px;
+                                    color:#111111;
                                 ">
-
                                     {solicitud.FechaInicio:dd/MM/yyyy}
-
                                 </td>
-
                             </tr>
 
-
-                            <!-- FECHA FIN -->
-
                             <tr>
-
                                 <td style="
-                                    padding:12px 14px;
-                                    background-color:#f5f7f9;
-                                    border-bottom:1px solid #dfe5ea;
-                                    color:#52606d;
-                                    font-size:13px;
-                                ">
-
-                                    <strong>Fecha de fin</strong>
-
-                                </td>
-
-                                <td style="
-                                    padding:12px 14px;
-                                    border-bottom:1px solid #dfe5ea;
-                                    color:#263238;
+                                    padding:13px;
+                                    background:#f4f6f8;
                                     font-size:14px;
+                                    font-weight:bold;
+                                    color:#111111;
                                 ">
-
-                                    {solicitud.FechaFin:dd/MM/yyyy}
-
+                                    Fecha de fin
                                 </td>
 
+                                <td style="
+                                    padding:13px;
+                                    font-size:14px;
+                                    color:#111111;
+                                ">
+                                    {solicitud.FechaFin:dd/MM/yyyy}
+                                </td>
                             </tr>
 
-
-                            <!-- MONTO -->
-
                             <tr>
-
                                 <td style="
-                                    padding:13px 14px;
-                                    background-color:#f5f7f9;
-                                    color:#52606d;
-                                    font-size:13px;
+                                    padding:14px;
+                                    background:#f4f6f8;
+                                    font-size:14px;
+                                    font-weight:bold;
+                                    color:#111111;
                                 ">
-
-                                    <strong>Monto solicitado</strong>
-
+                                    Monto solicitado
                                 </td>
 
                                 <td style="
-                                    padding:13px 14px;
-                                    color:#123B5D;
+                                    padding:14px;
                                     font-size:17px;
                                     font-weight:bold;
+                                    color:#123B5D;
                                 ">
-
                                     S/ {solicitud.Monto:N2}
-
                                 </td>
-
                             </tr>
 
                         </table>
-
-
-                        <!-- ================================= -->
-                        <!-- BOTÓN                              -->
-                        <!-- ================================= -->
 
                         <div style="
                             text-align:center;
                             margin-top:28px;
                         ">
-
                             <a href="{urlSistema}"
                                target="_blank"
                                style="
                                display:inline-block;
-                               background-color:#123B5D;
+                               background:#123B5D;
                                color:#ffffff;
                                text-decoration:none;
-                               font-size:14px;
+                               font-size:15px;
                                font-weight:bold;
-                               padding:13px 30px;
+                               padding:14px 30px;
                                border-radius:6px;
-                               border-bottom:3px solid #C9A227;
                                ">
-
                                 Revisar solicitud
-
                             </a>
-
                         </div>
-
-
-                        <!-- ================================= -->
-                        <!-- MENSAJE FINAL                      -->
-                        <!-- ================================= -->
-
-                        <p style="
-                            margin:20px 0 0 0;
-                            color:#7a858f;
-                            font-size:12px;
-                            line-height:1.5;
-                            text-align:center;
-                        ">
-
-                            Revise la solicitud en el sistema para
-                            continuar con el proceso correspondiente.
-
-                        </p>
 
                     </td>
                 </tr>
 
-
-                <!-- ================================= -->
-                <!-- PIE                                -->
-                <!-- ================================= -->
-
                 <tr>
-
                     <td style="
-                        background-color:#f5f7f9;
-                        border-top:1px solid #e1e6ea;
-                        padding:15px 25px;
+                        background:#f4f6f8;
+                        border-top:1px solid #dfe3e7;
+                        padding:16px;
                         text-align:center;
+                        color:#555555;
+                        font-size:12px;
                     ">
-
-                        <div style="
-                            color:#7a858f;
-                            font-size:11px;
-                            line-height:1.5;
-                        ">
-
-                            Mensaje generado automáticamente.
-                            No responda a este correo.
-
-                        </div>
-
+                        Mensaje generado automáticamente por el
+                        Sistema de Gestión de Viáticos DINACEN.
                     </td>
-
                 </tr>
 
             </table>
@@ -688,132 +689,6 @@ namespace Dinacem.Controllers
 </body>
 </html>
 """;
-
-            bool correoEnviado = await _correoService.EnviarAsync(
-    correosAdministradores,
-    asunto,
-    contenidoHtml);
-
-            TempData["mensaje"] =
-                correoEnviado
-                    ? "Solicitud registrada y notificación enviada a los administradores."
-                    : "Solicitud registrada correctamente, pero no fue posible enviar la notificación por correo.";
-
-            return RedirectToAction(nameof(MisSolicitudes));
-        }
-
-        // Mis solicitudes
-        [HttpGet]
-        public IActionResult MisSolicitudes()
-        {
-            var idUsuario = HttpContext.Session.GetInt32("IdUsuario");
-
-            if (idUsuario == null)
-            {
-                TempData["error"] = "La sesión ha expirado.";
-
-                return RedirectToAction(
-                    "Index",
-                    "Home");
-            }
-
-            var lista = _context.Solicitudes
-                .Include(x => x.EstadoSolicitud)
-                .Where(x => x.IdUsuario == idUsuario.Value)
-                .OrderByDescending(x => x.Fecha)
-                .ToList();
-
-            return View(lista);
-        }
-
-        // ==========================================
-        // ADMINISTRADOR
-        // ==========================================
-
-        // Todas las solicitudes
-        public IActionResult Index()
-        {
-            var lista = _context.Solicitudes
-                .Include(x => x.Usuario)
-                .Include(x => x.EstadoSolicitud)
-                .OrderByDescending(x => x.Fecha)
-                .ToList();
-
-            return View(lista);
-        }
-
-        // Aprobar solicitud
-        [HttpPost]
-        public IActionResult Aprobar(int id)
-        {
-            var solicitud = _context.Solicitudes
-                .FirstOrDefault(x => x.IdSolicitud == id);
-
-            if (solicitud == null)
-            {
-                TempData["error"] = "Solicitud no encontrada.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            // 2 = Aprobado
-            solicitud.IdEstadoSolicitud = 2;
-            solicitud.Observaciones = "Solicitud aprobada.";
-
-            _context.SaveChanges();
-
-            TempData["mensaje"] = "Solicitud aprobada correctamente.";
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        // Rechazar solicitud
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Rechazar(int id, string observaciones)
-        {
-            var solicitud = _context.Solicitudes
-                .FirstOrDefault(x => x.IdSolicitud == id);
-
-            if (solicitud == null)
-            {
-                TempData["error"] = "Solicitud no encontrada.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            if (string.IsNullOrWhiteSpace(observaciones))
-            {
-                TempData["error"] =
-                    "Debe ingresar las observaciones del rechazo.";
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            // Estado 3 = Rechazada
-            solicitud.IdEstadoSolicitud = 3;
-            solicitud.Observaciones = observaciones.Trim();
-
-            _context.SaveChanges();
-
-            TempData["mensaje"] =
-                "La solicitud fue rechazada correctamente.";
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        // Ver detalle
-        public IActionResult Details(int id)
-        {
-            var solicitud = _context.Solicitudes
-                .Include(x => x.Usuario)
-                .Include(x => x.EstadoSolicitud)
-                .FirstOrDefault(x => x.IdSolicitud == id);
-
-            if (solicitud == null)
-            {
-                return NotFound();
-            }
-
-            return View(solicitud);
         }
     }
 }

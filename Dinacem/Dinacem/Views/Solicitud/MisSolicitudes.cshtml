@@ -11,777 +11,188 @@
 }
 
 <style>
+    .solicitudes-page{width:100%;max-width:1600px;margin:0 auto;padding:25px 30px 40px;color:#263238}
+    .solicitudes-header{display:flex;align-items:center;justify-content:space-between;gap:20px;background:#fff;border:1px solid #dce8f2;border-radius:12px;padding:22px 25px;margin-bottom:22px;box-shadow:0 3px 12px rgba(12,74,138,.07)}
+    .header-content{display:flex;align-items:center;gap:15px}
+    .header-icon{width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#e7f2ff;color:#3186dc;font-size:25px;flex-shrink:0}
+    .header-text h1{margin:0;color:#174f7c;font-size:24px;font-weight:700}
+    .btn-nueva-solicitud{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:43px;padding:0 18px;border:0;border-radius:7px;background:#4d9df5;color:#fff;font-size:13.5px;font-weight:600;text-decoration:none;white-space:nowrap;transition:.2s}
+    .btn-nueva-solicitud:hover{background:#3186dc;color:#fff;transform:translateY(-1px)}
+    .btn-nueva-solicitud i{font-size:17px}
+    .solicitudes-resumen{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+    .resumen-item{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #e1e8ee;border-radius:10px;padding:15px 17px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+    .resumen-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:9px;font-size:19px;flex-shrink:0}
+    .resumen-total .resumen-icon{background:#e7f2ff;color:#3186dc}
+    .resumen-pendiente .resumen-icon{background:#fff6d9;color:#d19e22}
+    .resumen-aprobada .resumen-icon{background:#e9f8ed;color:#4ca866}
+    .resumen-rechazada .resumen-icon{background:#ffebeb;color:#d9534f}
+    .resumen-text{display:flex;flex-direction:column}
+    .resumen-numero{color:#263238;font-size:20px;font-weight:700;line-height:1.1}
+    .resumen-label{margin-top:3px;color:#7b8790;font-size:11.5px;font-weight:600}
+    .mensaje-sistema{display:flex;align-items:center;gap:10px;border-radius:8px;padding:12px 15px;margin-bottom:18px;font-size:13.5px;font-weight:500}
+    .mensaje-sistema i{font-size:18px}
+    .mensaje-sistema .btn-close{margin-left:auto}
+    .mensaje-exito{background:#edf9f0;border:1px solid #c9e9d1;color:#327942}
+    .mensaje-error{background:#fff0f0;border:1px solid #f0cccc;color:#b83b3b}
+    .solicitudes-card{background:#fff;border:1px solid #dce5eb;border-radius:12px;box-shadow:0 4px 14px rgba(15,23,42,.06);overflow:hidden}
+    .tabla-header{display:flex;align-items:center;justify-content:space-between;padding:17px 20px;border-bottom:1px solid #e4ebf0}
+    .tabla-titulo{display:flex;align-items:center;gap:9px;color:#174f7c;font-size:15px;font-weight:700}
+    .tabla-titulo i{color:#3186dc;font-size:18px}
+    .tabla-descripcion{color:#87939c;font-size:12px}
+    .table-container{width:100%;overflow-x:auto}
+    .tabla-solicitudes{width:100%;min-width:1100px;margin:0;border-collapse:separate;border-spacing:0}
+    .tabla-solicitudes thead th{background:#f3f7fa;color:#526572;border-bottom:1px solid #dfe7ed;padding:13px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.35px;white-space:nowrap}
+    .tabla-solicitudes tbody td{padding:14px;color:#465660;border-bottom:1px solid #edf1f4;font-size:13px;vertical-align:middle}
+    .tabla-solicitudes tbody tr{transition:background .15s}
+    .tabla-solicitudes tbody tr:hover{background:#f8fbfd}
+    .tabla-solicitudes tbody tr:last-child td{border-bottom:0}
+    .solicitud-numero{color:#174f7c;font-weight:700;white-space:nowrap}
+    .solicitud-numero span{color:#9aa6ae;font-weight:500}
+    .fecha-cell{color:#5c6b74;white-space:nowrap;font-size:12.5px}
+    .destino-cell{min-width:130px;color:#263238;font-weight:600}
+    .motivo-cell{max-width:240px;color:#667680;line-height:1.45}
+    .monto-cell{color:#174f7c;font-size:14px;font-weight:700;white-space:nowrap}
+    .estado-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap}
+    .estado-pendiente{background:#fff5d6;color:#a97808;border:1px solid #f3dfa0}
+    .estado-aprobada{background:#e8f7ec;color:#3d8a51;border:1px solid #c9e8d1}
+    .estado-rechazada{background:#ffebeb;color:#c34646;border:1px solid #f0cccc}
+    .estado-otro{background:#eef1f3;color:#64727b;border:1px solid #dce2e6}
+    .btn-ver-motivo{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:6px 11px;border:1px solid #e0aaaa;border-radius:6px;background:#fff7f7;color:#c34646;font-size:11.5px;font-weight:600;transition:.2s}
+    .btn-ver-motivo:hover{background:#ffebeb;border-color:#d98888;color:#b83b3b}
+    .sin-accion{color:#b0bac1;font-size:16px}
+    .sin-registros{padding:55px 20px!important;text-align:center}
+    .sin-registros i{display:block;margin-bottom:12px;color:#b8c5ce;font-size:40px}
+    .sin-registros strong{display:block;margin-bottom:5px;color:#596a75;font-size:14px}
+    .sin-registros span{color:#929da5;font-size:12.5px}
+    .modal-rechazo .modal-content{border:0;border-radius:12px;overflow:hidden;box-shadow:0 12px 35px rgba(15,23,42,.18)}
+    .modal-rechazo .modal-header{padding:17px 20px;background:#fff5f5;border-bottom:1px solid #f0d5d5}
+    .modal-rechazo .modal-title{display:flex;align-items:center;gap:9px;color:#bd4242;font-size:16px;font-weight:700}
+    .modal-rechazo .modal-body{padding:22px}
+    .detalle-modal{display:grid;grid-template-columns:100px 1fr;gap:12px;padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid #edf0f2}
+    .detalle-modal-label{color:#87939c;font-size:12px;font-weight:600}
+    .detalle-modal-value{color:#37474f;font-size:13px}
+    .observacion-box{background:#fff5f5;border:1px solid #f0d5d5;border-left:4px solid #d9534f;border-radius:7px;padding:14px 15px;color:#59666e;font-size:13px;line-height:1.6}
+    .observacion-titulo{display:block;margin-bottom:7px;color:#b83b3b;font-weight:700}
+    .modal-rechazo .modal-footer{padding:14px 20px;background:#f8fafb;border-top:1px solid #e7ecef}
+    .volver-container{margin-top:18px}
+    .btn-volver{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 15px;border:1px solid #d8e0e5;border-radius:7px;background:#fff;color:#5f6f79;font-size:13px;font-weight:600;text-decoration:none}
+    .btn-volver:hover{background:#f4f7f9;border-color:#c7d1d8;color:#40515b}
 
-    /* =========================================================
-           CONTENEDOR PRINCIPAL
-           ========================================================= */
-
-    .solicitudes-page {
-        width: 100%;
-        max-width: 1600px;
-        margin: 0 auto;
-        padding: 25px 30px 40px;
-        color: #263238;
+    @@media(max-width:1100px){
+        .solicitudes-resumen{grid-template-columns:repeat(2,1fr)}
     }
 
-
-    /* =========================================================
-           ENCABEZADO
-           ========================================================= */
-
-    .solicitudes-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        background: #ffffff;
-        border: 1px solid #dce8f2;
-        border-radius: 12px;
-        padding: 22px 25px;
-        margin-bottom: 22px;
-        box-shadow: 0 3px 12px rgba(12, 74, 138, 0.07);
+    @@media(max-width:767.98px){
+        .solicitudes-page{padding:18px 15px 30px}
+        .solicitudes-header{flex-direction:column;align-items:flex-start;padding:18px}
+        .header-content{width:100%}
+        .header-text h1{font-size:21px}
+        .header-icon{width:46px;height:46px;font-size:21px}
+        .btn-nueva-solicitud{width:100%}
+        .solicitudes-resumen{grid-template-columns:1fr}
+        .tabla-header{padding:15px}
+        .tabla-descripcion{display:none}
+        .tabla-solicitudes{min-width:1100px}
     }
-
-    .header-content {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .header-icon {
-        width: 52px;
-        height: 52px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 12px;
-        background: #e7f2ff;
-        color: #3186dc;
-        font-size: 25px;
-        flex-shrink: 0;
-    }
-
-    .header-text h1 {
-        margin: 0;
-        color: #174f7c;
-        font-size: 24px;
-        font-weight: 700;
-    }
-
-
-    /* =========================================================
-           BOTÓN NUEVA SOLICITUD
-           ========================================================= */
-
-    .btn-nueva-solicitud {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        min-height: 43px;
-        padding: 0 18px;
-        border: none;
-        border-radius: 7px;
-        background: #4d9df5;
-        color: #ffffff;
-        font-size: 13.5px;
-        font-weight: 600;
-        text-decoration: none;
-        white-space: nowrap;
-        transition: background 0.2s ease, transform 0.2s ease;
-    }
-
-        .btn-nueva-solicitud:hover {
-            background: #3186dc;
-            color: #ffffff;
-            transform: translateY(-1px);
-        }
-
-        .btn-nueva-solicitud i {
-            font-size: 17px;
-        }
-
-
-    /* =========================================================
-           RESUMEN
-           ========================================================= */
-
-    .solicitudes-resumen {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-        margin-bottom: 22px;
-    }
-
-    .resumen-item {
-        flex: 1 1 180px;
-        min-width: 160px;
-        display: flex;
-        align-items: center;
-        gap: 13px;
-        background: #ffffff;
-        border: 1px solid #e1e8ee;
-        border-radius: 10px;
-        padding: 15px 17px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    }
-
-    .resumen-icon {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 9px;
-        font-size: 19px;
-        flex-shrink: 0;
-    }
-
-    .resumen-total .resumen-icon {
-        background: #e7f2ff;
-        color: #3186dc;
-    }
-
-    .resumen-pendiente .resumen-icon {
-        background: #fff6d9;
-        color: #d19e22;
-    }
-
-    .resumen-aprobada .resumen-icon {
-        background: #e9f8ed;
-        color: #4ca866;
-    }
-
-    .resumen-rechazada .resumen-icon {
-        background: #ffebeb;
-        color: #d9534f;
-    }
-
-    .resumen-text {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .resumen-numero {
-        color: #263238;
-        font-size: 20px;
-        font-weight: 700;
-        line-height: 1.1;
-    }
-
-    .resumen-label {
-        margin-top: 3px;
-        color: #7b8790;
-        font-size: 11.5px;
-        font-weight: 600;
-    }
-
-
-    /* =========================================================
-           MENSAJES
-           ========================================================= */
-
-    .mensaje-sistema {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        border-radius: 8px;
-        padding: 12px 15px;
-        margin-bottom: 18px;
-        font-size: 13.5px;
-        font-weight: 500;
-    }
-
-        .mensaje-sistema i {
-            font-size: 18px;
-        }
-
-    .mensaje-exito {
-        background: #edf9f0;
-        border: 1px solid #c9e9d1;
-        color: #327942;
-    }
-
-    .mensaje-error {
-        background: #fff0f0;
-        border: 1px solid #f0cccc;
-        color: #b83b3b;
-    }
-
-    .mensaje-sistema .btn-close {
-        margin-left: auto;
-    }
-
-
-    /* =========================================================
-           TARJETA
-           ========================================================= */
-
-    .solicitudes-card {
-        background: #ffffff;
-        border: 1px solid #dce5eb;
-        border-radius: 12px;
-        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
-        overflow: hidden;
-    }
-
-
-    /* =========================================================
-           CABECERA TABLA
-           ========================================================= */
-
-    .tabla-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 17px 20px;
-        border-bottom: 1px solid #e4ebf0;
-        background: #ffffff;
-    }
-
-    .tabla-titulo {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        color: #174f7c;
-        font-size: 15px;
-        font-weight: 700;
-    }
-
-        .tabla-titulo i {
-            color: #3186dc;
-            font-size: 18px;
-        }
-
-    .tabla-descripcion {
-        color: #87939c;
-        font-size: 12px;
-    }
-
-
-    /* =========================================================
-           TABLA
-           ========================================================= */
-
-    .tabla-solicitudes {
-        width: 100%;
-        margin: 0;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-        .tabla-solicitudes thead th {
-            background: #f3f7fa;
-            color: #526572;
-            border-bottom: 1px solid #dfe7ed;
-            padding: 13px 14px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.35px;
-            white-space: nowrap;
-        }
-
-        .tabla-solicitudes tbody td {
-            padding: 14px;
-            color: #465660;
-            border-bottom: 1px solid #edf1f4;
-            font-size: 13px;
-            vertical-align: middle;
-        }
-
-        .tabla-solicitudes tbody tr {
-            transition: background 0.15s ease;
-        }
-
-            .tabla-solicitudes tbody tr:hover {
-                background: #f8fbfd;
-            }
-
-            .tabla-solicitudes tbody tr:last-child td {
-                border-bottom: none;
-            }
-
-
-    /* =========================================================
-           DATOS
-           ========================================================= */
-
-    .solicitud-numero {
-        color: #174f7c;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-        .solicitud-numero span {
-            color: #9aa6ae;
-            font-weight: 500;
-        }
-
-    .fecha-cell {
-        color: #5c6b74;
-        white-space: nowrap;
-        font-size: 12.5px;
-    }
-
-    .destino-cell {
-        color: #263238;
-        font-weight: 600;
-        min-width: 130px;
-    }
-
-    .motivo-cell {
-        max-width: 240px;
-        color: #667680;
-        line-height: 1.45;
-    }
-
-    .monto-cell {
-        color: #174f7c;
-        font-size: 14px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-
-    /* =========================================================
-           ESTADOS
-           ========================================================= */
-
-    .estado-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 10px;
-        border-radius: 20px;
-        font-size: 11.5px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .estado-pendiente {
-        background: #fff5d6;
-        color: #a97808;
-        border: 1px solid #f3dfa0;
-    }
-
-    .estado-aprobada {
-        background: #e8f7ec;
-        color: #3d8a51;
-        border: 1px solid #c9e8d1;
-    }
-
-    .estado-rechazada {
-        background: #ffebeb;
-        color: #c34646;
-        border: 1px solid #f0cccc;
-    }
-
-    .estado-otro {
-        background: #eef1f3;
-        color: #64727b;
-        border: 1px solid #dce2e6;
-    }
-
-
-    /* =========================================================
-           ACCIÓN
-           ========================================================= */
-
-    .btn-ver-motivo {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 11px;
-        border: 1px solid #e0aaaa;
-        border-radius: 6px;
-        background: #fff7f7;
-        color: #c34646;
-        font-size: 11.5px;
-        font-weight: 600;
-        transition: background 0.2s ease, border-color 0.2s ease;
-    }
-
-        .btn-ver-motivo:hover {
-            background: #ffebeb;
-            border-color: #d98888;
-            color: #b83b3b;
-        }
-
-    .sin-accion {
-        color: #b0bac1;
-        font-size: 16px;
-    }
-
-
-    /* =========================================================
-           SIN REGISTROS
-           ========================================================= */
-
-    .sin-registros {
-        padding: 55px 20px !important;
-        text-align: center;
-    }
-
-        .sin-registros i {
-            display: block;
-            margin-bottom: 12px;
-            color: #b8c5ce;
-            font-size: 40px;
-        }
-
-        .sin-registros strong {
-            display: block;
-            margin-bottom: 5px;
-            color: #596a75;
-            font-size: 14px;
-        }
-
-        .sin-registros span {
-            color: #929da5;
-            font-size: 12.5px;
-        }
-
-
-    /* =========================================================
-           MODAL
-           ========================================================= */
-
-    .modal-rechazo .modal-content {
-        border: none;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 12px 35px rgba(15, 23, 42, 0.18);
-    }
-
-    .modal-rechazo .modal-header {
-        padding: 17px 20px;
-        background: #fff5f5;
-        border-bottom: 1px solid #f0d5d5;
-    }
-
-    .modal-rechazo .modal-title {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        color: #bd4242;
-        font-size: 16px;
-        font-weight: 700;
-    }
-
-    .modal-rechazo .modal-body {
-        padding: 22px;
-    }
-
-    .detalle-modal {
-        display: grid;
-        grid-template-columns: 100px 1fr;
-        gap: 12px;
-        padding-bottom: 18px;
-        margin-bottom: 18px;
-        border-bottom: 1px solid #edf0f2;
-    }
-
-    .detalle-modal-label {
-        color: #87939c;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .detalle-modal-value {
-        color: #37474f;
-        font-size: 13px;
-    }
-
-    .observacion-box {
-        background: #fff5f5;
-        border: 1px solid #f0d5d5;
-        border-left: 4px solid #d9534f;
-        border-radius: 7px;
-        padding: 14px 15px;
-        color: #59666e;
-        font-size: 13px;
-        line-height: 1.6;
-    }
-
-    .observacion-titulo {
-        display: block;
-        margin-bottom: 7px;
-        color: #b83b3b;
-        font-weight: 700;
-    }
-
-    .modal-rechazo .modal-footer {
-        padding: 14px 20px;
-        background: #f8fafb;
-        border-top: 1px solid #e7ecef;
-    }
-
-
-    /* =========================================================
-           VOLVER
-           ========================================================= */
-
-    .volver-container {
-        margin-top: 18px;
-    }
-
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        min-height: 40px;
-        padding: 0 15px;
-        border: 1px solid #d8e0e5;
-        border-radius: 7px;
-        background: #ffffff;
-        color: #5f6f79;
-        font-size: 13px;
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-        .btn-volver:hover {
-            background: #f4f7f9;
-            border-color: #c7d1d8;
-            color: #40515b;
-        }
-
-
-    /* =========================================================
-           RESPONSIVE
-           ========================================================= */
-
-    @@media (max-width: 767.98px) {
-
-        .solicitudes-page {
-            padding: 18px 15px 30px;
-        }
-
-        .solicitudes-header {
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 18px;
-        }
-
-        .header-content {
-            width: 100%;
-        }
-
-        .btn-nueva-solicitud {
-            width: 100%;
-        }
-
-        .header-text h1 {
-            font-size: 21px;
-        }
-
-        .header-icon {
-            width: 46px;
-            height: 46px;
-            font-size: 21px;
-        }
-
-        .tabla-header {
-            padding: 15px;
-        }
-
-        .tabla-descripcion {
-            display: none;
-        }
-    }
-
 </style>
-
 
 <div class="solicitudes-page">
 
     <div class="solicitudes-header">
-
         <div class="header-content">
-
             <div class="header-icon">
                 <i class="bi bi-folder-check"></i>
             </div>
-
             <div class="header-text">
                 <h1>Mis Solicitudes</h1>
             </div>
-
         </div>
 
         <a asp-controller="Solicitud"
            asp-action="Create"
            class="btn-nueva-solicitud">
-
             <i class="bi bi-plus-circle"></i>
-
             Nueva Solicitud
-
         </a>
-
     </div>
 
-
-    <!-- RESUMEN -->
-
     <div class="solicitudes-resumen">
-
         <div class="resumen-item resumen-total">
-
             <div class="resumen-icon">
                 <i class="bi bi-files"></i>
             </div>
-
             <div class="resumen-text">
-
-                <span class="resumen-numero">
-                    @totalSolicitudes
-                </span>
-
-                <span class="resumen-label">
-                    TOTAL SOLICITUDES
-                </span>
-
+                <span class="resumen-numero">@totalSolicitudes</span>
+                <span class="resumen-label">TOTAL SOLICITUDES</span>
             </div>
-
         </div>
 
-
         <div class="resumen-item resumen-pendiente">
-
             <div class="resumen-icon">
                 <i class="bi bi-clock-history"></i>
             </div>
-
             <div class="resumen-text">
-
-                <span class="resumen-numero">
-                    @pendientes
-                </span>
-
-                <span class="resumen-label">
-                    PENDIENTES
-                </span>
-
+                <span class="resumen-numero">@pendientes</span>
+                <span class="resumen-label">PENDIENTES</span>
             </div>
-
         </div>
 
-
         <div class="resumen-item resumen-aprobada">
-
             <div class="resumen-icon">
                 <i class="bi bi-check-circle"></i>
             </div>
-
             <div class="resumen-text">
-
-                <span class="resumen-numero">
-                    @aprobadas
-                </span>
-
-                <span class="resumen-label">
-                    APROBADAS
-                </span>
-
+                <span class="resumen-numero">@aprobadas</span>
+                <span class="resumen-label">APROBADAS</span>
             </div>
-
         </div>
 
-
         <div class="resumen-item resumen-rechazada">
-
             <div class="resumen-icon">
                 <i class="bi bi-x-circle"></i>
             </div>
-
             <div class="resumen-text">
-
-                <span class="resumen-numero">
-                    @rechazadas
-                </span>
-
-                <span class="resumen-label">
-                    RECHAZADAS
-                </span>
-
+                <span class="resumen-numero">@rechazadas</span>
+                <span class="resumen-label">RECHAZADAS</span>
             </div>
-
         </div>
-
     </div>
 
-
-    <!-- MENSAJES -->
     @if (TempData["mensaje"] != null)
     {
-        <div class="mensaje-sistema mensaje-exito alert">
-
+        <div class="mensaje-sistema mensaje-exito alert alert-dismissible fade show">
             <i class="bi bi-check-circle-fill"></i>
-
-            <span>
-                @TempData["mensaje"]
-            </span>
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Cerrar">
-            </button>
-
+            <span>@TempData["mensaje"]</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
     @if (TempData["error"] != null)
     {
-        <div class="mensaje-sistema mensaje-error alert">
-
+        <div class="mensaje-sistema mensaje-error alert alert-dismissible fade show">
             <i class="bi bi-exclamation-circle-fill"></i>
-
-            <span>
-                @TempData["error"]
-            </span>
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Cerrar">
-            </button>
-
+            <span>@Html.Raw(TempData["error"])</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
-
-
-    <!-- TABLA -->
 
     <div class="solicitudes-card">
 
         <div class="tabla-header">
-
             <div class="tabla-titulo">
-
                 <i class="bi bi-list-ul"></i>
-
                 Lista de solicitudes
-
             </div>
-
             <div class="tabla-descripcion">
                 Historial de solicitudes
             </div>
-
         </div>
 
-
-        <div class="table-responsive">
-
+        <div class="table-container">
             <table class="tabla-solicitudes">
 
                 <thead>
-
                     <tr>
-
                         <th>Solicitud</th>
                         <th>Fecha</th>
                         <th>Inicio</th>
@@ -791,19 +202,15 @@
                         <th>Monto</th>
                         <th>Estado</th>
                         <th class="text-center">Acciones</th>
-
                     </tr>
-
                 </thead>
 
                 <tbody>
-
                     @if (Model != null && Model.Any())
                     {
                         foreach (var item in Model)
                         {
                             <tr>
-
                                 <td>
                                     <div class="solicitud-numero">
                                         <span>#</span>@item.IdSolicitud
@@ -830,13 +237,13 @@
 
                                 <td>
                                     <div class="destino-cell">
-                                        @item.Destino
+                                        @(string.IsNullOrWhiteSpace(item.Destino) ? "-" : item.Destino)
                                     </div>
                                 </td>
 
                                 <td>
                                     <div class="motivo-cell">
-                                        @item.Motivo
+                                        @(string.IsNullOrWhiteSpace(item.Motivo) ? "-" : item.Motivo)
                                     </div>
                                 </td>
 
@@ -847,7 +254,6 @@
                                 </td>
 
                                 <td>
-
                                     @if (item.IdEstadoSolicitud == 1)
                                     {
                                         <span class="estado-badge estado-pendiente">
@@ -875,173 +281,135 @@
                                             @(item.EstadoSolicitud?.Nombre ?? "Sin estado")
                                         </span>
                                     }
-
                                 </td>
 
                                 <td class="text-center">
-
                                     @if (item.IdEstadoSolicitud == 3 &&
-                                   !string.IsNullOrWhiteSpace(item.Observaciones))
+                                         !string.IsNullOrWhiteSpace(item.Observaciones))
                                     {
                                         <button type="button"
                                                 class="btn-ver-motivo"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#modalMotivo@(item.IdSolicitud)">
-
                                             <i class="bi bi-eye"></i>
-
                                             Ver motivo
-
                                         </button>
                                     }
                                     else
                                     {
                                         <span class="sin-accion">—</span>
                                     }
-
                                 </td>
-
                             </tr>
-
-
-                            @if (item.IdEstadoSolicitud == 3 &&
-                           !string.IsNullOrWhiteSpace(item.Observaciones))
-                            {
-                                <div class="modal fade modal-rechazo"
-                                     id="modalMotivo@(item.IdSolicitud)"
-                                     tabindex="-1"
-                                     aria-hidden="true">
-
-                                    <div class="modal-dialog modal-dialog-centered">
-
-                                        <div class="modal-content">
-
-                                            <div class="modal-header">
-
-                                                <h5 class="modal-title">
-
-                                                    <i class="bi bi-exclamation-triangle-fill"></i>
-
-                                                    Motivo del rechazo
-
-                                                </h5>
-
-                                                <button type="button"
-                                                        class="btn-close"
-                                                        data-bs-dismiss="modal">
-                                                </button>
-
-                                            </div>
-
-                                            <div class="modal-body">
-
-                                                <div class="detalle-modal">
-
-                                                    <div class="detalle-modal-label">
-                                                        Solicitud
-                                                    </div>
-
-                                                    <div class="detalle-modal-value">
-                                                        <strong>
-                                                            #@item.IdSolicitud
-                                                        </strong>
-                                                    </div>
-
-                                                    <div class="detalle-modal-label">
-                                                        Destino
-                                                    </div>
-
-                                                    <div class="detalle-modal-value">
-                                                        @item.Destino
-                                                    </div>
-
-                                                    <div class="detalle-modal-label">
-                                                        Periodo
-                                                    </div>
-
-                                                    <div class="detalle-modal-value">
-                                                        @item.FechaInicio.ToString("dd/MM/yyyy")
-                                                        -
-                                                        @item.FechaFin.ToString("dd/MM/yyyy")
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="observacion-box">
-
-                                                    <span class="observacion-titulo">
-                                                        Observaciones del administrador
-                                                    </span>
-
-                                                    @item.Observaciones
-
-                                                </div>
-
-                                            </div>
-
-                                            <div class="modal-footer">
-
-                                                <button type="button"
-                                                        class="btn btn-secondary btn-sm"
-                                                        data-bs-dismiss="modal">
-
-                                                    Cerrar
-
-                                                </button>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                            }
                         }
                     }
                     else
                     {
                         <tr>
-
-                            <td colspan="9"
-                                class="sin-registros">
-
+                            <td colspan="9" class="sin-registros">
                                 <i class="bi bi-inbox"></i>
-
-                                <strong>
-                                    No tienes solicitudes registradas
-                                </strong>
-
-                                <span>
-                                    Cuando registres una solicitud, aparecerá aquí.
-                                </span>
-
+                                <strong>No tienes solicitudes registradas</strong>
+                                <span>Cuando registres una solicitud, aparecerá aquí.</span>
                             </td>
-
                         </tr>
                     }
-
                 </tbody>
 
             </table>
-
         </div>
-
     </div>
 
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            @if (item.IdEstadoSolicitud == 3 &&
+                 !string.IsNullOrWhiteSpace(item.Observaciones))
+            {
+                <div class="modal fade modal-rechazo"
+                     id="modalMotivo@(item.IdSolicitud)"
+                     tabindex="-1"
+                     aria-hidden="true">
+
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <i class="bi bi-exclamation-triangle-fill"></i>
+                                    Motivo del rechazo
+                                </h5>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Cerrar"></button>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <div class="detalle-modal">
+
+                                    <div class="detalle-modal-label">
+                                        Solicitud
+                                    </div>
+
+                                    <div class="detalle-modal-value">
+                                        <strong>#@item.IdSolicitud</strong>
+                                    </div>
+
+                                    <div class="detalle-modal-label">
+                                        Destino
+                                    </div>
+
+                                    <div class="detalle-modal-value">
+                                        @(string.IsNullOrWhiteSpace(item.Destino) ? "-" : item.Destino)
+                                    </div>
+
+                                    <div class="detalle-modal-label">
+                                        Periodo
+                                    </div>
+
+                                    <div class="detalle-modal-value">
+                                        @item.FechaInicio.ToString("dd/MM/yyyy")
+                                        -
+                                        @item.FechaFin.ToString("dd/MM/yyyy")
+                                    </div>
+
+                                </div>
+
+                                <div class="observacion-box">
+                                    <span class="observacion-titulo">
+                                        Observaciones del administrador
+                                    </span>
+
+                                    @item.Observaciones
+                                </div>
+
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button"
+                                        class="btn btn-secondary btn-sm"
+                                        data-bs-dismiss="modal">
+                                    Cerrar
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
 
     <div class="volver-container">
-
         <a asp-controller="Empleado"
            asp-action="Index"
            class="btn-volver">
-
             <i class="bi bi-arrow-left"></i>
-
             Volver al panel
-
         </a>
-
     </div>
 
 </div>

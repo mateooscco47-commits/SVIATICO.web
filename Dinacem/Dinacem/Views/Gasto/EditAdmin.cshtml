@@ -4,163 +4,470 @@
     ViewData["Title"] = "Editar Gasto";
     Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
 
-    var rendicion =
-        ViewBag.Rendicion as Dinacem.Models.Rendicion;
-
-    var tiposGasto =
-        ViewBag.TiposGasto as List<Dinacem.Models.TipoGasto>;
-
-    var tiposComprobante =
-        ViewBag.TiposComprobante as List<Dinacem.Models.TipoComprobante>;
+    var rendicion = ViewBag.Rendicion as Dinacem.Models.Rendicion;
+    var tiposGasto = ViewBag.TiposGasto as List<Dinacem.Models.TipoGasto>;
+    var tiposComprobante = ViewBag.TiposComprobante as List<Dinacem.Models.TipoComprobante>;
 }
 
 <style>
-    .page-wrapper {
-        width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
+:root{
+    --dinacen-azul:#0c4a8a;
+    --dinacen-azul-oscuro:#083763;
+    --dinacen-azul-claro:#eaf3fb;
+    --dinacen-verde:#6aa84f;
+    --texto:#1f2937;
+    --texto-secundario:#4b5563;
+    --borde:#d9e1ea;
+    --fondo:#f3f7fb;
+    --blanco:#fff;
+}
+
+.gasto-edit-page{
+    width:100%;
+    max-width:1200px;
+    margin:0 auto;
+    padding:22px;
+    background:var(--fondo);
+    color:var(--texto);
+    font-family:"Segoe UI",Arial,sans-serif;
+}
+
+.gasto-edit-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:20px;
+    padding:22px 24px;
+    background:linear-gradient(135deg,var(--dinacen-azul),#1261a5);
+    border-radius:12px;
+    box-shadow:0 5px 18px rgba(12,74,138,.18);
+}
+
+.gasto-edit-header-content{
+    min-width:0;
+}
+
+.gasto-edit-title{
+    margin:0 0 6px;
+    color:#fff;
+    font-size:28px;
+    font-weight:800;
+    line-height:1.2;
+}
+
+.gasto-edit-title i{
+    font-size:25px;
+}
+
+.gasto-edit-description{
+    margin:0;
+    color:rgba(255,255,255,.9);
+    font-size:14px;
+    line-height:1.5;
+}
+
+.btn-volver-gasto{
+    min-height:40px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    flex-shrink:0;
+    padding:9px 16px;
+    border:1px solid rgba(255,255,255,.65);
+    border-radius:7px;
+    background:transparent;
+    color:#fff;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:700;
+    transition:all .2s ease;
+}
+
+.btn-volver-gasto:hover{
+    background:#fff;
+    border-color:#fff;
+    color:var(--dinacen-azul);
+    transform:translateY(-1px);
+}
+
+.gasto-edit-card{
+    overflow:hidden;
+    margin-bottom:20px;
+    background:var(--blanco);
+    border:1px solid var(--borde);
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(15,23,42,.05);
+}
+
+.gasto-edit-card-header{
+    padding:14px 20px;
+    background:var(--dinacen-azul);
+    border-bottom:1px solid var(--dinacen-azul-oscuro);
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+}
+
+.gasto-edit-card-body{
+    padding:22px;
+}
+
+.gasto-edit-form .form-label{
+    display:block;
+    margin-bottom:6px;
+    color:#111827;
+    font-size:13px;
+    font-weight:700;
+}
+
+.gasto-edit-form .form-control,
+.gasto-edit-form .form-select{
+    width:100%;
+    min-height:42px;
+    padding:8px 12px;
+    border:1px solid #cbd5e1;
+    border-radius:7px;
+    color:#111827;
+    background:#fff;
+    font-size:13px;
+    transition:border-color .2s ease,box-shadow .2s ease;
+}
+
+.gasto-edit-form .form-control::placeholder{
+    color:#9ca3af;
+}
+
+.gasto-edit-form .form-control:focus,
+.gasto-edit-form .form-select:focus{
+    border-color:var(--dinacen-azul);
+    box-shadow:0 0 0 3px rgba(12,74,138,.1);
+    outline:none;
+}
+
+.gasto-edit-form .form-control[readonly]{
+    background:#f8fafc;
+    color:#475569;
+    cursor:not-allowed;
+}
+
+.gasto-edit-form .input-group{
+    display:flex;
+}
+
+.gasto-edit-form .input-group .form-control{
+    border-radius:7px 0 0 7px;
+}
+
+.gasto-edit-form .input-group .btn{
+    border-radius:0 7px 7px 0;
+}
+
+.readonly-box{
+    min-height:42px;
+    display:flex;
+    align-items:center;
+    padding:8px 12px;
+    background:#f8fafc;
+    border:1px solid #cbd5e1;
+    border-radius:7px;
+    color:#475569;
+    font-size:13px;
+    font-weight:600;
+}
+
+.form-help{
+    margin-top:5px;
+    color:#64748b;
+    font-size:12px;
+    line-height:1.4;
+}
+
+.gasto-edit-form .text-danger{
+    display:block;
+    margin-top:4px;
+    color:#dc2626!important;
+    font-size:12px;
+    font-weight:600;
+}
+
+.section-divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:8px 0 2px;
+    color:var(--dinacen-azul);
+    font-size:14px;
+    font-weight:800;
+}
+
+.section-divider i{
+    font-size:16px;
+}
+
+.section-divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--borde);
+}
+
+.tax-summary{
+    height:100%;
+    padding:14px;
+    background:#f8fafc;
+    border:1px solid #dbe1ea;
+    border-radius:8px;
+}
+
+.tax-summary small{
+    color:#64748b;
+    font-size:11px;
+}
+
+.tax-summary strong{
+    display:block;
+    margin-top:3px;
+    color:#334155;
+    font-size:14px;
+}
+
+.tax-summary .total{
+    color:var(--dinacen-azul);
+}
+
+.file-current{
+    min-height:42px;
+    display:flex;
+    align-items:center;
+}
+
+.file-current .btn{
+    min-height:40px;
+    font-size:13px;
+    font-weight:700;
+}
+
+.alert-gasto{
+    margin-bottom:18px;
+    border-radius:7px;
+    font-size:13px;
+}
+
+.gasto-edit-actions{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:10px;
+    margin-top:22px;
+    padding-top:20px;
+    border-top:1px solid var(--borde);
+}
+
+.btn-cancelar-gasto,
+.btn-guardar-gasto{
+    min-height:42px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:9px 18px;
+    border-radius:7px;
+    font-size:13px;
+    font-weight:700;
+    text-decoration:none;
+    cursor:pointer;
+    transition:all .2s ease;
+}
+
+.btn-cancelar-gasto{
+    border:1px solid #cbd5e1;
+    background:#fff;
+    color:#475569;
+}
+
+.btn-cancelar-gasto:hover{
+    background:#f8fafc;
+    border-color:#94a3b8;
+    color:#1e293b;
+    transform:translateY(-1px);
+}
+
+.btn-guardar-gasto{
+    border:0;
+    background:var(--dinacen-azul);
+    color:#fff;
+}
+
+.btn-guardar-gasto:hover{
+    background:var(--dinacen-azul-oscuro);
+    color:#fff;
+    transform:translateY(-1px);
+}
+
+.swal-gasto-popup{
+    padding:28px!important;
+    border-radius:12px!important;
+}
+
+.swal-gasto-title{
+    margin-bottom:8px!important;
+    color:#17365d!important;
+    font-size:21px!important;
+    font-weight:800!important;
+}
+
+.swal-gasto-text{
+    color:#4b5563!important;
+    font-size:14px!important;
+    line-height:1.5;
+}
+
+.swal-btn-confirmar{
+    min-width:130px;
+    margin:0 4px;
+    padding:9px 17px;
+    border:0!important;
+    border-radius:7px;
+    color:#fff!important;
+    font-size:13px;
+    font-weight:800;
+    cursor:pointer;
+    transition:all .2s ease;
+}
+
+.swal-btn-guardar{
+    background:var(--dinacen-azul)!important;
+}
+
+.swal-btn-guardar:hover{
+    background:var(--dinacen-azul-oscuro)!important;
+}
+
+.swal-btn-cancelar{
+    min-width:100px;
+    margin:0 4px;
+    padding:9px 17px;
+    border:1px solid #cbd5e1!important;
+    border-radius:7px;
+    background:#fff!important;
+    color:#374151!important;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.swal-btn-cancelar:hover{
+    background:#f3f4f6!important;
+}
+
+@@media(max-width:992px){
+    .gasto-edit-page{
+        padding:18px;
     }
 
-    .page-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        padding: 22px;
-        margin-bottom: 22px;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+    .gasto-edit-title{
+        font-size:24px;
+    }
+}
+
+@@media(max-width:768px){
+    .gasto-edit-page{
+        padding:14px;
     }
 
-    .page-title {
-        margin: 0 0 5px;
-        color: #0f172a;
-        font-size: 28px;
-        font-weight: 800;
+    .gasto-edit-header{
+        flex-direction:column;
+        align-items:stretch;
+        padding:18px;
+        border-radius:10px;
     }
 
-    .page-description {
-        margin: 0;
-        color: #64748b;
-        font-size: 14px;
+    .gasto-edit-title{
+        font-size:22px;
     }
 
-    .panel {
-        background: #ffffff;
-        border: 1px solid #dbe1ea;
-        border-radius: 14px;
-        box-shadow: 0 4px 14px rgba(15, 23, 42, .05);
+    .gasto-edit-title i{
+        font-size:20px;
     }
 
-    .panel-header {
-        padding: 18px 22px;
-        border-bottom: 1px solid #e5e7eb;
-        color: #0d6efd;
-        font-weight: 800;
+    .gasto-edit-description{
+        font-size:13px;
     }
 
-    .panel-body {
-        padding: 22px;
+    .btn-volver-gasto{
+        width:100%;
     }
 
-    .form-label {
-        color: #334155;
-        font-size: 13px;
-        font-weight: 700;
+    .gasto-edit-card-body{
+        padding:17px;
     }
 
-    .form-control,
-    .form-select {
-        min-height: 44px;
-        border-radius: 9px;
+    .gasto-edit-actions{
+        flex-direction:column-reverse;
+        align-items:stretch;
     }
 
-    .readonly-box {
-        min-height: 44px;
-        padding: 10px 12px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 9px;
-        color: #475569;
-        font-weight: 600;
+    .btn-cancelar-gasto,
+    .btn-guardar-gasto{
+        width:100%;
     }
 
-    .tax-summary {
-        padding: 14px;
-        background: #f8fafc;
-        border: 1px solid #dbe1ea;
-        border-radius: 10px;
+    .tax-summary{
+        margin-top:0;
+    }
+}
+
+@@media(max-width:576px){
+    .gasto-edit-page{
+        padding:10px;
     }
 
-    .actions {
-        display: flex;
-        justify-content: flex-end;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 24px;
+    .gasto-edit-title{
+        font-size:20px;
     }
 
-    @@media (max-width: 767.98px) {
-        .page-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-            .page-header .btn {
-                width: 100%;
-            }
-
-        .page-title {
-            font-size: 23px;
-        }
-
-        .panel-body {
-            padding: 16px;
-        }
-
-        .actions {
-            display: grid;
-            grid-template-columns: 1fr;
-        }
-
-            .actions .btn {
-                width: 100%;
-            }
+    .gasto-edit-description{
+        font-size:12px;
     }
+
+    .gasto-edit-card-header{
+        padding:13px 14px;
+    }
+
+    .gasto-edit-card-body{
+        padding:14px;
+    }
+}
 </style>
 
-<div class="page-wrapper">
+<div class="gasto-edit-page">
 
-    <div class="page-header">
-
-        <div>
-            <h1 class="page-title">
+    <div class="gasto-edit-header">
+        <div class="gasto-edit-header-content">
+            <h1 class="gasto-edit-title">
                 <i class="bi bi-pencil-square me-2"></i>
-                Editar Gasto
+                Editar gasto
             </h1>
 
-            <p class="page-description">
-                Corrija la información del gasto registrado por el empleado.
+            <p class="gasto-edit-description">
+                Corrija la información del gasto registrado en la rendición.
             </p>
         </div>
 
         <a asp-controller="Rendicion"
            asp-action="DetalleAdmin"
            asp-route-id="@Model.IdRendicion"
-           class="btn btn-outline-secondary">
-
+           class="btn-volver-gasto">
             <i class="bi bi-arrow-left"></i>
-            Regresar
-
+            Volver a la rendición
         </a>
-
     </div>
 
-    @if (TempData["error"] != null)
+    @if(TempData["error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show">
+        <div class="alert alert-danger alert-dismissible fade show alert-gasto">
             @Html.Raw(TempData["error"])
 
             <button type="button"
@@ -170,9 +477,9 @@
         </div>
     }
 
-    @if (TempData["mensaje"] != null)
+    @if(TempData["mensaje"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show">
+        <div class="alert alert-success alert-dismissible fade show alert-gasto">
             @TempData["mensaje"]
 
             <button type="button"
@@ -182,42 +489,46 @@
         </div>
     }
 
-    <div class="panel">
+    <div class="gasto-edit-card">
 
-        <div class="panel-header">
-            INFORMACIÓN DEL GASTO
+        <div class="gasto-edit-card-header">
+            <i class="bi bi-receipt-cutoff me-2"></i>
+            Información del gasto
         </div>
 
-        <div class="panel-body">
+        <div class="gasto-edit-card-body">
 
             <form asp-controller="Gasto"
                   asp-action="EditAdmin"
                   method="post"
-                  enctype="multipart/form-data">
+                  enctype="multipart/form-data"
+                  class="gasto-edit-form"
+                  id="formEditarGasto">
 
-                <input type="hidden"
-                       asp-for="IdGasto" />
+                @Html.AntiForgeryToken()
 
-                <input type="hidden"
-                       asp-for="IdRendicion" />
+                <input type="hidden" asp-for="IdGasto" />
+                <input type="hidden" asp-for="IdRendicion" />
 
-                <div class="row g-3">
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <div class="row g-4">
 
                     <div class="col-12 col-md-4">
-
                         <label class="form-label">
                             Rendición
                         </label>
 
                         <div class="readonly-box">
-                            #@Model.IdRendicion
+                            <i class="bi bi-file-earmark-text me-2"></i>
+                            Rendición #@Model.IdRendicion
                         </div>
-
                     </div>
 
                     <div class="col-12 col-md-4">
-
-                        <label class="form-label">
+                        <label asp-for="Fecha" class="form-label">
                             Fecha del gasto
                         </label>
 
@@ -228,11 +539,13 @@
                                max="@rendicion?.FechaFin.ToString("yyyy-MM-dd")"
                                required />
 
+                        <span asp-validation-for="Fecha"
+                              class="text-danger">
+                        </span>
                     </div>
 
                     <div class="col-12 col-md-4">
-
-                        <label class="form-label">
+                        <label asp-for="IdTipoGasto" class="form-label">
                             Tipo de gasto
                         </label>
 
@@ -241,26 +554,27 @@
                                 required>
 
                             <option value="">
-                                Seleccione...
+                                Seleccione un tipo
                             </option>
 
-                            @if (tiposGasto != null)
+                            @if(tiposGasto != null)
                             {
-                                foreach (var item in tiposGasto)
+                                foreach(var item in tiposGasto)
                                 {
                                     <option value="@item.IdTipoGasto">
                                         @item.Nombre
                                     </option>
                                 }
                             }
-
                         </select>
 
+                        <span asp-validation-for="IdTipoGasto"
+                              class="text-danger">
+                        </span>
                     </div>
 
                     <div class="col-12 col-md-4">
-
-                        <label class="form-label">
+                        <label asp-for="IdTipoComprobante" class="form-label">
                             Tipo de comprobante
                         </label>
 
@@ -269,26 +583,27 @@
                                 required>
 
                             <option value="">
-                                Seleccione...
+                                Seleccione un tipo
                             </option>
 
-                            @if (tiposComprobante != null)
+                            @if(tiposComprobante != null)
                             {
-                                foreach (var item in tiposComprobante)
+                                foreach(var item in tiposComprobante)
                                 {
                                     <option value="@item.IdTipoComprobante">
                                         @item.Nombre
                                     </option>
                                 }
                             }
-
                         </select>
 
+                        <span asp-validation-for="IdTipoComprobante"
+                              class="text-danger">
+                        </span>
                     </div>
 
                     <div class="col-12 col-md-4">
-
-                        <label class="form-label">
+                        <label asp-for="Serie" class="form-label">
                             Serie
                         </label>
 
@@ -296,11 +611,13 @@
                                class="form-control"
                                maxlength="20" />
 
+                        <span asp-validation-for="Serie"
+                              class="text-danger">
+                        </span>
                     </div>
 
                     <div class="col-12 col-md-4">
-
-                        <label class="form-label">
+                        <label asp-for="Numero" class="form-label">
                             Número
                         </label>
 
@@ -308,11 +625,13 @@
                                class="form-control"
                                maxlength="30" />
 
+                        <span asp-validation-for="Numero"
+                              class="text-danger">
+                        </span>
                     </div>
 
                     <div class="col-12">
-
-                        <label class="form-label">
+                        <label asp-for="Detalle" class="form-label">
                             Detalle
                         </label>
 
@@ -320,11 +639,20 @@
                                class="form-control"
                                maxlength="500" />
 
+                        <span asp-validation-for="Detalle"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="section-divider">
+                            <i class="bi bi-calculator"></i>
+                            Información tributaria
+                        </div>
                     </div>
 
                     <div class="col-12 col-md-4">
-
-                        <label class="form-label">
+                        <label asp-for="MontoTotal" class="form-label">
                             Monto total
                         </label>
 
@@ -336,34 +664,30 @@
                                class="form-control"
                                required />
 
+                        <span asp-validation-for="MontoTotal"
+                              class="text-danger">
+                        </span>
                     </div>
 
                     <div class="col-12 col-md-4">
-
                         <label class="form-label d-block">
                             Exoneración IGV
                         </label>
 
                         <div class="form-check mt-2">
-
                             <input asp-for="ExoneracionIGV"
                                    id="exoneracionIGV"
                                    class="form-check-input" />
 
                             <label class="form-check-label"
                                    for="exoneracionIGV">
-
                                 Exonerado de IGV
-
                             </label>
-
                         </div>
-
                     </div>
 
                     <div class="col-12 col-md-4">
-
-                        <label class="form-label">
+                        <label asp-for="ValorVenta" class="form-label">
                             Valor de venta
                         </label>
 
@@ -373,12 +697,10 @@
                                step="0.01"
                                class="form-control"
                                readonly />
-
                     </div>
 
                     <div class="col-12 col-md-4">
-
-                        <label class="form-label">
+                        <label asp-for="IGV" class="form-label">
                             IGV
                         </label>
 
@@ -388,71 +710,58 @@
                                step="0.01"
                                class="form-control"
                                readonly />
-
                     </div>
 
                     <div class="col-12 col-md-8">
-
                         <div class="tax-summary">
 
                             <div class="row text-center">
 
                                 <div class="col-4">
-
-                                    <small class="text-muted d-block">
+                                    <small class="d-block">
                                         Valor venta
                                     </small>
 
                                     <strong id="resumenValorVenta">
                                         S/ @Model.ValorVenta.ToString("N2")
                                     </strong>
-
                                 </div>
 
                                 <div class="col-4">
-
-                                    <small class="text-muted d-block">
+                                    <small class="d-block">
                                         IGV
                                     </small>
 
                                     <strong id="resumenIgv">
                                         S/ @Model.IGV.ToString("N2")
                                     </strong>
-
                                 </div>
 
                                 <div class="col-4">
-
-                                    <small class="text-muted d-block">
+                                    <small class="d-block">
                                         Total
                                     </small>
 
                                     <strong id="resumenTotal"
-                                            class="text-primary">
+                                            class="total">
                                         S/ @Model.MontoTotal.ToString("N2")
                                     </strong>
-
                                 </div>
 
                             </div>
 
                         </div>
-
                     </div>
 
                     <div class="col-12">
-
-                        <hr />
-
-                        <h5 class="fw-bold">
+                        <div class="section-divider">
+                            <i class="bi bi-building"></i>
                             Datos del proveedor
-                        </h5>
-
+                        </div>
                     </div>
 
                     <div class="col-12 col-md-4">
-
-                        <label class="form-label">
+                        <label asp-for="Ruc" class="form-label">
                             RUC
                         </label>
 
@@ -468,22 +777,22 @@
                             <button type="button"
                                     id="btnConsultarRuc"
                                     class="btn btn-outline-primary">
-
                                 Buscar
-
                             </button>
 
                         </div>
 
                         <div id="mensajeRuc"
-                             class="form-text">
+                             class="form-help">
                         </div>
 
+                        <span asp-validation-for="Ruc"
+                              class="text-danger">
+                        </span>
                     </div>
 
                     <div class="col-12 col-md-8">
-
-                        <label class="form-label">
+                        <label asp-for="RazonSocial" class="form-label">
                             Razón social
                         </label>
 
@@ -493,11 +802,13 @@
                                maxlength="250"
                                readonly />
 
+                        <span asp-validation-for="RazonSocial"
+                              class="text-danger">
+                        </span>
                     </div>
 
                     <div class="col-12">
-
-                        <label class="form-label">
+                        <label asp-for="DomicilioFiscal" class="form-label">
                             Domicilio fiscal
                         </label>
 
@@ -507,86 +818,88 @@
                                maxlength="300"
                                required />
 
-                        <small class="text-muted">
+                        <div class="form-help">
+                            <i class="bi bi-info-circle me-1"></i>
                             Puede corregir manualmente el domicilio fiscal.
-                        </small>
+                        </div>
 
+                        <span asp-validation-for="DomicilioFiscal"
+                              class="text-danger">
+                        </span>
                     </div>
 
                     <div class="col-12">
-
-                        <hr />
-
-                        <h5 class="fw-bold">
+                        <div class="section-divider">
+                            <i class="bi bi-paperclip"></i>
                             Comprobante
-                        </h5>
-
+                        </div>
                     </div>
 
                     <div class="col-12 col-md-6">
-
                         <label class="form-label">
                             Comprobante actual
                         </label>
 
-                        @if (!string.IsNullOrWhiteSpace(
-                        Model.Comprobante))
-                        {
-                            <div>
+                        <div class="file-current">
+
+                            @if(!string.IsNullOrWhiteSpace(Model.Comprobante))
+                            {
                                 <a href="@Model.Comprobante"
                                    target="_blank"
                                    rel="noopener"
                                    class="btn btn-outline-primary">
 
-                                    <i class="bi bi-paperclip"></i>
+                                    <i class="bi bi-eye me-1"></i>
                                     Ver comprobante actual
 
                                 </a>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="text-muted">
-                                No tiene comprobante adjunto.
-                            </div>
-                        }
+                            }
+                            else
+                            {
+                                <span class="text-muted small">
+                                    No tiene comprobante adjunto.
+                                </span>
+                            }
 
+                        </div>
                     </div>
 
                     <div class="col-12 col-md-6">
-
                         <label class="form-label">
                             Reemplazar comprobante
                         </label>
 
                         <input type="file"
                                name="archivo"
+                               id="archivo"
                                class="form-control"
                                accept=".pdf,.jpg,.jpeg,.png" />
 
-                        <small class="text-muted">
-                            Déjelo vacío si desea conservar el comprobante actual.
-                        </small>
-
+                        <div class="form-help">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Déjelo vacío para conservar el comprobante actual.
+                        </div>
                     </div>
 
                 </div>
 
-                <div class="actions">
+                <div class="gasto-edit-actions">
 
                     <a asp-controller="Rendicion"
                        asp-action="DetalleAdmin"
                        asp-route-id="@Model.IdRendicion"
-                       class="btn btn-outline-secondary">
+                       class="btn-cancelar-gasto">
 
+                        <i class="bi bi-x-circle"></i>
                         Cancelar
 
                     </a>
 
                     <button type="submit"
-                            class="btn btn-warning">
+                            class="btn-guardar-gasto"
+                            id="btnGuardarGasto">
 
-                        <i class="bi bi-save me-1"></i>
+                        <i class="bi bi-check-circle"></i>
                         Guardar corrección
 
                     </button>
@@ -596,41 +909,35 @@
             </form>
 
         </div>
-
     </div>
-
 </div>
 
-<script>
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
+@section Scripts {
 
-            const monto =
-                document.getElementById("montoTotal");
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
-            const exonerado =
-                document.getElementById("exoneracionIGV");
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            const valorVenta =
-                document.getElementById("valorVenta");
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
-            const igv =
-                document.getElementById("igvCalculado");
+            const formulario = document.getElementById("formEditarGasto");
+            const btnGuardar = document.getElementById("btnGuardarGasto");
 
-            const resumenValor =
-                document.getElementById("resumenValorVenta");
+            const monto = document.getElementById("montoTotal");
+            const exonerado = document.getElementById("exoneracionIGV");
+            const valorVenta = document.getElementById("valorVenta");
+            const igv = document.getElementById("igvCalculado");
 
-            const resumenIgv =
-                document.getElementById("resumenIgv");
-
-            const resumenTotal =
-                document.getElementById("resumenTotal");
+            const resumenValor = document.getElementById("resumenValorVenta");
+            const resumenIgv = document.getElementById("resumenIgv");
+            const resumenTotal = document.getElementById("resumenTotal");
 
             function calcular() {
 
-                const total =
-                    parseFloat(monto?.value) || 0;
+                const total = parseFloat(monto?.value) || 0;
 
                 let base = 0;
                 let impuesto = 0;
@@ -642,31 +949,22 @@
                         base = total;
                         impuesto = 0;
 
-                    }
-                    else {
+                    } else {
 
                         base =
-                            Math.round(
-                                (total / 1.18) * 100
-                            ) / 100;
+                            Math.round((total / 1.18) * 100) / 100;
 
                         impuesto =
-                            Math.round(
-                                (total - base) * 100
-                            ) / 100;
-
+                            Math.round((total - base) * 100) / 100;
                     }
-
                 }
 
                 if (valorVenta) {
-                    valorVenta.value =
-                        base.toFixed(2);
+                    valorVenta.value = base.toFixed(2);
                 }
 
                 if (igv) {
-                    igv.value =
-                        impuesto.toFixed(2);
+                    igv.value = impuesto.toFixed(2);
                 }
 
                 if (resumenValor) {
@@ -683,119 +981,161 @@
                     resumenTotal.textContent =
                         `S/ ${total.toFixed(2)}`;
                 }
-
             }
 
-            monto?.addEventListener(
-                "input",
-                calcular);
+            monto?.addEventListener("input", calcular);
+            exonerado?.addEventListener("change", calcular);
 
-            exonerado?.addEventListener(
-                "change",
-                calcular);
+            calcular();
 
+            const ruc = document.getElementById("ruc");
+            const boton = document.getElementById("btnConsultarRuc");
+            const razonSocial = document.getElementById("razonSocial");
+            const domicilio = document.getElementById("domicilioFiscal");
+            const mensaje = document.getElementById("mensajeRuc");
 
-            const ruc =
-                document.getElementById("ruc");
+            ruc?.addEventListener("input", function () {
 
-            const boton =
-                document.getElementById("btnConsultarRuc");
+                this.value = this.value
+                    .replace(/\D/g, "")
+                    .slice(0, 11);
+            });
 
-            const razonSocial =
-                document.getElementById("razonSocial");
+            boton?.addEventListener("click", async function () {
 
-            const domicilio =
-                document.getElementById("domicilioFiscal");
+                const valor = ruc?.value.trim() ?? "";
 
-            const mensaje =
-                document.getElementById("mensajeRuc");
+                if (!/^\d{11}$/.test(valor)) {
 
-            boton?.addEventListener(
-                "click",
-                async function () {
+                    mensaje.textContent =
+                        "Ingrese un RUC válido de 11 dígitos.";
 
-                    const valor =
-                        ruc?.value.trim() ?? "";
+                    mensaje.className =
+                        "form-help text-danger";
 
-                    if (!/^\d{11}$/.test(valor)) {
+                    return;
+                }
 
-                        mensaje.textContent =
-                            "Ingrese un RUC válido de 11 dígitos.";
+                boton.disabled = true;
+                boton.innerHTML =
+                    '<span class="spinner-border spinner-border-sm me-1"></span>Buscando...';
 
-                        mensaje.className =
-                            "form-text text-danger";
+                try {
+
+                    const url =
+                        '@Url.Action("ConsultarRuc", "Gasto")' +
+                        '?ruc=' +
+                        encodeURIComponent(valor);
+
+                    const response = await fetch(url);
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(
+                            data.mensaje ??
+                            "No se encontró el RUC."
+                        );
+                    }
+
+                    razonSocial.value =
+                        data.razonSocial ?? "";
+
+                    if (!domicilio.value.trim()) {
+                        domicilio.value =
+                            data.domicilioFiscal ?? "";
+                    }
+
+                    mensaje.textContent =
+                        `Estado: ${data.estado ?? "-"} | ` +
+                        `Condición: ${data.condicion ?? "-"}`;
+
+                    mensaje.className =
+                        "form-help text-success";
+
+                } catch (error) {
+
+                    mensaje.textContent =
+                        error.message;
+
+                    mensaje.className =
+                        "form-help text-danger";
+
+                } finally {
+
+                    boton.disabled = false;
+                    boton.textContent = "Buscar";
+                }
+            });
+
+            if (formulario && btnGuardar) {
+
+                formulario.addEventListener("submit", function (event) {
+
+                    event.preventDefault();
+
+                    if (!formulario.checkValidity()) {
+
+                        formulario.reportValidity();
 
                         return;
-
                     }
 
-                    boton.disabled = true;
-                    boton.textContent = "Buscando...";
+                    Swal.fire({
 
-                    try {
+                        icon: "question",
 
-                        const url =
-                            '@Url.Action("ConsultarRuc", "Gasto")' +
-                            '?ruc=' +
-                            encodeURIComponent(valor);
+                        title: "¿Guardar corrección?",
 
-                        const response =
-                            await fetch(url);
+                        html: `
+                            <div style="font-size:14px;color:#4b5563;line-height:1.6;">
+                                ¿Está seguro de que desea guardar
+                                los cambios realizados en este gasto?
+                                <br>
+                                <strong style="color:#334155;">
+                                    La información será actualizada.
+                                </strong>
+                            </div>
+                        `,
 
-                        const data =
-                            await response.json();
+                        showCancelButton: true,
 
-                        if (!response.ok) {
-                            throw new Error(
-                                data.mensaje ??
-                                "No se encontró el RUC."
-                            );
+                        confirmButtonText:
+                            '<i class="bi bi-check-circle me-1"></i> Sí, guardar',
+
+                        cancelButtonText:
+                            '<i class="bi bi-x-circle me-1"></i> Cancelar',
+
+                        reverseButtons: true,
+
+                        focusCancel: true,
+
+                        buttonsStyling: false,
+
+                        customClass: {
+                            popup: "swal-gasto-popup",
+                            title: "swal-gasto-title",
+                            htmlContainer: "swal-gasto-text",
+                            confirmButton:
+                                "swal-btn-confirmar swal-btn-guardar",
+                            cancelButton:
+                                "swal-btn-cancelar"
                         }
 
-                        razonSocial.value =
-                            data.razonSocial ?? "";
+                    }).then(function (resultado) {
 
-                        if (!domicilio.value.trim()) {
-                            domicilio.value =
-                                data.domicilioFiscal ?? "";
+                        if (resultado.isConfirmed) {
+
+                            btnGuardar.disabled = true;
+
+                            btnGuardar.innerHTML =
+                                '<span class="spinner-border spinner-border-sm me-1"></span>Guardando...';
+
+                            formulario.submit();
                         }
-
-                        mensaje.textContent =
-                            `Estado: ${data.estado ?? "-"} | ` +
-                            `Condición: ${data.condicion ?? "-"}`;
-
-                        mensaje.className =
-                            "form-text text-success";
-
-                    }
-                    catch (error) {
-
-                        mensaje.textContent =
-                            error.message;
-
-                        mensaje.className =
-                            "form-text text-danger";
-
-                    }
-                    finally {
-
-                        boton.disabled = false;
-                        boton.textContent = "Buscar";
-
-                    }
-
+                    });
                 });
-
-            ruc?.addEventListener(
-                "input",
-                function () {
-
-                    this.value =
-                        this.value
-                            .replace(/\D/g, "")
-                            .slice(0, 11);
-
-                });
-
+            }
         });
-</script>
+    </script>
+}

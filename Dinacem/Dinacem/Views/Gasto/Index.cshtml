@@ -12,11 +12,9 @@
     var totalValorVenta = Model?.Sum(x => x.ValorVenta) ?? 0;
     var totalIgv = Model?.Sum(x => x.IGV) ?? 0;
     var totalRendido = rendicion?.Total ?? 0;
-
     var saldoOriginal = rendicion?.Saldo ?? 0;
 
-    var devolucion =
-        ViewBag.DevolucionSaldo as Dinacem.Models.DevolucionSaldo;
+    var devolucion = ViewBag.DevolucionSaldo as Dinacem.Models.DevolucionSaldo;
 
     decimal saldoPendiente = saldoOriginal;
 
@@ -29,488 +27,389 @@
             saldoPendiente = 0;
         }
     }
+
+    var estadoTexto = rendicion?.IdEstadoRendicion switch
+    {
+        1 => "En proceso",
+        2 => "Pendiente de revisión",
+        3 => "Aprobada",
+        4 => "Rechazada",
+        _ => "Desconocido"
+    };
+
+    var estadoClase = rendicion?.IdEstadoRendicion switch
+    {
+        1 => "estado-proceso",
+        2 => "estado-pendiente",
+        3 => "estado-aprobada",
+        4 => "estado-rechazada",
+        _ => "estado-desconocido"
+    };
 }
 
 <style>
-    .page-wrapper {
-        width: 100%;
-        max-width: 1650px;
-        margin: 0 auto;
+    .rendicion-wrapper{width:100%;max-width:1650px;margin:0 auto;padding-bottom:35px}
+    .page-header{display:flex;justify-content:space-between;align-items:center;gap:20px;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:22px 24px;margin-bottom:20px;box-shadow:0 3px 12px rgba(15,23,42,.04)}
+    .page-header-content{display:flex;align-items:center;gap:14px}
+    .page-icon{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:#eaf2fb;color:#0c4a8a;border-radius:12px;font-size:22px;flex-shrink:0}
+    .page-title{margin:0;color:#172033;font-size:25px;font-weight:800}
+    .page-description{margin:4px 0 0;color:#64748b;font-size:13px}
+    .panel{background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 3px 12px rgba(15,23,42,.04);overflow:hidden}
+    .panel-header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 20px;border-bottom:1px solid #e8edf3;color:#172033;font-size:14px;font-weight:800}
+    .panel-body{padding:20px}
+    .summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+    .summary-card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;position:relative;overflow:hidden}
+    .summary-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#0c4a8a}
+    .summary-card.green:before{background:#198754}
+    .summary-card.orange:before{background:#f59e0b}
+    .summary-card.blue:before{background:#0d6efd}
+    .summary-label{display:block;color:#64748b;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}
+    .summary-value{color:#172033;font-size:22px;font-weight:800}
+    .summary-card.green .summary-value{color:#198754}
+    .summary-card.orange .summary-value{color:#d97706}
+    .summary-card.blue .summary-value{color:#0d6efd}
+    .content-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px}
+    .main-column,.side-column{display:flex;flex-direction:column;gap:20px}
+    .table-wrapper{overflow-x:auto}
+    .table-gastos{min-width:1050px;margin:0}
+    .table-gastos thead th{background:#f8fafc;color:#64748b;border-bottom:1px solid #dbe2ea;font-size:11px;font-weight:800;text-transform:uppercase;white-space:nowrap;padding:13px 12px}
+    .table-gastos tbody td{padding:13px 12px;color:#334155;font-size:13px;border-color:#edf1f5;vertical-align:middle}
+    .table-gastos tbody tr:hover{background:#f8fafc}
+    .badge-gasto{display:inline-block;background:#edf7ef;color:#166534;border:1px solid #ccebd3;padding:5px 9px;border-radius:6px;font-size:11px;font-weight:700;white-space:nowrap}
+    .table-footer{padding:12px 18px;border-top:1px solid #e8edf3;color:#64748b;font-size:12px}
+    .mobile-hint{display:none;color:#94a3b8;font-size:11px;font-weight:400}
+    .form-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .col-3{grid-column:span 3}
+    .col-4{grid-column:span 4}
+    .col-6{grid-column:span 6}
+    .col-8{grid-column:span 8}
+    .col-12{grid-column:span 12}
+    .form-label{display:block;color:#334155;font-size:12px;font-weight:700;margin-bottom:6px}
+    .form-control,.form-select{min-height:42px;border-color:#d7dee8;border-radius:8px;font-size:13px}
+    .form-control:focus,.form-select:focus{border-color:#0d6efd;box-shadow:0 0 0 .15rem rgba(13,110,253,.1)}
+    .form-text{font-size:11px;color:#94a3b8}
+    .input-group .btn{font-size:13px;font-weight:600}
+    .tax-summary{height:100%;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:15px}
+    .tax-item{text-align:center}
+    .tax-item small{display:block;color:#64748b;font-size:11px;margin-bottom:3px}
+    .tax-item strong{color:#172033;font-size:17px}
+    .tax-item.total strong{color:#0d6efd}
+    .btn-primary-custom{background:#0c4a8a;border-color:#0c4a8a;color:#fff;font-weight:700;min-height:42px}
+    .btn-primary-custom:hover{background:#083b70;border-color:#083b70;color:#fff}
+    .info-table{margin:0}
+    .info-table th{width:42%;background:#f8fafc;color:#64748b;font-size:11px;font-weight:700;text-transform:uppercase;vertical-align:middle}
+    .info-table td{color:#334155;font-size:13px;vertical-align:middle}
+    .info-table th,.info-table td{padding:11px 12px;border-color:#e5eaf0}
+    .estado{display:inline-flex;align-items:center;padding:5px 10px;border-radius:20px;font-size:11px;font-weight:700}
+    .estado-proceso{background:#eaf2ff;color:#0d6efd}
+    .estado-pendiente{background:#fff4d6;color:#9a6700}
+    .estado-aprobada{background:#e8f7ef;color:#198754}
+    .estado-rechazada{background:#fdecec;color:#dc3545}
+    .estado-desconocido{background:#eef1f4;color:#64748b}
+    .devolucion-box{border-left:4px solid #ffc107}
+    .devolucion-box.ok{border-left-color:#198754}
+    .alert-custom{border-radius:9px;font-size:13px}
+    .action-stack{display:flex;flex-direction:column;gap:10px}
+    .action-stack .btn{min-height:42px;font-size:13px;font-weight:700}
+    .action-note{margin:0;color:#dc3545;font-size:11px}
+    .empty-state{text-align:center;padding:45px 20px;color:#94a3b8}
+    .empty-state i{font-size:32px;display:block;margin-bottom:8px}
+    .voucher-link{font-size:12px}
+    @@media(max-width:1199px){
+        .content-grid{grid-template-columns:1fr}
+        .side-column{display:grid;grid-template-columns:1fr 1fr;align-items:start}
+        .summary-grid{grid-template-columns:repeat(2,1fr)}
     }
-
-    .page-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        padding: 22px;
-        margin-bottom: 22px;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
-    }
-
-    .page-title {
-        margin: 0 0 5px;
-        color: #0f172a;
-        font-size: 28px;
-        font-weight: 800;
-    }
-
-    .page-description {
-        margin: 0;
-        color: #64748b;
-        font-size: 14px;
-    }
-
-    .panel {
-        background: white;
-        border: 1px solid #dbe1ea;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, .04);
-    }
-
-    .panel-header {
-        padding: 18px 22px;
-        border-bottom: 1px solid #e5e7eb;
-        font-weight: 800;
-        color: #0d6efd;
-    }
-
-    .panel-body {
-        padding: 20px;
-    }
-
-    .small-label {
-        font-size: 12px;
-        font-weight: 700;
-        color: #64748b;
-        text-transform: uppercase;
-    }
-
-    .summary-card {
-        border: 1px solid #dbe1ea;
-        border-radius: 10px;
-        padding: 16px;
-        background: #fff;
-    }
-
-    .summary-value {
-        font-size: 22px;
-        font-weight: 800;
-        color: #0f172a;
-    }
-
-    .summary-blue {
-        color: #0d6efd;
-    }
-
-    .summary-green {
-        color: #198754;
-    }
-
-    .summary-orange {
-        color: #f59e0b;
-    }
-
-    .table th {
-        font-size: 12px;
-        color: #64748b;
-        text-transform: uppercase;
-    }
-
-    .form-label {
-        font-size: 13px;
-        font-weight: 600;
-        color: #334155;
-    }
-
-    .btn-dark-custom {
-        background: #0f172a;
-        color: white;
-        font-weight: 700;
-        height: 44px;
-    }
-
-        .btn-dark-custom:hover {
-            background: #111827;
-            color: white;
-        }
-
-    .badge-gasto {
-        background: #dcfce7;
-        color: #166534;
-        border: 1px solid #86efac;
-        padding: 5px 10px;
-        border-radius: 6px;
-    }
-
-    .devolucion-ok {
-        border-left: 5px solid #198754;
-    }
-
-    .devolucion-pendiente {
-        border-left: 5px solid #ffc107;
-    }
-
-    .tax-summary {
-        background: #f8fafc;
-        border: 1px solid #dbe1ea;
-        border-radius: 10px;
-        padding: 14px;
-    }
-
-        .tax-summary strong {
-            font-size: 18px;
-        }
-
-    .table-gastos {
-        min-width: 1050px;
-    }
-
-    .table-info {
-        min-width: 520px;
-    }
-
-    .mobile-hint {
-        display: none;
-        margin-top: 5px;
-        color: #64748b;
-        font-size: 12px;
-        font-weight: 400;
-    }
-
-    .action-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-
-    @@media (max-width: 1199.98px) {
-        .page-header {
-            align-items: flex-start;
-            flex-direction: column;
-        }
-
-            .page-header .btn {
-                width: 100%;
-            }
-    }
-
-    @@media (max-width: 991.98px) {
-        .panel-body {
-            padding: 17px;
-        }
-
-        .mobile-hint {
-            display: block;
-        }
-
-        .btn-dark-custom {
-            width: 100%;
-        }
-    }
-
-    @@media (max-width: 767.98px) {
-        .page-header {
-            padding: 18px;
-            border-radius: 13px;
-        }
-
-        .page-title {
-            font-size: 23px;
-        }
-
-        .panel {
-            border-radius: 13px;
-        }
-
-        .panel-header {
-            padding: 15px 16px;
-        }
-
-        .panel-body {
-            padding: 14px;
-        }
-
-        .summary-value {
-            font-size: 19px;
-        }
-
-        .tax-summary {
-            padding: 12px;
-        }
-
-        .input-group > .btn {
-            width: 100%;
-            margin-top: 8px;
-            border-radius: 8px !important;
-        }
-
-        .input-group > .form-control {
-            width: 100%;
-            border-radius: 8px !important;
-        }
-
-        .action-row {
-            display: grid;
-            grid-template-columns: 1fr;
-        }
-
-            .action-row .btn,
-            .action-row form,
-            .action-row form .btn {
-                width: 100%;
-            }
+    @@media(max-width:767px){
+        .rendicion-wrapper{padding-bottom:20px}
+        .page-header{padding:17px;align-items:flex-start;flex-direction:column}
+        .page-header-content{align-items:flex-start}
+        .page-icon{width:42px;height:42px;font-size:19px}
+        .page-title{font-size:21px}
+        .page-description{font-size:12px}
+        .page-header>.btn{width:100%}
+        .summary-grid{grid-template-columns:1fr 1fr;gap:10px}
+        .summary-card{padding:13px}
+        .summary-value{font-size:17px}
+        .summary-label{font-size:9px}
+        .side-column{display:flex}
+        .panel-header{padding:14px 15px}
+        .panel-body{padding:15px}
+        .mobile-hint{display:block}
+        .form-grid{display:grid;grid-template-columns:1fr;gap:14px}
+        .col-3,.col-4,.col-6,.col-8,.col-12{grid-column:span 1}
+        .action-stack .btn{width:100%}
     }
 </style>
 
-<div class="page-wrapper">
+<div class="rendicion-wrapper">
 
-    <!-- ENCABEZADO -->
     <div class="page-header">
-        <div>
-            <h1 class="page-title">
-                <i class="bi bi-receipt-cutoff me-2"></i>
-                Rendición de Gastos
-            </h1>
-
-            <p class="page-description">
-                Registre sus gastos, consulte el saldo y envíe la rendición para revisión.
-            </p>
+        <div class="page-header-content">
+            <div class="page-icon">
+                <i class="bi bi-receipt-cutoff"></i>
+            </div>
+            <div>
+                <h1 class="page-title">Rendición de gastos</h1>
+                <p class="page-description">
+                    Registre sus gastos y complete la rendición correspondiente a su comisión.
+                </p>
+            </div>
         </div>
 
         <a asp-controller="Rendicion"
            asp-action="Index"
            class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i>
+            <i class="bi bi-arrow-left me-1"></i>
             Volver a rendiciones
         </a>
     </div>
 
-
-    <!-- MENSAJES -->
     @if (TempData["mensaje"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show">
+        <div class="alert alert-success alert-dismissible fade show alert-custom" role="alert">
+            <i class="bi bi-check-circle me-1"></i>
             @TempData["mensaje"]
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Cerrar"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
     @if (TempData["error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show">
+        <div class="alert alert-danger alert-dismissible fade show alert-custom" role="alert">
+            <i class="bi bi-exclamation-circle me-1"></i>
             @Html.Raw(TempData["error"])
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Cerrar"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
+    <div class="summary-grid">
 
-    <div class="row g-4">
+        <div class="summary-card green">
+            <span class="summary-label">Monto aprobado</span>
+            <div class="summary-value">
+                S/ @montoAprobado.ToString("N2")
+            </div>
+        </div>
 
-        <!-- COLUMNA PRINCIPAL -->
-        <div class="col-lg-8">
+        <div class="summary-card orange">
+            <span class="summary-label">Total rendido</span>
+            <div class="summary-value">
+                S/ @totalRendido.ToString("N2")
+            </div>
+        </div>
 
-            <!-- GASTOS -->
-            <div class="panel mb-4">
+        <div class="summary-card blue">
+            <span class="summary-label">Saldo pendiente</span>
+            <div class="summary-value">
+                S/ @saldoPendiente.ToString("N2")
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <span class="summary-label">Gastos registrados</span>
+            <div class="summary-value">
+                @(Model?.Count ?? 0)
+            </div>
+        </div>
+
+    </div>
+
+    <div class="content-grid">
+
+        <div class="main-column">
+
+            <div class="panel">
 
                 <div class="panel-header">
-                    GASTOS REGISTRADOS
+                    <span>
+                        <i class="bi bi-list-ul me-2 text-primary"></i>
+                        Gastos registrados
+                    </span>
 
-                    <div class="mobile-hint">
-                        Deslice horizontalmente para ver todas las columnas.
-                    </div>
+                    <span class="mobile-hint">
+                        Deslice horizontalmente para ver más.
+                    </span>
                 </div>
 
-                <div class="panel-body p-0">
+                <div class="table-wrapper">
 
-                    <div class="table-responsive">
-                        <table class="table table-gastos align-middle mb-0">
+                    <table class="table table-gastos align-middle">
 
-                            <thead>
-                                <tr>
-                                    <th>Fecha</th>
-                                    <th>Tipo</th>
-                                    <th>Comprobante</th>
-                                    <th>Detalle</th>
-                                    <th>Base</th>
-                                    <th>IGV</th>
-                                    <th>Total</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Tipo</th>
+                                <th>Comprobante</th>
+                                <th>Detalle</th>
+                                <th>Base</th>
+                                <th>IGV</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
 
-                            <tbody>
-                                @if (Model != null && Model.Any())
-                                {
-                                    foreach (var item in Model)
-                                    {
-                                        <tr>
+                        <tbody>
 
-                                            <td>
-                                                @item.Fecha.ToString("dd/MM/yyyy")
-                                            </td>
-
-                                            <td>
-                                                <span class="badge-gasto">
-                                                    @(item.TipoGasto?.Nombre ?? "Sin tipo")
-                                                </span>
-                                            </td>
-
-                                            <td>
-                                                @(item.TipoComprobante?.Nombre ?? "Sin comprobante")
-
-                                                @if (!string.IsNullOrWhiteSpace(item.Serie) ||
-                                                     !string.IsNullOrWhiteSpace(item.Numero))
-                                                {
-                                                    <br />
-                                                    <span class="text-muted">
-                                                        @item.Serie - @item.Numero
-                                                    </span>
-                                                }
-                                            </td>
-
-                                            <td>
-                                                @(string.IsNullOrWhiteSpace(item.Detalle)
-                                                    ? "-"
-                                                    : item.Detalle)
-                                            </td>
-
-                                            <td>
-                                                S/ @item.ValorVenta.ToString("N2")
-
-                                                @if (item.ExoneracionIGV)
-                                                {
-                                                    <br />
-                                                    <span class="badge bg-info text-dark">
-                                                        Exonerado
-                                                    </span>
-                                                }
-                                            </td>
-
-                                            <td>
-                                                S/ @item.IGV.ToString("N2")
-                                            </td>
-
-                                            <td>
-                                                <strong>
-                                                    S/ @item.MontoTotal.ToString("N2")
-                                                </strong>
-                                            </td>
-
-                                            <td>
-                                                @if (rendicion?.IdEstadoRendicion == 1)
-                                                {
-                                                    <form asp-controller="Gasto"
-                                                          asp-action="Delete"
-                                                          method="post"
-                                                          class="d-inline">
-
-                                                        <input type="hidden"
-                                                               name="id"
-                                                               value="@item.IdGasto" />
-
-                                                        <input type="hidden"
-                                                               name="idRendicion"
-                                                               value="@rendicion.IdRendicion" />
-
-                                                        <button type="submit"
-                                                                class="btn btn-outline-danger btn-sm"
-                                                                onclick="return confirm('¿Eliminar este gasto?');">
-                                                            Eliminar
-                                                        </button>
-                                                    </form>
-                                                }
-                                                else
-                                                {
-                                                    <span class="text-muted">
-                                                        Bloqueado
-                                                    </span>
-                                                }
-                                            </td>
-
-                                        </tr>
-                                    }
-                                }
-                                else
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var item in Model)
                                 {
                                     <tr>
-                                        <td colspan="8"
-                                            class="text-center text-muted py-4">
-                                            Aún no hay gastos registrados.
+
+                                        <td>
+                                            @item.Fecha.ToString("dd/MM/yyyy")
                                         </td>
+
+                                        <td>
+                                            <span class="badge-gasto">
+                                                @(item.TipoGasto?.Nombre ?? "Sin tipo")
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            @(item.TipoComprobante?.Nombre ?? "Sin comprobante")
+
+                                            @if (!string.IsNullOrWhiteSpace(item.Serie) ||
+                                                 !string.IsNullOrWhiteSpace(item.Numero))
+                                            {
+                                                <div class="text-muted mt-1">
+                                                    @item.Serie - @item.Numero
+                                                </div>
+                                            }
+                                        </td>
+
+                                        <td>
+                                            @(string.IsNullOrWhiteSpace(item.Detalle)
+                                                ? "-"
+                                                : item.Detalle)
+                                        </td>
+
+                                        <td>
+                                            S/ @item.ValorVenta.ToString("N2")
+
+                                            @if (item.ExoneracionIGV)
+                                            {
+                                                <div>
+                                                    <span class="badge bg-info text-dark mt-1">
+                                                        Exonerado
+                                                    </span>
+                                                </div>
+                                            }
+                                        </td>
+
+                                        <td>
+                                            S/ @item.IGV.ToString("N2")
+                                        </td>
+
+                                        <td>
+                                            <strong>
+                                                S/ @item.MontoTotal.ToString("N2")
+                                            </strong>
+                                        </td>
+
+                                        <td>
+
+                                            @if (rendicion?.IdEstadoRendicion == 1)
+                                            {
+                                                <form asp-controller="Gasto"
+                                                      asp-action="Delete"
+                                                      method="post">
+
+                                                    <input type="hidden"
+                                                           name="id"
+                                                           value="@item.IdGasto" />
+
+                                                    <input type="hidden"
+                                                           name="idRendicion"
+                                                           value="@rendicion.IdRendicion" />
+
+                                                    <button type="submit"
+                                                            class="btn btn-outline-danger btn-sm"
+                                                            onclick="return confirm('¿Eliminar este gasto?');">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted small">
+                                                    Bloqueado
+                                                </span>
+                                            }
+
+                                        </td>
+
                                     </tr>
                                 }
-                            </tbody>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="8">
+                                        <div class="empty-state">
+                                            <i class="bi bi-receipt"></i>
+                                            <div>No hay gastos registrados.</div>
+                                            <small>Los gastos que agregue aparecerán aquí.</small>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
 
-                        </table>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="table-footer">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Mostrando @(Model?.Count ?? 0) gasto(s)
+                </div>
+
+                <div class="row g-3 p-3">
+
+                    <div class="col-md-4">
+                        <div class="tax-summary">
+                            <div class="tax-item">
+                                <small>Valor de venta</small>
+                                <strong>S/ @totalValorVenta.ToString("N2")</strong>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="p-3 border-top">
-                        Mostrando @(Model?.Count ?? 0) gasto(s)
+                    <div class="col-md-4">
+                        <div class="tax-summary">
+                            <div class="tax-item">
+                                <small>Total IGV</small>
+                                <strong>S/ @totalIgv.ToString("N2")</strong>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="row g-3 p-3">
-
-                        <div class="col-md-4">
-                            <div class="summary-card text-center">
-                                <div class="small-label">
-                                    Valor de venta
-                                </div>
-
-                                <div class="summary-value">
-                                    S/ @totalValorVenta.ToString("N2")
-                                </div>
+                    <div class="col-md-4">
+                        <div class="tax-summary">
+                            <div class="tax-item total">
+                                <small>Total rendido</small>
+                                <strong>S/ @totalRendido.ToString("N2")</strong>
                             </div>
                         </div>
-
-                        <div class="col-md-4">
-                            <div class="summary-card text-center">
-                                <div class="small-label">
-                                    Total IGV
-                                </div>
-
-                                <div class="summary-value">
-                                    S/ @totalIgv.ToString("N2")
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="summary-card text-center">
-                                <div class="small-label summary-blue">
-                                    Total rendido
-                                </div>
-
-                                <div class="summary-value summary-blue">
-                                    S/ @totalRendido.ToString("N2")
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
 
                 </div>
+
             </div>
 
-
-            <!-- FORMULARIO -->
             @if (rendicion?.IdEstadoRendicion == 1)
             {
                 <div class="panel">
 
                     <div class="panel-header">
-                        AGREGAR NUEVO GASTO
+                        <span>
+                            <i class="bi bi-plus-circle me-2 text-primary"></i>
+                            Registrar gasto
+                        </span>
                     </div>
 
                     <div class="panel-body">
@@ -525,13 +424,10 @@
                                    name="IdRendicion"
                                    value="@rendicion.IdRendicion" />
 
-                            <div class="row g-3">
+                            <div class="form-grid">
 
-                                <!-- FECHA -->
-                                <div class="col-md-4">
-                                    <label class="form-label">
-                                        Fecha del gasto
-                                    </label>
+                                <div class="col-4">
+                                    <label class="form-label">Fecha del gasto</label>
 
                                     <input type="date"
                                            name="Fecha"
@@ -540,18 +436,14 @@
                                            max="@rendicion.FechaFin.ToString("yyyy-MM-dd")"
                                            required />
 
-                                    <small class="text-muted">
+                                    <div class="form-text">
                                         Del @rendicion.FechaInicio.ToString("dd/MM/yyyy")
                                         al @rendicion.FechaFin.ToString("dd/MM/yyyy")
-                                    </small>
+                                    </div>
                                 </div>
 
-
-                                <!-- RUC -->
-                                <div class="col-md-4">
-                                    <label class="form-label">
-                                        RUC
-                                    </label>
+                                <div class="col-4">
+                                    <label class="form-label">RUC</label>
 
                                     <div class="input-group">
                                         <input type="text"
@@ -568,20 +460,16 @@
                                         <button type="button"
                                                 id="btnConsultarRuc"
                                                 class="btn btn-outline-primary">
+                                            <i class="bi bi-search me-1"></i>
                                             Buscar
                                         </button>
                                     </div>
 
-                                    <div id="mensajeRuc"
-                                         class="form-text"></div>
+                                    <div id="mensajeRuc" class="form-text"></div>
                                 </div>
 
-
-                                <!-- RAZÓN SOCIAL -->
-                                <div class="col-md-4">
-                                    <label class="form-label">
-                                        Razón Social
-                                    </label>
+                                <div class="col-4">
+                                    <label class="form-label">Razón social</label>
 
                                     <input type="text"
                                            id="razonSocial"
@@ -592,13 +480,8 @@
                                            required />
                                 </div>
 
-
-                                <!-- DOMICILIO -->
                                 <div class="col-12">
-                                    <label for="domicilioFiscal"
-                                           class="form-label">
-                                        Domicilio fiscal
-                                    </label>
+                                    <label class="form-label">Domicilio fiscal</label>
 
                                     <input type="text"
                                            id="domicilioFiscal"
@@ -608,26 +491,19 @@
                                            placeholder="Ingrese o corrija el domicilio fiscal"
                                            required />
 
-                                    <small class="text-muted">
+                                    <div class="form-text">
                                         Se completa automáticamente al consultar el RUC.
-                                        Puede modificarlo si es necesario.
-                                    </small>
+                                    </div>
                                 </div>
 
-
-                                <!-- TIPO DE GASTO -->
-                                <div class="col-md-4">
-                                    <label class="form-label">
-                                        Tipo de gasto
-                                    </label>
+                                <div class="col-4">
+                                    <label class="form-label">Tipo de gasto</label>
 
                                     <select name="IdTipoGasto"
                                             class="form-select"
                                             required>
 
-                                        <option value="">
-                                            Seleccionar tipo
-                                        </option>
+                                        <option value="">Seleccionar tipo</option>
 
                                         @if (tiposGasto != null)
                                         {
@@ -642,20 +518,14 @@
                                     </select>
                                 </div>
 
-
-                                <!-- COMPROBANTE -->
-                                <div class="col-md-4">
-                                    <label class="form-label">
-                                        Tipo de comprobante
-                                    </label>
+                                <div class="col-4">
+                                    <label class="form-label">Tipo de comprobante</label>
 
                                     <select name="IdTipoComprobante"
                                             class="form-select"
                                             required>
 
-                                        <option value="">
-                                            Seleccionar comprobante
-                                        </option>
+                                        <option value="">Seleccionar comprobante</option>
 
                                         @if (tiposComprobante != null)
                                         {
@@ -670,12 +540,8 @@
                                     </select>
                                 </div>
 
-
-                                <!-- SERIE -->
-                                <div class="col-md-4">
-                                    <label class="form-label">
-                                        Serie
-                                    </label>
+                                <div class="col-4">
+                                    <label class="form-label">Serie</label>
 
                                     <input name="Serie"
                                            class="form-control"
@@ -683,12 +549,8 @@
                                            placeholder="F001" />
                                 </div>
 
-
-                                <!-- NÚMERO -->
-                                <div class="col-md-4">
-                                    <label class="form-label">
-                                        Número
-                                    </label>
+                                <div class="col-4">
+                                    <label class="form-label">Número</label>
 
                                     <input name="Numero"
                                            class="form-control"
@@ -696,12 +558,8 @@
                                            placeholder="000123" />
                                 </div>
 
-
-                                <!-- DETALLE -->
-                                <div class="col-md-4">
-                                    <label class="form-label">
-                                        Detalle
-                                    </label>
+                                <div class="col-4">
+                                    <label class="form-label">Detalle</label>
 
                                     <input name="Detalle"
                                            class="form-control"
@@ -709,33 +567,25 @@
                                            placeholder="Ej. Almuerzo" />
                                 </div>
 
+                                <div class="col-4">
+                                    <label class="form-label">Monto total</label>
 
-                                <!-- MONTO -->
-                                <div class="col-md-4">
-                                    <label class="form-label">
-                                        Monto total (S/)
-                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">S/</span>
 
-                                    <input type="number"
-                                           id="montoTotal"
-                                           name="MontoTotal"
-                                           class="form-control"
-                                           min="0.01"
-                                           step="0.01"
-                                           placeholder="0.00"
-                                           required />
-
-                                    <small class="text-muted">
-                                        Importe total pagado.
-                                    </small>
+                                        <input type="number"
+                                               id="montoTotal"
+                                               name="MontoTotal"
+                                               class="form-control"
+                                               min="0.01"
+                                               step="0.01"
+                                               placeholder="0.00"
+                                               required />
+                                    </div>
                                 </div>
 
-
-                                <!-- EXONERACIÓN -->
-                                <div class="col-md-4">
-                                    <label class="form-label d-block">
-                                        Tipo de operación
-                                    </label>
+                                <div class="col-4">
+                                    <label class="form-label">Tipo de operación</label>
 
                                     <div class="form-check mt-2">
                                         <input type="checkbox"
@@ -751,12 +601,17 @@
                                     </div>
                                 </div>
 
+                                <div class="col-4">
+                                    <label class="form-label">Comprobante</label>
 
-                                <!-- BASE -->
-                                <div class="col-md-4">
-                                    <label class="form-label">
-                                        Valor de venta
-                                    </label>
+                                    <input type="file"
+                                           name="archivo"
+                                           class="form-control"
+                                           accept=".pdf,.jpg,.jpeg,.png" />
+                                </div>
+
+                                <div class="col-4">
+                                    <label class="form-label">Valor de venta</label>
 
                                     <div class="input-group">
                                         <span class="input-group-text">S/</span>
@@ -771,12 +626,8 @@
                                     </div>
                                 </div>
 
-
-                                <!-- IGV -->
-                                <div class="col-md-4">
-                                    <label class="form-label">
-                                        IGV (18 %)
-                                    </label>
+                                <div class="col-4">
+                                    <label class="form-label">IGV (18 %)</label>
 
                                     <div class="input-group">
                                         <span class="input-group-text">S/</span>
@@ -791,72 +642,44 @@
                                     </div>
                                 </div>
 
+                                <div class="col-8">
+                                    <label class="form-label">Resumen del comprobante</label>
 
-                                <!-- RESUMEN -->
-                                <div class="col-md-8">
                                     <div class="tax-summary">
-
-                                        <div class="row text-center g-3">
+                                        <div class="row g-3">
 
                                             <div class="col-md-4">
-                                                <small class="text-muted d-block">
-                                                    Valor de venta
-                                                </small>
-
-                                                <strong id="resumenValorVenta">
-                                                    S/ 0.00
-                                                </strong>
+                                                <div class="tax-item">
+                                                    <small>Valor de venta</small>
+                                                    <strong id="resumenValorVenta">S/ 0.00</strong>
+                                                </div>
                                             </div>
 
                                             <div class="col-md-4">
-                                                <small class="text-muted d-block">
-                                                    IGV
-                                                </small>
-
-                                                <strong id="resumenIgv">
-                                                    S/ 0.00
-                                                </strong>
+                                                <div class="tax-item">
+                                                    <small>IGV</small>
+                                                    <strong id="resumenIgv">S/ 0.00</strong>
+                                                </div>
                                             </div>
 
                                             <div class="col-md-4">
-                                                <small class="text-muted d-block">
-                                                    Total
-                                                </small>
-
-                                                <strong id="resumenTotal"
-                                                        class="text-primary">
-                                                    S/ 0.00
-                                                </strong>
+                                                <div class="tax-item total">
+                                                    <small>Total</small>
+                                                    <strong id="resumenTotal">S/ 0.00</strong>
+                                                </div>
                                             </div>
 
                                         </div>
-
                                     </div>
-                                </div>
-
-
-                                <!-- ARCHIVO -->
-                                <div class="col-md-4">
-                                    <label class="form-label">
-                                        Comprobante
-                                    </label>
-
-                                    <input type="file"
-                                           name="archivo"
-                                           class="form-control"
-                                           accept=".pdf,.jpg,.jpeg,.png" />
                                 </div>
 
                             </div>
 
-
-                            <div class="mt-4">
+                            <div class="mt-4 pt-3 border-top">
                                 <button type="submit"
-                                        class="btn btn-dark-custom px-4">
-
+                                        class="btn btn-primary-custom px-4">
                                     <i class="bi bi-plus-circle me-1"></i>
-                                    Agregar gasto
-
+                                    Registrar gasto
                                 </button>
                             </div>
 
@@ -867,29 +690,29 @@
             }
             else
             {
-                <div class="alert alert-info">
-                    Esta rendición ya fue enviada.
-                    No se pueden agregar ni eliminar gastos.
+                <div class="alert alert-info alert-custom mb-0">
+                    <i class="bi bi-lock me-1"></i>
+                    Esta rendición ya fue enviada. No se pueden agregar ni eliminar gastos.
                 </div>
             }
 
         </div>
 
+        <div class="side-column">
 
-        <!-- COLUMNA DERECHA -->
-        <div class="col-lg-4">
-
-            <!-- INFORMACIÓN -->
-            <div class="panel mb-4">
+            <div class="panel">
 
                 <div class="panel-header">
-                    INFORMACIÓN DE LA RENDICIÓN
+                    <span>
+                        <i class="bi bi-file-earmark-text me-2 text-primary"></i>
+                        Información de la rendición
+                    </span>
                 </div>
 
-                <div class="panel-body">
+                <div class="panel-body p-0">
 
                     <div class="table-responsive">
-                        <table class="table table-bordered table-info mb-0">
+                        <table class="table table-bordered info-table">
 
                             <tr>
                                 <th>Solicitud</th>
@@ -927,37 +750,18 @@
                             <tr>
                                 <th>Monto aprobado</th>
                                 <td>
-                                    S/ @montoAprobado.ToString("N2")
+                                    <strong>
+                                        S/ @montoAprobado.ToString("N2")
+                                    </strong>
                                 </td>
                             </tr>
 
                             <tr>
                                 <th>Estado</th>
                                 <td>
-                                    @if (rendicion?.IdEstadoRendicion == 1)
-                                    {
-                                        <span class="badge bg-primary">En proceso</span>
-                                    }
-                                    else if (rendicion?.IdEstadoRendicion == 2)
-                                    {
-                                        <span class="badge bg-warning text-dark">
-                                            Pendiente de revisión
-                                        </span>
-                                    }
-                                    else if (rendicion?.IdEstadoRendicion == 3)
-                                    {
-                                        <span class="badge bg-success">Aprobada</span>
-                                    }
-                                    else if (rendicion?.IdEstadoRendicion == 4)
-                                    {
-                                        <span class="badge bg-danger">Rechazada</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary">
-                                            Desconocido
-                                        </span>
-                                    }
+                                    <span class="estado @estadoClase">
+                                        @estadoTexto
+                                    </span>
                                 </td>
                             </tr>
 
@@ -967,83 +771,29 @@
                 </div>
             </div>
 
-
-            <!-- RESUMEN -->
-            <div class="panel mb-4">
-
-                <div class="panel-header">
-                    RESUMEN
-                </div>
-
-                <div class="panel-body">
-
-                    <div class="summary-card mb-3">
-                        <div class="small-label summary-green">
-                            Monto aprobado
-                        </div>
-
-                        <div class="summary-value summary-green">
-                            S/ @montoAprobado.ToString("N2")
-                        </div>
-                    </div>
-
-                    <div class="summary-card mb-3">
-                        <div class="small-label summary-orange">
-                            Total rendido
-                        </div>
-
-                        <div class="summary-value">
-                            S/ @totalRendido.ToString("N2")
-                        </div>
-                    </div>
-
-                    <div class="summary-card">
-                        <div class="small-label summary-blue">
-                            Saldo pendiente
-                        </div>
-
-                        <div class="summary-value summary-blue">
-                            S/ @saldoPendiente.ToString("N2")
-                        </div>
-
-                        @if (saldoOriginal > 0 &&
-                             devolucion != null &&
-                             saldoPendiente == 0)
-                        {
-                            <div class="mt-2 text-success fw-semibold">
-                                <i class="bi bi-check-circle-fill me-1"></i>
-                                Saldo devuelto completamente
-                            </div>
-                        }
-                    </div>
-
-                </div>
-            </div>
-
-
-            <!-- DEVOLUCIÓN -->
             @if (rendicion != null &&
                  rendicion.IdEstadoRendicion == 1 &&
                  rendicion.Saldo > 0)
             {
-                <div class="panel mb-4 @(devolucion == null
-                                        ? "devolucion-pendiente"
-                                        : "devolucion-ok")">
+                <div class="panel devolucion-box @(devolucion != null ? "ok" : "")">
 
                     <div class="panel-header">
-                        DEVOLUCIÓN DE SALDO
+                        <span>
+                            <i class="bi bi-bank me-2"></i>
+                            Devolución de saldo
+                        </span>
                     </div>
 
                     <div class="panel-body">
 
                         @if (devolucion == null)
                         {
-                            <div class="alert alert-warning">
+                            <div class="alert alert-warning alert-custom">
                                 Tiene un saldo pendiente de devolución de
                                 <strong>
                                     S/ @rendicion.Saldo.ToString("N2")
                                 </strong>.
-                                Debe registrar el depósito antes de enviar la rendición.
+                                Registre el depósito antes de enviar la rendición.
                             </div>
 
                             <form asp-controller="DevolucionSaldo"
@@ -1056,9 +806,7 @@
                                        value="@rendicion.IdRendicion" />
 
                                 <div class="mb-3">
-                                    <label class="form-label">
-                                        Monto a devolver
-                                    </label>
+                                    <label class="form-label">Monto a devolver</label>
 
                                     <input type="number"
                                            name="Monto"
@@ -1069,9 +817,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">
-                                        Fecha del depósito
-                                    </label>
+                                    <label class="form-label">Fecha del depósito</label>
 
                                     <input type="date"
                                            name="Fecha"
@@ -1081,9 +827,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">
-                                        Banco
-                                    </label>
+                                    <label class="form-label">Banco</label>
 
                                     <input type="text"
                                            name="Banco"
@@ -1094,9 +838,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">
-                                        Número de operación
-                                    </label>
+                                    <label class="form-label">Número de operación</label>
 
                                     <input type="text"
                                            name="NumeroOperacion"
@@ -1106,9 +848,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">
-                                        Voucher
-                                    </label>
+                                    <label class="form-label">Voucher</label>
 
                                     <input type="file"
                                            name="voucher"
@@ -1118,9 +858,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label">
-                                        Observaciones
-                                    </label>
+                                    <label class="form-label">Observaciones</label>
 
                                     <textarea name="Observaciones"
                                               class="form-control"
@@ -1129,7 +867,8 @@
                                 </div>
 
                                 <button type="submit"
-                                        class="btn btn-primary w-100">
+                                        class="btn btn-primary-custom w-100">
+                                    <i class="bi bi-check2-circle me-1"></i>
                                     Registrar devolución
                                 </button>
 
@@ -1137,12 +876,13 @@
                         }
                         else
                         {
-                            <div class="alert alert-success">
+                            <div class="alert alert-success alert-custom">
+                                <i class="bi bi-check-circle me-1"></i>
                                 Devolución registrada correctamente.
                             </div>
 
                             <div class="table-responsive">
-                                <table class="table table-bordered table-info">
+                                <table class="table table-bordered info-table">
 
                                     <tr>
                                         <th>Monto</th>
@@ -1164,7 +904,7 @@
                                     </tr>
 
                                     <tr>
-                                        <th>N.º operación</th>
+                                        <th>Operación</th>
                                         <td>@devolucion.NumeroOperacion</td>
                                     </tr>
 
@@ -1176,7 +916,8 @@
                                                 <a href="@devolucion.Voucher"
                                                    target="_blank"
                                                    rel="noopener"
-                                                   class="btn btn-outline-primary btn-sm">
+                                                   class="btn btn-outline-primary btn-sm voucher-link">
+                                                    <i class="bi bi-file-earmark-arrow-up me-1"></i>
                                                     Ver voucher
                                                 </a>
                                             }
@@ -1203,7 +944,8 @@
 
                             <form asp-controller="DevolucionSaldo"
                                   asp-action="Eliminar"
-                                  method="post">
+                                  method="post"
+                                  class="mt-3">
 
                                 <input type="hidden"
                                        name="id"
@@ -1216,8 +958,10 @@
                                 <button type="submit"
                                         class="btn btn-outline-danger w-100"
                                         onclick="return confirm('¿Desea eliminar la devolución registrada?');">
+                                    <i class="bi bi-trash me-1"></i>
                                     Eliminar devolución
                                 </button>
+
                             </form>
                         }
 
@@ -1225,67 +969,75 @@
                 </div>
             }
 
-
-            <!-- ACCIONES -->
             <div class="panel">
 
                 <div class="panel-header">
-                    ACCIONES
+                    <span>
+                        <i class="bi bi-lightning-charge me-2 text-primary"></i>
+                        Acciones
+                    </span>
                 </div>
 
-                <div class="panel-body d-grid gap-3">
+                <div class="panel-body">
 
-                    @if (rendicion?.IdEstadoRendicion == 1)
-                    {
-                        var puedeEnviar =
-                            rendicion.Total > 0 &&
-                            (rendicion.Saldo <= 0 || devolucion != null);
+                    <div class="action-stack">
 
-                        <form asp-controller="Gasto"
-                              asp-action="EnviarRendicion"
-                              method="post">
-
-                            <input type="hidden"
-                                   name="idRendicion"
-                                   value="@rendicion.IdRendicion" />
-
-                            <button type="submit"
-                                    class="btn btn-success w-100"
-                                    disabled="@(puedeEnviar ? null : "disabled")"
-                                    onclick="return confirm('¿Desea enviar esta rendición para revisión?');">
-
-                                <i class="bi bi-send-check-fill me-1"></i>
-                                Finalizar y enviar a revisión
-
-                            </button>
-
-                        </form>
-
-                        @if (rendicion.Total <= 0)
+                        @if (rendicion?.IdEstadoRendicion == 1)
                         {
-                            <small class="text-danger">
-                                Debe registrar al menos un gasto.
-                            </small>
-                        }
-                        else if (rendicion.Saldo > 0 && devolucion == null)
-                        {
-                            <small class="text-danger">
-                                Debe registrar la devolución del saldo pendiente.
-                            </small>
-                        }
-                    }
+                            var puedeEnviar =
+                                rendicion.Total > 0 &&
+                                (rendicion.Saldo <= 0 || devolucion != null);
 
-                    <a asp-controller="Rendicion"
-                       asp-action="MisRendiciones"
-                       class="btn btn-outline-secondary">
-                        Historial de Rendiciones
-                    </a>
+                            <form asp-controller="Gasto"
+                                  asp-action="EnviarRendicion"
+                                  method="post">
 
-                    <a asp-controller="Rendicion"
-                       asp-action="Index"
-                       class="btn btn-outline-secondary">
-                        Volver
-                    </a>
+                                <input type="hidden"
+                                       name="idRendicion"
+                                       value="@rendicion.IdRendicion" />
+
+                                <button type="submit"
+                                        class="btn btn-success w-100"
+                                        disabled="@(puedeEnviar ? null : "disabled")"
+                                        onclick="return confirm('¿Desea enviar esta rendición para revisión?');">
+
+                                    <i class="bi bi-send-check me-1"></i>
+                                    Finalizar y enviar
+                                </button>
+
+                            </form>
+
+                            @if (rendicion.Total <= 0)
+                            {
+                                <p class="action-note">
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+                                    Debe registrar al menos un gasto.
+                                </p>
+                            }
+                            else if (rendicion.Saldo > 0 && devolucion == null)
+                            {
+                                <p class="action-note">
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+                                    Debe registrar la devolución del saldo pendiente.
+                                </p>
+                            }
+                        }
+
+                        <a asp-controller="Rendicion"
+                           asp-action="MisRendiciones"
+                           class="btn btn-outline-secondary">
+                            <i class="bi bi-clock-history me-1"></i>
+                            Historial de rendiciones
+                        </a>
+
+                        <a asp-controller="Rendicion"
+                           asp-action="Index"
+                           class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>
+                            Volver a rendiciones
+                        </a>
+
+                    </div>
 
                 </div>
             </div>
@@ -1296,226 +1048,126 @@
 
 </div>
 
-
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded",function(){
+    const ruc=document.getElementById("ruc");
+    const btnRuc=document.getElementById("btnConsultarRuc");
+    const razonSocial=document.getElementById("razonSocial");
+    const domicilio=document.getElementById("domicilioFiscal");
+    const mensajeRuc=document.getElementById("mensajeRuc");
+    let ultimaConsulta="";
 
-        /* RUC */
-        const ruc = document.getElementById("ruc");
-        const btnRuc = document.getElementById("btnConsultarRuc");
-        const razonSocial = document.getElementById("razonSocial");
-        const domicilio = document.getElementById("domicilioFiscal");
-        const mensajeRuc = document.getElementById("mensajeRuc");
+    async function consultarRuc(){
+        const numero=ruc.value.trim();
 
-        let ultimaConsulta = "";
+        if(numero===ultimaConsulta)return;
 
-        async function consultarRuc() {
+        razonSocial.value="";
+        domicilio.value="";
+        mensajeRuc.textContent="";
 
-            const numero = ruc.value.trim();
+        if(!/^\d{11}$/.test(numero)){
+            mensajeRuc.textContent="Ingrese un RUC válido de 11 dígitos.";
+            mensajeRuc.className="form-text text-danger";
+            return;
+        }
 
-            if (numero === ultimaConsulta) {
-                return;
+        btnRuc.disabled=true;
+        btnRuc.innerHTML='<span class="spinner-border spinner-border-sm me-1"></span>Buscando...';
+
+        try{
+            const url='@Url.Action("ConsultarRuc","Gasto")'+'?ruc='+encodeURIComponent(numero);
+
+            const response=await fetch(url,{
+                method:"GET",
+                headers:{"Accept":"application/json"}
+            });
+
+            let data;
+
+            try{
+                data=await response.json();
+            }catch{
+                throw new Error("La respuesta del servidor no es válida.");
             }
 
-            razonSocial.value = "";
-            domicilio.value = "";
-            mensajeRuc.textContent = "";
-
-            if (!/^\d{11}$/.test(numero)) {
-                mensajeRuc.textContent =
-                    "Ingrese un RUC válido de 11 dígitos.";
-
-                mensajeRuc.className =
-                    "form-text text-danger";
-
-                return;
+            if(!response.ok){
+                throw new Error(data?.mensaje||"No se encontró el RUC.");
             }
 
-            btnRuc.disabled = true;
-            btnRuc.textContent = "Buscando...";
+            razonSocial.value=data?.razonSocial??"";
+            domicilio.value=data?.domicilioFiscal??"";
 
-            try {
+            mensajeRuc.textContent=`Estado: ${data?.estado??"-"} | Condición: ${data?.condicion??"-"}`;
+            mensajeRuc.className="form-text text-success";
+            ultimaConsulta=numero;
 
-                const url =
-                    '@Url.Action("ConsultarRuc", "Gasto")' +
-                    '?ruc=' +
-                    encodeURIComponent(numero);
+        }catch(error){
+            ultimaConsulta="";
+            mensajeRuc.textContent=error.message||"No se pudo consultar el RUC.";
+            mensajeRuc.className="form-text text-danger";
+        }finally{
+            btnRuc.disabled=false;
+            btnRuc.innerHTML='<i class="bi bi-search me-1"></i>Buscar';
+        }
+    }
 
-                const response = await fetch(url, {
-                    method: "GET",
-                    headers: {
-                        "Accept": "application/json"
-                    }
-                });
+    if(ruc&&btnRuc){
+        btnRuc.addEventListener("click",consultarRuc);
 
-                let data;
-
-                try {
-                    data = await response.json();
-                }
-                catch {
-                    throw new Error(
-                        "La respuesta del servidor no es válida."
-                    );
-                }
-
-                if (!response.ok) {
-                    throw new Error(
-                        data?.mensaje ||
-                        "No se encontró el RUC."
-                    );
-                }
-
-                razonSocial.value =
-                    data?.razonSocial ?? "";
-
-                domicilio.value =
-                    data?.domicilioFiscal ?? "";
-
-                mensajeRuc.textContent =
-                    `Estado: ${data?.estado ?? "-"} | Condición: ${data?.condicion ?? "-"}`;
-
-                mensajeRuc.className =
-                    "form-text text-success";
-
-                ultimaConsulta = numero;
-
+        ruc.addEventListener("blur",function(){
+            if(/^\d{11}$/.test(ruc.value.trim())){
+                consultarRuc();
             }
-            catch (error) {
+        });
 
-                ultimaConsulta = "";
+        ruc.addEventListener("input",function(){
+            ruc.value=ruc.value.replace(/\D/g,"").slice(0,11);
 
-                mensajeRuc.textContent =
-                    error.message ||
-                    "No se pudo consultar el RUC.";
-
-                mensajeRuc.className =
-                    "form-text text-danger";
-
+            if(ruc.value!==ultimaConsulta){
+                ultimaConsulta="";
+                razonSocial.value="";
+                domicilio.value="";
+                mensajeRuc.textContent="";
             }
-            finally {
+        });
+    }
 
-                btnRuc.disabled = false;
-                btnRuc.textContent = "Buscar";
+    const montoTotal=document.getElementById("montoTotal");
+    const exoneracion=document.getElementById("exoneracionIGV");
+    const valorVenta=document.getElementById("valorVenta");
+    const igv=document.getElementById("igvCalculado");
+    const resumenBase=document.getElementById("resumenValorVenta");
+    const resumenIgv=document.getElementById("resumenIgv");
+    const resumenTotal=document.getElementById("resumenTotal");
 
+    function calcularIgv(){
+        if(!montoTotal||!valorVenta||!igv)return;
+
+        const total=parseFloat(montoTotal.value)||0;
+        let base=0;
+        let impuesto=0;
+
+        if(total>0){
+            if(exoneracion?.checked){
+                base=total;
+            }else{
+                base=Math.round((total/1.18)*100)/100;
+                impuesto=Math.round((total-base)*100)/100;
             }
         }
 
-        if (ruc && btnRuc) {
+        valorVenta.value=base.toFixed(2);
+        igv.value=impuesto.toFixed(2);
 
-            btnRuc.addEventListener(
-                "click",
-                consultarRuc
-            );
+        if(resumenBase)resumenBase.textContent=`S/ ${base.toFixed(2)}`;
+        if(resumenIgv)resumenIgv.textContent=`S/ ${impuesto.toFixed(2)}`;
+        if(resumenTotal)resumenTotal.textContent=`S/ ${total.toFixed(2)}`;
+    }
 
-            ruc.addEventListener(
-                "blur",
-                function () {
-                    if (/^\d{11}$/.test(ruc.value.trim())) {
-                        consultarRuc();
-                    }
-                }
-            );
+    montoTotal?.addEventListener("input",calcularIgv);
+    exoneracion?.addEventListener("change",calcularIgv);
 
-            ruc.addEventListener(
-                "input",
-                function () {
-
-                    ruc.value =
-                        ruc.value
-                            .replace(/\D/g, "")
-                            .slice(0, 11);
-
-                    if (ruc.value !== ultimaConsulta) {
-                        ultimaConsulta = "";
-                        razonSocial.value = "";
-                        domicilio.value = "";
-                        mensajeRuc.textContent = "";
-                    }
-                }
-            );
-        }
-
-
-        /* IGV */
-        const montoTotal = document.getElementById("montoTotal");
-        const exoneracion = document.getElementById("exoneracionIGV");
-        const valorVenta = document.getElementById("valorVenta");
-        const igv = document.getElementById("igvCalculado");
-
-        const resumenBase =
-            document.getElementById("resumenValorVenta");
-
-        const resumenIgv =
-            document.getElementById("resumenIgv");
-
-        const resumenTotal =
-            document.getElementById("resumenTotal");
-
-
-        function calcularIgv() {
-
-            if (!montoTotal || !valorVenta || !igv) {
-                return;
-            }
-
-            const total =
-                parseFloat(montoTotal.value) || 0;
-
-            let base = 0;
-            let impuesto = 0;
-
-            if (total > 0) {
-
-                if (exoneracion?.checked) {
-
-                    base = total;
-
-                }
-                else {
-
-                    base =
-                        Math.round((total / 1.18) * 100) / 100;
-
-                    impuesto =
-                        Math.round((total - base) * 100) / 100;
-                }
-            }
-
-            valorVenta.value =
-                base.toFixed(2);
-
-            igv.value =
-                impuesto.toFixed(2);
-
-            if (resumenBase) {
-                resumenBase.textContent =
-                    `S/ ${base.toFixed(2)}`;
-            }
-
-            if (resumenIgv) {
-                resumenIgv.textContent =
-                    `S/ ${impuesto.toFixed(2)}`;
-            }
-
-            if (resumenTotal) {
-                resumenTotal.textContent =
-                    `S/ ${total.toFixed(2)}`;
-            }
-        }
-
-
-        montoTotal?.addEventListener(
-            "input",
-            calcularIgv
-        );
-
-        exoneracion?.addEventListener(
-            "change",
-            calcularIgv
-        );
-
-        calcularIgv();
-
-    });
+    calcularIgv();
+});
 </script>

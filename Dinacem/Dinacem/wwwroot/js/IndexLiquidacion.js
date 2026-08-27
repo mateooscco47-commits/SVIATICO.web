@@ -1,342 +1,232 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
 
-    const buscador =
-        document.getElementById("buscarLiquidacion");
-
-    const fechaDesde =
-        document.getElementById("fechaDesdeRendicion");
-
-    const fechaHasta =
-        document.getElementById("fechaHastaRendicion");
-
-    const limpiarFiltros =
-        document.getElementById("limpiarFiltrosRendicion");
-
-    const botonesFiltro =
-        document.querySelectorAll(".filtro-btn");
-
-    const tabla =
-        document.getElementById("tablaLiquidaciones");
-
-    const cantidadVisible =
-        document.getElementById("cantidadVisible");
-
-    const filaSinResultados =
-        document.getElementById("filaSinResultados");
-
-
-    if (!tabla) {
-
-        console.warn(
-            "No se encontró #tablaLiquidaciones"
-        );
-
-        return;
-    }
-
+    const buscador = document.getElementById("buscarLiquidacion");
+    const btnLimpiarBusqueda = document.getElementById("limpiarBusquedaLiquidacion");
+    const fechaDesde = document.getElementById("fechaDesdeRendicion");
+    const fechaHasta = document.getElementById("fechaHastaRendicion");
+    const btnLimpiarFiltros = document.getElementById("limpiarFiltrosRendicion");
+    const cantidadVisible = document.getElementById("cantidadVisible");
+    const filaSinResultados = document.getElementById("filaSinResultados");
+    const filaSinRegistros = document.getElementById("filaSinRegistros");
+    const botonesEstado = document.querySelectorAll(".filtro-btn");
+    const filas = document.querySelectorAll("#tablaLiquidaciones tbody tr[data-estado]");
 
     let estadoSeleccionado = "todos";
 
-
     function normalizarTexto(texto) {
-
-        return (texto || "")
-            .toString()
+        return texto
             .toLowerCase()
             .normalize("NFD")
             .replace(/[\u0300-\u036f]/g, "")
             .trim();
     }
 
+    function actualizarVisibilidadBotonLimpiar() {
+        if (!buscador || !btnLimpiarBusqueda) {
+            return;
+        }
+
+        if (buscador.value.trim() !== "") {
+            btnLimpiarBusqueda.style.display = "flex";
+        } else {
+            btnLimpiarBusqueda.style.display = "none";
+        }
+    }
 
     function aplicarFiltros() {
 
-        const termino =
-            normalizarTexto(
-                buscador
-                    ? buscador.value
-                    : ""
-            );
+        const textoBusqueda = normalizarTexto(
+            buscador ? buscador.value : ""
+        );
 
+        const desde = fechaDesde ? fechaDesde.value : "";
+        const hasta = fechaHasta ? fechaHasta.value : "";
 
-        const desde =
-            fechaDesde
-                ? fechaDesde.value
-                : "";
-
-
-        const hasta =
-            fechaHasta
-                ? fechaHasta.value
-                : "";
-
-
-        const filas =
-            tabla.querySelectorAll(
-                "tr[data-estado]"
-            );
-
-
-        let visibles = 0;
-
+        let cantidad = 0;
 
         filas.forEach(function (fila) {
 
-            const estado =
-                fila.dataset.estado || "";
+            const estado = fila.dataset.estado || "";
+            const tieneReembolso = fila.dataset.reembolso === "true";
+            const fecha = fila.dataset.fecha || "";
+            const texto = normalizarTexto(
+                fila.dataset.busqueda || fila.textContent
+            );
 
+            let mostrar = true;
 
-            const texto =
-                normalizarTexto(
-                    fila.dataset.busqueda || ""
-                );
-
-
-            const fecha =
-                fila.dataset.fecha || "";
-
-
-            const coincideEstado =
-                estadoSeleccionado === "todos" ||
-                estado === estadoSeleccionado;
-
-
-            const coincideBusqueda =
-                termino === "" ||
-                texto.includes(termino);
-
-
-            let coincideDesde = true;
-
-            if (desde !== "") {
-
-                coincideDesde =
-                    fecha !== "" &&
-                    fecha >= desde;
-
+            if (textoBusqueda !== "" && !texto.includes(textoBusqueda)) {
+                mostrar = false;
             }
 
+            if (estadoSeleccionado !== "todos") {
 
-            let coincideHasta = true;
+                if (estadoSeleccionado === "reembolso") {
 
-            if (hasta !== "") {
+                    if (!tieneReembolso) {
+                        mostrar = false;
+                    }
 
-                coincideHasta =
-                    fecha !== "" &&
-                    fecha <= hasta;
+                } else {
 
+                    if (estado !== estadoSeleccionado) {
+                        mostrar = false;
+                    }
+
+                }
             }
 
+            if (desde !== "" && fecha !== "" && fecha < desde) {
+                mostrar = false;
+            }
 
-            const mostrar =
-                coincideEstado &&
-                coincideBusqueda &&
-                coincideDesde &&
-                coincideHasta;
+            if (hasta !== "" && fecha !== "" && fecha > hasta) {
+                mostrar = false;
+            }
 
-
-            fila.style.display =
-                mostrar
-                    ? ""
-                    : "none";
-
+            fila.style.display = mostrar ? "" : "table-row";
 
             if (mostrar) {
-
-                visibles++;
-
+                cantidad++;
             }
-
         });
 
-
         if (cantidadVisible) {
-
-            cantidadVisible.textContent =
-                visibles.toString();
-
+            cantidadVisible.textContent = cantidad;
         }
-
 
         if (filaSinResultados) {
-
-            filaSinResultados.style.display =
-                filas.length > 0 && visibles === 0
-                    ? ""
-                    : "none";
-
+            if (filas.length > 0 && cantidad === 0) {
+                filaSinResultados.style.display = "table-row";
+            } else {
+                filaSinResultados.style.display = "none";
+            }
         }
 
+        if (filaSinRegistros) {
+            if (filas.length === 0) {
+                filaSinRegistros.style.display = "table-row";
+            }
+        }
+
+        actualizarVisibilidadBotonLimpiar();
     }
 
+    botonesEstado.forEach(function (boton) {
 
-    botonesFiltro.forEach(function (boton) {
+        boton.addEventListener("click", function () {
 
-        boton.addEventListener(
-            "click",
-            function () {
+            botonesEstado.forEach(function (item) {
+                item.classList.remove("active");
+            });
 
-                botonesFiltro.forEach(
-                    function (item) {
+            this.classList.add("active");
 
-                        item.classList.remove(
-                            "active"
-                        );
+            estadoSeleccionado = this.dataset.estado || "todos";
 
-                    }
-                );
-
-
-                boton.classList.add("active");
-
-
-                estadoSeleccionado =
-                    boton.dataset.estado ||
-                    "todos";
-
-
-                aplicarFiltros();
-
-            }
-        );
-
+            aplicarFiltros();
+        });
     });
-
 
     if (buscador) {
 
-        buscador.addEventListener(
-            "input",
-            function () {
+        buscador.addEventListener("input", function () {
+            aplicarFiltros();
+        });
 
-                aplicarFiltros();
-
-            }
-        );
-
-
-        buscador.addEventListener(
-            "search",
-            function () {
-
-                aplicarFiltros();
-
-            }
-        );
-
-
-        buscador.addEventListener(
-            "keydown",
-            function (evento) {
-
-                if (evento.key === "Escape") {
-
-                    buscador.value = "";
-
-                    aplicarFiltros();
-
-                    buscador.focus();
-
-                }
-
-            }
-        );
-
+        buscador.addEventListener("search", function () {
+            aplicarFiltros();
+        });
     }
 
+    if (btnLimpiarBusqueda) {
+
+        btnLimpiarBusqueda.addEventListener("click", function () {
+
+            if (buscador) {
+                buscador.value = "";
+                buscador.focus();
+            }
+
+            aplicarFiltros();
+        });
+    }
 
     if (fechaDesde) {
 
-        fechaDesde.addEventListener(
-            "change",
-            function () {
+        fechaDesde.addEventListener("change", function () {
 
-                aplicarFiltros();
-
+            if (
+                fechaHasta &&
+                fechaHasta.value !== "" &&
+                fechaDesde.value !== "" &&
+                fechaDesde.value > fechaHasta.value
+            ) {
+                fechaHasta.value = fechaDesde.value;
             }
-        );
 
+            aplicarFiltros();
+        });
     }
-
 
     if (fechaHasta) {
 
-        fechaHasta.addEventListener(
-            "change",
-            function () {
+        fechaHasta.addEventListener("change", function () {
 
-                aplicarFiltros();
-
+            if (
+                fechaDesde &&
+                fechaDesde.value !== "" &&
+                fechaHasta.value !== "" &&
+                fechaHasta.value < fechaDesde.value
+            ) {
+                fechaDesde.value = fechaHasta.value;
             }
-        );
 
+            aplicarFiltros();
+        });
     }
 
+    if (btnLimpiarFiltros) {
 
-    if (limpiarFiltros) {
+        btnLimpiarFiltros.addEventListener("click", function () {
 
-        limpiarFiltros.addEventListener(
-            "click",
-            function () {
-
-                if (buscador) {
-
-                    buscador.value = "";
-
-                }
-
-
-                if (fechaDesde) {
-
-                    fechaDesde.value = "";
-
-                }
-
-
-                if (fechaHasta) {
-
-                    fechaHasta.value = "";
-
-                }
-
-
-                estadoSeleccionado = "todos";
-
-
-                botonesFiltro.forEach(
-                    function (boton) {
-
-                        boton.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-                const botonTodos =
-                    document.querySelector(
-                        '.filtro-btn[data-estado="todos"]'
-                    );
-
-
-                if (botonTodos) {
-
-                    botonTodos.classList.add(
-                        "active"
-                    );
-
-                }
-
-
-                aplicarFiltros();
-
+            if (buscador) {
+                buscador.value = "";
             }
-        );
 
+            if (fechaDesde) {
+                fechaDesde.value = "";
+            }
+
+            if (fechaHasta) {
+                fechaHasta.value = "";
+            }
+
+            estadoSeleccionado = "todos";
+
+            botonesEstado.forEach(function (boton) {
+                boton.classList.remove("active");
+            });
+
+            const botonTodos = document.querySelector(
+                '.filtro-btn[data-estado="todos"]'
+            );
+
+            if (botonTodos) {
+                botonTodos.classList.add("active");
+            }
+
+            aplicarFiltros();
+
+            if (buscador) {
+                buscador.focus();
+            }
+        });
     }
 
+    if (buscador) {
+        actualizarVisibilidadBotonLimpiar();
+    }
 
     aplicarFiltros();
-
 });

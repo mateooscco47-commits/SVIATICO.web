@@ -342,6 +342,9 @@ C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runti
 C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
 C:\Users\HP\Documents\GitHub\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\appsettings.json
+C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\Dinacen.staticwebassets.runtime.json
+C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\Dinacen.staticwebassets.endpoints.json
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-Black.ttf
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-BlackItalic.ttf
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-Bold.ttf
@@ -361,9 +364,6 @@ C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-Thin.ttf
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-ThinItalic.ttf
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\OFL.txt
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\appsettings.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\Dinacen.staticwebassets.runtime.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\Dinacen.staticwebassets.endpoints.json
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\Dinacen.exe
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\Dinacen.deps.json
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\Dinacen.runtimeconfig.json

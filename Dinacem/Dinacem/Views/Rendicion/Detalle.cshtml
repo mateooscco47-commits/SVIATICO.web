@@ -2,168 +2,758 @@
 
 @{
     ViewData["Title"] = "Detalle de Rendición";
-    Layout = null;
+    Layout = "~/Views/Shared/_LayoutEmpleado.cshtml";
 
     var rendicion = ViewBag.Rendicion as Dinacem.Models.Rendicion;
     var montoAprobado = rendicion?.Solicitud?.Monto ?? 0;
+    var totalRendido = rendicion?.Total ?? 0;
+    var saldo = rendicion?.Saldo ?? 0;
 }
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    .rendicion-page {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
-<div class="container mt-4">
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 22px;
+        margin-bottom: 22px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(15,23,42,.05);
+    }
 
-    <div class="card shadow mb-4">
-        <div class="card-header bg-primary text-white">
-            <h3>Detalle de Rendición</h3>
+    .page-title {
+        margin: 0 0 5px;
+        color: #0f172a;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .page-description {
+        margin: 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .main-card {
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #dbe1ea;
+        border-radius: 16px;
+        box-shadow: 0 5px 18px rgba(15,23,42,.06);
+    }
+
+    .card-header-custom {
+        padding: 18px 22px;
+        color: #fff;
+        background: #0c4a8a;
+        font-size: 17px;
+        font-weight: 800;
+    }
+
+    .card-body-custom {
+        padding: 24px;
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 0 0 16px;
+        color: #0f172a;
+        font-size: 17px;
+        font-weight: 800;
+    }
+
+    .section-title i {
+        color: #0c4a8a;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .info-card {
+        padding: 16px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        transition: .2s ease;
+    }
+
+    .info-card:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 3px 10px rgba(15,23,42,.04);
+    }
+
+    .info-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .3px;
+        text-transform: uppercase;
+    }
+
+    .info-value {
+        color: #0f172a;
+        font-size: 15px;
+        font-weight: 700;
+        word-break: break-word;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 11px;
+        color: #1d4ed8;
+        background: #dbeafe;
+        border: 1px solid #93c5fd;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+    }
+
+    .expenses-table {
+        width: 100%;
+        min-width: 950px;
+        margin: 0;
+        border-collapse: collapse;
+    }
+
+    .expenses-table thead th {
+        padding: 13px 12px;
+        color: #64748b;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .expenses-table tbody td {
+        padding: 13px 12px;
+        color: #334155;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 13px;
+        vertical-align: middle;
+    }
+
+    .expenses-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .expenses-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .amount {
+        color: #0f172a;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .empty-state {
+        padding: 35px 20px !important;
+        color: #64748b !important;
+        text-align: center;
+    }
+
+    .empty-state i {
+        display: block;
+        margin-bottom: 8px;
+        color: #94a3b8;
+        font-size: 30px;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+    }
+
+    .summary-card {
+        padding: 18px;
+        border: 1px solid #dbe1ea;
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 4px 14px rgba(15,23,42,.04);
+    }
+
+    .summary-approved {
+        border-left: 5px solid #0c4a8a;
+    }
+
+    .summary-total {
+        border-left: 5px solid #f59e0b;
+    }
+
+    .summary-balance {
+        border-left: 5px solid #198754;
+    }
+
+    .summary-label {
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .summary-value {
+        margin-top: 7px;
+        color: #0f172a;
+        font-size: 22px;
+        font-weight: 800;
+    }
+
+    .summary-approved .summary-value {
+        color: #0c4a8a;
+    }
+
+    .summary-total .summary-value {
+        color: #b45309;
+    }
+
+    .summary-balance .summary-value {
+        color: #15803d;
+    }
+
+    .summary-balance.saldo-negativo {
+        border-left-color: #dc3545;
+    }
+
+    .summary-balance.saldo-negativo .summary-value {
+        color: #dc3545;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .action-buttons form {
+        margin: 0;
+    }
+
+    .action-buttons .btn {
+        min-width: 150px;
+    }
+
+    .divider {
+        height: 1px;
+        margin: 25px 0;
+        background: #e2e8f0;
+    }
+
+    .btn-loading {
+        pointer-events: none;
+        opacity: .75;
+    }
+
+    .swal2-popup {
+        border-radius: 16px !important;
+    }
+
+    .swal2-title {
+        color: #0f172a !important;
+    }
+
+    .swal2-html-container {
+        color: #64748b !important;
+    }
+
+    @@media (max-width: 767.98px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 18px;
+        }
+
+        .page-header .btn {
+            width: 100%;
+        }
+
+        .page-title {
+            font-size: 23px;
+        }
+
+        .card-body-custom {
+            padding: 17px;
+        }
+
+        .info-grid,
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .action-buttons form,
+        .action-buttons .btn,
+        .action-buttons form .btn {
+            width: 100%;
+        }
+
+        .summary-value {
+            font-size: 20px;
+        }
+    }
+</style>
+
+<div class="rendicion-page">
+
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">
+                <i class="bi bi-receipt-cutoff me-2"></i>
+                Detalle de Rendición
+            </h1>
+            <p class="page-description">
+                Revise la información y los gastos registrados de la rendición.
+            </p>
         </div>
 
-        <div class="card-body">
-
-            <h5>Información General</h5>
-
-            <table class="table table-bordered">
-                <tr>
-                    <th>Empleado</th>
-                    <td>@rendicion?.Usuario?.Nombres @rendicion?.Usuario?.Apellidos</td>
-                </tr>
-                <tr>
-                    <th>Solicitud</th>
-                    <td>@rendicion?.IdSolicitud</td>
-                </tr>
-                <tr>
-                    <th>Destino</th>
-                    <td>@rendicion?.Solicitud?.Destino</td>
-                </tr>
-                <tr>
-                    <th>Motivo</th>
-                    <td>@rendicion?.Solicitud?.Motivo</td>
-                </tr>
-                <tr>
-                    <th>Fecha Inicio</th>
-                    <td>@rendicion?.FechaInicio.ToString("dd/MM/yyyy")</td>
-                </tr>
-                <tr>
-                    <th>Fecha Fin</th>
-                    <td>@rendicion?.FechaFin.ToString("dd/MM/yyyy")</td>
-                </tr>
-                <tr>
-                    <th>Estado</th>
-                    <td>@rendicion?.EstadoRendicion?.Nombre</td>
-                </tr>
-            </table>
-
-            <hr />
-
-            <h5>Gastos Registrados</h5>
-
-            <table class="table table-bordered table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Tipo</th>
-                        <th>Comprobante</th>
-                        <th>Serie</th>
-                        <th>Número</th>
-                        <th>Detalle</th>
-                        <th>IGV</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
-                                <td>@item.TipoGasto?.Nombre</td>
-                                <td>@item.TipoComprobante?.Nombre</td>
-                                <td>@item.Serie</td>
-                                <td>@item.Numero</td>
-                                <td>@item.Detalle</td>
-                                <td>S/. @item.IGV.ToString("N2")</td>
-                                <td>S/. @item.MontoTotal.ToString("N2")</td>
-                            </tr>
-                        }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="8" class="text-center text-muted">
-                                No hay gastos registrados.
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-
-            <hr />
-
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="alert alert-primary">
-                        <strong>Monto Aprobado</strong><br />
-                        S/. @montoAprobado.ToString("N2")
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="alert alert-warning">
-                        <strong>Total Rendido</strong><br />
-                        S/. @rendicion?.Total.ToString("N2")
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="alert alert-success">
-                        <strong>Saldo</strong><br />
-                        S/. @rendicion?.Saldo.ToString("N2")
-                    </div>
-                </div>
-            </div>
-
-            <hr />
-
-            <div class="d-flex gap-2">
-
-                <form asp-controller="Rendicion"
-                      asp-action="Aprobar"
-                      method="post">
-
-                    <input type="hidden"
-                           name="id"
-                           value="@rendicion?.IdRendicion" />
-
-                    <button class="btn btn-success"
-                            onclick="return confirm('¿Desea aprobar esta rendición?');">
-                        Aprobar Rendición
-                    </button>
-                </form>
-
-                <form asp-controller="Rendicion"
-                      asp-action="Rechazar"
-                      method="post">
-
-                    <input type="hidden"
-                           name="id"
-                           value="@rendicion?.IdRendicion" />
-
-                    <button class="btn btn-danger"
-                            onclick="return confirm('¿Desea rechazar esta rendición?');">
-                        Rechazar Rendición
-                    </button>
-                </form>
-
-                <a asp-controller="Rendicion"
-                   asp-action="IndexAdmin"
-                   class="btn btn-secondary">
-                    Volver
-                </a>
-
-            </div>
-
-        </div>
+        <a asp-controller="Rendicion"
+           asp-action="IndexAdmin"
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Volver
+        </a>
     </div>
 
+    <input type="hidden"
+           id="mensajeSuccess"
+           value="@TempData["success"]" />
+
+    <input type="hidden"
+           id="mensajeError"
+           value="@TempData["error"]" />
+
+    @if (rendicion == null)
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            No se encontró la información de la rendición.
+        </div>
+    }
+    else
+    {
+        <div class="main-card">
+
+            <div class="card-header-custom">
+                <i class="bi bi-file-earmark-text me-2"></i>
+                Información de la rendición
+            </div>
+
+            <div class="card-body-custom">
+
+                <h2 class="section-title">
+                    <i class="bi bi-person-vcard"></i>
+                    Información general
+                </h2>
+
+                <div class="info-grid">
+
+                    <div class="info-card">
+                        <span class="info-label">Empleado</span>
+                        <div class="info-value">
+                            @(rendicion.Usuario?.Nombres ?? "-")
+                            @(rendicion.Usuario?.Apellidos ?? "")
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <span class="info-label">Solicitud</span>
+                        <div class="info-value">
+                            <i class="bi bi-file-earmark-text text-primary me-1"></i>
+                            #@rendicion.IdSolicitud
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <span class="info-label">Destino</span>
+                        <div class="info-value">
+                            @(string.IsNullOrWhiteSpace(rendicion.Solicitud?.Destino)
+                                ? "Sin destino registrado"
+                                : rendicion.Solicitud.Destino)
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <span class="info-label">Motivo</span>
+                        <div class="info-value">
+                            @(string.IsNullOrWhiteSpace(rendicion.Solicitud?.Motivo)
+                                ? "Sin motivo registrado"
+                                : rendicion.Solicitud.Motivo)
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <span class="info-label">Fecha de inicio</span>
+                        <div class="info-value">
+                            @rendicion.FechaInicio.ToString("dd/MM/yyyy")
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <span class="info-label">Fecha de fin</span>
+                        <div class="info-value">
+                            @rendicion.FechaFin.ToString("dd/MM/yyyy")
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <span class="info-label">Estado</span>
+                        <div class="info-value">
+                            <span class="status-badge">
+                                <i class="bi bi-circle-fill"></i>
+                                @(rendicion.EstadoRendicion?.Nombre ?? "Sin estado")
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <span class="info-label">Monto aprobado</span>
+                        <div class="info-value text-success">
+                            S/ @montoAprobado.ToString("N2")
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="divider"></div>
+
+                <h2 class="section-title">
+                    <i class="bi bi-receipt"></i>
+                    Gastos registrados
+                </h2>
+
+                <div class="table-wrapper">
+                    <table class="expenses-table">
+
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Tipo</th>
+                                <th>Comprobante</th>
+                                <th>Serie</th>
+                                <th>Número</th>
+                                <th>Detalle</th>
+                                <th>IGV</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+
+                                        <td>
+                                            @(item.TipoGasto?.Nombre ?? "-")
+                                        </td>
+
+                                        <td>
+                                            @(item.TipoComprobante?.Nombre ?? "-")
+                                        </td>
+
+                                        <td>
+                                            @(string.IsNullOrWhiteSpace(item.Serie)
+                                                ? "-"
+                                                : item.Serie)
+                                        </td>
+
+                                        <td>
+                                            @(string.IsNullOrWhiteSpace(item.Numero)
+                                                ? "-"
+                                                : item.Numero)
+                                        </td>
+
+                                        <td>
+                                            @(string.IsNullOrWhiteSpace(item.Detalle)
+                                                ? "-"
+                                                : item.Detalle)
+                                        </td>
+
+                                        <td class="amount">
+                                            S/ @item.IGV.ToString("N2")
+                                        </td>
+
+                                        <td class="amount">
+                                            S/ @item.MontoTotal.ToString("N2")
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="8" class="empty-state">
+                                        <i class="bi bi-receipt-cutoff"></i>
+                                        No hay gastos registrados para esta rendición.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+
+                <div class="divider"></div>
+
+                <h2 class="section-title">
+                    <i class="bi bi-calculator"></i>
+                    Resumen
+                </h2>
+
+                <div class="summary-grid">
+
+                    <div class="summary-card summary-approved">
+                        <div class="summary-label">
+                            Monto aprobado
+                        </div>
+                        <div class="summary-value">
+                            S/ @montoAprobado.ToString("N2")
+                        </div>
+                    </div>
+
+                    <div class="summary-card summary-total">
+                        <div class="summary-label">
+                            Total rendido
+                        </div>
+                        <div class="summary-value">
+                            S/ @totalRendido.ToString("N2")
+                        </div>
+                    </div>
+
+                    <div class="summary-card summary-balance @(saldo < 0 ? "saldo-negativo" : "")">
+                        <div class="summary-label">
+                            Saldo
+                        </div>
+                        <div class="summary-value">
+                            S/ @saldo.ToString("N2")
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="action-buttons">
+
+                    @if (rendicion.IdEstadoRendicion == 2)
+                    {
+                        <form asp-controller="Rendicion"
+                              asp-action="Aprobar"
+                              method="post"
+                              id="formAprobar">
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@rendicion.IdRendicion" />
+
+                            <button type="submit"
+                                    class="btn btn-success"
+                                    id="btnAprobar">
+                                <i class="bi bi-check-circle-fill me-1"></i>
+                                Aprobar rendición
+                            </button>
+
+                        </form>
+
+                        <form asp-controller="Rendicion"
+                              asp-action="Rechazar"
+                              method="post"
+                              id="formRechazar">
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@rendicion.IdRendicion" />
+
+                            <input type="hidden"
+                                   name="observaciones"
+                                   id="observacionesRechazo" />
+
+                            <button type="submit"
+                                    class="btn btn-danger"
+                                    id="btnRechazar">
+                                <i class="bi bi-x-circle-fill me-1"></i>
+                                Rechazar rendición
+                            </button>
+
+                        </form>
+                    }
+
+                    <a asp-controller="Rendicion"
+                       asp-action="IndexAdmin"
+                       class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>
+                        Regresar
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+    }
 </div>
+
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const mensajeSuccess = document.getElementById("mensajeSuccess");
+            const mensajeError = document.getElementById("mensajeError");
+
+            if (mensajeSuccess && mensajeSuccess.value) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Operación realizada",
+                    text: mensajeSuccess.value,
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#0c4a8a"
+                });
+            }
+
+            if (mensajeError && mensajeError.value) {
+                Swal.fire({
+                    icon: "error",
+                    title: "No se pudo completar",
+                    text: mensajeError.value,
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#0c4a8a"
+                });
+            }
+
+            const formAprobar = document.getElementById("formAprobar");
+            const formRechazar = document.getElementById("formRechazar");
+
+            if (formAprobar) {
+
+                formAprobar.addEventListener("submit", function (event) {
+
+                    event.preventDefault();
+
+                    Swal.fire({
+                        title: "¿Aprobar rendición?",
+                        text: "La rendición será marcada como aprobada.",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "Sí, aprobar",
+                        cancelButtonText: "Cancelar",
+                        reverseButtons: true,
+                        confirmButtonColor: "#198754",
+                        cancelButtonColor: "#6c757d"
+                    }).then(function (result) {
+
+                        if (result.isConfirmed) {
+
+                            const boton = document.getElementById("btnAprobar");
+
+                            if (boton) {
+                                boton.disabled = true;
+                                boton.classList.add("btn-loading");
+                                boton.innerHTML =
+                                    '<span class="spinner-border spinner-border-sm me-1"></span>Aprobando...';
+                            }
+
+                            formAprobar.submit();
+                        }
+                    });
+                });
+            }
+
+            if (formRechazar) {
+
+                formRechazar.addEventListener("submit", function (event) {
+
+                    event.preventDefault();
+
+                    Swal.fire({
+                        title: "¿Rechazar rendición?",
+                        text: "Indique el motivo por el cual la rendición será rechazada.",
+                        icon: "warning",
+                        input: "textarea",
+                        inputLabel: "Motivo del rechazo",
+                        inputPlaceholder: "Escriba el motivo del rechazo...",
+                        inputAttributes: {
+                            maxlength: 1000
+                        },
+                        showCancelButton: true,
+                        confirmButtonText: "Sí, rechazar",
+                        cancelButtonText: "Cancelar",
+                        reverseButtons: true,
+                        confirmButtonColor: "#dc3545",
+                        cancelButtonColor: "#6c757d",
+                        inputValidator: function (value) {
+
+                            if (!value || value.trim() === "") {
+                                return "Debe ingresar el motivo del rechazo.";
+                            }
+
+                            if (value.trim().length < 5) {
+                                return "El motivo debe tener al menos 5 caracteres.";
+                            }
+
+                            return undefined;
+                        }
+                    }).then(function (result) {
+
+                        if (result.isConfirmed) {
+
+                            const observaciones =
+                                document.getElementById("observacionesRechazo");
+
+                            const boton =
+                                document.getElementById("btnRechazar");
+
+                            if (observaciones) {
+                                observaciones.value = result.value.trim();
+                            }
+
+                            if (boton) {
+                                boton.disabled = true;
+                                boton.classList.add("btn-loading");
+                                boton.innerHTML =
+                                    '<span class="spinner-border spinner-border-sm me-1"></span>Rechazando...';
+                            }
+
+                            formRechazar.submit();
+                        }
+                    });
+                });
+            }
+
+        });
+    </script>
+}

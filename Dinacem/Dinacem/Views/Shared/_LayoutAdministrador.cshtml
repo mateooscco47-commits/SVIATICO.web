@@ -1,352 +1,532 @@
 ﻿<!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DINACEN</title>
 
+    <!-- FUENTES: Plus Jakarta Sans + Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <title>
-        @ViewData["Title"] - DINACEN
-    </title>
+    <!-- BOOTSTRAP & ICONS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
 
+    <style>
+    :root {
+        /* Dimensiones */
+        --sidebar-width: 265px;
+        --topbar-height: 72px;
 
-    <!-- Bootstrap -->
+        /* Colores Institucionales DINACEN (Azul principal y variaciones de sombreado) */
+        --dinacen-blue: #0C4A8A;
+        --dinacen-blue-dark: #083663;
+        --dinacen-blue-light: #EAF2F9;
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet" />
+        /* Superficies & Neutrales */
+        --white: #FFFFFF;
+        --background: #F8FAFC;
 
+        /* Contraste & Tipografía */
+        --text-primary: #0F172A;
+        --text-secondary: #334155;
+        --text-light: #64748B;
 
-    <!-- Bootstrap Icons -->
+        --border: #CBD5E1;
+        --border-light: #E2E8F0;
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-          rel="stylesheet" />
+        --hover: #F1F5F9;
 
+        /* Estado Peligro / Cerrar Sesión */
+        --danger: #DC2626;
+        --danger-dark: #B91C1C;
 
-    <!-- CSS DINACEN -->
+        /* Elevación & Sombras (Con Tinte Azul) */
+        --shadow-sidebar: 2px 0 16px rgba(15, 23, 42, 0.04);
+        --shadow-topbar: 0 2px 8px rgba(15, 23, 42, 0.04);
+        --shadow-card: 0 4px 12px rgba(12, 74, 138, 0.12), 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
 
-    <link rel="stylesheet"
-          href="~/css/layout.css"
-          asp-append-version="true" />
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
 
+    html, body {
+        width: 100%;
+        min-height: 100%;
+    }
+
+    body {
+        font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--background);
+        color: var(--text-primary);
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .layout-wrapper {
+        display: flex;
+        width: 100%;
+        min-height: 100vh;
+        background-color: var(--background);
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+        width: var(--sidebar-width);
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1040;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--white);
+        border-right: 1px solid var(--border-light);
+        box-shadow: var(--shadow-sidebar);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sidebar-header {
+        width: 100%;
+        min-height: 140px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem 1.25rem;
+        background-color: var(--white);
+        border-bottom: 1px solid var(--border-light);
+    }
+
+    .sidebar-logo {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 0.35rem 0 0.9rem;
+    }
+
+    .sidebar-logo::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 48px;
+        height: 3px;
+        transform: translateX(-50%);
+        background-color: var(--dinacen-blue);
+        border-radius: 10px;
+    }
+
+    .sidebar-logo a {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    .sidebar-logo img {
+        display: block;
+        width: 195px;
+        height: 105px;
+        object-fit: contain;
+        transition: transform 0.25s ease;
+    }
+
+    .sidebar-logo img:hover {
+        transform: scale(1.02);
+    }
+
+    /* MENÚ DE NAVEGACIÓN - SOMBREADO EN AZUL */
+    .sidebar-menu {
+        flex: 1;
+        padding: 1.25rem 0.85rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: thin;
+        scrollbar-color: #CBD5E1 transparent;
+    }
+
+    .sidebar-menu::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .sidebar-menu::-webkit-scrollbar-thumb {
+        background-color: #CBD5E1;
+        border-radius: 10px;
+    }
+
+    .sidebar-menu ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .sidebar-menu li {
+        margin-bottom: 0.35rem;
+    }
+
+    .sidebar-menu a {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0.65rem 0.85rem;
+        position: relative;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.92rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sidebar-menu a i {
+        width: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+        color: var(--text-light);
+        transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    /* Hover en Azul Suave */
+    .sidebar-menu a:hover {
+        color: var(--dinacen-blue-dark);
+        background-color: var(--dinacen-blue-light);
+    }
+
+    .sidebar-menu a:hover i {
+        color: var(--dinacen-blue);
+        transform: scale(1.1);
+    }
+
+    /* Opción activa sombreada en azul con indicador lateral */
+    .sidebar-menu a.active {
+        color: var(--dinacen-blue-dark);
+        background-color: var(--dinacen-blue-light);
+        font-weight: 700;
+        box-shadow: var(--shadow-card);
+    }
+
+    .sidebar-menu a.active i {
+        color: var(--dinacen-blue);
+    }
+
+    .sidebar-menu a.active::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        bottom: 8px;
+        width: 4px;
+        background-color: var(--dinacen-blue);
+        border-radius: 0 4px 4px 0;
+    }
+
+    /* FOOTER DE SIDEBAR */
+    .sidebar-footer {
+        padding: 1rem;
+        border-top: 1px solid var(--border-light);
+        background-color: var(--white);
+    }
+
+    .btn-logout {
+        width: 100%;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        padding: 0.65rem 1rem;
+        background-color: var(--danger);
+        border: 1px solid var(--danger);
+        color: var(--white);
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(220, 38, 38, 0.2);
+        transition: all 0.2s ease;
+    }
+
+    .btn-logout i {
+        font-size: 1.1rem;
+        color: var(--white);
+    }
+
+    .btn-logout:hover {
+        background-color: var(--danger-dark);
+        border-color: var(--danger-dark);
+        box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3);
+        transform: translateY(-1px);
+    }
+
+    .btn-logout:active {
+        transform: translateY(0);
+    }
+
+    /* CONTENEDOR PRINCIPAL */
+    .main-wrapper {
+        flex: 1;
+        min-width: 0;
+        min-height: 100vh;
+        margin-left: var(--sidebar-width);
+        display: flex;
+        flex-direction: column;
+        background-color: var(--background);
+        transition: margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* BARRA SUPERIOR (TOPBAR) */
+    .topbar {
+        height: var(--topbar-height);
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        z-index: 1030;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 1.75rem;
+        background-color: var(--white);
+        border-bottom: 1px solid var(--border-light);
+        box-shadow: var(--shadow-topbar);
+    }
+
+    .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    /* PERFIL DE USUARIO EN TOPBAR */
+    .user-profile {
+        min-height: 42px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0.35rem 0.85rem;
+        background-color: var(--white);
+        border: 1px solid var(--border-light);
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+        transition: border-color 0.2s ease;
+    }
+
+    .user-profile:hover {
+        border-color: var(--dinacen-blue);
+    }
+
+    .user-avatar {
+        font-size: 1.65rem;
+        color: var(--dinacen-blue);
+        line-height: 1;
+    }
+
+    .user-details {
+        min-width: 90px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        line-height: 1.25;
+    }
+
+    .user-name {
+        color: var(--text-primary);
+        font-size: 0.85rem;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 190px;
+    }
+
+    .user-role {
+        color: var(--text-light);
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    /* ÁREA DE CONTENIDO */
+    .content {
+        flex: 1;
+        width: 100%;
+        padding: 1.75rem;
+        background-color: var(--background);
+    }
+
+    /* RESPONSIVE & BREAKPOINTS */
+    @@media (max-width: 991.98px) {
+        /* En pantallas medianas/pequeñas, el sidebar pasa a la parte superior o flujo normal */
+        .sidebar {
+            position: relative;
+            width: 100% !important;
+            height: auto;
+            border-right: none;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .layout-wrapper {
+            flex-direction: column;
+        }
+
+        .main-wrapper {
+            margin-left: 0 !important;
+        }
+
+        .topbar {
+            padding: 0 1.15rem;
+        }
+
+        .content {
+            padding: 1.25rem;
+        }
+    }
+
+    @@media (max-width: 575.98px) {
+        :root {
+            --topbar-height: 64px;
+        }
+
+        .sidebar-header {
+            min-height: 100px;
+            padding: 0.75rem 1rem;
+        }
+
+        .sidebar-logo img {
+            width: 150px;
+            height: 75px;
+        }
+
+        .sidebar-menu {
+            padding: 0.75rem;
+        }
+
+        .topbar {
+            padding: 0 0.85rem;
+        }
+
+        .user-profile {
+            padding: 0.25rem 0.5rem;
+        }
+
+        .user-name {
+            max-width: 120px;
+        }
+
+        .content {
+            padding: 1rem 0.85rem;
+        }
+    }
+
+    @@media (min-width: 1400px) {
+        .content {
+            padding: 2rem 2.25rem;
+        }
+    }
+</style>
 </head>
 
-
 <body>
-
-
-<div class="layout">
-
-
-
-    <!-- ===================================
-         MENU LATERAL
-    ==================================== -->
-
-    <aside class="sidebar">
-
-
-
-        <!-- LOGO -->
-
-        <div class="sidebar-logo">
-
-            <img src="~/images/logo-dinacen.png"
-                 alt="DINACEN Logo" />
-
-        </div>
-
-
-
-
-
-        <!-- MENU PRINCIPAL -->
-
-        <nav class="sidebar-menu">
-
-
-            <ul>
-
-
-
-                <!-- INICIO -->
-
-                <li>
-
-
-                    <a asp-controller="Principal"
-                       asp-action="Index"
-                       class="@(ViewContext.RouteData.Values["controller"]?.ToString()=="Principal" ? "active" : "")">
-
-
-                        <i class="bi bi-house-door-fill"></i>
-
-
-                        <span>
-                            Inicio
-                        </span>
-
-
+    <div class="layout-wrapper">
+        <!-- BARRA LATERAL (SIDEBAR) -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <a asp-controller="Principal" asp-action="Index" aria-label="Ir al inicio">
+                        <img src="~/images/logo-dinacen.png" alt="DINACEN" loading="eager" />
                     </a>
-
-
-                </li>
-
-
-
-
-
-
-
-
-
-
-                <!-- USUARIOS -->
-
-                <li>
-
-
-                    <a asp-controller="Usuario"
-                       asp-action="Index"
-                       class="@(ViewContext.RouteData.Values["controller"]?.ToString()=="Usuario" ? "active" : "")">
-
-
-                        <i class="bi bi-people-fill"></i>
-
-
-                        <span>
-                            Usuarios
-                        </span>
-
-
-                    </a>
-
-
-                </li>
-
-
-
-
-
-                <!-- SOLICITUDES -->
-
-                <li>
-
-
-                    <a asp-controller="Solicitud"
-                       asp-action="Index"
-                       class="@(ViewContext.RouteData.Values["controller"]?.ToString()=="Solicitud" ? "active" : "")">
-
-
-                        <i class="bi bi-file-earmark-text-fill"></i>
-
-
-                        <span>
-                            Solicitudes
-                        </span>
-
-
-                    </a>
-
-
-                </li>
-
-
-
-
-
-                <!-- LIQUIDACIONES -->
-
-                <li>
-
-
-                    <a asp-controller="Rendicion"
-                       asp-action="IndexAdmin"
-                       class="@(ViewContext.RouteData.Values["controller"]?.ToString()=="Rendicion" ? "active" : "")">
-
-
-                        <i class="bi bi-wallet2"></i>
-
-
-                        <span>
-                            Liquidaciones
-                        </span>
-
-
-                    </a>
-
-
-                </li>
-
-
-
-
-
-                <!-- REPORTES -->
-
-                <li>
-
-
-                    <a asp-controller="Reporte"
-                       asp-action="Index"
-                       class="@(ViewContext.RouteData.Values["controller"]?.ToString()=="Reporte" ? "active" : "")">
-
-
-                        <i class="bi bi-bar-chart-line-fill"></i>
-
-
-                        <span>
-                            Reportes
-                        </span>
-
-
-                    </a>
-
-
-                </li>
-
-
-
-            </ul>
-
-
-        </nav>
-
-
-
-
-
-        <!-- CERRAR SESIÓN -->
-
-        <div class="sidebar-footer">
-
-
-            <form asp-controller="Home"
-                  asp-action="Logout"
-                  method="get">
-
-
-                <button type="submit"
-                        class="btn-logout">
-
-
-                    <i class="bi bi-box-arrow-right"></i>
-
-
-                    <span>
-                        Cerrar sesión
-                    </span>
-
-
-                </button>
-
-
-            </form>
-
-
-        </div>
-
-
-
-    </aside>
-
-
-
-
-
-    <!-- ==========================================
-         CONTENIDO PRINCIPAL
-    =========================================== -->
-
-
-    <div class="main-content">
-
-
-
-        <!-- TOPBAR -->
-
-        <header class="topbar">
-
-
-            <div class="topbar-actions">
-
-
-                <i class="bi bi-person-circle"></i>
-
-
-
-                <div class="user-info">
-
-
-                    <span class="user-name">
-
-                        @Context.Session.GetString("NombreUsuario")
-
-                    </span>
-
-
-
-                    <small class="user-role">
-
-                        @Context.Session.GetString("RolUsuario")
-
-                    </small>
-
-
                 </div>
-
-
             </div>
 
+            <nav class="sidebar-menu" aria-label="Menú principal">
+                <ul>
+                    <li>
+                        <a asp-controller="Principal" asp-action="Index"
+                           class="@(ViewContext.RouteData.Values["controller"]?.ToString()=="Principal" ? "active" : "")">
+                            <i class="bi bi-grid-1x2-fill"></i>
+                            <span>Inicio</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Usuario" asp-action="Index"
+                           class="@(ViewContext.RouteData.Values["controller"]?.ToString()=="Usuario" ? "active" : "")">
+                            <i class="bi bi-people-fill"></i>
+                            <span>Usuarios</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Solicitud" asp-action="Index"
+                           class="@(ViewContext.RouteData.Values["controller"]?.ToString()=="Solicitud" ? "active" : "")">
+                            <i class="bi bi-file-earmark-text-fill"></i>
+                            <span>Solicitudes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Rendicion" asp-action="IndexAdmin"
+                           class="@(ViewContext.RouteData.Values["controller"]?.ToString()=="Rendicion" ? "active" : "")">
+                            <i class="bi bi-wallet2"></i>
+                            <span>Liquidaciones</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Reporte" asp-action="Index"
+                           class="@(ViewContext.RouteData.Values["controller"]?.ToString()=="Reporte" ? "active" : "")">
+                            <i class="bi bi-bar-chart-line-fill"></i>
+                            <span>Reportes</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
 
-        </header>
+            <div class="sidebar-footer">
+                <form asp-controller="Home" asp-action="Logout" method="get">
+                    <button type="submit" class="btn-logout">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Cerrar sesión</span>
+                    </button>
+                </form>
+            </div>
+        </aside>
 
+        <!-- CONTENEDOR PRINCIPAL -->
+        <div class="main-wrapper" id="mainWrapper">
+            <header class="topbar">
+                <div class="topbar-right">
+                    <div class="user-profile">
+                        <i class="bi bi-person-circle user-avatar"></i>
+                        <div class="user-details">
+                            <span class="user-name">
+                                @Context.Session.GetString("NombreUsuario")
+                            </span>
+                            <small class="user-role">
+                                @Context.Session.GetString("RolUsuario")
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </header>
 
-
-
-
-        <!-- CONTENIDO DE LAS VISTAS -->
-
-
-        <main class="content">
-
-
-            @RenderBody()
-
-
-        </main>
-
-
-
+            <main class="content">
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
-
-
-</div>
-
-
-
-
-
-
-<!-- Bootstrap JS -->
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-
-</script>
-
-
-
-
-@await RenderSectionAsync("Scripts", required: false)
-
-
-
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/Layout.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
-
-
 </html>

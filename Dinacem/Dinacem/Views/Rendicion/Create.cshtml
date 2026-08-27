@@ -3,93 +3,307 @@
 @{
     ViewData["Title"] = "Crear Rendición";
     Layout = "~/Views/Shared/_LayoutEmpleado.cshtml";
+
+    var solicitudValida = Model.IdSolicitud > 0;
+    var fechasValidas = Model.FechaInicio != default && Model.FechaFin != default;
+    var puedeConfirmar = solicitudValida && fechasValidas;
 }
 
 <style>
-
-    .page-wrapper {
+    .rendicion-page {
         width: 100%;
-        max-width: 900px;
+        max-width: 1200px;
         margin: 0 auto;
+        padding: 25px 30px 40px;
+        color: #263238;
     }
 
     .page-header {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        gap: 16px;
-        padding: 22px;
+        justify-content: space-between;
+        gap: 20px;
+        background: #fff;
+        border: 1px solid #dce8f2;
+        border-radius: 12px;
+        padding: 22px 25px;
         margin-bottom: 22px;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+        box-shadow: 0 3px 12px rgba(12,74,138,.07);
     }
 
-    .page-title {
-        margin: 0 0 5px;
-        color: #0f172a;
-        font-size: 28px;
-        font-weight: 800;
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
     }
 
-    .page-description {
+    .header-icon {
+        width: 52px;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: #e7f2ff;
+        color: #3186dc;
+        font-size: 25px;
+    }
+
+    .header-text h1 {
         margin: 0;
-        color: #64748b;
-        font-size: 14px;
+        color: #174f7c;
+        font-size: 24px;
+        font-weight: 700;
     }
 
-    .form-card {
-        overflow: hidden;
-        background: #ffffff;
-        border: 1px solid #dbe1ea;
-        border-radius: 16px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .06);
+    .header-text p {
+        margin: 4px 0 0;
+        color: #929da5;
+        font-size: 13px;
     }
 
-    .form-card-header {
-        padding: 18px 22px;
-        color: #ffffff;
-        background: #198754;
+    .btn-volver {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 40px;
+        padding: 0 16px;
+        border: 1px solid #d8e0e5;
+        border-radius: 7px;
+        background: #fff;
+        color: #5f6f79;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: .2s ease;
+    }
+
+    .btn-volver:hover {
+        background: #f4f7f9;
+        border-color: #c7d1d8;
+        color: #40515b;
+    }
+
+    .mensaje {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        margin-bottom: 18px;
+        border-radius: 8px;
+        font-size: 13.5px;
+        font-weight: 500;
+    }
+
+    .mensaje-error {
+        color: #b83b3b;
+        background: #fff0f0;
+        border: 1px solid #f0cccc;
+    }
+
+    .mensaje i {
         font-size: 18px;
-        font-weight: 800;
     }
 
-    .form-card-body {
+    .mensaje .btn-close {
+        margin-left: auto;
+    }
+
+    .rendicion-card {
+        background: #fff;
+        border: 1px solid #dce5eb;
+        border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(15,23,42,.06);
+        overflow: hidden;
+    }
+
+    .card-header-custom {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 17px 20px;
+        background: #fff;
+        border-bottom: 1px solid #e4ebf0;
+        color: #174f7c;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .card-header-custom i {
+        color: #3186dc;
+        font-size: 18px;
+    }
+
+    .card-body-custom {
         padding: 24px;
     }
 
-    .info-card {
-        height: 100%;
+    .info-message {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px 16px;
+        margin-bottom: 22px;
+        border: 1px solid #c9e0f7;
+        border-radius: 9px;
+        background: #e7f2ff;
+        color: #315f88;
+        font-size: 13px;
+    }
+
+    .info-message i {
+        margin-top: 2px;
+        color: #3186dc;
+        font-size: 17px;
+    }
+
+    .info-message strong {
+        display: block;
+        margin-bottom: 2px;
+        color: #174f7c;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+
+    .info-item {
         padding: 16px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
+        background: #f8fbfd;
+        border: 1px solid #dce5eb;
+        border-radius: 9px;
+        transition: .2s ease;
+    }
+
+    .info-item:hover {
+        background: #fff;
+        border-color: #cbd8e0;
     }
 
     .info-label {
-        color: #64748b;
-        font-size: 12px;
+        display: block;
+        margin-bottom: 7px;
+        color: #71808a;
+        font-size: 11px;
         font-weight: 700;
+        letter-spacing: .35px;
         text-transform: uppercase;
     }
 
     .info-value {
-        margin-top: 5px;
-        color: #0f172a;
-        font-size: 18px;
-        font-weight: 800;
+        color: #263238;
+        font-size: 14px;
+        font-weight: 600;
+        word-break: break-word;
     }
 
-    .action-buttons {
+    .info-value i {
+        color: #3186dc;
+    }
+
+    .monto {
+        color: #3d8a51;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .saldo-positivo {
+        color: #3d8a51;
+    }
+
+    .saldo-negativo {
+        color: #c34646;
+    }
+
+    .validation-message {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 20px;
+        padding: 14px 16px;
+        border: 1px solid #f3dfa0;
+        border-radius: 9px;
+        background: #fff8df;
+        color: #8a6907;
+        font-size: 13px;
+    }
+
+    .validation-message i {
+        margin-top: 2px;
+        font-size: 17px;
+    }
+
+    .validation-message strong {
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    .acciones {
         display: flex;
         justify-content: flex-end;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 8px;
         margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #e4ebf0;
+    }
+
+    .acciones .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-height: 40px;
+        padding: 0 17px;
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .btn-confirmar {
+        background: #3d8a51;
+        border: 1px solid #3d8a51;
+        color: #fff;
+    }
+
+    .btn-confirmar:hover {
+        background: #347643;
+        border-color: #347643;
+        color: #fff;
+    }
+
+    .btn-confirmar:disabled {
+        background: #b8c5bd;
+        border-color: #b8c5bd;
+        cursor: not-allowed;
+        opacity: .75;
+    }
+
+    .btn-cancelar {
+        background: #fff;
+        border: 1px solid #d8e0e5;
+        color: #5f6f79;
+    }
+
+    .btn-cancelar:hover {
+        background: #f4f7f9;
+        border-color: #c7d1d8;
+        color: #40515b;
+    }
+
+    .swal2-popup {
+        border-radius: 12px !important;
     }
 
     @@media (max-width: 767.98px) {
+        .rendicion-page {
+            padding: 18px 15px 30px;
+        }
 
         .page-header {
             flex-direction: column;
@@ -97,81 +311,109 @@
             padding: 18px;
         }
 
-        .page-header .btn {
+        .header-content {
             width: 100%;
         }
 
-        .page-title {
-            font-size: 23px;
+        .header-icon {
+            width: 46px;
+            height: 46px;
+            font-size: 21px;
         }
 
-        .form-card-body {
+        .header-text h1 {
+            font-size: 21px;
+        }
+
+        .header-text p {
+            font-size: 12px;
+        }
+
+        .btn-volver {
+            width: 100%;
+        }
+
+        .card-body-custom {
             padding: 17px;
         }
 
-        .action-buttons {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .acciones {
             display: grid;
             grid-template-columns: 1fr;
         }
 
-        .action-buttons .btn {
+        .acciones .btn {
             width: 100%;
         }
     }
-
 </style>
 
+<div class="rendicion-page">
 
-<!-- =========================================================
-     CONTENEDOR PRINCIPAL
-     ========================================================= -->
-<div class="page-wrapper">
-
-    <!-- =========================================================
-         ENCABEZADO
-         ========================================================= -->
     <div class="page-header">
-        <div>
-            <h1 class="page-title">
-                <i class="bi bi-wallet2 me-2"></i> Crear Rendición de Gastos
-            </h1>
-            <p class="page-description">
-                Confirme los datos de la solicitud antes de iniciar el registro de gastos.
-            </p>
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="bi bi-receipt-cutoff"></i>
+            </div>
+
+            <div class="header-text">
+                <h1>Crear Rendición</h1>
+                <p>Verifique la información antes de iniciar su rendición.</p>
+            </div>
         </div>
 
-        <a asp-controller="Rendicion" asp-action="Index" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Volver a rendiciones
+        <a asp-controller="Rendicion"
+           asp-action="Index"
+           class="btn-volver">
+            <i class="bi bi-arrow-left"></i>
+            Volver
         </a>
     </div>
 
-    <!-- =========================================================
-         MENSAJE DE ERROR
-         ========================================================= -->
     @if (TempData["error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            @Html.Raw(TempData["error"])
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        <div class="mensaje mensaje-error alert alert-dismissible fade show">
+            <i class="bi bi-exclamation-circle-fill"></i>
+
+            <span>
+                @Html.Raw(TempData["error"])
+            </span>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
         </div>
     }
 
-    <!-- =========================================================
-         TARJETA PRINCIPAL
-         ========================================================= -->
-    <div class="form-card">
+    <div class="rendicion-card">
 
-        <!-- CABECERA -->
-        <div class="form-card-header">
-            <i class="bi bi-check2-square me-2"></i> Confirmación de la rendición
+        <div class="card-header-custom">
+            <i class="bi bi-info-circle"></i>
+            Información de la solicitud
         </div>
 
-        <!-- CUERPO -->
-        <div class="form-card-body">
-            <form asp-controller="Rendicion" asp-action="Create" method="post" id="formCrearRendicion">
+        <div class="card-body-custom">
 
-                <!-- CAMPOS OCULTOS -->
+            <div class="info-message">
+                <i class="bi bi-info-circle-fill"></i>
+
+                <div>
+                    <strong>Antes de continuar</strong>
+                    Al confirmar esta operación se creará la rendición y podrá comenzar a registrar sus gastos.
+                </div>
+            </div>
+
+            <form asp-controller="Rendicion"
+                  asp-action="Create"
+                  method="post"
+                  id="formCrearRendicion">
+
                 <input type="hidden" asp-for="IdSolicitud" />
                 <input type="hidden" asp-for="IdUsuario" />
                 <input type="hidden" asp-for="Fecha" />
@@ -181,185 +423,229 @@
                 <input type="hidden" asp-for="Saldo" />
                 <input type="hidden" asp-for="IdEstadoRendicion" />
 
-                <!-- INFORMACIÓN -->
-                <div class="alert alert-info" role="alert">
-                    <i class="bi bi-info-circle-fill me-1"></i>
-                    Al confirmar, se creará la rendición y podrá comenzar a registrar sus gastos.
-                </div>
+                <div class="info-grid">
 
-                <!-- DATOS DE LA RENDICIÓN -->
-                <div class="row g-3">
+                    <div class="info-item">
+                        <span class="info-label">Solicitud</span>
 
-                    <!-- SOLICITUD -->
-                    <div class="col-12 col-sm-6">
-                        <div class="info-card">
-                            <div class="info-label">Solicitud</div>
-                            <div class="info-value">
-                                @if (Model.IdSolicitud > 0)
-                                {
-                                    <span>#@Model.IdSolicitud</span>
-                                }
-                                else
-                                {
-                                    <span class="text-danger">
-                                        <i class="bi bi-exclamation-circle-fill"></i> Solicitud no válida
-                                    </span>
-                                }
-                            </div>
+                        <div class="info-value">
+                            @if (solicitudValida)
+                            {
+                                <span>
+                                    <i class="bi bi-file-earmark-text me-1"></i>
+                                    #@Model.IdSolicitud
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">
+                                    <i class="bi bi-exclamation-circle-fill me-1"></i>
+                                    Solicitud no válida
+                                </span>
+                            }
                         </div>
                     </div>
 
-                    <!-- SALDO INICIAL -->
-                    <div class="col-12 col-sm-6">
-                        <div class="info-card">
-                            <div class="info-label">Saldo inicial</div>
-                            <div class="info-value text-success">
-                                @if (Model.Saldo >= 0)
-                                {
-                                    <span>S/ @Model.Saldo.ToString("N2")</span>
-                                }
-                                else
-                                {
-                                    <span class="text-danger">S/ @Model.Saldo.ToString("N2")</span>
-                                }
-                            </div>
+                    <div class="info-item">
+                        <span class="info-label">Monto aprobado</span>
+
+                        <div class="info-value monto">
+                            @if (Model.Solicitud != null)
+                            {
+                                <span>
+                                    S/ @Model.Solicitud.Monto.ToString("N2")
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">
+                                    Sin monto registrado
+                                </span>
+                            }
                         </div>
                     </div>
 
-                    <!-- FECHA DE INICIO -->
-                    <div class="col-12 col-sm-6">
-                        <div class="info-card">
-                            <div class="info-label">Fecha de inicio</div>
-                            <div class="info-value">
-                                @if (Model.FechaInicio != default)
-                                {
-                                    @Model.FechaInicio.ToString("dd/MM/yyyy")
-                                }
-                                else
-                                {
-                                    <span class="text-danger">
-                                        <i class="bi bi-exclamation-circle-fill"></i> Fecha no registrada
-                                    </span>
-                                }
-                            </div>
-                        </div>
-                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Destino</span>
 
-                    <!-- FECHA DE FIN -->
-                    <div class="col-12 col-sm-6">
-                        <div class="info-card">
-                            <div class="info-label">Fecha de fin</div>
-                            <div class="info-value">
-                                @if (Model.FechaFin != default)
-                                {
-                                    @Model.FechaFin.ToString("dd/MM/yyyy")
-                                }
-                                else
-                                {
-                                    <span class="text-danger">
-                                        <i class="bi bi-exclamation-circle-fill"></i> Fecha no registrada
-                                    </span>
-                                }
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- DESTINO -->
-                    <div class="col-12 col-sm-6">
-                        <div class="info-card">
-                            <div class="info-label">Destino</div>
-                            <div class="info-value">
-                                @if (Model.Solicitud != null && !string.IsNullOrWhiteSpace(Model.Solicitud.Destino))
-                                {
+                        <div class="info-value">
+                            @if (Model.Solicitud != null &&
+                                 !string.IsNullOrWhiteSpace(Model.Solicitud.Destino))
+                            {
+                                <span>
+                                    <i class="bi bi-geo-alt-fill me-1"></i>
                                     @Model.Solicitud.Destino
-                                }
-                                else
-                                {
-                                    <span class="text-muted">
-                                        <i class="bi bi-dash-circle"></i> Sin destino registrado
-                                    </span>
-                                }
-                            </div>
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">
+                                    Sin destino registrado
+                                </span>
+                            }
                         </div>
                     </div>
 
-                    <!-- MONTO DE LA SOLICITUD -->
-                    <div class="col-12 col-sm-6">
-                        <div class="info-card">
-                            <div class="info-label">Monto aprobado</div>
-                            <div class="info-value">
-                                @if (Model.Solicitud != null && Model.Solicitud.Monto >= 0)
-                                {
-                                    <span class="text-success">S/ @Model.Solicitud.Monto.ToString("N2")</span>
-                                }
-                                else
-                                {
-                                    <span class="text-muted">Sin monto registrado</span>
-                                }
-                            </div>
+                    <div class="info-item">
+                        <span class="info-label">Saldo inicial</span>
+
+                        <div class="info-value @(Model.Saldo >= 0 ? "saldo-positivo" : "saldo-negativo")">
+                            S/ @Model.Saldo.ToString("N2")
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Fecha de inicio</span>
+
+                        <div class="info-value">
+                            @if (Model.FechaInicio != default)
+                            {
+                                <span>
+                                    <i class="bi bi-calendar-event me-1"></i>
+                                    @Model.FechaInicio.ToString("dd/MM/yyyy")
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">
+                                    Fecha no registrada
+                                </span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Fecha de fin</span>
+
+                        <div class="info-value">
+                            @if (Model.FechaFin != default)
+                            {
+                                <span>
+                                    <i class="bi bi-calendar-check me-1"></i>
+                                    @Model.FechaFin.ToString("dd/MM/yyyy")
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">
+                                    Fecha no registrada
+                                </span>
+                            }
                         </div>
                     </div>
 
                 </div>
 
-                <!-- VALIDACIÓN GENERAL -->
-                @if (Model.IdSolicitud <= 0 || Model.FechaInicio == default || Model.FechaFin == default)
+                @if (!puedeConfirmar)
                 {
-                    <div class="alert alert-warning mt-4" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        <strong>No se puede confirmar la rendición.</strong><br />
-                        Algunos datos obligatorios de la rendición están incompletos o no son válidos.
+                    <div class="validation-message">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        <div>
+                            <strong>No se puede confirmar la rendición.</strong>
+                            Verifique que la solicitud y las fechas estén correctamente registradas.
+                        </div>
                     </div>
                 }
 
-                <!-- BOTONES -->
-                <div class="action-buttons">
-                    <a asp-controller="Rendicion" asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> Cancelar y regresar
+                <div class="acciones">
+
+                    <a asp-controller="Rendicion"
+                       asp-action="Index"
+                       class="btn btn-cancelar">
+                        <i class="bi bi-x-circle"></i>
+                        Cancelar
                     </a>
 
-                    <button type="submit" 
-                            class="btn btn-success" 
+                    <button type="submit"
+                            class="btn btn-confirmar"
                             id="btnConfirmarRendicion"
-                            @(Model.IdSolicitud <= 0 || Model.FechaInicio == default || Model.FechaFin == default ? "disabled" : null)>
-                        <i class="bi bi-check-circle-fill"></i> Confirmar rendición
+                            disabled="@(!puedeConfirmar)">
+
+                        <i class="bi bi-check-circle-fill"></i>
+                        Confirmar rendición
                     </button>
+
                 </div>
 
             </form>
-        </div>
 
+        </div>
     </div>
 
 </div>
 
-<!-- =========================================================
-     SCRIPTS DE CONFIRMACIÓN
-     ========================================================= -->
 @section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+
             const formulario = document.getElementById("formCrearRendicion");
             const boton = document.getElementById("btnConfirmarRendicion");
 
-            if (!formulario || !boton) return;
+            if (!formulario || !boton) {
+                return;
+            }
 
-            formulario.addEventListener("submit", function (event) {
-                const confirmar = confirm(
-                    "¿Está seguro de que desea crear esta rendición?\n\n" +
-                    "Una vez creada podrá comenzar a registrar los gastos."
-                );
+            formulario.addEventListener("submit", function (e) {
 
-                if (!confirmar) {
-                    event.preventDefault();
-                    return;
-                }
+                e.preventDefault();
 
-                boton.disabled = true;
-                boton.innerHTML = 
-                    '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>' +
-                    'Creando rendición...';
+                Swal.fire({
+                    title: "¿Confirmar rendición?",
+                    text: "Se creará la rendición y podrá comenzar a registrar sus gastos.",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "Sí, confirmar",
+                    cancelButtonText: "Cancelar",
+                    reverseButtons: true,
+                    confirmButtonColor: "#3d8a51",
+                    cancelButtonColor: "#6c757d"
+                }).then(function (resultado) {
+
+                    if (resultado.isConfirmed) {
+
+                        boton.disabled = true;
+
+                        boton.innerHTML =
+                            '<span class="spinner-border spinner-border-sm me-2"></span>' +
+                            'Creando rendición...';
+
+                        formulario.submit();
+                    }
+
+                });
+
             });
+
+            @if (TempData["mensaje"] != null)
+            {
+                <text>
+                Swal.fire({
+                    icon: "success",
+                    title: "Operación realizada",
+                    text: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["mensaje"])),
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#3d8a51"
+                });
+                </text>
+            }
+
+            @if (TempData["error"] != null)
+            {
+                <text>
+                Swal.fire({
+                    icon: "error",
+                    title: "No se pudo completar",
+                    html: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["error"])),
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#c34646"
+                });
+                </text>
+            }
+
         });
     </script>
 }

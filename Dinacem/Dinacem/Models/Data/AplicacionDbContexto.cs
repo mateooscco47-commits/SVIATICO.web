@@ -10,22 +10,42 @@ namespace Dinacem.Models
         {
         }
 
+
+        // =========================================
+        // DBSETS
+        // =========================================
+
         public DbSet<Rol> Roles { get; set; }
+
         public DbSet<Usuario> Usuarios { get; set; }
+
+        public DbSet<Zona> Zonas { get; set; }
+
         public DbSet<EstadoSolicitud> EstadoSolicitudes { get; set; }
+
         public DbSet<Solicitud> Solicitudes { get; set; }
+
         public DbSet<EstadoRendicion> EstadoRendiciones { get; set; }
+
         public DbSet<Rendicion> Rendiciones { get; set; }
+
         public DbSet<TipoGasto> TipoGastos { get; set; }
+
         public DbSet<TipoComprobante> TipoComprobantes { get; set; }
+
         public DbSet<Gasto> Gastos { get; set; }
+
         public DbSet<DevolucionSaldo> DevolucionesSaldo { get; set; }
+
         public DbSet<Reembolso> Reembolsos { get; set; }
+
         public DbSet<EstadoReembolso> EstadoReembolsos { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
 
             // =========================================
             // NOMBRES DE TABLAS
@@ -36,6 +56,9 @@ namespace Dinacem.Models
 
             modelBuilder.Entity<Usuario>()
                 .ToTable("Usuarios");
+
+            modelBuilder.Entity<Zona>()
+                .ToTable("Zonas");
 
             modelBuilder.Entity<EstadoSolicitud>()
                 .ToTable("EstadoSolicitudes");
@@ -67,6 +90,7 @@ namespace Dinacem.Models
             modelBuilder.Entity<EstadoReembolso>()
                 .ToTable("EstadoReembolsos");
 
+
             // =========================================
             // LLAVES PRIMARIAS
             // =========================================
@@ -76,6 +100,9 @@ namespace Dinacem.Models
 
             modelBuilder.Entity<Usuario>()
                 .HasKey(x => x.IdUsuario);
+
+            modelBuilder.Entity<Zona>()
+                .HasKey(x => x.IdZona);
 
             modelBuilder.Entity<EstadoSolicitud>()
                 .HasKey(x => x.IdEstadoSolicitud);
@@ -107,6 +134,21 @@ namespace Dinacem.Models
             modelBuilder.Entity<EstadoReembolso>()
                 .HasKey(x => x.IdEstadoReembolso);
 
+
+            // =========================================
+            // ZONA
+            // =========================================
+
+            modelBuilder.Entity<Zona>()
+                .Property(x => x.CodigoZona)
+                .HasMaxLength(10)
+                .IsRequired();
+
+            modelBuilder.Entity<Zona>()
+                .HasIndex(x => x.CodigoZona)
+                .IsUnique();
+
+
             // =========================================
             // USUARIO -> ROL
             // =========================================
@@ -116,6 +158,18 @@ namespace Dinacem.Models
                 .WithMany()
                 .HasForeignKey(x => x.IdRol)
                 .OnDelete(DeleteBehavior.NoAction);
+
+
+            // =========================================
+            // USUARIO -> ZONA
+            // =========================================
+
+            modelBuilder.Entity<Usuario>()
+                .HasOne(x => x.Zona)
+                .WithMany(x => x.Usuarios)
+                .HasForeignKey(x => x.IdZona)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             // =========================================
             // SOLICITUD -> USUARIO
@@ -127,6 +181,7 @@ namespace Dinacem.Models
                 .HasForeignKey(x => x.IdUsuario)
                 .OnDelete(DeleteBehavior.NoAction);
 
+
             // =========================================
             // SOLICITUD -> ESTADO
             // =========================================
@@ -136,6 +191,7 @@ namespace Dinacem.Models
                 .WithMany()
                 .HasForeignKey(x => x.IdEstadoSolicitud)
                 .OnDelete(DeleteBehavior.NoAction);
+
 
             // =========================================
             // SOLICITUD -> RENDICIÓN
@@ -148,6 +204,7 @@ namespace Dinacem.Models
                 .HasForeignKey<Rendicion>(r => r.IdSolicitud)
                 .OnDelete(DeleteBehavior.NoAction);
 
+
             // =========================================
             // RENDICIÓN -> USUARIO
             // =========================================
@@ -158,6 +215,7 @@ namespace Dinacem.Models
                 .HasForeignKey(r => r.IdUsuario)
                 .OnDelete(DeleteBehavior.NoAction);
 
+
             // =========================================
             // RENDICIÓN -> ESTADO
             // =========================================
@@ -167,6 +225,7 @@ namespace Dinacem.Models
                 .WithMany()
                 .HasForeignKey(r => r.IdEstadoRendicion)
                 .OnDelete(DeleteBehavior.NoAction);
+
 
             // =========================================
             // RENDICIÓN -> DEVOLUCIÓN
@@ -179,6 +238,7 @@ namespace Dinacem.Models
                 .HasForeignKey<DevolucionSaldo>(d => d.IdRendicion)
                 .OnDelete(DeleteBehavior.NoAction);
 
+
             // =========================================
             // RENDICIÓN -> GASTOS
             // 1 : N
@@ -190,6 +250,7 @@ namespace Dinacem.Models
                 .HasForeignKey(g => g.IdRendicion)
                 .OnDelete(DeleteBehavior.NoAction);
 
+
             // =========================================
             // GASTO -> TIPO GASTO
             // =========================================
@@ -200,6 +261,7 @@ namespace Dinacem.Models
                 .HasForeignKey(g => g.IdTipoGasto)
                 .OnDelete(DeleteBehavior.NoAction);
 
+
             // =========================================
             // GASTO -> TIPO COMPROBANTE
             // =========================================
@@ -209,6 +271,7 @@ namespace Dinacem.Models
                 .WithMany()
                 .HasForeignKey(g => g.IdTipoComprobante)
                 .OnDelete(DeleteBehavior.NoAction);
+
 
             // =========================================
             // RENDICIÓN -> REEMBOLSO
@@ -221,6 +284,7 @@ namespace Dinacem.Models
                 .HasForeignKey(r => r.IdRendicion)
                 .OnDelete(DeleteBehavior.NoAction);
 
+
             // =========================================
             // USUARIO -> REEMBOLSOS
             // =========================================
@@ -230,6 +294,7 @@ namespace Dinacem.Models
                 .WithMany()
                 .HasForeignKey(r => r.IdUsuario)
                 .OnDelete(DeleteBehavior.NoAction);
+
 
             // =========================================
             // REEMBOLSO -> ESTADO
@@ -241,6 +306,7 @@ namespace Dinacem.Models
                 .HasForeignKey(r => r.IdEstadoReembolso)
                 .OnDelete(DeleteBehavior.NoAction);
 
+
             // =========================================
             // ÍNDICE ÚNICO DEVOLUCIÓN
             // =========================================
@@ -248,6 +314,7 @@ namespace Dinacem.Models
             modelBuilder.Entity<DevolucionSaldo>()
                 .HasIndex(x => x.IdRendicion)
                 .IsUnique();
+
 
             // =========================================
             // DECIMALES

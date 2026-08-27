@@ -8,11 +8,11 @@ namespace Dinacem.Controllers
     {
         private readonly AplicacionDbContexto _context;
 
-        public EmpleadoController(
-            AplicacionDbContexto context)
+        public EmpleadoController(AplicacionDbContexto context)
         {
             _context = context;
         }
+
 
         // ============================================
         // PANEL PRINCIPAL DEL EMPLEADO
@@ -36,6 +36,7 @@ namespace Dinacem.Controllers
             return View();
         }
 
+
         // ============================================
         // MI PERFIL
         // ============================================
@@ -55,12 +56,19 @@ namespace Dinacem.Controllers
                     "Home");
             }
 
+
+            // ============================================
+            // OBTENER USUARIO CON ROL Y ZONA
+            // ============================================
+
             var usuario =
                 await _context.Usuarios
                     .Include(u => u.Rol)
+                    .Include(u => u.Zona)
                     .FirstOrDefaultAsync(u =>
                         u.IdUsuario ==
                         idUsuario.Value);
+
 
             if (usuario == null)
             {
@@ -71,8 +79,10 @@ namespace Dinacem.Controllers
                     nameof(Index));
             }
 
+
             return View(usuario);
         }
+
 
         // ============================================
         // ACTUALIZAR DATOS DEL PERFIL
@@ -83,9 +93,12 @@ namespace Dinacem.Controllers
             string nombres,
             string apellidos,
             string correo,
-            string celular,
-            string zona)
+            string celular)
         {
+            // ============================================
+            // VALIDAR SESIÓN
+            // ============================================
+
             var idUsuario =
                 HttpContext.Session.GetInt32("IdUsuario");
 
@@ -99,11 +112,18 @@ namespace Dinacem.Controllers
                     "Home");
             }
 
+
+            // ============================================
+            // BUSCAR USUARIO
+            // ============================================
+
             var usuario =
                 await _context.Usuarios
+                    .Include(u => u.Zona)
                     .FirstOrDefaultAsync(u =>
                         u.IdUsuario ==
                         idUsuario.Value);
+
 
             if (usuario == null)
             {
@@ -113,6 +133,11 @@ namespace Dinacem.Controllers
                 return RedirectToAction(
                     nameof(Index));
             }
+
+
+            // ============================================
+            // LIMPIAR DATOS
+            // ============================================
 
             nombres =
                 nombres?.Trim() ?? string.Empty;
@@ -126,8 +151,10 @@ namespace Dinacem.Controllers
             celular =
                 celular?.Trim() ?? string.Empty;
 
-            zona =
-                zona?.Trim() ?? string.Empty;
+
+            // ============================================
+            // VALIDAR NOMBRES
+            // ============================================
 
             if (string.IsNullOrWhiteSpace(nombres))
             {
@@ -138,6 +165,11 @@ namespace Dinacem.Controllers
                     nameof(Perfil));
             }
 
+
+            // ============================================
+            // VALIDAR APELLIDOS
+            // ============================================
+
             if (string.IsNullOrWhiteSpace(apellidos))
             {
                 TempData["error"] =
@@ -146,6 +178,11 @@ namespace Dinacem.Controllers
                 return RedirectToAction(
                     nameof(Perfil));
             }
+
+
+            // ============================================
+            // VALIDAR CORREO
+            // ============================================
 
             if (string.IsNullOrWhiteSpace(correo))
             {
@@ -156,11 +193,35 @@ namespace Dinacem.Controllers
                     nameof(Perfil));
             }
 
+
+            // ============================================
+            // VALIDAR CELULAR
+            // ============================================
+
+            if (!string.IsNullOrWhiteSpace(celular))
+            {
+                if (celular.Length != 9 ||
+                    !celular.All(char.IsDigit))
+                {
+                    TempData["error"] =
+                        "El celular debe contener exactamente 9 dígitos.";
+
+                    return RedirectToAction(
+                        nameof(Perfil));
+                }
+            }
+
+
+            // ============================================
+            // CORREO ÚNICO
+            // ============================================
+
             var correoExiste =
                 await _context.Usuarios
                     .AnyAsync(u =>
                         u.Correo == correo &&
                         u.IdUsuario != idUsuario.Value);
+
 
             if (correoExiste)
             {
@@ -170,6 +231,11 @@ namespace Dinacem.Controllers
                 return RedirectToAction(
                     nameof(Perfil));
             }
+
+
+            // ============================================
+            // ACTUALIZAR DATOS PERMITIDOS
+            // ============================================
 
             usuario.Nombres =
                 nombres;
@@ -183,17 +249,45 @@ namespace Dinacem.Controllers
             usuario.Celular =
                 celular;
 
-            usuario.Zona =
-                zona;
+
+            // ============================================
+            // NO MODIFICAR ZONA
+            // ============================================
+            //
+            // La zona es administrada desde Gestión de
+            // Usuarios y no puede modificarse desde el
+            // perfil del empleado.
+            //
+            // NO HACER:
+            //
+            // usuario.Zona = zona;
+            //
+            // NI:
+            //
+            // usuario.IdZona = ...
+            //
+            // ============================================
+
+
+            // ============================================
+            // GUARDAR CAMBIOS
+            // ============================================
 
             await _context.SaveChangesAsync();
+
+
+            // ============================================
+            // NOTIFICACIÓN
+            // ============================================
 
             TempData["mensaje"] =
                 "Sus datos fueron actualizados correctamente.";
 
+
             return RedirectToAction(
                 nameof(Perfil));
         }
+
 
         // ============================================
         // CAMBIAR CONTRASEÑA
@@ -206,6 +300,10 @@ namespace Dinacem.Controllers
             string nuevaContrasenia,
             string confirmarContrasenia)
         {
+            // ============================================
+            // VALIDAR SESIÓN
+            // ============================================
+
             var idUsuario =
                 HttpContext.Session.GetInt32("IdUsuario");
 
@@ -219,11 +317,17 @@ namespace Dinacem.Controllers
                     "Home");
             }
 
+
+            // ============================================
+            // BUSCAR USUARIO
+            // ============================================
+
             var usuario =
                 await _context.Usuarios
                     .FirstOrDefaultAsync(u =>
                         u.IdUsuario ==
                         idUsuario.Value);
+
 
             if (usuario == null)
             {
@@ -233,6 +337,25 @@ namespace Dinacem.Controllers
                 return RedirectToAction(
                     nameof(Index));
             }
+
+
+            // ============================================
+            // LIMPIAR DATOS
+            // ============================================
+
+            contraseniaActual =
+                contraseniaActual?.Trim() ?? string.Empty;
+
+            nuevaContrasenia =
+                nuevaContrasenia?.Trim() ?? string.Empty;
+
+            confirmarContrasenia =
+                confirmarContrasenia?.Trim() ?? string.Empty;
+
+
+            // ============================================
+            // VALIDAR CONTRASEÑA ACTUAL
+            // ============================================
 
             if (string.IsNullOrWhiteSpace(
                     contraseniaActual))
@@ -244,6 +367,7 @@ namespace Dinacem.Controllers
                     nameof(Perfil));
             }
 
+
             if (usuario.Contrasenia !=
                 contraseniaActual)
             {
@@ -253,6 +377,11 @@ namespace Dinacem.Controllers
                 return RedirectToAction(
                     nameof(Perfil));
             }
+
+
+            // ============================================
+            // VALIDAR NUEVA CONTRASEÑA
+            // ============================================
 
             if (string.IsNullOrWhiteSpace(
                     nuevaContrasenia))
@@ -264,14 +393,67 @@ namespace Dinacem.Controllers
                     nameof(Perfil));
             }
 
-            if (nuevaContrasenia.Length < 6)
+
+            // ============================================
+            // LONGITUD MÍNIMA
+            // ============================================
+
+            if (nuevaContrasenia.Length < 8)
             {
                 TempData["error"] =
-                    "La nueva contraseña debe tener al menos 6 caracteres.";
+                    "La nueva contraseña debe tener al menos 8 caracteres.";
 
                 return RedirectToAction(
                     nameof(Perfil));
             }
+
+
+            // ============================================
+            // VALIDAR MAYÚSCULA
+            // ============================================
+
+            if (!nuevaContrasenia.Any(char.IsUpper))
+            {
+                TempData["error"] =
+                    "La nueva contraseña debe contener al menos una letra mayúscula.";
+
+                return RedirectToAction(
+                    nameof(Perfil));
+            }
+
+
+            // ============================================
+            // VALIDAR NÚMERO
+            // ============================================
+
+            if (!nuevaContrasenia.Any(char.IsDigit))
+            {
+                TempData["error"] =
+                    "La nueva contraseña debe contener al menos un número.";
+
+                return RedirectToAction(
+                    nameof(Perfil));
+            }
+
+
+            // ============================================
+            // VALIDAR CARÁCTER ESPECIAL
+            // ============================================
+
+            if (!nuevaContrasenia.Any(c =>
+                    !char.IsLetterOrDigit(c)))
+            {
+                TempData["error"] =
+                    "La nueva contraseña debe contener al menos un carácter especial.";
+
+                return RedirectToAction(
+                    nameof(Perfil));
+            }
+
+
+            // ============================================
+            // CONFIRMAR CONTRASEÑA
+            // ============================================
 
             if (nuevaContrasenia !=
                 confirmarContrasenia)
@@ -283,6 +465,11 @@ namespace Dinacem.Controllers
                     nameof(Perfil));
             }
 
+
+            // ============================================
+            // NO REPETIR CONTRASEÑA ACTUAL
+            // ============================================
+
             if (nuevaContrasenia ==
                 contraseniaActual)
             {
@@ -293,13 +480,29 @@ namespace Dinacem.Controllers
                     nameof(Perfil));
             }
 
+
+            // ============================================
+            // ACTUALIZAR CONTRASEÑA
+            // ============================================
+
             usuario.Contrasenia =
                 nuevaContrasenia;
 
+
+            // ============================================
+            // GUARDAR
+            // ============================================
+
             await _context.SaveChangesAsync();
+
+
+            // ============================================
+            // NOTIFICACIÓN
+            // ============================================
 
             TempData["mensaje"] =
                 "Su contraseña fue actualizada correctamente.";
+
 
             return RedirectToAction(
                 nameof(Perfil));

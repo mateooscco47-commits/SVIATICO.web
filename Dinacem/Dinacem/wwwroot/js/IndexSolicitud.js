@@ -1,270 +1,110 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
+    const buscador = document.getElementById("buscadorSolicitudes");
+    const limpiarBusqueda = document.getElementById("limpiarBusqueda");
+    const fechaDesde = document.getElementById("fechaDesde");
+    const fechaHasta = document.getElementById("fechaHasta");
+    const limpiarFiltros = document.getElementById("limpiarFiltros");
+    const tabla = document.getElementById("tablaSolicitudes");
 
-    // ============================================================
-    // ELEMENTOS
-    // ============================================================
+    if (!tabla) return;
 
-    const buscador =
-        document.getElementById("buscadorSolicitudes");
-
-    const fechaDesde =
-        document.getElementById("fechaDesde");
-
-    const fechaHasta =
-        document.getElementById("fechaHasta");
-
-    const limpiarBusqueda =
-        document.getElementById("limpiarBusqueda");
-
-    const limpiarFiltros =
-        document.getElementById("limpiarFiltros");
-
-    const tabla =
-        document.getElementById("tablaSolicitudes");
-
-
-    // ============================================================
-    // VERIFICAR TABLA
-    // ============================================================
-
-    if (!tabla) {
-
-        console.warn(
-            "No se encontró la tabla #tablaSolicitudes."
-        );
-
-        return;
-    }
-
-
-    // ============================================================
-    // FILAS DE LA TABLA
-    // ============================================================
-
-    const filas =
-        tabla.querySelectorAll("tbody tr");
-
-
-    // ============================================================
-    // FUNCIÓN PRINCIPAL DE FILTRADO
-    // ============================================================
+    const filas = tabla.querySelectorAll("tbody tr[data-fecha]");
 
     function filtrarSolicitudes() {
+        const texto = buscador
+            ? buscador.value.toLowerCase().trim()
+            : "";
 
-        // --------------------------------------------------------
-        // TEXTO DEL BUSCADOR
-        // --------------------------------------------------------
+        const desde = fechaDesde
+            ? fechaDesde.value
+            : "";
 
-        const texto =
-            buscador
-                ? buscador.value.trim().toLowerCase()
-                : "";
-
-
-        // --------------------------------------------------------
-        // FECHA DESDE
-        // --------------------------------------------------------
-
-        const desde =
-            fechaDesde
-                ? fechaDesde.value
-                : "";
-
-
-        // --------------------------------------------------------
-        // FECHA HASTA
-        // --------------------------------------------------------
-
-        const hasta =
-            fechaHasta
-                ? fechaHasta.value
-                : "";
-
-
-        // --------------------------------------------------------
-        // RECORRER FILAS
-        // --------------------------------------------------------
+        const hasta = fechaHasta
+            ? fechaHasta.value
+            : "";
 
         filas.forEach(function (fila) {
-
-            // ====================================================
-            // TEXTO DE LA FILA
-            // ====================================================
-
-            const contenido =
-                fila.textContent
-                    .trim()
-                    .toLowerCase();
-
-
-            // ====================================================
-            // FECHA DE ENVÍO
-            //
-            // Esta fecha viene de:
-            //
-            // data-fecha="2026-08-23"
-            // ====================================================
-
-            const fechaSolicitud =
-                fila.dataset.fecha || "";
-
-
-            // ====================================================
-            // FILTRO DE TEXTO
-            // ====================================================
+            const contenido = fila.textContent.toLowerCase();
+            const zona = (fila.dataset.zona || "").toLowerCase();
+            const estado = (fila.dataset.estado || "").toLowerCase();
+            const fecha = fila.dataset.fecha || "";
 
             const coincideTexto =
                 texto === "" ||
-                contenido.includes(texto);
+                contenido.includes(texto) ||
+                zona.includes(texto) ||
+                estado.includes(texto);
 
+            const coincideDesde =
+                desde === "" || fecha >= desde;
 
-            // ====================================================
-            // FILTRO "DESDE"
-            // ====================================================
-
-            let coincideDesde = true;
-
-            if (desde !== "") {
-
-                coincideDesde =
-                    fechaSolicitud !== "" &&
-                    fechaSolicitud >= desde;
-
-            }
-
-
-            // ====================================================
-            // FILTRO "HASTA"
-            // ====================================================
-
-            let coincideHasta = true;
-
-            if (hasta !== "") {
-
-                coincideHasta =
-                    fechaSolicitud !== "" &&
-                    fechaSolicitud <= hasta;
-
-            }
-
-
-            // ====================================================
-            // RESULTADO FINAL
-            // ====================================================
+            const coincideHasta =
+                hasta === "" || fecha <= hasta;
 
             const mostrar =
                 coincideTexto &&
                 coincideDesde &&
                 coincideHasta;
 
-
-            // ====================================================
-            // MOSTRAR / OCULTAR
-            // ====================================================
-
-            fila.style.display =
-                mostrar ? "" : "none";
-
+            fila.style.display = mostrar ? "" : "none";
         });
-
     }
-
-
-    // ============================================================
-    // BUSCADOR DE TEXTO
-    // ============================================================
 
     if (buscador) {
-
-        buscador.addEventListener(
-            "input",
-            filtrarSolicitudes
-        );
-
+        buscador.addEventListener("input", filtrarSolicitudes);
     }
-
-
-    // ============================================================
-    // FECHA DESDE
-    // ============================================================
 
     if (fechaDesde) {
-
-        fechaDesde.addEventListener(
-            "change",
-            filtrarSolicitudes
-        );
-
+        fechaDesde.addEventListener("change", filtrarSolicitudes);
     }
-
-
-    // ============================================================
-    // FECHA HASTA
-    // ============================================================
 
     if (fechaHasta) {
-
-        fechaHasta.addEventListener(
-            "change",
-            filtrarSolicitudes
-        );
-
+        fechaHasta.addEventListener("change", filtrarSolicitudes);
     }
-
-
-    // ============================================================
-    // LIMPIAR SOLO EL BUSCADOR
-    // ============================================================
 
     if (limpiarBusqueda) {
-
-        limpiarBusqueda.addEventListener(
-            "click",
-            function () {
-
-                if (buscador) {
-                    buscador.value = "";
-                }
-
-                filtrarSolicitudes();
-
-                if (buscador) {
-                    buscador.focus();
-                }
-
+        limpiarBusqueda.addEventListener("click", function () {
+            if (buscador) {
+                buscador.value = "";
+                buscador.focus();
             }
-        );
 
+            filtrarSolicitudes();
+        });
     }
-
-
-    // ============================================================
-    // LIMPIAR TODOS LOS FILTROS
-    // ============================================================
 
     if (limpiarFiltros) {
-
-        limpiarFiltros.addEventListener(
-            "click",
-            function () {
-
-                if (buscador) {
-                    buscador.value = "";
-                }
-
-                if (fechaDesde) {
-                    fechaDesde.value = "";
-                }
-
-                if (fechaHasta) {
-                    fechaHasta.value = "";
-                }
-
-                filtrarSolicitudes();
-
+        limpiarFiltros.addEventListener("click", function () {
+            if (buscador) {
+                buscador.value = "";
             }
-        );
 
+            if (fechaDesde) {
+                fechaDesde.value = "";
+            }
+
+            if (fechaHasta) {
+                fechaHasta.value = "";
+            }
+
+            filtrarSolicitudes();
+
+            if (buscador) {
+                buscador.focus();
+            }
+        });
     }
 
+    const alertas = document.querySelectorAll(".alert");
+
+    alertas.forEach(function (alerta) {
+        setTimeout(function () {
+            if (typeof bootstrap !== "undefined") {
+                const instancia =
+                    bootstrap.Alert.getOrCreateInstance(alerta);
+
+                instancia.close();
+            }
+        }, 5000);
+    });
 });

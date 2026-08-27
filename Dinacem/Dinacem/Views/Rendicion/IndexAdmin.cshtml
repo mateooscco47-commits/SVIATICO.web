@@ -5,1340 +5,1363 @@
     Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
 
     var totalLiquidaciones = Model?.Count ?? 0;
-    var enProceso = Model?.Count(x => x.IdEstadoRendicion == 1) ?? 0;
-    var pendientes = Model?.Count(x => x.IdEstadoRendicion == 2) ?? 0;
-    var aprobadas = Model?.Count(x => x.IdEstadoRendicion == 3) ?? 0;
-    var rechazadas = Model?.Count(x => x.IdEstadoRendicion == 4) ?? 0;
+    var enProcesoLiquidaciones = Model?.Count(x => x.IdEstadoRendicion == 1) ?? 0;
+    var pendientesLiquidaciones = Model?.Count(x => x.IdEstadoRendicion == 2) ?? 0;
+    var aprobadasLiquidaciones = Model?.Count(x => x.IdEstadoRendicion == 3) ?? 0;
+    var rechazadasLiquidaciones = Model?.Count(x => x.IdEstadoRendicion == 4) ?? 0;
 
-    var reembolsos =
-        ViewBag.Reembolsos as List<Dinacem.Models.Reembolso>
+    var listaReembolsos = ViewBag.Reembolsos as List<Dinacem.Models.Reembolso>
         ?? new List<Dinacem.Models.Reembolso>();
 
-    var reembolsosPendientes =
-        reembolsos.Count(x => x.IdEstadoReembolso == 2);
-
-    var reembolsosPagados =
-        reembolsos.Count(x => x.IdEstadoReembolso == 3);
+    var reembolsosPendientesLiquidaciones = listaReembolsos.Count(x => x.IdEstadoReembolso == 2);
 }
 
 <style>
-    /* ============================================================
-       CONTENEDOR PRINCIPAL
-       ============================================================ */
+:root{
+    --dinacen-azul:#0c4a8a;
+    --dinacen-azul-oscuro:#083763;
+    --dinacen-azul-claro:#eaf3fb;
+    --dinacen-verde:#6aa84f;
+    --texto:#1f2937;
+    --texto-secundario:#4b5563;
+    --borde:#d9e1ea;
+    --fondo:#f3f7fb;
+    --blanco:#fff;
+}
 
-    .page-wrapper {
-        width: 100%;
-        max-width: 1600px;
-        margin: 0 auto;
-        padding: 0;
+.liquidaciones-page{
+    width:100%;
+    max-width:1600px;
+    margin:0 auto;
+    padding:22px;
+    background:var(--fondo);
+    color:var(--texto);
+    font-family:"Segoe UI",Arial,sans-serif;
+}
+
+.page-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:20px;
+    padding:22px 24px;
+    background:linear-gradient(135deg,var(--dinacen-azul),#1261a5);
+    border-radius:12px;
+    box-shadow:0 5px 18px rgba(12,74,138,.18);
+}
+
+.page-header-content{
+    min-width:0;
+}
+
+.page-title{
+    margin:0 0 6px;
+    color:#fff;
+    font-size:28px;
+    font-weight:800;
+    line-height:1.2;
+}
+
+.page-title i{
+    font-size:25px;
+}
+
+.page-description{
+    margin:0;
+    color:rgba(255,255,255,.9);
+    font-size:14px;
+    font-weight:400;
+    line-height:1.5;
+}
+
+.page-header-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-shrink:0;
+}
+
+.btn-volver{
+    min-height:40px;
+    padding:9px 16px;
+    border:1px solid rgba(255,255,255,.65);
+    border-radius:7px;
+    background:transparent;
+    color:#fff;
+    font-size:13px;
+    font-weight:700;
+    text-decoration:none;
+    transition:all .2s ease;
+}
+
+.btn-volver:hover{
+    background:#fff;
+    color:var(--dinacen-azul);
+    border-color:#fff;
+}
+
+.mensaje-sistema{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+    padding:12px 15px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.mensaje-sistema .btn-close{
+    margin-left:auto;
+}
+
+.mensaje-exito{
+    background:#edf7e9;
+    border:1px solid #c9e3bf;
+    color:#397631;
+}
+
+.mensaje-error{
+    background:#fef0f0;
+    border:1px solid #f1c7c7;
+    color:#b42323;
+}
+
+.liquidaciones-kpi{
+    height:100%;
+    padding:17px 19px;
+    background:var(--blanco);
+    border:1px solid var(--borde);
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(15,23,42,.05);
+    transition:all .2s ease;
+}
+
+.liquidaciones-kpi:hover{
+    transform:translateY(-1px);
+    box-shadow:0 5px 14px rgba(15,23,42,.08);
+}
+
+.kpi-label{
+    display:block;
+    margin-bottom:4px;
+    color:var(--texto-secundario);
+    font-size:12px;
+    font-weight:700;
+}
+
+.kpi-value{
+    margin:0;
+    color:var(--texto);
+    font-size:24px;
+    font-weight:800;
+}
+
+.kpi-icon{
+    width:42px;
+    height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    font-size:19px;
+}
+
+.kpi-blue{
+    background:var(--dinacen-azul-claro);
+    color:var(--dinacen-azul);
+}
+
+.kpi-process{
+    background:#eef3ff;
+    color:#315fd4;
+}
+
+.kpi-warning{
+    background:#fff6dc;
+    color:#a97808;
+}
+
+.kpi-green{
+    background:#edf7e9;
+    color:#4f8d3d;
+}
+
+.kpi-red{
+    background:#fef0f0;
+    color:#c62828;
+}
+
+.kpi-purple{
+    background:#f3eafa;
+    color:#7c3aed;
+}
+
+.filtros-card{
+    display:flex;
+    align-items:flex-end;
+    gap:14px;
+    margin-bottom:18px;
+    padding:16px 18px;
+    background:#fff;
+    border:1px solid var(--borde);
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(15,23,42,.05);
+}
+
+.search-box{
+    position:relative;
+    width:50%;
+    min-width:300px;
+}
+
+.search-icon{
+    position:absolute;
+    top:50%;
+    left:13px;
+    color:#6b7280;
+    pointer-events:none;
+    transform:translateY(-50%);
+}
+
+.search-input{
+    width:100%;
+    height:40px;
+    padding:0 40px 0 37px;
+    border:1px solid #cbd5e1;
+    border-radius:7px;
+    outline:none;
+    color:#111827;
+    background:#fff;
+    font-size:13px;
+}
+
+.search-input::placeholder{
+    color:#8a94a3;
+}
+
+.search-input:focus{
+    border-color:var(--dinacen-azul);
+    box-shadow:0 0 0 3px rgba(12,74,138,.08);
+}
+
+.search-clear{
+    position:absolute;
+    top:50%;
+    right:8px;
+    width:25px;
+    height:25px;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    border:0;
+    background:transparent;
+    color:#6b7280;
+    cursor:pointer;
+    transform:translateY(-50%);
+}
+
+.search-clear:hover{
+    color:#111827;
+}
+
+.date-filter{
+    width:170px;
+}
+
+.date-label{
+    display:block;
+    margin-bottom:6px;
+    color:#111827;
+    font-size:12px;
+    font-weight:700;
+}
+
+.date-filter input{
+    width:100%;
+    height:40px;
+    padding:8px 10px;
+    border:1px solid #cbd5e1;
+    border-radius:7px;
+    color:#111827;
+    background:#fff;
+    font-size:13px;
+    outline:none;
+}
+
+.date-filter input:focus{
+    border-color:var(--dinacen-azul);
+    box-shadow:0 0 0 3px rgba(12,74,138,.08);
+}
+
+.btn-limpiar-filtros{
+    height:40px;
+    padding:0 15px;
+    border:1px solid #cbd5e1;
+    border-radius:7px;
+    background:#fff;
+    color:#4b5563;
+    font-size:13px;
+    font-weight:700;
+    white-space:nowrap;
+    cursor:pointer;
+    transition:all .2s ease;
+}
+
+.btn-limpiar-filtros:hover{
+    background:#f3f4f6;
+    color:#111827;
+}
+
+.estado-filtros-container{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:18px;
+    padding:14px 16px;
+    background:#fff;
+    border:1px solid var(--borde);
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(15,23,42,.05);
+}
+
+.filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+}
+
+.filtro-btn{
+    border-radius:7px!important;
+    font-size:12px!important;
+    font-weight:700!important;
+}
+
+.filtro-btn.active{
+    background:var(--dinacen-azul)!important;
+    border-color:var(--dinacen-azul)!important;
+    color:#fff!important;
+}
+
+.result-count{
+    color:#64748b;
+    font-size:12px;
+    white-space:nowrap;
+}
+
+.result-count strong{
+    color:#1f2937;
+}
+
+.liquidaciones-list-card{
+    overflow:hidden;
+    background:var(--blanco);
+    border:1px solid var(--borde);
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(15,23,42,.05);
+}
+
+.liquidaciones-list-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    padding:15px 20px;
+    background:#fff;
+    border-bottom:1px solid var(--borde);
+}
+
+.liquidaciones-list-title{
+    margin:0;
+    color:#111827;
+    font-size:16px;
+    font-weight:800;
+}
+
+.liquidaciones-list-title i{
+    color:var(--dinacen-azul);
+}
+
+.liquidaciones-list-count{
+    color:#64748b;
+    font-size:12px;
+    font-weight:600;
+}
+
+.table-wrapper{
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+}
+
+.tabla-liquidaciones{
+    width:100%;
+    min-width:1050px;
+    margin:0;
+    border-collapse:separate;
+    border-spacing:0;
+}
+
+.tabla-liquidaciones thead th{
+    padding:13px 14px;
+    background:var(--dinacen-azul);
+    border-bottom:2px solid var(--dinacen-azul-oscuro);
+    color:#fff;
+    font-size:12px;
+    font-weight:800;
+    text-align:left;
+    white-space:nowrap;
+}
+
+.tabla-liquidaciones tbody td{
+    padding:12px 14px;
+    border-bottom:1px solid #e5e7eb;
+    color:#1f2937;
+    background:#fff;
+    font-size:13px;
+    font-weight:500;
+    vertical-align:middle;
+}
+
+.tabla-liquidaciones tbody tr{
+    transition:background .15s ease;
+}
+
+.tabla-liquidaciones tbody tr:hover td{
+    background:#f7fbff;
+}
+
+.tabla-liquidaciones tbody tr:last-child td{
+    border-bottom:0;
+}
+
+.id-liquidacion{
+    color:var(--dinacen-azul);
+    font-size:13px;
+    font-weight:800;
+}
+
+.empleado-info{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:190px;
+}
+
+.empleado-avatar{
+    width:36px;
+    height:36px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    border-radius:50%;
+    background:var(--dinacen-azul-claro);
+    color:var(--dinacen-azul);
+    font-size:16px;
+}
+
+.empleado-nombre{
+    color:#111827;
+    font-size:13px;
+    font-weight:700;
+    line-height:1.3;
+}
+
+.empleado-correo{
+    margin-top:2px;
+    color:#64748b;
+    font-size:11px;
+    font-weight:500;
+}
+
+.destino{
+    color:#1f2937;
+    font-weight:600;
+}
+
+.fecha{
+    color:#374151;
+    font-size:12px;
+    font-weight:600;
+    white-space:nowrap;
+}
+
+.fecha-hasta{
+    display:block;
+    margin-top:3px;
+    color:#64748b;
+    font-size:11px;
+    font-weight:500;
+}
+
+.monto{
+    color:var(--dinacen-azul);
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.saldo{
+    color:#374151;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.estado{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    min-width:82px;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.estado-proceso{
+    background:#eaf3fb;
+    color:#1557a5;
+}
+
+.estado-pendiente{
+    background:#fff6dc;
+    color:#a97808;
+}
+
+.estado-aprobada{
+    background:#e8f5e9;
+    color:#2e7d32;
+}
+
+.estado-rechazada{
+    background:#ffebee;
+    color:#c62828;
+}
+
+.estado-reembolso{
+    background:#f3eafa;
+    color:#7c3aed;
+}
+
+.estado-pagado{
+    background:#e8f7f2;
+    color:#08745a;
+}
+
+.estado-sin{
+    background:#f3f6f9;
+    color:#64748b;
+}
+
+.acciones{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    flex-wrap:wrap;
+}
+
+.btn-accion{
+    min-height:34px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    padding:6px 10px;
+    border:1px solid;
+    border-radius:6px;
+    background:#fff;
+    font-size:11px;
+    font-weight:800;
+    line-height:1;
+    text-decoration:none;
+    white-space:nowrap;
+    cursor:pointer;
+    transition:all .2s ease;
+}
+
+.btn-accion i{
+    font-size:12px;
+}
+
+.btn-accion:hover{
+    transform:translateY(-1px);
+}
+
+.btn-revisar{
+    border-color:#f3b5b5;
+    background:#fffaf0;
+    color:#a97808;
+}
+
+.btn-revisar:hover{
+    border-color:#e4c66c;
+    background:#fff5d6;
+    color:#8e6505;
+}
+
+.btn-reembolso{
+    border-color:#b8d3ef;
+    background:#f5f9ff;
+    color:#1557a5;
+}
+
+.btn-reembolso:hover{
+    border-color:#8eb8e4;
+    background:#e7f0ff;
+    color:#0c4a8a;
+}
+
+.btn-detalle{
+    border-color:#cbd5e1;
+    background:#fff;
+    color:#4b5563;
+}
+
+.btn-detalle:hover{
+    border-color:#94a3b8;
+    background:#f3f4f6;
+    color:#111827;
+}
+
+.btn-pdf{
+    border-color:#f3b5b5;
+    background:#fff7f7;
+    color:#c62828;
+}
+
+.btn-pdf:hover{
+    border-color:#e57373;
+    background:#ffebee;
+    color:#a91f1f;
+}
+
+.sin-registros{
+    padding:55px 20px!important;
+    color:#6b7280!important;
+    text-align:center;
+}
+
+.sin-registros i{
+    display:block;
+    margin-bottom:10px;
+    color:#9ca3af;
+    font-size:38px;
+}
+
+.sin-registros strong{
+    display:block;
+    margin-bottom:4px;
+    color:#4b5563;
+    font-size:14px;
+}
+
+.sin-registros span{
+    color:#6b7280;
+    font-size:12px;
+}
+
+@@media(max-width:992px){
+    .liquidaciones-page{
+        padding:18px;
     }
 
-
-    /* ============================================================
-           ENCABEZADO
-           ============================================================ */
-
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 20px;
-        padding: 22px;
-        margin-bottom: 24px;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+    .page-header{
+        align-items:flex-start;
     }
 
-    .page-title {
-        margin: 0 0 5px;
-        color: #17365d;
-        font-size: 28px;
-        font-weight: 800;
-        letter-spacing: -0.3px;
+    .page-title{
+        font-size:24px;
     }
 
-        .page-title i {
-            color: #0c4a8a;
-            font-size: 1.55rem;
-        }
-
-    .page-description {
-        margin: 0;
-        color: #64748b;
-        font-size: 14px;
-        font-weight: 500;
+    .page-header-actions{
+        width:auto;
     }
 
-
-    /* ============================================================
-           BOTÓN VOLVER
-           ============================================================ */
-
-    .page-header-actions {
-        display: flex;
-        align-items: center;
+    .btn-volver{
+        width:100%;
     }
 
-        .page-header-actions .btn {
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all .2s ease;
-        }
-
-            .page-header-actions .btn:hover {
-                transform: translateY(-1px);
-            }
-
-    /* ============================================================
-       TARJETAS RESUMEN
-       ============================================================ */
-
-    .summary-card {
-        height: 100%;
-        padding: 17px 18px;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 13px;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, .04);
-        transition: transform .2s ease, box-shadow .2s ease;
+    .filtros-card{
+        flex-wrap:wrap;
     }
 
-    .summary-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 7px 18px rgba(15, 23, 42, .07);
+    .search-box{
+        width:100%;
+        min-width:100%;
     }
 
-    .summary-label {
-        color: #64748b;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .3px;
+    .date-filter{
+        flex:1;
+        min-width:160px;
     }
 
-    .summary-value, .summary-number {
-        margin-top: 4px;
-        color: #0f172a;
-        font-size: 26px;
-        font-weight: 800;
+    .estado-filtros-container{
+        align-items:flex-start;
+        flex-direction:column;
     }
 
+    .result-count{
+        width:100%;
+    }
+}
 
-    /* ============================================================
-       PANEL
-       ============================================================ */
-
-    .panel, .panel-card {
-        background: #ffffff;
-        border: 1px solid #dbe1ea;
-        border-radius: 15px;
-        box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
-        overflow: hidden;
+@@media(max-width:768px){
+    .liquidaciones-page{
+        padding:14px;
     }
 
-    .panel-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 15px;
-        padding: 18px 20px;
-        border-bottom: 1px solid #e2e8f0;
+    .page-header{
+        flex-direction:column;
+        padding:18px;
+        border-radius:10px;
     }
 
-    .panel-title {
-        margin: 0;
-        color: #0f172a;
-        font-size: 18px;
-        font-weight: 800;
+    .page-title{
+        font-size:22px;
     }
 
-    .panel-body {
-        padding: 20px;
+    .page-title i{
+        font-size:20px;
     }
 
-
-    /* ============================================================
-       BUSCADOR Y FILTROS EN LÍNEA
-       ============================================================ */
-
-    .liquidaciones-search, .solicitudes-search {
-        width: 100%;
-        display: flex;
-        align-items: flex-end;
-        gap: 14px;
-        margin-bottom: 22px;
-        padding: 16px 18px;
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, .05);
+    .page-description{
+        font-size:13px;
     }
 
-    .search-box {
-        position: relative;
-        width: 50%;
-        min-width: 300px;
+    .page-header-actions{
+        width:100%;
     }
 
-    .search-icon {
-        position: absolute;
-        left: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #64748b;
-        font-size: 1rem;
-        pointer-events: none;
+    .btn-volver{
+        width:100%;
     }
 
-    .search-input {
-        width: 100%;
-        height: 42px;
-        padding: 8px 42px 8px 40px;
-        border: 1px solid #d1d5db;
-        border-radius: 8px;
-        background: #ffffff;
-        color: #1e293b;
-        font-size: .92rem;
-        outline: none;
-        transition: border-color .2s ease, box-shadow .2s ease;
+    .liquidaciones-kpi{
+        padding:15px;
     }
 
-    .search-input::placeholder {
-        color: #94a3b8;
+    .filtros-card{
+        flex-direction:column;
+        align-items:stretch;
+        padding:14px;
     }
 
-    .search-input:focus {
-        border-color: #0c4a8a;
-        box-shadow: 0 0 0 3px rgba(12, 74, 138, .10);
+    .search-box,
+    .date-filter,
+    .btn-limpiar-filtros{
+        width:100%;
+        min-width:100%;
     }
 
-    .search-clear {
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        border-radius: 6px;
-        background: transparent;
-        color: #94a3b8;
-        cursor: pointer;
-        transition: background .2s ease, color .2s ease;
+    .filters{
+        width:100%;
     }
 
-    .search-clear:hover {
-        background: #f1f5f9;
-        color: #dc2626;
+    .filters .btn{
+        flex:1 1 calc(50% - 7px);
     }
 
-    .date-filter {
-        width: 170px;
+    .liquidaciones-list-header{
+        align-items:stretch;
+        flex-direction:column;
+        padding:14px 16px;
     }
 
-    .date-label {
-        display: block;
-        margin-bottom: 6px;
-        color: #475569;
-        font-size: .78rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .3px;
+    .liquidaciones-list-count{
+        display:none;
     }
 
-    .date-filter .form-control, .date-filter input {
-        height: 42px;
-        width: 100%;
-        padding: 8px 10px;
-        border: 1px solid #d1d5db;
-        border-radius: 8px;
-        color: #334155;
-        font-size: .88rem;
-        outline: none;
-        transition: border-color .2s ease, box-shadow .2s ease;
+    .acciones{
+        flex-direction:column;
+        align-items:stretch;
     }
 
-    .date-filter .form-control:focus, .date-filter input:focus {
-        border-color: #0c4a8a;
-        box-shadow: 0 0 0 3px rgba(12, 74, 138, .10);
+    .btn-accion{
+        width:100%;
+    }
+}
+
+@@media(max-width:576px){
+    .liquidaciones-page{
+        padding:10px;
     }
 
-    .btn-limpiar-filtros, #limpiarFiltros {
-        height: 42px;
-        padding: 0 15px;
-        border-radius: 8px;
-        font-size: .86rem;
-        font-weight: 600;
-        white-space: nowrap;
-        transition: background .2s ease, transform .2s ease;
+    .page-title{
+        font-size:20px;
     }
 
-    .btn-limpiar-filtros:hover, #limpiarFiltros:hover {
-        transform: translateY(-1px);
+    .page-description{
+        font-size:12px;
     }
 
-
-    /* ============================================================
-       PESTAÑAS DE FILTRO POR ESTADO (PILLS)
-       ============================================================ */
-
-    .estado-filtros-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 15px;
-        margin-bottom: 18px;
+    .kpi-value{
+        font-size:21px;
     }
 
-    .filters {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
+    .filters .btn{
+        flex:1 1 100%;
     }
 
-    .filtro-btn.active {
-        color: #fff;
-        background: #0c4a8a;
-        border-color: #0c4a8a;
+    .liquidaciones-list-header{
+        padding:13px 14px;
     }
 
-    .result-count {
-        color: #64748b;
-        font-size: 13px;
-        white-space: nowrap;
+    .tabla-liquidaciones{
+        min-width:1000px;
     }
-
-    .result-count strong {
-        color: #334155;
-    }
-
-
-    /* ============================================================
-       TABLA
-       ============================================================ */
-
-    .table {
-        min-width: 1100px;
-        font-size: 14px;
-    }
-
-    .table thead th, .table th {
-        color: #64748b;
-        background: #f8fafc;
-        font-size: 12px;
-        font-weight: 700;
-        text-transform: uppercase;
-        white-space: nowrap;
-        vertical-align: middle;
-    }
-
-    .table td {
-        vertical-align: middle;
-    }
-
-
-    /* ============================================================
-       ESTADOS
-       ============================================================ */
-
-    .estado {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 7px 11px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .estado-proceso {
-        color: #1d4ed8;
-        background: #dbeafe;
-        border: 1px solid #93c5fd;
-    }
-
-    .estado-pendiente {
-        color: #92400e;
-        background: #fef3c7;
-        border: 1px solid #fcd34d;
-    }
-
-    .estado-aprobada, .estado-aprobado {
-        color: #166534;
-        background: #dcfce7;
-        border: 1px solid #86efac;
-    }
-
-    .estado-rechazada, .estado-rechazado {
-        color: #991b1b;
-        background: #fee2e2;
-        border: 1px solid #fca5a5;
-    }
-
-    .estado-reembolso {
-        color: #6b21a8;
-        background: #f3e8ff;
-        border: 1px solid #d8b4fe;
-    }
-
-    .estado-pagado {
-        color: #065f46;
-        background: #d1fae5;
-        border: 1px solid #6ee7b7;
-    }
-
-
-    /* ============================================================
-       ACCIONES
-       ============================================================ */
-
-    .acciones {
-        display: flex;
-        justify-content: flex-end;
-        flex-wrap: wrap;
-        gap: 6px;
-    }
-
-    .acciones .btn {
-        border-radius: 7px;
-        font-size: 13px;
-        font-weight: 600;
-        white-space: nowrap;
-    }
-
-
-    /* ============================================================
-       RESPONSIVE
-       ============================================================ */
-
-    @@media screen and (max-width: 991.98px) {
-        .page-header {
-            align-items: flex-start;
-            flex-direction: column;
-        }
-
-        .page-header-actions, .page-header .btn {
-            width: 100%;
-        }
-
-        .panel-header {
-            align-items: flex-start;
-            flex-direction: column;
-        }
-
-        .liquidaciones-search, .solicitudes-search {
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            width: 100%;
-            min-width: 100%;
-        }
-
-        .date-filter {
-            flex: 1;
-            min-width: 160px;
-        }
-    }
-
-    @@media screen and (max-width: 767.98px) {
-        .page-wrapper {
-            padding: 0 12px;
-        }
-
-        .page-header {
-            padding: 18px;
-            border-radius: 13px;
-        }
-
-        .page-title {
-            font-size: 23px;
-        }
-
-        .summary-value, .summary-number {
-            font-size: 23px;
-        }
-
-        .panel-body {
-            padding: 14px;
-        }
-
-        .liquidaciones-search, .solicitudes-search {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 12px;
-            padding: 14px;
-        }
-
-        .search-box, .date-filter, .btn-limpiar-filtros, #limpiarFiltros {
-            width: 100%;
-            min-width: 100%;
-        }
-
-        .estado-filtros-container {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .filters .btn {
-            flex: 1 1 calc(50% - 8px);
-        }
-
-        .acciones {
-            justify-content: flex-start;
-        }
-    }
-
-    @@media screen and (max-width: 480px) {
-        .page-title {
-            font-size: 20px;
-        }
-
-        .page-description {
-            font-size: 13px;
-        }
-
-        .page-header {
-            padding: 15px;
-        }
-
-        .panel-body {
-            padding: 10px;
-        }
-
-        .filters .btn {
-            flex: 1 1 100%;
-        }
-    }
+}
 </style>
 
-<div class="page-wrapper">
-
-    <!-- =========================================================
-         CABECERA
-         ========================================================= -->
+<div class="liquidaciones-page">
 
     <div class="page-header">
-
-        <div>
-
+        <div class="page-header-content">
             <h1 class="page-title">
                 <i class="bi bi-receipt-cutoff me-2"></i>
                 Liquidaciones
             </h1>
 
             <p class="page-description">
-                Consulte todas las rendiciones, filtre por estado y busque por empleado, correo, destino o número.
+                Consulte, revise y gestione las rendiciones registradas por los empleados.
             </p>
-
         </div>
 
         <div class="page-header-actions">
-
             <a asp-controller="Principal"
                asp-action="Index"
-               class="btn btn-outline-secondary">
-
+               class="btn-volver">
                 <i class="bi bi-arrow-left me-1"></i>
                 Volver al panel
-
             </a>
-
         </div>
-
     </div>
-
-
-    <!-- =========================================================
-         MENSAJES
-         ========================================================= -->
 
     @if (TempData["mensaje"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show">
-
-            @TempData["mensaje"]
+        <div class="mensaje-sistema mensaje-exito alert alert-dismissible fade show">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>@TempData["mensaje"]</span>
 
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="alert"
                     aria-label="Cerrar">
             </button>
-
         </div>
     }
 
     @if (TempData["error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show">
-
-            @Html.Raw(TempData["error"])
+        <div class="mensaje-sistema mensaje-error alert alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>@Html.Raw(TempData["error"])</span>
 
             <button type="button"
                     class="btn-close"
                     data-bs-dismiss="alert"
                     aria-label="Cerrar">
             </button>
-
         </div>
     }
 
-
-    <!-- =========================================================
-         TARJETAS RESUMEN
-         ========================================================= -->
-
     <div class="row g-3 mb-4">
 
-        <div class="col-12 col-sm-6 col-xl-2">
+        <div class="col-6 col-xl-2">
+            <div class="liquidaciones-kpi">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="kpi-label">Total</span>
+                        <h3 class="kpi-value">@totalLiquidaciones</h3>
+                    </div>
 
-            <div class="summary-card">
-
-                <div class="summary-label">
-                    Total
+                    <div class="kpi-icon kpi-blue">
+                        <i class="bi bi-receipt"></i>
+                    </div>
                 </div>
-
-                <div class="summary-number">
-                    @totalLiquidaciones
-                </div>
-
             </div>
-
         </div>
 
+        <div class="col-6 col-xl-2">
+            <div class="liquidaciones-kpi">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="kpi-label">En proceso</span>
+                        <h3 class="kpi-value">@enProcesoLiquidaciones</h3>
+                    </div>
 
-        <div class="col-12 col-sm-6 col-xl-2">
-
-            <div class="summary-card">
-
-                <div class="summary-label text-primary">
-                    En proceso
+                    <div class="kpi-icon kpi-process">
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
                 </div>
-
-                <div class="summary-number">
-                    @enProceso
-                </div>
-
             </div>
-
         </div>
 
+        <div class="col-6 col-xl-2">
+            <div class="liquidaciones-kpi">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="kpi-label">Pendientes</span>
+                        <h3 class="kpi-value">@pendientesLiquidaciones</h3>
+                    </div>
 
-        <div class="col-12 col-sm-6 col-xl-2">
-
-            <div class="summary-card">
-
-                <div class="summary-label text-warning">
-                    Pendientes
+                    <div class="kpi-icon kpi-warning">
+                        <i class="bi bi-clock"></i>
+                    </div>
                 </div>
-
-                <div class="summary-number">
-                    @pendientes
-                </div>
-
             </div>
-
         </div>
 
+        <div class="col-6 col-xl-2">
+            <div class="liquidaciones-kpi">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="kpi-label">Aprobadas</span>
+                        <h3 class="kpi-value">@aprobadasLiquidaciones</h3>
+                    </div>
 
-        <div class="col-12 col-sm-6 col-xl-2">
-
-            <div class="summary-card">
-
-                <div class="summary-label text-success">
-                    Aprobadas
+                    <div class="kpi-icon kpi-green">
+                        <i class="bi bi-person-check"></i>
+                    </div>
                 </div>
-
-                <div class="summary-number">
-                    @aprobadas
-                </div>
-
             </div>
-
         </div>
 
+        <div class="col-6 col-xl-2">
+            <div class="liquidaciones-kpi">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="kpi-label">Rechazadas</span>
+                        <h3 class="kpi-value">@rechazadasLiquidaciones</h3>
+                    </div>
 
-        <div class="col-12 col-sm-6 col-xl-2">
-
-            <div class="summary-card">
-
-                <div class="summary-label text-danger">
-                    Rechazadas
+                    <div class="kpi-icon kpi-red">
+                        <i class="bi bi-person-x"></i>
+                    </div>
                 </div>
-
-                <div class="summary-number">
-                    @rechazadas
-                </div>
-
             </div>
-
         </div>
 
+        <div class="col-6 col-xl-2">
+            <div class="liquidaciones-kpi">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="kpi-label">Reembolso pendiente</span>
+                        <h3 class="kpi-value">@reembolsosPendientesLiquidaciones</h3>
+                    </div>
 
-        <div class="col-12 col-sm-6 col-xl-2">
-
-            <div class="summary-card">
-
-                <div class="summary-label"
-                     style="color:#7c3aed;">
-
-                    Reembolsos pendientes
-
+                    <div class="kpi-icon kpi-purple">
+                        <i class="bi bi-cash-coin"></i>
+                    </div>
                 </div>
-
-                <div class="summary-number">
-                    @reembolsosPendientes
-                </div>
-
             </div>
-
         </div>
 
     </div>
 
-
-    <!-- =========================================================
-         BUSCADOR Y FILTROS
-         ========================================================= -->
-
-    <div class="solicitudes-search">
-
-        <!-- BUSCADOR -->
+    <div class="filtros-card">
 
         <div class="search-box">
-
             <i class="bi bi-search search-icon"></i>
 
             <input type="search"
                    id="buscarLiquidacion"
                    class="search-input"
-                   placeholder="Buscar liquidaciones..."
+                   placeholder="Buscar empleado, correo, destino o número..."
                    autocomplete="off" />
 
             <button type="button"
                     id="limpiarBusquedaLiquidacion"
                     class="search-clear"
                     aria-label="Limpiar búsqueda">
-
                 <i class="bi bi-x-lg"></i>
-
             </button>
-
         </div>
 
-
-        <!-- FECHA DESDE -->
-
         <div class="date-filter">
-
-            <label for="fechaDesdeRendicion"
-                   class="date-label">
-
-                <i class="bi bi-calendar3 me-1"></i>
+            <label for="fechaDesdeRendicion" class="date-label">
                 Desde
-
             </label>
 
             <input type="date"
-                   id="fechaDesdeRendicion"
-                   class="form-control" />
-
+                   id="fechaDesdeRendicion" />
         </div>
-
-
-        <!-- FECHA HASTA -->
 
         <div class="date-filter">
-
-            <label for="fechaHastaRendicion"
-                   class="date-label">
-
-                <i class="bi bi-calendar3 me-1"></i>
+            <label for="fechaHastaRendicion" class="date-label">
                 Hasta
-
             </label>
 
             <input type="date"
-                   id="fechaHastaRendicion"
-                   class="form-control" />
-
+                   id="fechaHastaRendicion" />
         </div>
-
-
-        <!-- LIMPIAR -->
 
         <button type="button"
                 id="limpiarFiltrosRendicion"
-                class="btn btn-outline-secondary btn-limpiar-filtros">
-
+                class="btn-limpiar-filtros">
             <i class="bi bi-arrow-counterclockwise me-1"></i>
-
             Limpiar
-
         </button>
 
     </div>
 
+    <div class="estado-filtros-container">
 
-    <!-- =========================================================
-         FILTROS DE ESTADO
-         ========================================================= -->
+        <div class="filters">
 
-    <div class="panel mb-4">
+            <button type="button"
+                    class="btn btn-outline-secondary btn-sm filtro-btn active"
+                    data-estado="todos">
+                Todos
+            </button>
 
-        <div class="panel-body">
+            <button type="button"
+                    class="btn btn-outline-primary btn-sm filtro-btn"
+                    data-estado="1">
+                En proceso
+            </button>
 
-            <div class="estado-filtros-container mb-0">
+            <button type="button"
+                    class="btn btn-outline-warning btn-sm filtro-btn"
+                    data-estado="2">
+                Pendientes
+            </button>
 
-                <div class="filters">
+            <button type="button"
+                    class="btn btn-outline-success btn-sm filtro-btn"
+                    data-estado="3">
+                Aprobadas
+            </button>
 
-                    <button type="button"
-                            class="btn btn-outline-secondary btn-sm filtro-btn active"
-                            data-estado="todos">
+            <button type="button"
+                    class="btn btn-outline-danger btn-sm filtro-btn"
+                    data-estado="4">
+                Rechazadas
+            </button>
 
-                        Todos
+            <button type="button"
+                    class="btn btn-outline-secondary btn-sm filtro-btn"
+                    data-estado="reembolso">
+                Reembolso pendiente
+            </button>
 
-                    </button>
+        </div>
 
-
-                    <button type="button"
-                            class="btn btn-outline-primary btn-sm filtro-btn"
-                            data-estado="1">
-
-                        En proceso
-
-                    </button>
-
-
-                    <button type="button"
-                            class="btn btn-outline-warning btn-sm filtro-btn"
-                            data-estado="2">
-
-                        Pendientes
-
-                    </button>
-
-
-                    <button type="button"
-                            class="btn btn-outline-success btn-sm filtro-btn"
-                            data-estado="3">
-
-                        Aprobadas
-
-                    </button>
-
-
-                    <button type="button"
-                            class="btn btn-outline-danger btn-sm filtro-btn"
-                            data-estado="4">
-
-                        Rechazadas
-
-                    </button>
-
-
-                    <button type="button"
-                            class="btn btn-outline-secondary btn-sm filtro-btn"
-                            data-estado="reembolso">
-
-                        Reembolso pendiente
-
-                    </button>
-
-                </div>
-
-
-                <div class="result-count">
-
-                    Mostrando
-
-                    <strong id="cantidadVisible">
-                        @totalLiquidaciones
-                    </strong>
-
-                    de
-
-                    <strong>
-                        @totalLiquidaciones
-                    </strong>
-
-                    liquidación(es)
-
-                </div>
-
-            </div>
-
+        <div class="result-count">
+            Mostrando
+            <strong id="cantidadVisible">@totalLiquidaciones</strong>
+            de
+            <strong>@totalLiquidaciones</strong>
+            liquidación(es)
         </div>
 
     </div>
 
+    <div class="liquidaciones-list-card">
 
-    <!-- =========================================================
-         TABLA
-         ========================================================= -->
+        <div class="liquidaciones-list-header">
 
-    <div class="panel">
+            <h2 class="liquidaciones-list-title">
+                <i class="bi bi-list-ul me-2"></i>
+                Lista de liquidaciones
+            </h2>
 
-        
+            <span class="liquidaciones-list-count">
+                @totalLiquidaciones registro(s)
+            </span>
 
+        </div>
 
-        <!-- CUERPO -->
+        <div class="table-wrapper">
 
-        <div class="panel-body p-0">
+            <table id="tablaLiquidaciones"
+                   class="tabla-liquidaciones">
 
-            <div class="table-responsive">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Empleado</th>
+                        <th>Destino</th>
+                        <th>Periodo</th>
+                        <th>Total</th>
+                        <th>Saldo</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
 
-                <table id="tablaLiquidaciones"
-                       class="table table-hover table-bordered align-middle mb-0">
+                <tbody>
 
-                    <!-- =================================================
-                         CABECERA TABLA
-                         ================================================= -->
-
-                    <thead>
-
-                        <tr>
-
-                            <th>#</th>
-
-                            <th>Empleado</th>
-
-                            <th>Solicitud</th>
-
-                            <th>Destino</th>
-
-                            <th>Periodo</th>
-
-                            <th>Fecha de creación</th>
-
-                            <th>Total</th>
-
-                            <th>Saldo</th>
-
-                            <th>Estado</th>
-
-                            <th class="text-end">
-                                Acciones
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <!-- =================================================
-                         CUERPO TABLA
-                         ================================================= -->
-
-                    <tbody>
-
-                        @if (Model != null && Model.Any())
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
                         {
-                            foreach (var item in Model)
-                            {
-                                var nombreCompleto =
-                                    $"{item.Usuario?.Nombres} {item.Usuario?.Apellidos}".Trim();
+                            var nombreCompletoLiquidacion =
+                                $"{item.Usuario?.Nombres} {item.Usuario?.Apellidos}".Trim();
 
-                                var correo =
-                                    item.Usuario?.Correo ?? string.Empty;
+                            var correoLiquidacion =
+                                item.Usuario?.Correo ?? string.Empty;
 
-                                var destino =
-                                    item.Solicitud?.Destino ?? string.Empty;
+                            var destinoLiquidacion =
+                                item.Solicitud?.Destino ?? string.Empty;
 
-                                var reembolso =
-                                    reembolsos.FirstOrDefault(r =>
-                                        r.IdRendicion == item.IdRendicion);
+                            var reembolsoLiquidacion =
+                                listaReembolsos.FirstOrDefault(x =>
+                                    x.IdRendicion == item.IdRendicion);
 
-                                var tieneReembolsoPendiente =
-                                    reembolso != null &&
-                                    reembolso.IdEstadoReembolso == 2;
+                            var tieneReembolsoPendienteLiquidacion =
+                                reembolsoLiquidacion != null &&
+                                reembolsoLiquidacion.IdEstadoReembolso == 2;
 
-                                var reembolsoPagado =
-                                    reembolso != null &&
-                                    reembolso.IdEstadoReembolso == 3;
+                            var reembolsoPagadoLiquidacion =
+                                reembolsoLiquidacion != null &&
+                                reembolsoLiquidacion.IdEstadoReembolso == 3;
 
-                                var textoBusqueda =
-                                    $"{item.IdRendicion} " +
-                                    $"{item.IdSolicitud} " +
-                                    $"{nombreCompleto} " +
-                                    $"{correo} " +
-                                    $"{destino} " +
-                                    $"{(tieneReembolsoPendiente ? "reembolso pendiente" : "")}";
+                            var textoBusquedaLiquidacion =
+                                $"{item.IdRendicion} " +
+                                $"{item.IdSolicitud} " +
+                                $"{nombreCompletoLiquidacion} " +
+                                $"{correoLiquidacion} " +
+                                $"{destinoLiquidacion} " +
+                                $"{(tieneReembolsoPendienteLiquidacion ? "reembolso pendiente" : "")}";
 
-                                <tr data-estado="@item.IdEstadoRendicion"
-                                    data-reembolso="@(tieneReembolsoPendiente ? "true" : "false")"
-                                    data-fecha="@item.Fecha.ToString("yyyy-MM-dd")"
-                                    data-busqueda="@textoBusqueda">
+                            <tr data-estado="@item.IdEstadoRendicion"
+                                data-reembolso="@(tieneReembolsoPendienteLiquidacion ? "true" : "false")"
+                                data-fecha="@item.Fecha.ToString("yyyy-MM-dd")"
+                                data-busqueda="@textoBusquedaLiquidacion">
 
-                                    <!-- =================================
-                                         ID
-                                         ================================= -->
+                                <td>
+                                    <span class="id-liquidacion">
+                                        #@item.IdRendicion
+                                    </span>
+                                </td>
 
-                                    <td>
+                                <td>
+                                    <div class="empleado-info">
 
-                                        <strong>
-                                            #@item.IdRendicion
-                                        </strong>
+                                        <div class="empleado-avatar">
+                                            <i class="bi bi-person"></i>
+                                        </div>
 
-                                    </td>
+                                        <div>
+                                            <div class="empleado-nombre">
+                                                @(string.IsNullOrWhiteSpace(nombreCompletoLiquidacion)
+                                                    ? "Sin empleado"
+                                                    : nombreCompletoLiquidacion)
+                                            </div>
 
+                                            @if (!string.IsNullOrWhiteSpace(correoLiquidacion))
+                                            {
+                                                <div class="empleado-correo">
+                                                    @correoLiquidacion
+                                                </div>
+                                            }
+                                        </div>
 
-                                    <!-- =================================
-                                         EMPLEADO
-                                         ================================= -->
+                                    </div>
+                                </td>
 
-                                    <td>
-
-                                        <strong>
-                                            @(string.IsNullOrWhiteSpace(nombreCompleto)
-                                                ? "Sin empleado"
-                                                : nombreCompleto)
-                                        </strong>
-
-                                        @if (!string.IsNullOrWhiteSpace(correo))
-                                        {
-                                            <br />
-
-                                            <small class="text-muted">
-                                                @correo
-                                            </small>
-                                        }
-
-                                    </td>
-
-
-                                    <!-- =================================
-                                         SOLICITUD
-                                         ================================= -->
-
-                                    <td>
-                                        #@item.IdSolicitud
-                                    </td>
-
-
-                                    <!-- =================================
-                                         DESTINO
-                                         ================================= -->
-
-                                    <td>
-
-                                        @(string.IsNullOrWhiteSpace(destino)
+                                <td>
+                                    <span class="destino">
+                                        @(string.IsNullOrWhiteSpace(destinoLiquidacion)
                                             ? "-"
-                                            : destino)
+                                            : destinoLiquidacion)
+                                    </span>
+                                </td>
 
-                                    </td>
-
-
-                                    <!-- =================================
-                                         PERIODO
-                                         ================================= -->
-
-                                    <td>
-
+                                <td>
+                                    <span class="fecha">
                                         @item.FechaInicio.ToString("dd/MM/yyyy")
+                                    </span>
 
-                                        <br />
+                                    <span class="fecha-hasta">
+                                        hasta @item.FechaFin.ToString("dd/MM/yyyy")
+                                    </span>
+                                </td>
 
-                                        <small class="text-muted">
-                                            hasta @item.FechaFin.ToString("dd/MM/yyyy")
-                                        </small>
+                                <td>
+                                    <span class="monto">
+                                        S/ @item.Total.ToString("N2")
+                                    </span>
+                                </td>
 
-                                    </td>
-
-
-                                    <!-- =================================
-                                         FECHA
-                                         ================================= -->
-
-                                    <td>
-
-                                        @item.Fecha.ToString("dd/MM/yyyy")
-
-                                    </td>
-
-
-                                    <!-- =================================
-                                         TOTAL
-                                         ================================= -->
-
-                                    <td>
-
-                                        <strong>
-                                            S/ @item.Total.ToString("N2")
-                                        </strong>
-
-                                    </td>
-
-
-                                    <!-- =================================
-                                         SALDO
-                                         ================================= -->
-
-                                    <td>
-
+                                <td>
+                                    <span class="saldo">
                                         S/ @item.Saldo.ToString("N2")
+                                    </span>
+                                </td>
 
-                                    </td>
+                                <td>
 
+                                    @switch (item.IdEstadoRendicion)
+                                    {
+                                        case 1:
+                                            <span class="estado estado-proceso">
+                                                <i class="bi bi-pencil-square"></i>
+                                                En proceso
+                                            </span>
+                                            break;
 
-                                    <!-- =================================
-                                         ESTADO
-                                         ================================= -->
+                                        case 2:
+                                            <span class="estado estado-pendiente">
+                                                <i class="bi bi-clock-fill"></i>
+                                                Pendiente
+                                            </span>
+                                            break;
 
-                                    <td>
+                                        case 3:
 
-                                        @switch (item.IdEstadoRendicion)
-                                        {
-                                            case 1:
-
-                                                <span class="estado estado-proceso">
-
-                                                    <i class="bi bi-pencil-square"></i>
-
-                                                    En proceso
-
-                                                </span>
-
-                                                break;
-
-
-                                            case 2:
-
-                                                <span class="estado estado-pendiente">
-
-                                                    <i class="bi bi-clock-fill"></i>
-
-                                                    Pendiente de revisión
-
-                                                </span>
-
-                                                break;
-
-
-                                            case 3:
-
-                                                @if (tieneReembolsoPendiente)
-                                                {
-                                                    <span class="estado estado-reembolso">
-
-                                                        <i class="bi bi-cash-coin"></i>
-
-                                                        Aprobada - reembolso pendiente
-
-                                                    </span>
-                                                }
-                                                else if (reembolsoPagado)
-                                                {
-                                                    <span class="estado estado-pagado">
-
-                                                        <i class="bi bi-check-circle-fill"></i>
-
-                                                        Aprobada - reembolso pagado
-
-                                                    </span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="estado estado-aprobada">
-
-                                                        <i class="bi bi-check-circle-fill"></i>
-
-                                                        Aprobada
-
-                                                    </span>
-                                                }
-
-                                                break;
-
-
-                                            case 4:
-
-                                                <span class="estado estado-rechazada">
-
-                                                    <i class="bi bi-x-circle-fill"></i>
-
-                                                    Rechazada
-
-                                                </span>
-
-                                                break;
-
-
-                                            default:
-
-                                                <span class="estado bg-secondary text-white">
-
-                                                    Sin estado
-
-                                                </span>
-
-                                                break;
-                                        }
-
-                                    </td>
-
-
-                                    <!-- =================================
-                                         ACCIONES
-                                         ================================= -->
-
-                                    <td>
-
-                                        <div class="acciones">
-
-                                            @if (item.IdEstadoRendicion == 1)
+                                            if (tieneReembolsoPendienteLiquidacion)
                                             {
-                                                <span class="text-muted small">
-
-                                                    <i class="bi bi-hourglass-split"></i>
-
-                                                    En elaboración
-
-                                                </span>
-                                            }
-                                            else if (item.IdEstadoRendicion == 2)
-                                            {
-                                                <a asp-controller="Rendicion"
-                                                   asp-action="DetalleAdmin"
-                                                   asp-route-id="@item.IdRendicion"
-                                                   class="btn btn-warning btn-sm">
-
-                                                    <i class="bi bi-search"></i>
-
-                                                    Revisar
-
-                                                </a>
-                                            }
-                                            else if (tieneReembolsoPendiente)
-                                            {
-                                                <a asp-controller="Rendicion"
-                                                   asp-action="DetalleAdmin"
-                                                   asp-route-id="@item.IdRendicion"
-                                                   class="btn btn-primary btn-sm">
-
+                                                <span class="estado estado-reembolso">
                                                     <i class="bi bi-cash-coin"></i>
-
-                                                    Registrar reembolso
-
-                                                </a>
+                                                    Reembolso pendiente
+                                                </span>
+                                            }
+                                            else if (reembolsoPagadoLiquidacion)
+                                            {
+                                                <span class="estado estado-pagado">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    Reembolso pagado
+                                                </span>
                                             }
                                             else
                                             {
-                                                <a asp-controller="Rendicion"
-                                                   asp-action="DetalleAdmin"
-                                                   asp-route-id="@item.IdRendicion"
-                                                   class="btn btn-outline-primary btn-sm">
-
-                                                    <i class="bi bi-eye"></i>
-
-                                                    Ver detalle
-
-                                                </a>
+                                                <span class="estado estado-aprobada">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    Aprobada
+                                                </span>
                                             }
 
+                                            break;
 
-                                            @if (!string.IsNullOrWhiteSpace(item.ArchivoPdf))
-                                            {
-                                                <a href="@item.ArchivoPdf"
-                                                   target="_blank"
-                                                   rel="noopener"
-                                                   class="btn btn-outline-danger btn-sm">
+                                        case 4:
+                                            <span class="estado estado-rechazada">
+                                                <i class="bi bi-x-circle-fill"></i>
+                                                Rechazada
+                                            </span>
+                                            break;
 
-                                                    <i class="bi bi-file-earmark-pdf"></i>
+                                        default:
+                                            <span class="estado estado-sin">
+                                                <i class="bi bi-question-circle"></i>
+                                                Sin estado
+                                            </span>
+                                            break;
+                                    }
 
-                                                    PDF
+                                </td>
 
-                                                </a>
-                                            }
+                                <td>
 
-                                        </div>
+                                    <div class="acciones">
 
-                                    </td>
+                                        @if (item.IdEstadoRendicion == 1)
+                                        {
+                                            <span class="text-muted small">
+                                                <i class="bi bi-hourglass-split"></i>
+                                                En elaboración
+                                            </span>
+                                        }
+                                        else if (item.IdEstadoRendicion == 2)
+                                        {
+                                            <a asp-controller="Rendicion"
+                                               asp-action="DetalleAdmin"
+                                               asp-route-id="@item.IdRendicion"
+                                               class="btn-accion btn-revisar">
+                                                <i class="bi bi-search"></i>
+                                                <span>Revisar</span>
+                                            </a>
+                                        }
+                                        else if (tieneReembolsoPendienteLiquidacion)
+                                        {
+                                            <a asp-controller="Rendicion"
+                                               asp-action="DetalleAdmin"
+                                               asp-route-id="@item.IdRendicion"
+                                               class="btn-accion btn-reembolso">
+                                                <i class="bi bi-cash-coin"></i>
+                                                <span>Registrar reembolso</span>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Rendicion"
+                                               asp-action="DetalleAdmin"
+                                               asp-route-id="@item.IdRendicion"
+                                               class="btn-accion btn-detalle">
+                                                <i class="bi bi-eye"></i>
+                                                <span>Ver detalle</span>
+                                            </a>
+                                        }
 
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <!-- =============================================
-                                 SIN REGISTROS
-                                 ============================================= -->
+                                        @if (!string.IsNullOrWhiteSpace(item.ArchivoPdf))
+                                        {
+                                            <a href="@item.ArchivoPdf"
+                                               target="_blank"
+                                               rel="noopener"
+                                               class="btn-accion btn-pdf">
+                                                <i class="bi bi-file-earmark-pdf"></i>
+                                                <span>PDF</span>
+                                            </a>
+                                        }
 
-                            <tr id="filaSinRegistros">
-
-                                <td colspan="10"
-                                    class="text-center text-muted py-5">
-
-                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-
-                                    No hay liquidaciones registradas.
+                                    </div>
 
                                 </td>
 
                             </tr>
                         }
+                    }
+                    else
+                    {
+                        <tr id="filaSinRegistros">
+                            <td colspan="8" class="sin-registros">
 
+                                <i class="bi bi-inbox"></i>
 
-                        <!-- =================================================
-                             SIN RESULTADOS DE FILTRO
-                             ================================================= -->
+                                <strong>
+                                    No hay liquidaciones registradas
+                                </strong>
 
-                        <tr id="filaSinResultados"
-                            style="display:none;">
-
-                            <td colspan="10"
-                                class="text-center text-muted py-5">
-
-                                <i class="bi bi-search fs-2 d-block mb-2"></i>
-
-                                No se encontraron liquidaciones con los criterios seleccionados.
+                                <span>
+                                    Las rendiciones registradas aparecerán aquí.
+                                </span>
 
                             </td>
-
                         </tr>
+                    }
 
-                    </tbody>
+                    <tr id="filaSinResultados" style="display:none;">
+                        <td colspan="8" class="sin-registros">
 
-                </table>
+                            <i class="bi bi-search"></i>
 
-            </div>
+                            <strong>
+                                No se encontraron resultados
+                            </strong>
+
+                            <span>
+                                Pruebe modificando los criterios de búsqueda o filtros.
+                            </span>
+
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
 
         </div>
 
     </div>
 
-
-    <!-- =========================================================
-         BOTÓN INFERIOR
-         ========================================================= -->
-
-    <div class="mt-4">
-
-        <a asp-controller="Principal"
-           asp-action="Index"
-           class="btn btn-secondary">
-
-            <i class="bi bi-arrow-left me-1"></i>
-
-            Regresar
-
-        </a>
-
-    </div>
-
 </div>
 
-
 @section Scripts {
-
     <script src="~/js/IndexLiquidacion.js"
             asp-append-version="true"></script>
-
 }

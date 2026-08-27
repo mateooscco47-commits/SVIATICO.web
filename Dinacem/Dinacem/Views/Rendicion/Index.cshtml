@@ -4,79 +4,92 @@
     ViewData["Title"] = "Rendición de Gastos";
     Layout = "~/Views/Shared/_LayoutEmpleado.cshtml";
 
-    var rendiciones =
-        ViewBag.Rendiciones as List<Dinacem.Models.Rendicion>;
+    var rendiciones = ViewBag.Rendiciones as List<Dinacem.Models.Rendicion>
+        ?? new List<Dinacem.Models.Rendicion>();
 
     var totalSolicitudes = Model?.Count ?? 0;
+
+    var sinRendicion = Model?.Count(x =>
+        !rendiciones.Any(r => r.IdSolicitud == x.IdSolicitud)) ?? 0;
+
+    var enProceso = rendiciones.Count(x => x.IdEstadoRendicion == 1);
+    var pendientes = rendiciones.Count(x => x.IdEstadoRendicion == 2);
+    var aprobadas = rendiciones.Count(x => x.IdEstadoRendicion == 3);
+    var rechazadas = rendiciones.Count(x => x.IdEstadoRendicion == 4);
 }
 
 <style>
+    :root {
+        --azul: #0c4a8a;
+        --azul-oscuro: #083763;
+        --azul-claro: #eaf3fb;
+        --verde: #6aa84f;
+        --texto: #263238;
+        --texto-secundario: #71808a;
+        --borde: #dce5eb;
+        --fondo: #f5f8fa;
+        --blanco: #ffffff;
+    }
 
-    /* =========================================================
-           CONTENEDOR PRINCIPAL
-           ========================================================= */
-
-    .rendicion-gastos-page {
+    .page-wrapper {
         width: 100%;
         max-width: 1600px;
         margin: 0 auto;
-        padding: 25px 30px 40px;
-        color: #263238;
+        padding: 0;
+        color: var(--texto);
     }
 
-
-    /* =========================================================
-           ENCABEZADO
-           ========================================================= */
-
-    .rendicion-gastos-header {
+    .page-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 20px;
-        background: #ffffff;
-        border: 1px solid #dce8f2;
-        border-radius: 12px;
         padding: 22px 25px;
         margin-bottom: 22px;
-        box-shadow: 0 3px 12px rgba(12, 74, 138, 0.07);
+        background: #fff;
+        border: 1px solid var(--borde);
+        border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(15,23,42,.05);
     }
 
-
-    .header-content {
+    .page-header-content {
         display: flex;
         align-items: center;
         gap: 15px;
     }
 
-
-    .header-icon {
+    .page-header-icon {
         width: 52px;
         height: 52px;
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-shrink: 0;
         border-radius: 12px;
-        background: #e7f2ff;
+        background: var(--azul-claro);
         color: #3186dc;
         font-size: 25px;
-        flex-shrink: 0;
     }
 
-
-    .header-text h1 {
+    .page-title {
         margin: 0;
         color: #174f7c;
         font-size: 24px;
         font-weight: 700;
     }
 
+    .page-description {
+        margin: 5px 0 0;
+        color: #7b8992;
+        font-size: 13px;
+    }
 
-    /* =========================================================
-           BOTÓN VOLVER
-           ========================================================= */
+    .page-header-actions {
+        display: flex;
+        align-items: center;
+    }
 
-    .btn-volver-header {
+    .btn-volver {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -85,43 +98,35 @@
         padding: 0 18px;
         border: 1px solid #d8e0e5;
         border-radius: 7px;
-        background: #ffffff;
+        background: #fff;
         color: #5f6f79;
         font-size: 13.5px;
         font-weight: 600;
         text-decoration: none;
         white-space: nowrap;
-        transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        transition: .2s;
     }
 
-
-        .btn-volver-header:hover {
-            background: #f4f7f9;
-            border-color: #c7d1d8;
-            color: #40515b;
-        }
-
-
-    /* =========================================================
-           MENSAJES
-           ========================================================= */
+    .btn-volver:hover {
+        background: #f4f7f9;
+        border-color: #c7d1d8;
+        color: #40515b;
+    }
 
     .mensaje-sistema {
         display: flex;
         align-items: center;
         gap: 10px;
-        border-radius: 8px;
-        padding: 12px 15px;
         margin-bottom: 18px;
+        padding: 12px 15px;
+        border-radius: 8px;
         font-size: 13.5px;
         font-weight: 500;
     }
 
-
-        .mensaje-sistema i {
-            font-size: 18px;
-        }
-
+    .mensaje-sistema .btn-close {
+        margin-left: auto;
+    }
 
     .mensaje-exito {
         background: #edf9f0;
@@ -129,142 +134,293 @@
         color: #327942;
     }
 
-
     .mensaje-error {
         background: #fff0f0;
         border: 1px solid #f0cccc;
         color: #b83b3b;
     }
 
-
-    .mensaje-sistema .btn-close {
-        margin-left: auto;
-    }
-
-
-    /* =========================================================
-           TARJETA
-           ========================================================= */
-
-    .rendicion-gastos-card {
-        background: #ffffff;
-        border: 1px solid #dce5eb;
+    .summary-card {
+        height: 100%;
+        padding: 17px 18px;
+        background: #fff;
+        border: 1px solid var(--borde);
         border-radius: 12px;
-        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
-        overflow: hidden;
+        box-shadow: 0 4px 14px rgba(15,23,42,.05);
+        transition: .2s;
     }
 
+    .summary-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 18px rgba(15,23,42,.08);
+    }
 
-    /* =========================================================
-           CABECERA
-           ========================================================= */
+    .summary-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
 
-    .tabla-header {
+    .summary-label {
+        display: block;
+        color: #87939c;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+    }
+
+    .summary-value {
+        margin: 4px 0 0;
+        color: #263238;
+        font-size: 25px;
+        font-weight: 800;
+    }
+
+    .summary-icon {
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 10px;
+        font-size: 19px;
+    }
+
+    .icon-total {
+        background: #e7f2ff;
+        color: #3186dc;
+    }
+
+    .icon-proceso {
+        background: #e8f0ff;
+        color: #315fd4;
+    }
+
+    .icon-pendiente {
+        background: #fff5d6;
+        color: #a97808;
+    }
+
+    .icon-aprobada {
+        background: #e8f7ec;
+        color: #3d8a51;
+    }
+
+    .icon-rechazada {
+        background: #ffebeb;
+        color: #c34646;
+    }
+
+    .filtros-card {
+        display: flex;
+        align-items: flex-end;
+        gap: 14px;
+        margin-bottom: 18px;
+        padding: 16px 18px;
+        background: #fff;
+        border: 1px solid var(--borde);
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(15,23,42,.04);
+    }
+
+    .search-box {
+        position: relative;
+        width: 50%;
+        min-width: 300px;
+    }
+
+    .search-icon {
+        position: absolute;
+        top: 50%;
+        left: 14px;
+        color: #87939c;
+        font-size: 15px;
+        pointer-events: none;
+        transform: translateY(-50%);
+    }
+
+    .search-input {
+        width: 100%;
+        height: 42px;
+        padding: 8px 42px 8px 40px;
+        border: 1px solid #d1d9df;
+        border-radius: 8px;
+        outline: none;
+        background: #fff;
+        color: #263238;
+        font-size: 13px;
+    }
+
+    .search-input:focus {
+        border-color: var(--azul);
+        box-shadow: 0 0 0 3px rgba(12,74,138,.1);
+    }
+
+    .search-clear {
+        position: absolute;
+        top: 50%;
+        right: 8px;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 6px;
+        background: transparent;
+        color: #94a3b8;
+        cursor: pointer;
+        transform: translateY(-50%);
+    }
+
+    .search-clear:hover {
+        background: #f1f5f9;
+        color: #dc2626;
+    }
+
+    .date-filter {
+        width: 170px;
+    }
+
+    .date-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #66747d;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+    }
+
+    .date-filter input {
+        width: 100%;
+        height: 42px;
+        padding: 8px 10px;
+        border: 1px solid #d1d9df;
+        border-radius: 8px;
+        outline: none;
+        color: #40515b;
+        font-size: 13px;
+    }
+
+    .date-filter input:focus {
+        border-color: var(--azul);
+        box-shadow: 0 0 0 3px rgba(12,74,138,.1);
+    }
+
+    .btn-limpiar {
+        height: 42px;
+        padding: 0 15px;
+        border: 1px solid #d8e0e5;
+        border-radius: 8px;
+        background: #fff;
+        color: #5f6f79;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .btn-limpiar:hover {
+        background: #f4f7f9;
+        color: #40515b;
+    }
+
+    .panel {
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid var(--borde);
+        border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(15,23,42,.05);
+    }
+
+    .panel-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 17px 20px;
         border-bottom: 1px solid #e4ebf0;
-        background: #ffffff;
     }
 
-
-    .tabla-titulo {
+    .panel-title {
         display: flex;
         align-items: center;
         gap: 9px;
+        margin: 0;
         color: #174f7c;
         font-size: 15px;
         font-weight: 700;
     }
 
+    .panel-title i {
+        color: #3186dc;
+        font-size: 18px;
+    }
 
-        .tabla-titulo i {
-            color: #3186dc;
-            font-size: 18px;
-        }
-
-
-    .tabla-contador {
+    .panel-count {
         color: #87939c;
         font-size: 12px;
         font-weight: 600;
     }
 
-
-    /* =========================================================
-           TABLA
-           ========================================================= */
-
-    .tabla-rendicion-gastos {
+    .table-responsive {
         width: 100%;
-        min-width: 1000px;
+        overflow-x: auto;
+    }
+
+    .tabla-rendiciones {
+        width: 100%;
+        min-width: 950px;
         margin: 0;
         border-collapse: separate;
         border-spacing: 0;
     }
 
+    .tabla-rendiciones thead th {
+        padding: 13px 14px;
+        background: #f3f7fa;
+        border-bottom: 1px solid #dfe7ed;
+        color: #526572;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .35px;
+        white-space: nowrap;
+    }
 
-        .tabla-rendicion-gastos thead th {
-            background: #f3f7fa;
-            color: #526572;
-            border-bottom: 1px solid #dfe7ed;
-            padding: 13px 14px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.35px;
-            white-space: nowrap;
-        }
+    .tabla-rendiciones tbody td {
+        padding: 14px;
+        border-bottom: 1px solid #edf1f4;
+        background: #fff;
+        color: #465660;
+        font-size: 13px;
+        vertical-align: middle;
+    }
 
+    .tabla-rendiciones tbody tr {
+        transition: background .15s;
+    }
 
-        .tabla-rendicion-gastos tbody td {
-            padding: 14px;
-            color: #465660;
-            border-bottom: 1px solid #edf1f4;
-            font-size: 13px;
-            vertical-align: middle;
-        }
+    .tabla-rendiciones tbody tr:hover td {
+        background: #f8fbfd;
+    }
 
+    .tabla-rendiciones tbody tr:last-child td {
+        border-bottom: 0;
+    }
 
-        .tabla-rendicion-gastos tbody tr {
-            transition: background 0.15s ease;
-        }
-
-
-            .tabla-rendicion-gastos tbody tr:hover {
-                background: #f8fbfd;
-            }
-
-
-            .tabla-rendicion-gastos tbody tr:last-child td {
-                border-bottom: none;
-            }
-
-
-    /* =========================================================
-           DATOS
-           ========================================================= */
-
-    .solicitud-numero {
+    .id-solicitud {
         color: #174f7c;
         font-weight: 700;
         white-space: nowrap;
     }
 
-
-        .solicitud-numero span {
-            color: #9aa6ae;
-            font-weight: 500;
-        }
-
-
-    .fecha-cell {
+    .fecha {
         color: #5c6b74;
         white-space: nowrap;
-        font-size: 12.5px;
     }
-
 
     .fecha-secundaria {
         display: block;
@@ -273,27 +429,19 @@
         font-size: 11.5px;
     }
 
-
-    .destino-cell {
+    .destino {
+        max-width: 220px;
         color: #263238;
         font-weight: 600;
-        min-width: 130px;
     }
 
-
-    .monto-cell {
+    .monto {
         color: #174f7c;
-        font-size: 14px;
         font-weight: 700;
         white-space: nowrap;
     }
 
-
-    /* =========================================================
-           ESTADOS
-           ========================================================= */
-
-    .estado-badge {
+    .estado {
         display: inline-flex;
         align-items: center;
         gap: 6px;
@@ -304,298 +452,275 @@
         white-space: nowrap;
     }
 
-
     .estado-sin {
         background: #eef1f3;
-        color: #64727b;
         border: 1px solid #dce2e6;
+        color: #64727b;
     }
-
 
     .estado-proceso {
         background: #e7f2ff;
-        color: #3186dc;
         border: 1px solid #c9e0f7;
+        color: #3186dc;
     }
-
 
     .estado-pendiente {
         background: #fff5d6;
-        color: #a97808;
         border: 1px solid #f3dfa0;
+        color: #a97808;
     }
-
 
     .estado-aprobada {
         background: #e8f7ec;
-        color: #3d8a51;
         border: 1px solid #c9e8d1;
+        color: #3d8a51;
     }
-
 
     .estado-rechazada {
         background: #ffebeb;
-        color: #c34646;
         border: 1px solid #f0cccc;
+        color: #c34646;
     }
-
-
-    /* =========================================================
-           ACCIONES
-           ========================================================= */
 
     .acciones {
         display: flex;
         align-items: center;
-        flex-wrap: wrap;
+        justify-content: flex-end;
         gap: 6px;
+        flex-wrap: wrap;
     }
 
+    .btn-accion {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        min-height: 34px;
+        padding: 6px 10px;
+        border: 1px solid;
+        border-radius: 7px;
+        font-size: 11.5px;
+        font-weight: 600;
+        line-height: 1;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: .2s;
+    }
 
-        .acciones .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            min-height: 32px;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 11.5px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-
-    /* CREAR */
+    .btn-accion:hover {
+        transform: translateY(-1px);
+    }
 
     .btn-crear {
-        background: #edf9f0;
-        border: 1px solid #c9e8d1;
-        color: #3d8a51;
+        background: #f5fbf2;
+        border-color: #b8dcae;
+        color: #388e3c;
     }
 
-
-        .btn-crear:hover {
-            background: #e8f7ec;
-            border-color: #acd9b8;
-            color: #327942;
-        }
-
-
-    /* CONTINUAR */
+    .btn-crear:hover {
+        background: #e8f5e9;
+        border-color: #8bc580;
+        color: #2e7d32;
+    }
 
     .btn-continuar {
-        background: #e7f2ff;
-        border: 1px solid #bcd8f5;
-        color: #3186dc;
+        background: #f1f7fd;
+        border-color: #b7d4f5;
+        color: #0c4a8a;
     }
 
-
-        .btn-continuar:hover {
-            background: #d9ebff;
-            border-color: #9fc7ed;
-            color: #2674c5;
-        }
-
-
-    /* DETALLE */
+    .btn-continuar:hover {
+        background: #eaf3fb;
+        border-color: #7eaddd;
+        color: #083763;
+    }
 
     .btn-detalle {
-        background: #ffffff;
-        border: 1px solid #d8e0e5;
+        background: #fff;
+        border-color: #d8e0e5;
         color: #5f6f79;
     }
 
-
-        .btn-detalle:hover {
-            background: #f4f7f9;
-            border-color: #c7d1d8;
-            color: #40515b;
-        }
-
-
-    /* PDF */
+    .btn-detalle:hover {
+        background: #f4f7f9;
+        color: #40515b;
+    }
 
     .btn-pdf {
         background: #fff7f7;
-        border: 1px solid #e0aaaa;
+        border-color: #e0aaaa;
         color: #c34646;
     }
 
-
-        .btn-pdf:hover {
-            background: #ffebeb;
-            border-color: #d98888;
-            color: #b83b3b;
-        }
-
-
-    /* =========================================================
-           SIN REGISTROS
-           ========================================================= */
+    .btn-pdf:hover {
+        background: #ffebeb;
+        color: #b83b3b;
+    }
 
     .sin-registros {
         padding: 55px 20px !important;
         text-align: center;
+        color: #929da5 !important;
     }
 
-
-        .sin-registros i {
-            display: block;
-            margin-bottom: 12px;
-            color: #b8c5ce;
-            font-size: 40px;
-        }
-
-
-        .sin-registros strong {
-            display: block;
-            margin-bottom: 5px;
-            color: #596a75;
-            font-size: 14px;
-        }
-
-
-        .sin-registros span {
-            color: #929da5;
-            font-size: 12.5px;
-        }
-
-
-    /* =========================================================
-           VOLVER
-           ========================================================= */
-
-    .volver-container {
-        margin-top: 18px;
+    .sin-registros i {
+        display: block;
+        margin-bottom: 10px;
+        color: #b8c5ce;
+        font-size: 38px;
     }
 
-
-    .btn-volver {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        min-height: 40px;
-        padding: 0 15px;
-        border: 1px solid #d8e0e5;
-        border-radius: 7px;
-        background: #ffffff;
-        color: #5f6f79;
-        font-size: 13px;
-        font-weight: 600;
-        text-decoration: none;
+    .sin-registros strong {
+        display: block;
+        margin-bottom: 4px;
+        color: #596a75;
+        font-size: 14px;
     }
 
+    .sin-registros span {
+        font-size: 12.5px;
+    }
 
-        .btn-volver:hover {
-            background: #f4f7f9;
-            border-color: #c7d1d8;
-            color: #40515b;
+    @@media (max-width: 991.98px) {
+        .page-header {
+            align-items: flex-start;
+            flex-direction: column;
         }
 
+        .page-header-actions,
+        .btn-volver {
+            width: 100%;
+        }
 
-    /* =========================================================
-           RESPONSIVE
-           ========================================================= */
+        .filtros-card {
+            flex-wrap: wrap;
+        }
 
-    .table-responsive {
-        width: 100%;
-        overflow-x: auto;
+        .search-box {
+            width: 100%;
+            min-width: 100%;
+        }
+
+        .date-filter {
+            flex: 1;
+            min-width: 160px;
+        }
     }
-
 
     @@media (max-width: 767.98px) {
-
-        .rendicion-gastos-page {
-            padding: 18px 15px 30px;
+        .page-wrapper {
+            padding: 0 12px;
         }
 
-
-        .rendicion-gastos-header {
-            flex-direction: column;
-            align-items: flex-start;
+        .page-header {
             padding: 18px;
         }
 
-
-        .header-content {
-            width: 100%;
-        }
-
-
-        .btn-volver-header {
-            width: 100%;
-        }
-
-
-        .header-text h1 {
+        .page-title {
             font-size: 21px;
         }
 
+        .page-description {
+            font-size: 12.5px;
+        }
 
-        .header-icon {
+        .page-header-icon {
             width: 46px;
             height: 46px;
             font-size: 21px;
         }
 
+        .summary-value {
+            font-size: 22px;
+        }
 
-        .tabla-contador {
+        .filtros-card {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 14px;
+        }
+
+        .search-box,
+        .date-filter,
+        .btn-limpiar {
+            width: 100%;
+            min-width: 100%;
+        }
+
+        .panel-header {
+            padding: 15px;
+        }
+
+        .panel-count {
             display: none;
+        }
+
+        .acciones {
+            justify-content: flex-start;
         }
     }
 
+    @@media (max-width: 480px) {
+        .page-wrapper {
+            padding: 0 8px;
+        }
+
+        .page-title {
+            font-size: 19px;
+        }
+
+        .page-header-icon {
+            width: 42px;
+            height: 42px;
+            font-size: 19px;
+        }
+
+        .summary-value {
+            font-size: 20px;
+        }
+    }
 </style>
 
+<div class="page-wrapper">
 
-<div class="rendicion-gastos-page">
+    <div class="page-header">
 
+        <div class="page-header-content">
 
-    <!-- =========================================================
-         ENCABEZADO
-         ========================================================= -->
-
-    <div class="rendicion-gastos-header">
-
-        <div class="header-content">
-
-            <div class="header-icon">
-
-                <i class="bi bi-cash-stack"></i>
-
+            <div class="page-header-icon">
+                <i class="bi bi-receipt-cutoff"></i>
             </div>
 
-
-            <div class="header-text">
-
-                <h1>
+            <div>
+                <h1 class="page-title">
                     Rendición de Gastos
                 </h1>
 
+                <p class="page-description">
+                    Consulte sus solicitudes aprobadas y gestione la rendición de los gastos realizados.
+                </p>
             </div>
 
         </div>
 
+        <div class="page-header-actions">
 
-        <a asp-controller="Empleado"
-           asp-action="Index"
-           class="btn-volver-header">
+            <a asp-controller="Empleado"
+               asp-action="Index"
+               class="btn-volver">
 
-            <i class="bi bi-arrow-left"></i>
+                <i class="bi bi-arrow-left"></i>
+                Volver al panel
 
-            Volver al panel
+            </a>
 
-        </a>
+        </div>
 
     </div>
 
-
-    <!-- =========================================================
-         MENSAJES
-         ========================================================= -->
     @if (TempData["mensaje"] != null)
     {
-        <div class="mensaje-sistema mensaje-exito alert">
+        <div class="mensaje-sistema mensaje-exito">
 
             <i class="bi bi-check-circle-fill"></i>
 
@@ -605,18 +730,18 @@
 
             <button type="button"
                     class="btn-close"
-                    data-bs-dismiss="alert">
+                    onclick="this.parentElement.remove()"
+                    aria-label="Cerrar">
             </button>
 
         </div>
     }
 
-
     @if (TempData["error"] != null)
     {
-        <div class="mensaje-sistema mensaje-error alert">
+        <div class="mensaje-sistema mensaje-error">
 
-            <i class="bi bi-exclamation-circle-fill"></i>
+            <i class="bi bi-exclamation-triangle-fill"></i>
 
             <span>
                 @Html.Raw(TempData["error"])
@@ -624,49 +749,364 @@
 
             <button type="button"
                     class="btn-close"
-                    data-bs-dismiss="alert">
+                    onclick="this.parentElement.remove()"
+                    aria-label="Cerrar">
             </button>
 
         </div>
     }
 
+    <div class="row g-3 mb-4">
 
-    <!-- =========================================================
-         TABLA
-         ========================================================= -->
+        <div class="col-6 col-xl-3">
 
-    <div class="rendicion-gastos-card">
+            <div class="summary-card">
 
+                <div class="summary-content">
 
-        <div class="tabla-header">
+                    <div>
+                        <span class="summary-label">
+                            Solicitudes aprobadas
+                        </span>
 
-            <div class="tabla-titulo">
+                        <div class="summary-value">
+                            @totalSolicitudes
+                        </div>
+                    </div>
 
-                <i class="bi bi-list-ul"></i>
+                    <div class="summary-icon icon-total">
+                        <i class="bi bi-file-earmark-check"></i>
+                    </div>
 
-                Solicitudes aprobadas
-
-            </div>
-
-
-            <div class="tabla-contador">
-
-                @totalSolicitudes solicitud(es)
+                </div>
 
             </div>
 
         </div>
 
+        <div class="col-6 col-xl-3">
+
+            <div class="summary-card">
+
+                <div class="summary-content">
+
+                    <div>
+                        <span class="summary-label">
+                            Sin rendición
+                        </span>
+
+                        <div class="summary-value">
+                            @sinRendicion
+                        </div>
+                    </div>
+
+                    <div class="summary-icon icon-pendiente">
+                        <i class="bi bi-clock"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-6 col-xl-3">
+
+            <div class="summary-card">
+
+                <div class="summary-content">
+
+                    <div>
+                        <span class="summary-label">
+                            En proceso
+                        </span>
+
+                        <div class="summary-value">
+                            @enProceso
+                        </div>
+                    </div>
+
+                    <div class="summary-icon icon-proceso">
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-6 col-xl-3">
+
+            <div class="summary-card">
+
+                <div class="summary-content">
+
+                    <div>
+                        <span class="summary-label">
+                            Pendientes de revisión
+                        </span>
+
+                        <div class="summary-value">
+                            @pendientes
+                        </div>
+                    </div>
+
+                    <div class="summary-icon icon-pendiente">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="filtros-card">
+
+        <div class="search-box">
+
+            <i class="bi bi-search search-icon"></i>
+
+            <input type="search"
+                   class="search-input"
+                   placeholder="Buscar solicitud, destino, fecha o estado..."
+                   autocomplete="off" />
+
+            <button type="button"
+                    class="search-clear"
+                    aria-label="Limpiar búsqueda">
+
+                <i class="bi bi-x-lg"></i>
+
+            </button>
+
+        </div>
+
+        <div class="date-filter">
+
+            <label class="date-label">
+                Desde
+            </label>
+
+            <input type="date" />
+
+        </div>
+
+        <div class="date-filter">
+
+            <label class="date-label">
+                Hasta
+            </label>
+
+            <input type="date" />
+
+        </div>
+
+        <button type="button"
+                class="btn-limpiar">
+
+            <i class="bi bi-arrow-counterclockwise me-1"></i>
+            Limpiar
+
+        </button>
+
+    </div>
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <h2 class="panel-title">
+
+                <i class="bi bi-list-ul"></i>
+
+                Solicitudes aprobadas
+
+            </h2>
+
+            <span class="panel-count">
+                @totalSolicitudes registro(s)
+            </span>
+
+        </div>
 
         <div class="table-responsive">
 
+            <table class="tabla-rendiciones">
 
-            @if (Model == null || Model.Count == 0)
-            {
-                <table class="tabla-rendicion-gastos">
+                <thead>
 
-                    <tbody>
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha</th>
+                        <th>Periodo</th>
+                        <th>Destino</th>
+                        <th>Monto aprobado</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
 
+                </thead>
+
+                <tbody>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            var rendicionExistente = rendiciones.FirstOrDefault(r =>
+                                r.IdSolicitud == item.IdSolicitud);
+
+                            <tr>
+
+                                <td>
+                                    <span class="id-solicitud">
+                                        #@item.IdSolicitud
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="fecha">
+                                        @item.Fecha.ToString("dd/MM/yyyy")
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="fecha">
+                                        @item.FechaInicio.ToString("dd/MM/yyyy")
+                                    </span>
+
+                                    <span class="fecha-secundaria">
+                                        hasta @item.FechaFin.ToString("dd/MM/yyyy")
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="destino">
+                                        @item.Destino
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="monto">
+                                        S/ @item.Monto.ToString("N2")
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    @if (rendicionExistente == null)
+                                    {
+                                        <span class="estado estado-sin">
+                                            <i class="bi bi-dash-circle"></i>
+                                            Sin rendición
+                                        </span>
+                                    }
+                                    else if (rendicionExistente.IdEstadoRendicion == 1)
+                                    {
+                                        <span class="estado estado-proceso">
+                                            <i class="bi bi-pencil-square"></i>
+                                            En proceso
+                                        </span>
+                                    }
+                                    else if (rendicionExistente.IdEstadoRendicion == 2)
+                                    {
+                                        <span class="estado estado-pendiente">
+                                            <i class="bi bi-clock-fill"></i>
+                                            Pendiente de revisión
+                                        </span>
+                                    }
+                                    else if (rendicionExistente.IdEstadoRendicion == 3)
+                                    {
+                                        <span class="estado estado-aprobada">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            Aprobada
+                                        </span>
+                                    }
+                                    else if (rendicionExistente.IdEstadoRendicion == 4)
+                                    {
+                                        <span class="estado estado-rechazada">
+                                            <i class="bi bi-x-circle-fill"></i>
+                                            Rechazada
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="estado estado-sin">
+                                            <i class="bi bi-question-circle"></i>
+                                            Sin estado
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <td>
+
+                                    <div class="acciones">
+
+                                        @if (rendicionExistente == null)
+                                        {
+                                            <a asp-controller="Rendicion"
+                                               asp-action="Create"
+                                               asp-route-idSolicitud="@item.IdSolicitud"
+                                               class="btn-accion btn-crear">
+
+                                                <i class="bi bi-plus-circle"></i>
+                                                Crear rendición
+
+                                            </a>
+                                        }
+                                        else if (rendicionExistente.IdEstadoRendicion == 1)
+                                        {
+                                            <a asp-controller="Gasto"
+                                               asp-action="Index"
+                                               asp-route-idRendicion="@rendicionExistente.IdRendicion"
+                                               class="btn-accion btn-continuar">
+
+                                                <i class="bi bi-pencil-square"></i>
+                                                Continuar
+
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-controller="Rendicion"
+                                               asp-action="DetalleEmpleado"
+                                               asp-route-id="@rendicionExistente.IdRendicion"
+                                               class="btn-accion btn-detalle">
+
+                                                <i class="bi bi-eye"></i>
+                                                Ver detalle
+
+                                            </a>
+                                        }
+
+                                        @if (rendicionExistente != null &&
+                                             !string.IsNullOrWhiteSpace(rendicionExistente.ArchivoPdf))
+                                        {
+                                            <a href="@rendicionExistente.ArchivoPdf"
+                                               target="_blank"
+                                               rel="noopener"
+                                               class="btn-accion btn-pdf">
+
+                                                <i class="bi bi-file-earmark-pdf"></i>
+                                                PDF
+
+                                            </a>
+                                        }
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
                         <tr>
 
                             <td colspan="7"
@@ -685,268 +1125,14 @@
                             </td>
 
                         </tr>
+                    }
 
-                    </tbody>
+                </tbody>
 
-                </table>
-            }
-            else
-            {
-                <table class="tabla-rendicion-gastos">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Solicitud</th>
-
-                            <th>Fecha</th>
-
-                            <th>Periodo</th>
-
-                            <th>Destino</th>
-
-                            <th>Monto aprobado</th>
-
-                            <th>Estado rendición</th>
-
-                            <th>Acción</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        @foreach (var item in Model)
-                        {
-                            var rendicionExistente =
-                            rendiciones?.FirstOrDefault(r =>
-                            r.IdSolicitud == item.IdSolicitud);
-
-
-                            <tr>
-
-
-                                <!-- SOLICITUD -->
-
-                                <td>
-
-                                    <div class="solicitud-numero">
-
-                                        <span>#</span>@item.IdSolicitud
-
-                                    </div>
-
-                                </td>
-
-
-                                <!-- FECHA -->
-
-                                <td>
-
-                                    <span class="fecha-cell">
-
-                                        @item.Fecha.ToString("dd/MM/yyyy")
-
-                                    </span>
-
-                                </td>
-
-
-                                <!-- PERIODO -->
-
-                                <td>
-
-                                    <span class="fecha-cell">
-
-                                        @item.FechaInicio.ToString("dd/MM/yyyy")
-
-                                    </span>
-
-                                    <span class="fecha-secundaria">
-
-                                        hasta @item.FechaFin.ToString("dd/MM/yyyy")
-
-                                    </span>
-
-                                </td>
-
-
-                                <!-- DESTINO -->
-
-                                <td>
-
-                                    <div class="destino-cell">
-
-                                        @item.Destino
-
-                                    </div>
-
-                                </td>
-
-
-                                <!-- MONTO -->
-
-                                <td>
-
-                                    <div class="monto-cell">
-
-                                        S/ @item.Monto.ToString("N2")
-
-                                    </div>
-
-                                </td>
-
-
-                                <!-- ESTADO -->
-
-                                <td>
-
-                                    @if (rendicionExistente == null)
-                                    {
-                                        <span class="estado-badge estado-sin">
-
-                                            <i class="bi bi-dash-circle"></i>
-
-                                            Sin rendición
-
-                                        </span>
-                                    }
-                                    else if (rendicionExistente.IdEstadoRendicion == 1)
-                                    {
-                                        <span class="estado-badge estado-proceso">
-
-                                            <i class="bi bi-pencil-square"></i>
-
-                                            En proceso
-
-                                        </span>
-                                    }
-                                    else if (rendicionExistente.IdEstadoRendicion == 2)
-                                    {
-                                        <span class="estado-badge estado-pendiente">
-
-                                            <i class="bi bi-clock"></i>
-
-                                            Pendiente de revisión
-
-                                        </span>
-                                    }
-                                    else if (rendicionExistente.IdEstadoRendicion == 3)
-                                    {
-                                        <span class="estado-badge estado-aprobada">
-
-                                            <i class="bi bi-check-circle"></i>
-
-                                            Aprobada
-
-                                        </span>
-                                    }
-                                    else if (rendicionExistente.IdEstadoRendicion == 4)
-                                    {
-                                        <span class="estado-badge estado-rechazada">
-
-                                            <i class="bi bi-x-circle"></i>
-
-                                            Rechazada
-
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="estado-badge estado-sin">
-
-                                            <i class="bi bi-question-circle"></i>
-
-                                            Sin estado
-
-                                        </span>
-                                    }
-
-                                </td>
-
-
-                                <!-- ACCIONES -->
-
-                                <td>
-
-                                    <div class="acciones">
-
-                                        @if (rendicionExistente == null)
-                                        {
-                                            <a asp-controller="Rendicion"
-                                               asp-action="Create"
-                                               asp-route-idSolicitud="@item.IdSolicitud"
-                                               class="btn btn-crear">
-
-                                                <i class="bi bi-plus-circle"></i>
-
-                                                Crear rendición
-
-                                            </a>
-                                        }
-                                        else if (rendicionExistente.IdEstadoRendicion == 1)
-                                        {
-                                            <a asp-controller="Gasto"
-                                               asp-action="Index"
-                                               asp-route-idRendicion="@rendicionExistente.IdRendicion"
-                                               class="btn btn-continuar">
-
-                                                <i class="bi bi-pencil-square"></i>
-
-                                                Continuar
-
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <a asp-controller="Rendicion"
-                                               asp-action="DetalleEmpleado"
-                                               asp-route-id="@rendicionExistente.IdRendicion"
-                                               class="btn btn-detalle">
-
-                                                <i class="bi bi-eye"></i>
-
-                                                Ver detalle
-
-                                            </a>
-                                        }
-
-
-                                        @if (rendicionExistente != null &&
-                                       !string.IsNullOrWhiteSpace(rendicionExistente.ArchivoPdf))
-                                        {
-                                            <a href="@rendicionExistente.ArchivoPdf"
-                                               target="_blank"
-                                               rel="noopener"
-                                               class="btn btn-pdf">
-
-                                                <i class="bi bi-file-earmark-pdf"></i>
-
-                                                PDF
-
-                                            </a>
-                                        }
-
-                                    </div>
-
-                                </td>
-
-                            </tr>
-                        }
-
-                    </tbody>
-
-                </table>
-            }
+            </table>
 
         </div>
 
     </div>
-
-
-    
 
 </div>

@@ -2,217 +2,641 @@
 
 @{
     ViewData["Title"] = "Mis Rendiciones";
-    Layout = null;
+    Layout = "~/Views/Shared/_LayoutEmpleado.cshtml";
 }
 
-<!DOCTYPE html>
+<style>
+:root{
+    --dinacen-azul:#0c4a8a;
+    --dinacen-azul-oscuro:#083763;
+    --dinacen-azul-claro:#eaf3fb;
+    --dinacen-verde:#6aa84f;
+    --texto:#1f2937;
+    --texto-secundario:#64748b;
+    --borde:#d9e1ea;
+    --fondo:#f3f7fb;
+    --blanco:#fff;
+}
 
-<html lang="es">
+.rendiciones-page{
+    width:100%;
+    max-width:1600px;
+    margin:0 auto;
+    padding:22px;
+    background:var(--fondo);
+    color:var(--texto);
+    font-family:"Segoe UI",Arial,sans-serif;
+}
 
-<head>
+.rendiciones-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:20px;
+    padding:22px 24px;
+    background:linear-gradient(135deg,var(--dinacen-azul),#1261a5);
+    border-radius:12px;
+    box-shadow:0 5px 18px rgba(12,74,138,.18);
+}
 
-    <meta charset="utf-8" />
+.rendiciones-header-content{
+    min-width:0;
+}
 
-    <title>Mis Rendiciones</title>
+.rendiciones-title{
+    margin:0 0 6px;
+    color:#fff;
+    font-size:28px;
+    font-weight:800;
+    line-height:1.2;
+}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+.rendiciones-title i{
+    font-size:25px;
+}
 
-    <style>
+.rendiciones-description{
+    margin:0;
+    color:rgba(255,255,255,.9);
+    font-size:14px;
+    line-height:1.5;
+}
 
-        body{
-            background:#f5f7fa;
-        }
+.btn-volver-rendiciones{
+    min-height:40px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    flex-shrink:0;
+    padding:9px 16px;
+    border:1px solid rgba(255,255,255,.65);
+    border-radius:7px;
+    background:transparent;
+    color:#fff;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:700;
+    transition:all .2s ease;
+}
 
-        .card{
-            border-radius:15px;
-            border:none;
-        }
+.btn-volver-rendiciones:hover{
+    background:#fff;
+    border-color:#fff;
+    color:var(--dinacen-azul);
+    transform:translateY(-1px);
+}
 
-        .estado{
-            font-weight:bold;
-            padding:6px 12px;
-            border-radius:20px;
-            color:white;
-        }
+.rendiciones-card{
+    overflow:hidden;
+    background:var(--blanco);
+    border:1px solid var(--borde);
+    border-radius:10px;
+    box-shadow:0 3px 10px rgba(15,23,42,.05);
+}
 
-        .proceso{
-            background:#0d6efd;
-        }
+.rendiciones-card-header{
+    padding:14px 20px;
+    background:var(--dinacen-azul);
+    border-bottom:1px solid var(--dinacen-azul-oscuro);
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+}
 
-        .pendiente{
-            background:#ffc107;
-            color:black;
-        }
+.rendiciones-card-body{
+    padding:20px;
+}
 
-        .aprobada{
-            background:#198754;
-        }
+.rendiciones-alert{
+    margin-bottom:18px;
+    border-radius:7px;
+    font-size:13px;
+}
 
-        .rechazada{
-            background:#dc3545;
-        }
+.rendiciones-search{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+}
 
-    </style>
+.rendiciones-search .input-group{
+    max-width:500px;
+}
 
-</head>
+.rendiciones-search .input-group-text{
+    border-color:#cbd5e1;
+    background:#f8fafc;
+    color:var(--dinacen-azul);
+}
 
-<body>
+.rendiciones-search .form-control{
+    min-height:40px;
+    border-color:#cbd5e1;
+    font-size:13px;
+}
 
-<div class="container mt-5">
+.rendiciones-search .form-control:focus{
+    border-color:var(--dinacen-azul);
+    box-shadow:0 0 0 3px rgba(12,74,138,.1);
+}
 
-<div class="card shadow">
+.tabla-contenedor{
+    width:100%;
+    overflow-x:auto;
+    border:1px solid var(--borde);
+    border-radius:8px;
+}
 
-<div class="card-header bg-primary text-white">
+.tabla-rendiciones{
+    width:100%;
+    min-width:900px;
+    margin:0;
+    border-collapse:separate;
+    border-spacing:0;
+}
 
-<div class="d-flex justify-content-between align-items-center">
+.tabla-rendiciones thead th{
+    padding:12px 13px;
+    background:#f1f5f9;
+    border-bottom:1px solid var(--borde);
+    color:#334155;
+    font-size:12px;
+    font-weight:800;
+    white-space:nowrap;
+}
 
-<h3>Mis Rendiciones</h3>
+.tabla-rendiciones tbody td{
+    padding:12px 13px;
+    border-bottom:1px solid #e5e7eb;
+    color:#475569;
+    font-size:13px;
+    vertical-align:middle;
+}
 
-<a asp-controller="Empleado"
-   asp-action="Index"
-   class="btn btn-light">
+.tabla-rendiciones tbody tr:last-child td{
+    border-bottom:0;
+}
 
-Volver
+.tabla-rendiciones tbody tr:hover{
+    background:#f8fbfe;
+}
 
-</a>
+.rendicion-id{
+    color:var(--dinacen-azul);
+    font-weight:800;
+}
 
-</div>
+.monto{
+    color:#334155;
+    font-weight:700;
+    white-space:nowrap;
+}
 
-</div>
+.saldo{
+    font-weight:700;
+    white-space:nowrap;
+}
 
-<div class="card-body">
+.estado{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:125px;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:800;
+    white-space:nowrap;
+}
 
-                @if (TempData["mensaje"] != null)
-                {
-        <div class="alert alert-success">
-                        @TempData["mensaje"]
+.estado-proceso{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.estado-pendiente{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.estado-aprobada{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.estado-rechazada{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.acciones{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    white-space:nowrap;
+}
+
+.btn-rendicion{
+    min-height:34px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    padding:6px 10px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:700;
+    text-decoration:none;
+    transition:all .2s ease;
+}
+
+.btn-continuar{
+    border:1px solid var(--dinacen-azul);
+    background:var(--dinacen-azul);
+    color:#fff;
+}
+
+.btn-continuar:hover{
+    border-color:var(--dinacen-azul-oscuro);
+    background:var(--dinacen-azul-oscuro);
+    color:#fff;
+    transform:translateY(-1px);
+}
+
+.btn-detalle{
+    border:1px solid #cbd5e1;
+    background:#fff;
+    color:#475569;
+}
+
+.btn-detalle:hover{
+    border-color:#94a3b8;
+    background:#f8fafc;
+    color:#1e293b;
+    transform:translateY(-1px);
+}
+
+.sin-registros{
+    padding:45px 20px!important;
+    text-align:center;
+    color:#64748b;
+}
+
+.sin-registros i{
+    display:block;
+    margin-bottom:10px;
+    color:#94a3b8;
+    font-size:35px;
+}
+
+.sin-registros strong{
+    display:block;
+    margin-bottom:4px;
+    color:#475569;
+    font-size:14px;
+}
+
+.sin-registros span{
+    font-size:12px;
+}
+
+@@media(max-width:992px){
+    .rendiciones-page{
+        padding:18px;
+    }
+
+    .rendiciones-title{
+        font-size:24px;
+    }
+}
+
+@@media(max-width:768px){
+    .rendiciones-page{
+        padding:14px;
+    }
+
+    .rendiciones-header{
+        flex-direction:column;
+        align-items:stretch;
+        padding:18px;
+        border-radius:10px;
+    }
+
+    .rendiciones-title{
+        font-size:22px;
+    }
+
+    .rendiciones-title i{
+        font-size:20px;
+    }
+
+    .rendiciones-description{
+        font-size:13px;
+    }
+
+    .btn-volver-rendiciones{
+        width:100%;
+    }
+
+    .rendiciones-card-body{
+        padding:15px;
+    }
+
+    .rendiciones-search .input-group{
+        max-width:none;
+        width:100%;
+    }
+
+    .rendiciones-search{
+        display:block;
+    }
+}
+
+@@media(max-width:576px){
+    .rendiciones-page{
+        padding:10px;
+    }
+
+    .rendiciones-title{
+        font-size:20px;
+    }
+
+    .rendiciones-description{
+        font-size:12px;
+    }
+
+    .rendiciones-card-header{
+        padding:13px 14px;
+    }
+
+    .rendiciones-card-body{
+        padding:12px;
+    }
+}
+</style>
+
+<div class="rendiciones-page">
+
+    <div class="rendiciones-header">
+
+        <div class="rendiciones-header-content">
+
+            <h1 class="rendiciones-title">
+                <i class="bi bi-receipt-cutoff me-2"></i>
+                Mis rendiciones
+            </h1>
+
+            <p class="rendiciones-description">
+                Consulte el estado y detalle de las rendiciones registradas.
+            </p>
+
         </div>
-                }
 
-<table class="table table-hover table-bordered align-middle">
-
-<thead class="table-dark">
-
-<tr>
-
-<th>#</th>
-
-<th>Solicitud</th>
-
-<th>Fecha</th>
-
-<th>Total Gastado</th>
-
-<th>Saldo</th>
-
-<th>Estado</th>
-
-<th width="250">
-
-Acciones
-
-</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-                        @foreach (var item in Model)
-                        {
-
-    <tr>
-
-    <td>@item.IdRendicion</td>
-
-    <td>@item.IdSolicitud</td>
-
-    <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
-
-    <td>S/. @item.Total.ToString("N2")</td>
-
-    <td>S/. @item.Saldo.ToString("N2")</td>
-
-    <td>
-
-                                    @if (item.IdEstadoRendicion == 1)
-                                    {
-        <span class="estado proceso">
-
-        En Proceso
-
-        </span>
-                                    }
-
-                                    @if (item.IdEstadoRendicion == 2)
-                                    {
-        <span class="estado pendiente">
-
-        Pendiente Revisión
-
-        </span>
-                                    }
-
-                                    @if (item.IdEstadoRendicion == 3)
-                                    {
-        <span class="estado aprobada">
-
-        Aprobada
-
-        </span>
-                                    }
-
-                                    @if (item.IdEstadoRendicion == 4)
-                                    {
-        <span class="estado rechazada">
-
-        Rechazada
-
-        </span>
-                                    }
-
-    </td>
-
-    <td>
-
-                                    @if (item.IdEstadoRendicion == 1)
-                                    {
-        <a asp-controller="Gasto"
+        <a asp-controller="Empleado"
            asp-action="Index"
-           asp-route-idRendicion="@item.IdRendicion"
-           class="btn btn-primary btn-sm">
+           class="btn-volver-rendiciones">
 
-        Continuar
+            <i class="bi bi-arrow-left"></i>
+            Volver al panel
 
         </a>
-                                    }
 
-    <a asp-controller="Rendicion"
-       asp-action="Detalle"
-       asp-route-id="@item.IdRendicion"
-       class="btn btn-secondary btn-sm">
+    </div>
 
-    Detalle
+    @if(TempData["mensaje"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show rendiciones-alert">
 
-    </a>
+            <i class="bi bi-check-circle me-2"></i>
+            @TempData["mensaje"]
 
-    </td>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
 
-    </tr>
+        </div>
+    }
 
+    <div class="rendiciones-card">
+
+        <div class="rendiciones-card-header">
+
+            <i class="bi bi-list-ul me-2"></i>
+            Historial de rendiciones
+
+        </div>
+
+        <div class="rendiciones-card-body">
+
+            <div class="rendiciones-search">
+
+                <div class="input-group">
+
+                    <span class="input-group-text">
+                        <i class="bi bi-search"></i>
+                    </span>
+
+                    <input type="text"
+                           id="buscadorRendiciones"
+                           class="form-control"
+                           placeholder="Buscar por número, solicitud o estado..." />
+
+                </div>
+
+            </div>
+
+            <div class="tabla-contenedor">
+
+                <table class="tabla-rendiciones"
+                       id="tablaRendiciones">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+                            <th>Solicitud</th>
+                            <th>Fecha</th>
+                            <th>Total gastado</th>
+                            <th>Saldo</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @if(Model != null && Model.Any())
+                        {
+                            foreach(var item in Model)
+                            {
+                                <tr>
+
+                                    <td class="rendicion-id">
+                                        #@item.IdRendicion
+                                    </td>
+
+                                    <td>
+                                        #@item.IdSolicitud
+                                    </td>
+
+                                    <td>
+                                        @item.Fecha.ToString("dd/MM/yyyy")
+                                    </td>
+
+                                    <td class="monto">
+                                        S/ @item.Total.ToString("N2")
+                                    </td>
+
+                                    <td class="saldo">
+                                        S/ @item.Saldo.ToString("N2")
+                                    </td>
+
+                                    <td>
+
+                                        @if(item.IdEstadoRendicion == 1)
+                                        {
+                                            <span class="estado estado-proceso">
+                                                <i class="bi bi-pencil-square me-1"></i>
+                                                En proceso
+                                            </span>
+                                        }
+                                        else if(item.IdEstadoRendicion == 2)
+                                        {
+                                            <span class="estado estado-pendiente">
+                                                <i class="bi bi-clock me-1"></i>
+                                                Pendiente revisión
+                                            </span>
+                                        }
+                                        else if(item.IdEstadoRendicion == 3)
+                                        {
+                                            <span class="estado estado-aprobada">
+                                                <i class="bi bi-check-circle me-1"></i>
+                                                Aprobada
+                                            </span>
+                                        }
+                                        else if(item.IdEstadoRendicion == 4)
+                                        {
+                                            <span class="estado estado-rechazada">
+                                                <i class="bi bi-x-circle me-1"></i>
+                                                Rechazada
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <td>
+
+                                        <div class="acciones">
+
+                                            @if(item.IdEstadoRendicion == 1)
+                                            {
+                                                <a asp-controller="Gasto"
+                                                   asp-action="Index"
+                                                   asp-route-idRendicion="@item.IdRendicion"
+                                                   class="btn-rendicion btn-continuar">
+
+                                                    <i class="bi bi-arrow-right-circle"></i>
+                                                    Continuar
+
+                                                </a>
+                                            }
+
+                                            <a asp-controller="Rendicion"
+                                               asp-action="Detalle"
+                                               asp-route-id="@item.IdRendicion"
+                                               class="btn-rendicion btn-detalle">
+
+                                                <i class="bi bi-eye"></i>
+                                                Detalle
+
+                                            </a>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td colspan="7"
+                                    class="sin-registros">
+
+                                    <i class="bi bi-receipt"></i>
+
+                                    <strong>
+                                        No tiene rendiciones registradas
+                                    </strong>
+
+                                    <span>
+                                        Las rendiciones que registre aparecerán en este listado.
+                                    </span>
+
+                                </td>
+
+                            </tr>
                         }
 
-</tbody>
+                    </tbody>
 
-</table>
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-</div>
+@section Scripts {
 
-</div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
-</body>
+            const buscador =
+                document.getElementById("buscadorRendiciones");
 
-</html>
+            const tabla =
+                document.getElementById("tablaRendiciones");
+
+            if (!buscador || !tabla) {
+                return;
+            }
+
+            buscador.addEventListener("input", function () {
+
+                const texto =
+                    this.value.toLowerCase().trim();
+
+                const filas =
+                    tabla.querySelectorAll("tbody tr");
+
+                filas.forEach(function (fila) {
+
+                    const contenido =
+                        fila.textContent.toLowerCase();
+
+                    if (contenido.includes(texto)) {
+                        fila.style.display = "";
+                    } else {
+                        fila.style.display = "none";
+                    }
+
+                });
+
+            });
+
+        });
+    </script>
+}
