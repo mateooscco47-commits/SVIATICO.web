@@ -52,6 +52,8 @@ namespace Dinacem.Models
         public string? Observaciones { get; set; }
         public ICollection<Gasto> Gastos { get; set; }
         = new List<Gasto>();
+        public ICollection<BitacoraVehiculo> BitacorasVehiculo { get; set; }
+    = new List<BitacoraVehiculo>();
 
 
     }

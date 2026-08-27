@@ -4,6 +4,7 @@ using Dinacem.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dinacen.Migrations
 {
     [DbContext(typeof(AplicacionDbContexto))]
-    partial class AplicacionDbContextoModelSnapshot : ModelSnapshot
+    [Migration("20260827072530_AgregarZonaUsuarios")]
+    partial class AgregarZonaUsuarios
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,49 +24,6 @@ namespace Dinacen.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Dinacem.Models.BitacoraVehiculo", b =>
-                {
-                    b.Property<int>("IdBitacoraVehiculo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdBitacoraVehiculo"));
-
-                    b.Property<string>("Destino")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<decimal>("DistanciaKm")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdRendicion")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("MontoAsignado")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Observaciones")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Origen")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("IdBitacoraVehiculo");
-
-                    b.HasIndex("IdRendicion");
-
-                    b.ToTable("BitacorasVehiculo", (string)null);
-                });
 
             modelBuilder.Entity("Dinacem.Models.DevolucionSaldo", b =>
                 {
@@ -537,17 +497,6 @@ namespace Dinacen.Migrations
                     b.ToTable("Zonas", (string)null);
                 });
 
-            modelBuilder.Entity("Dinacem.Models.BitacoraVehiculo", b =>
-                {
-                    b.HasOne("Dinacem.Models.Rendicion", "Rendicion")
-                        .WithMany("BitacorasVehiculo")
-                        .HasForeignKey("IdRendicion")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Rendicion");
-                });
-
             modelBuilder.Entity("Dinacem.Models.DevolucionSaldo", b =>
                 {
                     b.HasOne("Dinacem.Models.Rendicion", "Rendicion")
@@ -679,8 +628,6 @@ namespace Dinacen.Migrations
 
             modelBuilder.Entity("Dinacem.Models.Rendicion", b =>
                 {
-                    b.Navigation("BitacorasVehiculo");
-
                     b.Navigation("DevolucionSaldo");
 
                     b.Navigation("Gastos");

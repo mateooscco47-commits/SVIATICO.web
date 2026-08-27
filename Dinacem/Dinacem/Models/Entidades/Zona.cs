@@ -1,17 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Dinacem.Models
 {
     public class Zona
     {
+        [Key]
         public int IdZona { get; set; }
 
+        [Required]
+        [StringLength(100)]
         public string CodigoZona { get; set; } = string.Empty;
 
-        public bool Estado { get; set; }
+        public bool Estado { get; set; } = true;
 
-        // Relación: una zona puede estar asociada
-        // a varios usuarios en la BD.
         public ICollection<Usuario> Usuarios { get; set; }
             = new List<Usuario>();
     }

@@ -440,6 +440,13 @@ namespace Dinacem.Controllers
                 .FirstOrDefaultAsync(r =>
                     r.IdRendicion == id);
 
+            var bitacorasVehiculo =
+                await _context.BitacorasVehiculo
+                    .Where(b =>
+                        b.IdRendicion == id)
+                    .OrderBy(b => b.Fecha)
+                    .ToListAsync();
+
             ViewBag.Rendicion =
                 rendicion;
 
@@ -448,6 +455,9 @@ namespace Dinacem.Controllers
 
             ViewBag.Reembolso =
                 reembolso;
+
+            ViewBag.BitacorasVehiculo =
+                bitacorasVehiculo;
 
             return View(gastos);
         }

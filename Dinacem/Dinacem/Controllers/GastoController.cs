@@ -64,8 +64,18 @@ namespace Dinacem.Controllers
                 await _context.TipoComprobantes
                     .OrderBy(t => t.Nombre)
                     .ToListAsync();
-            ViewBag.DevolucionSaldo = await _context.DevolucionesSaldo
-    .FirstOrDefaultAsync(d => d.IdRendicion == idRendicion);
+            ViewBag.DevolucionSaldo =
+                await _context.DevolucionesSaldo
+                    .FirstOrDefaultAsync(d =>
+                        d.IdRendicion == idRendicion);
+
+            ViewBag.BitacorasVehiculo =
+                await _context.BitacorasVehiculo
+                    .Where(b =>
+                        b.IdRendicion == idRendicion)
+                    .OrderBy(b => b.Fecha)
+                    .ToListAsync();
+
             return View(gastos);
         }
 
@@ -1285,7 +1295,20 @@ namespace Dinacem.Controllers
 
 
                 // =========================================
-                // 6. REGENERAR PDF
+                // 6. OBTENER BITÁCORA DE VEHÍCULO
+                // =========================================
+
+                var bitacorasVehiculoActualizadas =
+                    await _context.BitacorasVehiculo
+                        .Where(b =>
+                            b.IdRendicion ==
+                            gasto.IdRendicion)
+                        .OrderBy(b => b.Fecha)
+                        .ToListAsync();
+
+
+                // =========================================
+                // 7. REGENERAR PDF
                 // =========================================
 
                 var resultadoPdf =
@@ -1293,11 +1316,12 @@ namespace Dinacem.Controllers
                         .GenerarAsync(
                             rendicionActualizada,
                             gastosActualizados,
-                            devolucionActualizada);
+                            devolucionActualizada,
+                            bitacorasVehiculoActualizadas);
 
 
                 // =========================================
-                // 7. ACTUALIZAR RUTA DEL PDF
+                // 8. ACTUALIZAR RUTA DEL PDF
                 //
                 // Se agrega una versión a la URL para evitar
                 // que el navegador muestre una copia antigua
@@ -1527,11 +1551,18 @@ namespace Dinacem.Controllers
                 .OrderBy(g => g.Fecha)
                 .ToListAsync();
 
-            if (gastos.Count == 0 ||
-                rendicion.Total <= 0)
+            var bitacorasVehiculo =
+                await _context.BitacorasVehiculo
+                    .Where(b =>
+                        b.IdRendicion == idRendicion)
+                    .OrderBy(b => b.Fecha)
+                    .ToListAsync();
+
+            if (gastos.Count == 0 &&
+                bitacorasVehiculo.Count == 0)
             {
                 TempData["error"] =
-                    "Debe registrar al menos un gasto antes de enviar la rendición.";
+                    "Debe registrar al menos un gasto o un recorrido de vehículo antes de enviar la rendición.";
 
                 return RedirectToAction(
                     nameof(Index),
@@ -1647,7 +1678,8 @@ namespace Dinacem.Controllers
                     await _rendicionPdfService.GenerarAsync(
                         rendicion,
                         gastos,
-                        devolucion);
+                        devolucion,
+                        bitacorasVehiculo);
             }
             catch (Exception)
             {
@@ -1688,6 +1720,21 @@ namespace Dinacem.Controllers
 
             var totalIgv =
                 gastos.Sum(g => g.IGV);
+
+            var totalGastosCorreo =
+                gastos.Sum(g => g.MontoTotal);
+
+            var totalVehiculoCorreo =
+                bitacorasVehiculo.Sum(
+                    b => b.MontoAsignado);
+
+            var totalRendidoCorreo =
+                totalGastosCorreo +
+                totalVehiculoCorreo;
+
+            var saldoCorreo =
+                (rendicion.Solicitud?.Monto ?? 0) -
+                totalRendidoCorreo;
 
             var asunto =
                 $"Liquidación de viáticos #{rendicion.IdRendicion} pendiente de revisión";
@@ -1834,7 +1881,7 @@ namespace Dinacem.Controllers
                 return;
             }
 
-            var total =
+            var totalGastos =
                 await _context.Gastos
                     .Where(g =>
                         g.IdRendicion ==
@@ -1842,7 +1889,20 @@ namespace Dinacem.Controllers
                     .SumAsync(g =>
                         (decimal?)g.MontoTotal) ?? 0;
 
-            rendicion.Total = total;
+            var totalVehiculo =
+                await _context.BitacorasVehiculo
+                    .Where(b =>
+                        b.IdRendicion ==
+                        idRendicion)
+                    .SumAsync(b =>
+                        (decimal?)b.MontoAsignado) ?? 0;
+
+            var total =
+                totalGastos +
+                totalVehiculo;
+
+            rendicion.Total =
+                total;
 
             rendicion.Saldo =
                 rendicion.Solicitud.Monto -

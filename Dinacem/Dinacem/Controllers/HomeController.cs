@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Dinacem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dinacem.Controllers
 {
@@ -23,84 +24,198 @@ namespace Dinacem.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            // Si había sesión anterior, no la borramos aquí.
             return View();
         }
 
+
         // =========================================
-        // PROCESAR LOGIN (Respuesta AJAX en JSON)
+        // PROCESAR LOGIN
         // =========================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(string usuario, string password)
+        public async Task<IActionResult> Login(
+            string usuario,
+            string password)
         {
-            usuario = usuario?.Trim() ?? string.Empty;
-            password = password?.Trim() ?? string.Empty;
+            usuario =
+                usuario?.Trim() ?? string.Empty;
 
-            // 1. Validar campos vacíos
-            if (string.IsNullOrWhiteSpace(usuario) || string.IsNullOrWhiteSpace(password))
+            password =
+                password?.Trim() ?? string.Empty;
+
+
+            // =========================================
+            // VALIDAR CAMPOS
+            // =========================================
+
+            if (string.IsNullOrWhiteSpace(usuario) ||
+                string.IsNullOrWhiteSpace(password))
             {
-                return Json(new { success = false, message = "Ingrese usuario y contraseña." });
+                return Json(new
+                {
+                    success = false,
+                    message =
+                        "Ingrese usuario y contraseña."
+                });
             }
 
-            // 2. Buscar usuario en base de datos
-            var user = _context.Usuarios
-                .FirstOrDefault(x => x.UsuarioAcceso == usuario);
+
+            // =========================================
+            // BUSCAR USUARIO
+            // =========================================
+
+            var user =
+                await _context.Usuarios
+                    .Include(u => u.Rol)
+                    .FirstOrDefaultAsync(u =>
+                        u.UsuarioAcceso == usuario);
 
             if (user == null)
             {
-                return Json(new { success = false, message = "Usuario o contraseña incorrectos." });
+                return Json(new
+                {
+                    success = false,
+                    message =
+                        "Usuario o contraseña incorrectos."
+                });
             }
 
-            // 3. Validar estado del usuario
+
+            // =========================================
+            // VALIDAR ESTADO
+            // =========================================
+
             if (!user.Estado)
             {
-                return Json(new { success = false, message = "El usuario se encuentra desactivado. Comuníquese con el administrador." });
+                return Json(new
+                {
+                    success = false,
+                    message =
+                        "El usuario se encuentra desactivado. " +
+                        "Comuníquese con el administrador."
+                });
             }
 
-            // 4. Validar contraseña
+
+            // =========================================
+            // VALIDAR CONTRASEÑA
+            // SIN CIFRADO
+            // =========================================
+
             if (user.Contrasenia != password)
             {
-                return Json(new { success = false, message = "Usuario o contraseña incorrectos." });
+                return Json(new
+                {
+                    success = false,
+                    message =
+                        "Usuario o contraseña incorrectos."
+                });
             }
 
-            // 5. Obtener Rol
-            var rol = _context.Roles
-                .FirstOrDefault(r => r.IdRol == user.IdRol);
 
-            if (rol == null)
+            // =========================================
+            // VALIDAR ROL
+            // =========================================
+
+            if (user.Rol == null)
             {
-                return Json(new { success = false, message = "El usuario no tiene un rol asignado." });
+                return Json(new
+                {
+                    success = false,
+                    message =
+                        "El usuario no tiene un rol asignado."
+                });
             }
+
+
+            // =========================================
+            // LIMPIAR SESIÓN ANTERIOR
+            // =========================================
+
+            HttpContext.Session.Clear();
+
 
             // =========================================
             // GUARDAR SESIÓN
             // =========================================
-            HttpContext.Session.SetInt32("IdUsuario", user.IdUsuario);
-            HttpContext.Session.SetInt32("IdRol", user.IdRol);
-            HttpContext.Session.SetString("NombreUsuario", $"{user.Nombres} {user.Apellidos}");
-            HttpContext.Session.SetString("RolUsuario", rol.Nombre);
+
+            HttpContext.Session.SetInt32(
+                "IdUsuario",
+                user.IdUsuario);
+
+            HttpContext.Session.SetInt32(
+                "IdRol",
+                user.IdRol);
+
+            HttpContext.Session.SetString(
+                "NombreUsuario",
+                $"{user.Nombres} {user.Apellidos}");
+
+            HttpContext.Session.SetString(
+                "RolUsuario",
+                user.Rol.Nombre);
+
+            HttpContext.Session.SetString(
+                "UsuarioAcceso",
+                user.UsuarioAcceso ?? string.Empty);
+
 
             // =========================================
             // REDIRECCIÓN SEGÚN ROL
+            //
+            // 1 = Administrador
+            // 2 = Empleado
             // =========================================
-            string redirectUrl = user.IdRol switch
-            {
-                1 => Url.Action("Index", "Principal"),
-                2 => Url.Action("Index", "Supervisor"),
-                3 => Url.Action("Index", "Empleado"),
-                _ => null
-            };
 
-            // Rol no reconocido
-            if (string.IsNullOrEmpty(redirectUrl))
+            string? redirectUrl =
+                user.IdRol switch
+                {
+                    1 => Url.Action(
+                        "Index",
+                        "Principal"),
+
+                    2 => Url.Action(
+                        "Index",
+                        "Empleado"),
+
+                    _ => null
+                };
+
+
+            // =========================================
+            // ROL NO RECONOCIDO
+            // =========================================
+
+            if (string.IsNullOrWhiteSpace(
+                    redirectUrl))
             {
                 HttpContext.Session.Clear();
-                return Json(new { success = false, message = "El usuario no tiene un rol válido." });
+
+                return Json(new
+                {
+                    success = false,
+                    message =
+                        "El usuario no tiene un rol válido."
+                });
             }
 
-            // Retorno exitoso
-            return Json(new { success = true, nombre = user.Nombres, redirectUrl });
+
+            // =========================================
+            // LOGIN CORRECTO
+            // =========================================
+
+            return Json(new
+            {
+                success = true,
+                nombre =
+                    $"{user.Nombres} {user.Apellidos}",
+                rol =
+                    user.Rol.Nombre,
+                redirectUrl
+            });
         }
+
 
         // =========================================
         // CERRAR SESIÓN
@@ -110,10 +225,13 @@ namespace Dinacem.Controllers
         {
             HttpContext.Session.Clear();
 
-            TempData["mensaje"] = "La sesión se cerró correctamente.";
+            TempData["mensaje"] =
+                "La sesión se cerró correctamente.";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(
+                nameof(Index));
         }
+
 
         // =========================================
         // PRIVACY
@@ -122,6 +240,7 @@ namespace Dinacem.Controllers
         {
             return View();
         }
+
 
         // =========================================
         // ERROR
@@ -132,10 +251,13 @@ namespace Dinacem.Controllers
             NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel
-            {
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
-            });
+            return View(
+                new ErrorViewModel
+                {
+                    RequestId =
+                        Activity.Current?.Id ??
+                        HttpContext.TraceIdentifier
+                });
         }
     }
 }

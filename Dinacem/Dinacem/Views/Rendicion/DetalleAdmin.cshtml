@@ -8,10 +8,22 @@
     var devolucion = ViewBag.DevolucionSaldo as Dinacem.Models.DevolucionSaldo;
     var reembolso = ViewBag.Reembolso as Dinacem.Models.Reembolso;
 
+    var bitacorasVehiculo =
+        ViewBag.BitacorasVehiculo as List<Dinacem.Models.BitacoraVehiculo>
+        ?? new List<Dinacem.Models.BitacoraVehiculo>();
+
     var montoAprobado = rendicion?.Solicitud?.Monto ?? 0;
     var totalValorVenta = Model?.Sum(x => x.ValorVenta) ?? 0;
     var totalIgv = Model?.Sum(x => x.IGV) ?? 0;
-    var totalRendido = Model?.Sum(x => x.MontoTotal) ?? 0;
+
+    var totalGastos = Model?.Sum(x => x.MontoTotal) ?? 0;
+    var totalVehiculo = bitacorasVehiculo.Sum(x => x.MontoAsignado);
+    var totalRendido = totalGastos + totalVehiculo;
+
+    var totalKm = bitacorasVehiculo.Sum(x => x.DistanciaKm);
+
+    var hayBitacorasPendientes =
+        bitacorasVehiculo.Any(x => x.MontoAsignado <= 0);
 }
 
 <style>
@@ -75,14 +87,14 @@
         flex-wrap: wrap;
     }
 
-    .header-actions .btn,
-    .acciones .btn {
-        min-height: 38px;
-        padding: 7px 13px;
-        border-radius: 7px;
-        font-size: 12.5px;
-        font-weight: 600;
-    }
+        .header-actions .btn,
+        .acciones .btn {
+            min-height: 38px;
+            padding: 7px 13px;
+            border-radius: 7px;
+            font-size: 12.5px;
+            font-weight: 600;
+        }
 
     .btn-dinacen {
         background: #0c4a8a;
@@ -90,11 +102,11 @@
         color: #fff;
     }
 
-    .btn-dinacen:hover {
-        background: #093b70;
-        border-color: #093b70;
-        color: #fff;
-    }
+        .btn-dinacen:hover {
+            background: #093b70;
+            border-color: #093b70;
+            color: #fff;
+        }
 
     .btn-aprobar {
         background: #198754;
@@ -102,11 +114,11 @@
         color: #fff;
     }
 
-    .btn-aprobar:hover {
-        background: #157347;
-        border-color: #157347;
-        color: #fff;
-    }
+        .btn-aprobar:hover {
+            background: #157347;
+            border-color: #157347;
+            color: #fff;
+        }
 
     .panel {
         margin-bottom: 20px;
@@ -129,10 +141,10 @@
         font-weight: 700;
     }
 
-    .panel-header i {
-        color: #3186dc;
-        font-size: 18px;
-    }
+        .panel-header i {
+            color: #3186dc;
+            font-size: 18px;
+        }
 
     .panel-body {
         padding: 20px;
@@ -150,32 +162,107 @@
         border-color: #e1e8ed;
     }
 
-    .info-table th,
-    .tabla-devolucion th {
-        width: 18%;
-        background: #f3f7fa;
-        color: #526572;
-        border-color: #e1e8ed;
-        padding: 12px 14px;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .3px;
-        white-space: nowrap;
-    }
+        .info-table th,
+        .tabla-devolucion th {
+            width: 18%;
+            background: #f3f7fa;
+            color: #526572;
+            border-color: #e1e8ed;
+            padding: 12px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            white-space: nowrap;
+        }
 
-    .info-table td,
-    .tabla-devolucion td {
-        color: #465660;
-        border-color: #e1e8ed;
-        padding: 12px 14px;
-        font-size: 13px;
-        vertical-align: middle;
-    }
+        .info-table td,
+        .tabla-devolucion td {
+            color: #465660;
+            border-color: #e1e8ed;
+            padding: 12px 14px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
 
     .tabla-gastos {
         min-width: 1200px;
     }
+
+    .tabla-bitacora {
+        min-width: 1050px;
+        margin: 0;
+        border-color: #e1e8ed;
+    }
+
+        .tabla-bitacora thead th {
+            background: #f3f7fa;
+            color: #526572;
+            border-color: #e1e8ed;
+            padding: 12px 13px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            white-space: nowrap;
+        }
+
+        .tabla-bitacora tbody td {
+            padding: 12px 13px;
+            color: #465660;
+            border-color: #edf1f4;
+            font-size: 12.5px;
+            vertical-align: middle;
+        }
+
+    .monto-pendiente {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        background: #fff5d6;
+        border: 1px solid #f3dfa0;
+        color: #a97808;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .monto-asignado {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        background: #e8f7ec;
+        border: 1px solid #c9e8d1;
+        color: #3d8a51;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .monto-form {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        min-width: 245px;
+    }
+
+        .monto-form .input-group {
+            min-width: 145px;
+        }
+
+        .monto-form .form-control {
+            min-height: 34px;
+            height: 34px;
+            font-size: 12px;
+        }
+
+        .monto-form .btn {
+            white-space: nowrap;
+        }
 
     .tabla-devolucion {
         min-width: 650px;
@@ -324,9 +411,9 @@
         gap: 7px;
     }
 
-    .acciones form {
-        margin: 0;
-    }
+        .acciones form {
+            margin: 0;
+        }
 
     .bloque-reembolso {
         margin-top: 20px;
@@ -334,18 +421,18 @@
         border-top: 1px solid #e4ebf0;
     }
 
-    .bloque-reembolso h5 {
-        margin: 0 0 5px;
-        color: #174f7c;
-        font-size: 15px;
-        font-weight: 700;
-    }
+        .bloque-reembolso h5 {
+            margin: 0 0 5px;
+            color: #174f7c;
+            font-size: 15px;
+            font-weight: 700;
+        }
 
-    .bloque-reembolso p {
-        margin-bottom: 18px;
-        color: #71808a;
-        font-size: 12.5px;
-    }
+        .bloque-reembolso p {
+            margin-bottom: 18px;
+            color: #71808a;
+            font-size: 12.5px;
+        }
 
     .form-label {
         margin-bottom: 6px;
@@ -362,10 +449,10 @@
         font-size: 13px;
     }
 
-    .form-control:focus {
-        border-color: #3186dc;
-        box-shadow: 0 0 0 .15rem rgba(49,134,220,.12);
-    }
+        .form-control:focus {
+            border-color: #3186dc;
+            box-shadow: 0 0 0 .15rem rgba(49,134,220,.12);
+        }
 
     .rechazo-alert,
     .info-alert,
@@ -403,19 +490,19 @@
         color: #929da5;
     }
 
-    .empty-state i {
-        display: block;
-        margin-bottom: 8px;
-        color: #bdc9d1;
-        font-size: 32px;
-    }
+        .empty-state i {
+            display: block;
+            margin-bottom: 8px;
+            color: #bdc9d1;
+            font-size: 32px;
+        }
 
-    .empty-state strong {
-        display: block;
-        margin-bottom: 4px;
-        color: #596a75;
-        font-size: 13px;
-    }
+        .empty-state strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #596a75;
+            font-size: 13px;
+        }
 
     .modal-content {
         overflow: hidden;
@@ -469,9 +556,9 @@
             grid-template-columns: 1fr;
         }
 
-        .header-actions .btn {
-            width: 100%;
-        }
+            .header-actions .btn {
+                width: 100%;
+            }
 
         .header-icon {
             width: 46px;
@@ -510,14 +597,14 @@
             width: 100%;
         }
 
-        .acciones form,
-        .acciones .btn {
-            width: 100%;
-        }
+            .acciones form,
+            .acciones .btn {
+                width: 100%;
+            }
 
-        .acciones form .btn {
-            width: 100%;
-        }
+                .acciones form .btn {
+                    width: 100%;
+                }
 
         .modal-dialog {
             margin: 12px;
@@ -529,9 +616,9 @@
             gap: 7px;
         }
 
-        .modal-footer .btn {
-            width: 100%;
-        }
+            .modal-footer .btn {
+                width: 100%;
+            }
     }
 </style>
 
@@ -922,6 +1009,263 @@
 
         </div>
 
+        <!-- =========================================
+             BITÁCORA DE VEHÍCULO
+        ========================================== -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+                <i class="bi bi-car-front-fill"></i>
+                Bitácora de vehículo
+            </div>
+
+            <div class="panel-body">
+
+                @if (bitacorasVehiculo.Any())
+                {
+                    @if (hayBitacorasPendientes &&
+                   rendicion.IdEstadoRendicion == 2)
+                    {
+                        <div class="warning-alert">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+
+                            <div>
+                                Existen recorridos con el monto de combustible pendiente.
+                                Asigne todos los montos antes de aprobar la rendición.
+                            </div>
+                        </div>
+                    }
+
+                    <div class="table-responsive">
+
+                        <table class="table table-bordered tabla-bitacora">
+
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Origen</th>
+                                    <th>Destino</th>
+                                    <th>Distancia</th>
+                                    <th>Observaciones</th>
+                                    <th>Monto asignado</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @foreach (var item in bitacorasVehiculo)
+                                {
+                                    <tr>
+
+                                        <td>
+                                            @item.Fecha.ToString("dd/MM/yyyy")
+                                        </td>
+
+                                        <td>
+                                            @item.Origen
+                                        </td>
+
+                                        <td>
+                                            @item.Destino
+                                        </td>
+
+                                        <td>
+                                            <strong>
+                                                @item.DistanciaKm.ToString("N2") km
+                                            </strong>
+                                        </td>
+
+                                        <td>
+                                            @(string.IsNullOrWhiteSpace(item.Observaciones)
+                                                ? "-"
+                                                : item.Observaciones)
+                                        </td>
+
+                                        <td>
+                                            @if (item.MontoAsignado > 0)
+                                            {
+                                                <span class="monto-asignado">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    S/ @item.MontoAsignado.ToString("N2")
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="monto-pendiente">
+                                                    <i class="bi bi-clock-fill"></i>
+                                                    Pendiente
+                                                </span>
+                                            }
+                                        </td>
+
+                                        <td>
+
+                                            @if (rendicion.IdEstadoRendicion == 2)
+                                            {
+                                                <div class="d-flex flex-column gap-2">
+
+                                                    <form asp-controller="BitacoraVehiculo"
+                                                          asp-action="AsignarMonto"
+                                                          method="post"
+                                                          class="monto-form">
+
+                                                        @Html.AntiForgeryToken()
+
+                                                        <input type="hidden"
+                                                               name="id"
+                                                               value="@item.IdBitacoraVehiculo" />
+
+                                                        <div class="input-group input-group-sm">
+
+                                                            <span class="input-group-text">
+                                                                S/
+                                                            </span>
+
+                                                            <input type="number"
+                                                                   name="monto"
+                                                                   class="form-control"
+                                                                   min="0.01"
+                                                                   step="0.01"
+                                                                   value="@(item.MontoAsignado > 0 ? item.MontoAsignado.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) : "")"
+                                                                   placeholder="0.00"
+                                                                   required />
+
+                                                        </div>
+
+                                                        <button type="submit"
+                                                                class="btn btn-dinacen btn-sm">
+
+                                                            <i class="bi bi-save me-1"></i>
+
+                                                            @(item.MontoAsignado > 0
+                                                                ? "Actualizar"
+                                                                : "Asignar")
+
+                                                        </button>
+
+                                                    </form>
+
+                                                    @if (item.MontoAsignado > 0)
+                                                    {
+                                                        <form asp-controller="BitacoraVehiculo"
+                                                              asp-action="QuitarMonto"
+                                                              method="post">
+
+                                                            @Html.AntiForgeryToken()
+
+                                                            <input type="hidden"
+                                                                   name="id"
+                                                                   value="@item.IdBitacoraVehiculo" />
+
+                                                            <button type="submit"
+                                                                    class="btn btn-outline-danger btn-sm"
+                                                                    onclick="return confirm('¿Desea retirar el monto asignado a este recorrido?');">
+
+                                                                <i class="bi bi-x-circle me-1"></i>
+                                                                Quitar monto
+
+                                                            </button>
+
+                                                        </form>
+                                                    }
+
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">
+                                                    <i class="bi bi-lock me-1"></i>
+                                                    Bloqueado
+                                                </span>
+                                            }
+
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div class="row g-3 mt-2">
+
+                        <div class="col-12 col-md-4">
+
+                            <div class="summary-card summary-primary">
+
+                                <span class="summary-label">
+                                    Recorridos
+                                </span>
+
+                                <div class="summary-value">
+                                    @bitacorasVehiculo.Count
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-12 col-md-4">
+
+                            <div class="summary-card summary-purple">
+
+                                <span class="summary-label">
+                                    Distancia total
+                                </span>
+
+                                <div class="summary-value">
+                                    @totalKm.ToString("N2") km
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-12 col-md-4">
+
+                            <div class="summary-card summary-green">
+
+                                <span class="summary-label">
+                                    Total vehículo
+                                </span>
+
+                                <div class="summary-value">
+                                    S/ @totalVehiculo.ToString("N2")
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+
+                        <i class="bi bi-car-front"></i>
+
+                        <strong>
+                            No hay recorridos registrados
+                        </strong>
+
+                        <span>
+                            El empleado no registró recorridos de vehículo para esta rendición.
+                        </span>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+
         <div class="resumen-grid">
 
             <div class="summary-card summary-primary">
@@ -962,6 +1306,16 @@
                 <div class="summary-value">
                     S/ @totalRendido.ToString("N2")
                 </div>
+
+                <small class="text-muted d-block mt-1">
+                    Gastos: S/ @totalGastos.ToString("N2")
+                    @if (totalVehiculo > 0)
+                    {
+                        <span>
+                            + Vehículo: S/ @totalVehiculo.ToString("N2")
+                        </span>
+                    }
+                </small>
             </div>
 
         </div>
@@ -1414,7 +1768,7 @@
         }
 
         @if (rendicion.IdEstadoRendicion == 4 &&
-             !string.IsNullOrWhiteSpace(rendicion.Observaciones))
+       !string.IsNullOrWhiteSpace(rendicion.Observaciones))
         {
             <div class="rechazo-alert">
 
@@ -1458,7 +1812,8 @@
                                    value="@rendicion.IdRendicion" />
 
                             <button type="submit"
-                                    class="btn btn-aprobar">
+                                    class="btn btn-aprobar"
+                                    disabled="@(hayBitacorasPendientes ? "disabled" : null)">
 
                                 <i class="bi bi-check-circle me-1"></i>
                                 Aprobar rendición
@@ -1466,6 +1821,14 @@
                             </button>
 
                         </form>
+
+                        @if (hayBitacorasPendientes)
+                        {
+                            <span class="text-warning align-self-center small">
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                Asigne primero todos los montos de la bitácora.
+                            </span>
+                        }
 
                         <button type="button"
                                 class="btn btn-outline-danger"

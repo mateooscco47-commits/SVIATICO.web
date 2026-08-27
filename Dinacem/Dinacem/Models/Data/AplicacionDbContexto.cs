@@ -41,6 +41,8 @@ namespace Dinacem.Models
 
         public DbSet<EstadoReembolso> EstadoReembolsos { get; set; }
 
+        public DbSet<BitacoraVehiculo> BitacorasVehiculo { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -350,6 +352,26 @@ namespace Dinacem.Models
 
             modelBuilder.Entity<Reembolso>()
                 .Property(x => x.Monto)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<BitacoraVehiculo>()
+    .ToTable("BitacorasVehiculo");
+
+            modelBuilder.Entity<BitacoraVehiculo>()
+                .HasKey(x => x.IdBitacoraVehiculo);
+
+            modelBuilder.Entity<BitacoraVehiculo>()
+                .HasOne(x => x.Rendicion)
+                .WithMany(r => r.BitacorasVehiculo)
+                .HasForeignKey(x => x.IdRendicion)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<BitacoraVehiculo>()
+                .Property(x => x.DistanciaKm)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<BitacoraVehiculo>()
+                .Property(x => x.MontoAsignado)
                 .HasPrecision(18, 2);
         }
     }
