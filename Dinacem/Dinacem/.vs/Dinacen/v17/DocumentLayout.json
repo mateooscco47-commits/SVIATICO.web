@@ -3,94 +3,18 @@
   "WorkspaceRootPath": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\controllers\\bitacoravehiculocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:controllers\\bitacoravehiculocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lucas\\Downloads\\BitacoraVehiculoController_Completo_Con_RegeneracionPdf.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\controllers\\gastocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:controllers\\gastocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lucas\\Downloads\\GastoController_Completo_Con_BitacoraVehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\models\\servicios\\rendicionpdfservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\servicios\\rendicionpdfservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\views\\rendicion\\detalleadmin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:views\\rendicion\\detalleadmin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\controllers\\rendicioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:controllers\\rendicioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\views\\bitacoravehiculo\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:views\\bitacoravehiculo\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\views\\gasto\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:views\\gasto\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Migrations\\20260827073017_AgregarBitacoraVehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Migrations\\20260827073017_AgregarBitacoraVehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lucas\\Downloads\\Gasto_Index_Corregido_Responsivo.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\models\\data\\aplicaciondbcontexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\data\\aplicaciondbcontexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lucas\\Downloads\\Gasto_Index_Responsivo_Mejorado.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\models\\entidades\\rendicion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\entidades\\rendicion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\models\\entidades\\bitacoravehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\entidades\\bitacoravehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Migrations\\20260827072530_AgregarZonaUsuarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Migrations\\20260827072530_AgregarZonaUsuarios.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\models\\entidades\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\entidades\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\models\\entidades\\zona.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\entidades\\zona.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\wwwroot\\js\\login.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:wwwroot\\js\\login.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\views\\usuario\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:views\\usuario\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\models\\entidades\\solicitud.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\entidades\\solicitud.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\controllers\\bitacoravehiculocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:controllers\\bitacoravehiculocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -100,7 +24,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -121,300 +45,54 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "BitacoraVehiculoController_Completo_Con_RegeneracionPdf.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Downloads\\BitacoraVehiculoController_Completo_Con_RegeneracionPdf.cs",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Downloads\\BitacoraVehiculoController_Completo_Con_RegeneracionPdf.cs",
-              "ToolTip": "C:\\Users\\lucas\\Downloads\\BitacoraVehiculoController_Completo_Con_RegeneracionPdf.cs",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\Downloads\\BitacoraVehiculoController_Completo_Con_RegeneracionPdf.cs",
-              "ViewState": "AgIAADACAAAAAAAAAAAAwF0CAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:50:19.722Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "GastoController_Completo_Con_BitacoraVehiculo.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Downloads\\GastoController_Completo_Con_BitacoraVehiculo.cs",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Downloads\\GastoController_Completo_Con_BitacoraVehiculo.cs",
-              "ToolTip": "C:\\Users\\lucas\\Downloads\\GastoController_Completo_Con_BitacoraVehiculo.cs",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\Downloads\\GastoController_Completo_Con_BitacoraVehiculo.cs",
-              "ViewState": "AgIAAEwHAAAAAAAAAAAAwHkHAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:47:52.185Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "RendicionPdfService.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Servicios\\RendicionPdfService.cs",
-              "RelativeDocumentMoniker": "Models\\Servicios\\RendicionPdfService.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Servicios\\RendicionPdfService.cs",
-              "RelativeToolTip": "Models\\Servicios\\RendicionPdfService.cs",
-              "ViewState": "AgIAACACAAAAAAAAAAAAwE0CAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:43:09.919Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "DetalleAdmin.cshtml",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Rendicion\\DetalleAdmin.cshtml",
-              "RelativeDocumentMoniker": "Views\\Rendicion\\DetalleAdmin.cshtml",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Rendicion\\DetalleAdmin.cshtml",
-              "RelativeToolTip": "Views\\Rendicion\\DetalleAdmin.cshtml",
-              "ViewState": "AgIAAHgIAAAAAAAAAAAAwKUIAAABAAAAAAAAAA==",
+              "Title": "Gasto_Index_Corregido_Responsivo.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Downloads\\Gasto_Index_Corregido_Responsivo.cshtml",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Downloads\\Gasto_Index_Corregido_Responsivo.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Downloads\\Gasto_Index_Corregido_Responsivo.cshtml",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\Downloads\\Gasto_Index_Corregido_Responsivo.cshtml",
+              "ViewState": "AgIAAJYGAAAAAAAAAAAAwMUGAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-27T07:40:47.985Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "RendicionController.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\RendicionController.cs",
-              "RelativeDocumentMoniker": "Controllers\\RendicionController.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\RendicionController.cs",
-              "RelativeToolTip": "Controllers\\RendicionController.cs",
-              "ViewState": "AgIAAKQBAAAAAAAAAAAAwNEBAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:38:47.104Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\BitacoraVehiculo\\Index.cshtml",
-              "RelativeDocumentMoniker": "Views\\BitacoraVehiculo\\Index.cshtml",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\BitacoraVehiculo\\Index.cshtml",
-              "RelativeToolTip": "Views\\BitacoraVehiculo\\Index.cshtml",
-              "ViewState": "AgIAANECAAAAAAAAAAAAwP4CAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-27T07:31:34.49Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "BitacoraVehiculoController.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\BitacoraVehiculoController.cs",
-              "RelativeDocumentMoniker": "Controllers\\BitacoraVehiculoController.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\BitacoraVehiculoController.cs",
-              "RelativeToolTip": "Controllers\\BitacoraVehiculoController.cs",
-              "ViewState": "AgIAADACAAAAAAAAAAAAwF0CAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:30:52.512Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "BitacoraVehiculo.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\BitacoraVehiculo.cs",
-              "RelativeDocumentMoniker": "Models\\Entidades\\BitacoraVehiculo.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\BitacoraVehiculo.cs",
-              "RelativeToolTip": "Models\\Entidades\\BitacoraVehiculo.cs",
-              "ViewState": "AgIAAB0AAAAAAAAAAAAAwEoAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:28:30.021Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "Rendicion.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\Rendicion.cs",
-              "RelativeDocumentMoniker": "Models\\Entidades\\Rendicion.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\Rendicion.cs",
-              "RelativeToolTip": "Models\\Entidades\\Rendicion.cs",
-              "ViewState": "AgIAAB0AAAAAAAAAAAAuwDgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:27:34.763Z",
+              "WhenOpened": "2026-08-27T08:52:29.717Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "GastoController.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\GastoController.cs",
-              "RelativeDocumentMoniker": "Controllers\\GastoController.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\GastoController.cs",
-              "RelativeToolTip": "Controllers\\GastoController.cs",
-              "ViewState": "AgIAAEwHAAAAAAAAAAAAwHkHAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-20T09:18:14.838Z",
+              "Title": "Gasto_Index_Responsivo_Mejorado.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Downloads\\Gasto_Index_Responsivo_Mejorado.cshtml",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Downloads\\Gasto_Index_Responsivo_Mejorado.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Downloads\\Gasto_Index_Responsivo_Mejorado.cshtml",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\Downloads\\Gasto_Index_Responsivo_Mejorado.cshtml",
+              "ViewState": "AgIAALUGAAAAAAAAAAAiwOQGAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-08-27T08:48:36.32Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "20260827073017_AgregarBitacoraVehiculo.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Migrations\\20260827073017_AgregarBitacoraVehiculo.cs",
-              "RelativeDocumentMoniker": "Migrations\\20260827073017_AgregarBitacoraVehiculo.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Migrations\\20260827073017_AgregarBitacoraVehiculo.cs",
-              "RelativeToolTip": "Migrations\\20260827073017_AgregarBitacoraVehiculo.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:30:17.431Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 0,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Gasto\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Gasto\\Index.cshtml",
               "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Gasto\\Index.cshtml",
               "RelativeToolTip": "Views\\Gasto\\Index.cshtml",
-              "ViewState": "AgIAACUGAAAAAAAAAAAAwFIGAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAANMGAAAAAAAAAAAAwAAHAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-27T07:32:32.087Z",
+              "WhenOpened": "2026-08-27T08:45:11.729Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "20260827072530_AgregarZonaUsuarios.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Migrations\\20260827072530_AgregarZonaUsuarios.cs",
-              "RelativeDocumentMoniker": "Migrations\\20260827072530_AgregarZonaUsuarios.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Migrations\\20260827072530_AgregarZonaUsuarios.cs",
-              "RelativeToolTip": "Migrations\\20260827072530_AgregarZonaUsuarios.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "BitacoraVehiculoController.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\BitacoraVehiculoController.cs",
+              "RelativeDocumentMoniker": "Controllers\\BitacoraVehiculoController.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\BitacoraVehiculoController.cs",
+              "RelativeToolTip": "Controllers\\BitacoraVehiculoController.cs",
+              "ViewState": "AgIAADACAAAAAAAAAAAAwE4CAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:25:31.067Z",
+              "WhenOpened": "2026-08-27T07:30:52.512Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "AplicacionDbContexto.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Data\\AplicacionDbContexto.cs",
-              "RelativeDocumentMoniker": "Models\\Data\\AplicacionDbContexto.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Data\\AplicacionDbContexto.cs",
-              "RelativeToolTip": "Models\\Data\\AplicacionDbContexto.cs",
-              "ViewState": "AgIAAEoBAAAAAAAAAAAYwGwBAAAzAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:24:23.171Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "Usuario.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\Usuario.cs",
-              "RelativeDocumentMoniker": "Models\\Entidades\\Usuario.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\Usuario.cs",
-              "RelativeToolTip": "Models\\Entidades\\Usuario.cs",
-              "ViewState": "AgIAACUAAAAAAAAAAAAmwFkAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:23:04.713Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Zona.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\Zona.cs",
-              "RelativeDocumentMoniker": "Models\\Entidades\\Zona.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\Zona.cs",
-              "RelativeToolTip": "Models\\Entidades\\Zona.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:22:25.607Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "Login.js",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\js\\Login.js",
-              "RelativeDocumentMoniker": "wwwroot\\js\\Login.js",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\js\\Login.js",
-              "RelativeToolTip": "wwwroot\\js\\Login.js",
-              "ViewState": "AgIAAFgAAAAAAAAAAAAUwIUAAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-08-27T07:18:17.057Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAADYAAAAAAAAAAAAmwGoAAAAKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:17:54.019Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "Controllers\\HomeController.cs",
-              "ViewState": "AgIAAHgAAAAAAAAAAAAmwOoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-27T07:13:51.064Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Home\\Index.cshtml",
-              "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Home\\Index.cshtml",
-              "RelativeToolTip": "Views\\Home\\Index.cshtml",
-              "ViewState": "AgIAAEAAAAAAAAAAAAAiwFYAAABUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-27T07:12:31.193Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Usuario\\Index.cshtml",
-              "RelativeDocumentMoniker": "Views\\Usuario\\Index.cshtml",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Usuario\\Index.cshtml",
-              "RelativeToolTip": "Views\\Usuario\\Index.cshtml",
-              "ViewState": "AgIAAPACAAAAAAAAAAAWwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-27T07:12:04.078Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\appsettings.json",
-              "RelativeDocumentMoniker": "appsettings.json",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\appsettings.json",
-              "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-08-27T07:04:19.964Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "Solicitud.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\Solicitud.cs",
-              "RelativeDocumentMoniker": "Models\\Entidades\\Solicitud.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\Solicitud.cs",
-              "RelativeToolTip": "Models\\Entidades\\Solicitud.cs",
-              "ViewState": "AgIAABsAAAAAAAAAAAAmwCMAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-20T09:14:40.088Z"
             }
           ]
         }

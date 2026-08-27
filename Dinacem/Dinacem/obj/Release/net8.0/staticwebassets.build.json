@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "MkU5ozZfbihQ/L9wobBVtVe4UOaFJgeKdWH2uVfJkiY=",
+  "Hash": "IegGC0isqAHAKcireXMwXCNIsOPUoBwhD2LCMXeLM9U=",
   "Source": "Dinacen",
   "BasePath": "_content/Dinacen",
   "Mode": "Default",
@@ -1879,8 +1879,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "9u6pu4fh5r",
-      "Integrity": "H3M9EZAZTJ6vcCW+gy6//Yth1jUe31ohNCd/aQh+mhg=",
+      "Fingerprint": "dtd2mgziw8",
+      "Integrity": "j4egpXC1+hfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\liquidaciones\\Liquidacion-3-lucas-altamizaa.pdf"
@@ -9398,7 +9398,7 @@
       ]
     },
     {
-      "Route": "liquidaciones/Liquidacion-3-lucas-altamizaa.9u6pu4fh5r.pdf",
+      "Route": "liquidaciones/Liquidacion-3-lucas-altamizaa.dtd2mgziw8.pdf",
       "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-3-lucas-altamizaa.pdf",
       "Selectors": [],
       "ResponseHeaders": [
@@ -9408,7 +9408,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1447143"
+          "Value": "40752"
         },
         {
           "Name": "Content-Type",
@@ -9416,11 +9416,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"H3M9EZAZTJ6vcCW+gy6//Yth1jUe31ohNCd/aQh+mhg=\""
+          "Value": "\"j4egpXC1+hfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 27 Aug 2026 07:37:33 GMT"
+          "Value": "Thu, 27 Aug 2026 07:51:17 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -9430,7 +9430,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "9u6pu4fh5r"
+          "Value": "dtd2mgziw8"
         },
         {
           "Name": "label",
@@ -9438,7 +9438,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-H3M9EZAZTJ6vcCW+gy6//Yth1jUe31ohNCd/aQh+mhg="
+          "Value": "sha256-j4egpXC1+hfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4="
         }
       ]
     },
@@ -9453,7 +9453,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1447143"
+          "Value": "40752"
         },
         {
           "Name": "Content-Type",
@@ -9461,11 +9461,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"H3M9EZAZTJ6vcCW+gy6//Yth1jUe31ohNCd/aQh+mhg=\""
+          "Value": "\"j4egpXC1+hfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 27 Aug 2026 07:37:33 GMT"
+          "Value": "Thu, 27 Aug 2026 07:51:17 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -9475,7 +9475,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-H3M9EZAZTJ6vcCW+gy6//Yth1jUe31ohNCd/aQh+mhg="
+          "Value": "sha256-j4egpXC1+hfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4="
         }
       ]
     },

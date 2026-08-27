@@ -1578,8 +1578,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>9u6pu4fh5r</Fingerprint>
-      <Integrity>H3M9EZAZTJ6vcCW+gy6//Yth1jUe31ohNCd/aQh+mhg=</Integrity>
+      <Fingerprint>dtd2mgziw8</Fingerprint>
+      <Integrity>j4egpXC1+hfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-3-lucas-altamizaa.pdf'))</OriginalItemSpec>
