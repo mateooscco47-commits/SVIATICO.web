@@ -48,31 +48,51 @@
 }
 
 <style>
+    :root {
+        --dinacen-primary: #0c4a8a;
+        --dinacen-primary-dark: #083b70;
+        --dinacen-primary-soft: #eaf2fb;
+        --dinacen-border: #e2e8f0;
+        --dinacen-border-soft: #edf1f5;
+        --dinacen-bg: #f8fafc;
+        --dinacen-text: #172033;
+        --dinacen-muted: #64748b;
+        --dinacen-success: #198754;
+        --dinacen-warning: #d97706;
+        --dinacen-danger: #dc3545;
+    }
+
     .rendicion-wrapper {
         width: 100%;
-        max-width: 1650px;
+        max-width: 1500px;
         margin: 0 auto;
-        padding-bottom: 35px
+        padding: 0 14px 36px;
     }
 
     .page-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 20px;
+        gap: 18px;
         background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 14px;
-        padding: 22px 24px;
-        margin-bottom: 20px;
-        box-shadow: 0 3px 12px rgba(15,23,42,.04)
+        border: 1px solid var(--dinacen-border);
+        border-radius: 16px;
+        padding: 20px 22px;
+        margin-bottom: 18px;
+        box-shadow: 0 4px 16px rgba(15,23,42,.05);
     }
 
     .page-header-content {
         display: flex;
         align-items: center;
-        gap: 14px
+        gap: 14px;
+        min-width: 0;
+        flex: 1 1 auto;
     }
+
+        .page-header-content > div:last-child {
+            min-width: 0;
+        }
 
     .page-icon {
         width: 48px;
@@ -80,32 +100,139 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #eaf2fb;
-        color: #0c4a8a;
+        background: var(--dinacen-primary-soft);
+        color: var(--dinacen-primary);
         border-radius: 12px;
         font-size: 22px;
-        flex-shrink: 0
+        flex: 0 0 48px;
     }
 
     .page-title {
         margin: 0;
-        color: #172033;
-        font-size: 25px;
-        font-weight: 800
+        color: var(--dinacen-text);
+        font-size: clamp(21px, 2vw, 26px);
+        font-weight: 800;
+        line-height: 1.15;
     }
 
     .page-description {
-        margin: 4px 0 0;
-        color: #64748b;
-        font-size: 13px
+        margin: 5px 0 0;
+        color: var(--dinacen-muted);
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+        .header-actions .btn {
+            min-height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            font-size: 12.5px;
+            font-weight: 700;
+            border-radius: 9px;
+        }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .summary-card {
+        background: #fff;
+        border: 1px solid var(--dinacen-border);
+        border-radius: 12px;
+        padding: 15px 16px;
+        position: relative;
+        overflow: hidden;
+        min-width: 0;
+        box-shadow: 0 2px 8px rgba(15,23,42,.03);
+    }
+
+        .summary-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--dinacen-primary);
+        }
+
+        .summary-card.green::before {
+            background: var(--dinacen-success);
+        }
+
+        .summary-card.orange::before {
+            background: #f59e0b;
+        }
+
+        .summary-card.blue::before {
+            background: #0d6efd;
+        }
+
+    .summary-label {
+        display: block;
+        color: var(--dinacen-muted);
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .35px;
+        margin-bottom: 5px;
+    }
+
+    .summary-value {
+        color: var(--dinacen-text);
+        font-size: clamp(18px, 2vw, 22px);
+        font-weight: 800;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+    }
+
+    .summary-card.green .summary-value {
+        color: var(--dinacen-success);
+    }
+
+    .summary-card.orange .summary-value {
+        color: var(--dinacen-warning);
+    }
+
+    .summary-card.blue .summary-value {
+        color: #0d6efd;
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 360px);
+        gap: 18px;
+        align-items: start;
+    }
+
+    .main-column,
+    .side-column {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        min-width: 0;
     }
 
     .panel {
         background: #fff;
-        border: 1px solid #e2e8f0;
+        border: 1px solid var(--dinacen-border);
         border-radius: 14px;
         box-shadow: 0 3px 12px rgba(15,23,42,.04);
-        overflow: hidden
+        overflow: hidden;
+        min-width: 0;
     }
 
     .panel-header {
@@ -113,125 +240,52 @@
         align-items: center;
         justify-content: space-between;
         gap: 10px;
-        padding: 16px 20px;
+        padding: 15px 18px;
         border-bottom: 1px solid #e8edf3;
-        color: #172033;
-        font-size: 14px;
-        font-weight: 800
+        color: var(--dinacen-text);
+        font-size: 13.5px;
+        font-weight: 800;
     }
 
     .panel-body {
-        padding: 20px
+        padding: 18px;
+        min-width: 0;
     }
 
-    .summary-grid {
-        display: grid;
-        grid-template-columns: repeat(4,1fr);
-        gap: 14px;
-        margin-bottom: 20px
-    }
-
-    .summary-card {
-        background: #fff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 16px 18px;
-        position: relative;
-        overflow: hidden
-    }
-
-        .summary-card:before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: #0c4a8a
-        }
-
-        .summary-card.green:before {
-            background: #198754
-        }
-
-        .summary-card.orange:before {
-            background: #f59e0b
-        }
-
-        .summary-card.blue:before {
-            background: #0d6efd
-        }
-
-    .summary-label {
-        display: block;
-        color: #64748b;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .3px;
-        margin-bottom: 6px
-    }
-
-    .summary-value {
-        color: #172033;
-        font-size: 22px;
-        font-weight: 800
-    }
-
-    .summary-card.green .summary-value {
-        color: #198754
-    }
-
-    .summary-card.orange .summary-value {
-        color: #d97706
-    }
-
-    .summary-card.blue .summary-value {
-        color: #0d6efd
-    }
-
-    .content-grid {
-        display: grid;
-        grid-template-columns: minmax(0,1fr) 380px;
-        gap: 20px
-    }
-
-    .main-column, .side-column {
-        display: flex;
-        flex-direction: column;
-        gap: 20px
-    }
-
-    .table-wrapper {
-        overflow-x: auto
+    .table-wrapper,
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .table-gastos {
-        min-width: 1050px;
-        margin: 0
+        min-width: 980px;
+        margin: 0;
     }
 
         .table-gastos thead th {
-            background: #f8fafc;
-            color: #64748b;
+            background: var(--dinacen-bg);
+            color: var(--dinacen-muted);
             border-bottom: 1px solid #dbe2ea;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 800;
             text-transform: uppercase;
             white-space: nowrap;
-            padding: 13px 12px
+            padding: 12px 11px;
+            vertical-align: middle;
         }
 
         .table-gastos tbody td {
-            padding: 13px 12px;
+            padding: 12px 11px;
             color: #334155;
-            font-size: 13px;
-            border-color: #edf1f5;
-            vertical-align: middle
+            font-size: 12.5px;
+            border-color: var(--dinacen-border-soft);
+            vertical-align: middle;
         }
 
         .table-gastos tbody tr:hover {
-            background: #f8fafc
+            background: #fbfdff;
         }
 
     .badge-gasto {
@@ -239,326 +293,446 @@
         background: #edf7ef;
         color: #166534;
         border: 1px solid #ccebd3;
-        padding: 5px 9px;
+        padding: 5px 8px;
         border-radius: 6px;
-        font-size: 11px;
+        font-size: 10.5px;
         font-weight: 700;
-        white-space: nowrap
+        white-space: nowrap;
     }
 
     .table-footer {
-        padding: 12px 18px;
+        padding: 11px 16px;
         border-top: 1px solid #e8edf3;
-        color: #64748b;
-        font-size: 12px
+        color: var(--dinacen-muted);
+        font-size: 11.5px;
+        background: #fcfdff;
     }
 
     .mobile-hint {
         display: none;
         color: #94a3b8;
-        font-size: 11px;
-        font-weight: 400
+        font-size: 10px;
+        font-weight: 600;
     }
 
+    /* IMPORTANTE: nombres propios para no chocar con Bootstrap .col-* */
     .form-grid {
         display: grid;
-        grid-template-columns: repeat(12,1fr);
-        gap: 16px
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 16px;
+        width: 100%;
+        align-items: start;
     }
 
-    .col-3 {
-        grid-column: span 3
+    .form-col-3 {
+        grid-column: span 3;
+        min-width: 0;
+        width: 100%;
     }
 
-    .col-4 {
-        grid-column: span 4
+    .form-col-4 {
+        grid-column: span 4;
+        min-width: 0;
+        width: 100%;
     }
 
-    .col-6 {
-        grid-column: span 6
+    .form-col-6 {
+        grid-column: span 6;
+        min-width: 0;
+        width: 100%;
     }
 
-    .col-8 {
-        grid-column: span 8
+    .form-col-8 {
+        grid-column: span 8;
+        min-width: 0;
+        width: 100%;
     }
 
-    .col-12 {
-        grid-column: span 12
+    .form-col-12 {
+        grid-column: span 12;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .form-grid .form-control,
+    .form-grid .form-select,
+    .form-grid .input-group,
+    .form-grid .tax-summary {
+        width: 100%;
+        max-width: none;
     }
 
     .form-label {
         display: block;
         color: #334155;
-        font-size: 12px;
+        font-size: 11.5px;
         font-weight: 700;
-        margin-bottom: 6px
+        margin-bottom: 6px;
     }
 
-    .form-control, .form-select {
+    .form-control,
+    .form-select {
         min-height: 42px;
         border-color: #d7dee8;
         border-radius: 8px;
-        font-size: 13px
+        font-size: 12.5px;
     }
 
-        .form-control:focus, .form-select:focus {
+        .form-control:focus,
+        .form-select:focus {
             border-color: #0d6efd;
-            box-shadow: 0 0 0 .15rem rgba(13,110,253,.1)
+            box-shadow: 0 0 0 .15rem rgba(13,110,253,.1);
+        }
+
+        .form-control[readonly] {
+            background: #f8fafc;
         }
 
     .form-text {
-        font-size: 11px;
-        color: #94a3b8
+        color: #94a3b8;
+        font-size: 10.5px;
+        line-height: 1.35;
+        margin-top: 5px;
     }
 
-    .input-group .btn {
-        font-size: 13px;
-        font-weight: 600
+    .input-group {
+        width: 100%;
     }
+
+        .input-group > .form-control,
+        .input-group > .form-select {
+            min-width: 0;
+        }
+
+        .input-group .btn {
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
 
     .tax-summary {
         height: 100%;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
+        background: var(--dinacen-bg);
+        border: 1px solid var(--dinacen-border);
         border-radius: 10px;
-        padding: 15px
+        padding: 14px;
     }
 
     .tax-item {
-        text-align: center
+        text-align: center;
     }
 
         .tax-item small {
             display: block;
-            color: #64748b;
-            font-size: 11px;
-            margin-bottom: 3px
+            color: var(--dinacen-muted);
+            font-size: 10.5px;
+            margin-bottom: 3px;
         }
 
         .tax-item strong {
-            color: #172033;
-            font-size: 17px
+            color: var(--dinacen-text);
+            font-size: 16px;
         }
 
         .tax-item.total strong {
-            color: #0d6efd
+            color: #0d6efd;
         }
 
     .btn-primary-custom {
-        background: #0c4a8a;
-        border-color: #0c4a8a;
+        background: var(--dinacen-primary);
+        border-color: var(--dinacen-primary);
         color: #fff;
         font-weight: 700;
-        min-height: 42px
+        min-height: 42px;
+        border-radius: 9px;
     }
 
         .btn-primary-custom:hover {
-            background: #083b70;
-            border-color: #083b70;
-            color: #fff
+            background: var(--dinacen-primary-dark);
+            border-color: var(--dinacen-primary-dark);
+            color: #fff;
         }
 
     .info-table {
-        margin: 0
+        margin: 0;
     }
+
+        .info-table th,
+        .info-table td {
+            padding: 10px 11px;
+            border-color: #e5eaf0;
+            vertical-align: middle;
+        }
 
         .info-table th {
             width: 42%;
-            background: #f8fafc;
-            color: #64748b;
-            font-size: 11px;
-            font-weight: 700;
+            background: var(--dinacen-bg);
+            color: var(--dinacen-muted);
+            font-size: 10px;
+            font-weight: 800;
             text-transform: uppercase;
-            vertical-align: middle
         }
 
         .info-table td {
             color: #334155;
-            font-size: 13px;
-            vertical-align: middle
-        }
-
-        .info-table th, .info-table td {
-            padding: 11px 12px;
-            border-color: #e5eaf0
+            font-size: 12.5px;
+            overflow-wrap: anywhere;
         }
 
     .estado {
         display: inline-flex;
         align-items: center;
-        padding: 5px 10px;
+        padding: 5px 9px;
         border-radius: 20px;
-        font-size: 11px;
-        font-weight: 700
+        font-size: 10.5px;
+        font-weight: 700;
+        white-space: nowrap;
     }
 
     .estado-proceso {
         background: #eaf2ff;
-        color: #0d6efd
+        color: #0d6efd;
     }
 
     .estado-pendiente {
         background: #fff4d6;
-        color: #9a6700
+        color: #9a6700;
     }
 
     .estado-aprobada {
         background: #e8f7ef;
-        color: #198754
+        color: #198754;
     }
 
     .estado-rechazada {
         background: #fdecec;
-        color: #dc3545
+        color: #dc3545;
     }
 
     .estado-desconocido {
         background: #eef1f4;
-        color: #64748b
+        color: #64748b;
     }
 
     .devolucion-box {
-        border-left: 4px solid #ffc107
+        border-left: 4px solid #ffc107;
     }
 
         .devolucion-box.ok {
-            border-left-color: #198754
+            border-left-color: var(--dinacen-success);
         }
 
     .alert-custom {
         border-radius: 9px;
-        font-size: 13px
+        font-size: 12.5px;
     }
 
     .action-stack {
         display: flex;
         flex-direction: column;
-        gap: 10px
+        gap: 9px;
     }
 
         .action-stack .btn {
-            min-height: 42px;
-            font-size: 13px;
-            font-weight: 700
+            min-height: 41px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12.5px;
+            font-weight: 700;
+            border-radius: 9px;
         }
 
     .action-note {
         margin: 0;
-        color: #dc3545;
-        font-size: 11px
+        color: var(--dinacen-danger);
+        font-size: 10.5px;
     }
 
     .empty-state {
         text-align: center;
-        padding: 45px 20px;
-        color: #94a3b8
+        padding: 38px 18px;
+        color: #94a3b8;
     }
 
         .empty-state i {
-            font-size: 32px;
             display: block;
-            margin-bottom: 8px
+            margin-bottom: 8px;
+            font-size: 30px;
         }
 
     .voucher-link {
-        font-size: 12px
+        font-size: 11px;
     }
 
-    @@media(max-width:1199px) {
+    @@media (max-width: 1199px) {
         .content-grid {
-            grid-template-columns: 1fr
+            grid-template-columns: 1fr;
         }
 
         .side-column {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            align-items: start
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            align-items: start;
         }
 
         .summary-grid {
-            grid-template-columns: repeat(2,1fr)
+            grid-template-columns: repeat(2, minmax(0,1fr));
         }
     }
 
-    @@media(max-width:767px) {
+    @@media (max-width: 991px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header-actions {
+            width: 100%;
+            justify-content: flex-start;
+        }
+
+        .form-col-3,
+        .form-col-4,
+        .form-col-6 {
+            grid-column: span 6;
+        }
+
+        .form-col-8,
+        .form-col-12 {
+            grid-column: span 12;
+        }
+    }
+
+    @@media (max-width: 767px) {
         .rendicion-wrapper {
-            padding-bottom: 20px
+            padding: 0 10px 24px;
         }
 
         .page-header {
-            padding: 17px;
-            align-items: flex-start;
-            flex-direction: column
+            padding: 16px;
+            gap: 14px;
         }
 
         .page-header-content {
-            align-items: flex-start
+            align-items: flex-start;
         }
 
         .page-icon {
             width: 42px;
             height: 42px;
-            font-size: 19px
-        }
-
-        .page-title {
-            font-size: 21px
+            flex-basis: 42px;
+            font-size: 19px;
         }
 
         .page-description {
-            font-size: 12px
+            font-size: 11.5px;
         }
 
-        .page-header > .btn {
-            width: 100%
+        .header-actions {
+            display: grid;
+            grid-template-columns: 1fr;
         }
+
+            .header-actions .btn {
+                width: 100%;
+            }
 
         .summary-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 10px
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 9px;
         }
 
         .summary-card {
-            padding: 13px
-        }
-
-        .summary-value {
-            font-size: 17px
+            padding: 12px;
         }
 
         .summary-label {
-            font-size: 9px
+            font-size: 8.5px;
+        }
+
+        .summary-value {
+            font-size: 16px;
         }
 
         .side-column {
-            display: flex
+            display: flex;
         }
 
         .panel-header {
-            padding: 14px 15px
+            align-items: flex-start;
+            padding: 13px 14px;
         }
 
         .panel-body {
-            padding: 15px
+            padding: 14px;
         }
 
         .mobile-hint {
-            display: block
+            display: block;
+            text-align: right;
         }
 
         .form-grid {
-            display: grid;
             grid-template-columns: 1fr;
-            gap: 14px
+            gap: 13px;
         }
 
-        .col-3, .col-4, .col-6, .col-8, .col-12 {
-            grid-column: span 1
+        .form-col-3,
+        .form-col-4,
+        .form-col-6,
+        .form-col-8,
+        .form-col-12 {
+            grid-column: span 1;
+        }
+
+        #btnConsultarRuc {
+            padding-left: 14px;
+            padding-right: 14px;
+        }
+
+        .table-gastos {
+            min-width: 880px;
+        }
+
+            .table-gastos thead th,
+            .table-gastos tbody td {
+                padding: 10px 9px;
+                font-size: 11px;
+            }
+
+        .tax-summary {
+            padding: 12px;
         }
 
         .action-stack .btn {
-            width: 100%
+            width: 100%;
         }
+    }
+
+    @@media (max-width: 480px) {
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-title {
+            font-size: 20px;
+        }
+
+        .form-grid .input-group {
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+            .form-grid .input-group .form-control {
+                flex: 1 1 100%;
+                border-radius: 8px !important;
+            }
+
+            .form-grid .input-group .btn {
+                width: 100%;
+                border-radius: 8px !important;
+            }
     }
 </style>
 
@@ -577,7 +751,7 @@
             </div>
         </div>
 
-        <div class="d-flex flex-column flex-sm-row gap-2">
+        <div class="header-actions">
 
             @if (rendicion != null)
             {
@@ -861,7 +1035,7 @@
 
                             <div class="form-grid">
 
-                                <div class="col-4">
+                                <div class="form-col-4">
                                     <label class="form-label">Fecha del gasto</label>
 
                                     <input type="date"
@@ -877,7 +1051,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-4">
+                                <div class="form-col-4">
                                     <label class="form-label">RUC</label>
 
                                     <div class="input-group">
@@ -903,7 +1077,7 @@
                                     <div id="mensajeRuc" class="form-text"></div>
                                 </div>
 
-                                <div class="col-4">
+                                <div class="form-col-4">
                                     <label class="form-label">Razón social</label>
 
                                     <input type="text"
@@ -915,7 +1089,7 @@
                                            required />
                                 </div>
 
-                                <div class="col-12">
+                                <div class="form-col-12">
                                     <label class="form-label">Domicilio fiscal</label>
 
                                     <input type="text"
@@ -931,7 +1105,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-4">
+                                <div class="form-col-4">
                                     <label class="form-label">Tipo de gasto</label>
 
                                     <select name="IdTipoGasto"
@@ -953,7 +1127,7 @@
                                     </select>
                                 </div>
 
-                                <div class="col-4">
+                                <div class="form-col-4">
                                     <label class="form-label">Tipo de comprobante</label>
 
                                     <select name="IdTipoComprobante"
@@ -975,7 +1149,7 @@
                                     </select>
                                 </div>
 
-                                <div class="col-4">
+                                <div class="form-col-4">
                                     <label class="form-label">Serie</label>
 
                                     <input name="Serie"
@@ -984,7 +1158,7 @@
                                            placeholder="F001" />
                                 </div>
 
-                                <div class="col-4">
+                                <div class="form-col-4">
                                     <label class="form-label">Número</label>
 
                                     <input name="Numero"
@@ -993,7 +1167,7 @@
                                            placeholder="000123" />
                                 </div>
 
-                                <div class="col-4">
+                                <div class="form-col-4">
                                     <label class="form-label">Detalle</label>
 
                                     <input name="Detalle"
@@ -1002,7 +1176,7 @@
                                            placeholder="Ej. Almuerzo" />
                                 </div>
 
-                                <div class="col-4">
+                                <div class="form-col-4">
                                     <label class="form-label">Monto total</label>
 
                                     <div class="input-group">
@@ -1019,7 +1193,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-4">
+                                <div class="form-col-4">
                                     <label class="form-label">Tipo de operación</label>
 
                                     <div class="form-check mt-2">
@@ -1036,7 +1210,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-4">
+                                <div class="form-col-4">
                                     <label class="form-label">Comprobante</label>
 
                                     <input type="file"
@@ -1045,7 +1219,7 @@
                                            accept=".pdf,.jpg,.jpeg,.png" />
                                 </div>
 
-                                <div class="col-4">
+                                <div class="form-col-4">
                                     <label class="form-label">Valor de venta</label>
 
                                     <div class="input-group">
@@ -1061,7 +1235,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-4">
+                                <div class="form-col-4">
                                     <label class="form-label">IGV (18 %)</label>
 
                                     <div class="input-group">
@@ -1077,7 +1251,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-8">
+                                <div class="form-col-8">
                                     <label class="form-label">Resumen del comprobante</label>
 
                                     <div class="tax-summary">
@@ -1110,7 +1284,7 @@
 
                             </div>
 
-                            <div class="mt-4 pt-3 border-top">
+                            <div class="mt-4 pt-3 border-top d-flex justify-content-end">
                                 <button type="submit"
                                         class="btn btn-primary-custom px-4">
                                     <i class="bi bi-plus-circle me-1"></i>

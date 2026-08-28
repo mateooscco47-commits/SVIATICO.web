@@ -46,6 +46,8 @@ namespace Dinacem.Models
         public string? Observaciones { get; set; }
         // Relación 1 a 1 con Rendicion
         public Rendicion? Rendicion { get; set; }
-        
+        [StringLength(255)]
+        public string? RutaComprobante { get; set; }
+
     }
 }

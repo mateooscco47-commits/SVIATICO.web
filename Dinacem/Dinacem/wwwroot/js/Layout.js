@@ -1,118 +1,57 @@
 ﻿/**
- * DINACEN - Core Layout Management & Interactivity Module
- * Configuración global y soporte UI para la plantilla base de la aplicación.
+ * DINACEN - Layout Management
+ * Control de interactividad para el Sidebar, Overlay móvil y eventos de redimensionamiento.
  */
 
-class LayoutManager {
-    constructor() {
-        this.init();
+document.addEventListener('DOMContentLoaded', function () {
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggler = document.getElementById('sidebarToggler');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    /**
+     * Alterna la visibilidad del menú lateral y el overlay oscuro en dispositivos móviles.
+     */
+    function toggleSidebar() {
+        if (!sidebar) return;
+        
+        sidebar.classList.toggle('show');
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.toggle('show');
+        }
+        
+        // Bloquea o desbloquea el scroll del body cuando el menú está abierto en móviles
+        document.body.style.overflow = sidebar.classList.contains('show') ? 'hidden' : '';
     }
 
-    init() {
-        document.addEventListener('DOMContentLoaded', () => {
-            this.initActiveNavigation();
-            this.initBootstrapComponents();
-            this.initSessionKeepAlive();
-        });
+    // Event listeners para los botones de apertura y cierre
+    if (sidebarToggler) {
+        sidebarToggler.addEventListener('click', toggleSidebar);
+    }
+
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', toggleSidebar);
     }
 
     /**
-     * Asegura el resaltado del ítem de navegación activo 
-     * según la URL actual (soporte fallback si Razor no lo resuelve).
+     * Resetea el estado del menú si la ventana pasa a un tamaño de escritorio (> 991.98px).
      */
-    initActiveNavigation() {
-        const currentPath = window.location.pathname.toLowerCase();
-        const menuItems = document.querySelectorAll('.sidebar-menu a');
+    window.addEventListener('resize', function () {
+        if (window.innerWidth > 991.98) {
+            if (sidebar) sidebar.classList.remove('show');
+            if (sidebarOverlay) sidebarOverlay.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+    });
 
-        menuItems.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && href !== '#' && currentPath.includes(href.toLowerCase())) {
-                // Elimina estado previo si existiera
-                menuItems.forEach(item => item.classList.remove('active'));
-                link.classList.add('active');
+    /**
+     * Opcional: Cierra el menú automáticamente al hacer clic en un enlace del menú en pantallas móviles.
+     */
+    const menuLinks = document.querySelectorAll('.sidebar-menu a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', function () {
+            if (window.innerWidth <= 991.98 && sidebar && sidebar.classList.contains('show')) {
+                toggleSidebar();
             }
         });
-    }
-
-    /**
-     * Inicializa componentes globales de Bootstrap (Tooltips y Popovers).
-     */
-    initBootstrapComponents() {
-        if (typeof bootstrap !== 'undefined') {
-            // Inicializar todos los Tooltips
-            const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.forEach(tooltipTriggerEl => {
-                new bootstrap.Tooltip(tooltipTriggerEl, {
-                    trigger: 'hover'
-                });
-            });
-
-            // Inicializar Popovers
-            const popoverTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="popover"]'));
-            popoverTriggerList.forEach(popoverTriggerEl => {
-                new bootstrap.Popover(popoverTriggerEl);
-            });
-        }
-    }
-
-    /**
-     * Prevención básica de pérdida de sesión activa (ping opcional cada 10 min).
-     */
-    initSessionKeepAlive() {
-        const TEN_MINUTES = 10 * 60 * 1000;
-        setInterval(() => {
-            // Envío silencioso para mantener vivo el backend sin recargar
-            fetch(window.location.origin + '/Home/Index', { method: 'HEAD' })
-                .catch(err => console.warn('Keep-alive ping non-critical error:', err));
-        }, TEN_MINUTES);
-    }
-}
-
-// Inicialización de la instancia principal del Layout
-const AppLayout = new LayoutManager();
-
-/**
- * Helper UI Utility Object (Disponible para ser invocado desde cualquier vista .cshtml)
- */
-window.DinacenUI = {
-    /**
-     * Muestra una notificación Toast utilizando Bootstrap 5.
-     * @param {string} message - Texto del mensaje.
-     * @param {string} type - Tipo: 'success' | 'danger' | 'warning' | 'info'
-     */
-    showToast(message, type = 'info') {
-        let toastContainer = document.getElementById('dinacen-toast-container');
-
-        if (!toastContainer) {
-            toastContainer = document.createElement('div');
-            toastContainer.id = 'dinacen-toast-container';
-            toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-            toastContainer.style.zIndex = '1090';
-            document.body.appendChild(toastContainer);
-        }
-
-        const toastId = 'toast-' + Date.now();
-        const bgClass = type === 'success' ? 'bg-success' : type === 'danger' ? 'bg-danger' : type === 'warning' ? 'bg-warning text-dark' : 'bg-primary';
-
-        const toastHtml = `
-            <div id="${toastId}" class="toast align-items-center text-white ${bgClass} border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="d-flex">
-                    <div class="toast-body fw-medium">
-                        ${message}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            </div>
-        `;
-
-        toastContainer.insertAdjacentHTML('beforeend', toastHtml);
-        const toastElement = document.getElementById(toastId);
-        const bsToast = new bootstrap.Toast(toastElement, { delay: 4000 });
-        
-        bsToast.show();
-
-        toastElement.addEventListener('hidden.bs.toast', () => {
-            toastElement.remove();
-        });
-    }
-};
+    });
+});

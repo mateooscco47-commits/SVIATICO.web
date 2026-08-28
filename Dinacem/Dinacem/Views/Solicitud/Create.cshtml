@@ -96,29 +96,7 @@
         </a>
     </div>
 
-    @if (TempData["mensaje"] != null)
-    {
-        <div class="mensaje-create mensaje-success alert alert-dismissible fade show">
-            <i class="bi bi-check-circle-fill"></i>
-            <span>@TempData["mensaje"]</span>
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Cerrar"></button>
-        </div>
-    }
-
-    @if (TempData["error"] != null)
-    {
-        <div class="mensaje-create mensaje-error alert alert-dismissible fade show">
-            <i class="bi bi-exclamation-circle-fill"></i>
-            <span>@Html.Raw(TempData["error"])</span>
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Cerrar"></button>
-        </div>
-    }
+    
 
     <div class="formulario-card">
 
@@ -156,9 +134,11 @@
                             <span class="campo-obligatorio">*</span>
                         </label>
 
+                        <!-- Se agregó el atributo min con la fecha actual del servidor -->
                         <input asp-for="FechaInicio"
                                type="date"
                                class="form-control"
+                               min="@DateTime.Now.ToString("yyyy-MM-dd")"
                                required />
 
                         <span asp-validation-for="FechaInicio"
@@ -172,9 +152,11 @@
                             <span class="campo-obligatorio">*</span>
                         </label>
 
+                        <!-- Se agregó el atributo min con la fecha actual del servidor -->
                         <input asp-for="FechaFin"
                                type="date"
                                class="form-control"
+                               min="@DateTime.Now.ToString("yyyy-MM-dd")"
                                required />
 
                         <span asp-validation-for="FechaFin"
@@ -278,3 +260,23 @@
         </div>
     </div>
 </div>
+
+<!-- Script opcional para asegurar lógica cruzada entre FechaInicio y FechaFin -->
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputFechaInicio = document.getElementById("FechaInicio");
+            const inputFechaFin = document.getElementById("FechaFin");
+
+            if (inputFechaInicio && inputFechaFin) {
+                inputFechaInicio.addEventListener("change", function () {
+                    // Si la fecha de fin es menor a la nueva fecha de inicio, actualizarla
+                    inputFechaFin.min = this.value;
+                    if (inputFechaFin.value && inputFechaFin.value < this.value) {
+                        inputFechaFin.value = this.value;
+                    }
+                });
+            }
+        });
+    </script>
+}

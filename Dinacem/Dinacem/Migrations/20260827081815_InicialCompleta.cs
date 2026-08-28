@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dinacen.Migrations
 {
     /// <inheritdoc />
-    public partial class CrearBaseLocal : Migration
+    public partial class InicialCompleta : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "EstadoReembolso",
+                name: "EstadoReembolsos",
                 columns: table => new
                 {
                     IdEstadoReembolso = table.Column<int>(type: "int", nullable: false)
@@ -21,11 +21,11 @@ namespace Dinacen.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EstadoReembolso", x => x.IdEstadoReembolso);
+                    table.PrimaryKey("PK_EstadoReembolsos", x => x.IdEstadoReembolso);
                 });
 
             migrationBuilder.CreateTable(
-                name: "EstadoRendicion",
+                name: "EstadoRendiciones",
                 columns: table => new
                 {
                     IdEstadoRendicion = table.Column<int>(type: "int", nullable: false)
@@ -34,11 +34,11 @@ namespace Dinacen.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EstadoRendicion", x => x.IdEstadoRendicion);
+                    table.PrimaryKey("PK_EstadoRendiciones", x => x.IdEstadoRendicion);
                 });
 
             migrationBuilder.CreateTable(
-                name: "EstadoSolicitud",
+                name: "EstadoSolicitudes",
                 columns: table => new
                 {
                     IdEstadoSolicitud = table.Column<int>(type: "int", nullable: false)
@@ -47,7 +47,7 @@ namespace Dinacen.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EstadoSolicitud", x => x.IdEstadoSolicitud);
+                    table.PrimaryKey("PK_EstadoSolicitudes", x => x.IdEstadoSolicitud);
                 });
 
             migrationBuilder.CreateTable(
@@ -65,7 +65,7 @@ namespace Dinacen.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TipoComprobante",
+                name: "TipoComprobantes",
                 columns: table => new
                 {
                     IdTipoComprobante = table.Column<int>(type: "int", nullable: false)
@@ -74,11 +74,11 @@ namespace Dinacen.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TipoComprobante", x => x.IdTipoComprobante);
+                    table.PrimaryKey("PK_TipoComprobantes", x => x.IdTipoComprobante);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TipoGasto",
+                name: "TipoGastos",
                 columns: table => new
                 {
                     IdTipoGasto = table.Column<int>(type: "int", nullable: false)
@@ -87,7 +87,21 @@ namespace Dinacen.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TipoGasto", x => x.IdTipoGasto);
+                    table.PrimaryKey("PK_TipoGastos", x => x.IdTipoGasto);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Zonas",
+                columns: table => new
+                {
+                    IdZona = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CodigoZona = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Zonas", x => x.IdZona);
                 });
 
             migrationBuilder.CreateTable(
@@ -97,13 +111,13 @@ namespace Dinacen.Migrations
                     IdUsuario = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdRol = table.Column<int>(type: "int", nullable: false),
-                    Nombres = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Apellidos = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Correo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Contrasenia = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Celular = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Zona = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Nombres = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Apellidos = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Correo = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Celular = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    IdZona = table.Column<int>(type: "int", nullable: true),
                     UsuarioAcceso = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Contrasenia = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -114,6 +128,11 @@ namespace Dinacen.Migrations
                         column: x => x.IdRol,
                         principalTable: "Roles",
                         principalColumn: "IdRol");
+                    table.ForeignKey(
+                        name: "FK_Usuarios_Zonas_IdZona",
+                        column: x => x.IdZona,
+                        principalTable: "Zonas",
+                        principalColumn: "IdZona");
                 });
 
             migrationBuilder.CreateTable(
@@ -136,15 +155,77 @@ namespace Dinacen.Migrations
                 {
                     table.PrimaryKey("PK_Solicitudes", x => x.IdSolicitud);
                     table.ForeignKey(
-                        name: "FK_Solicitudes_EstadoSolicitud_IdEstadoSolicitud",
+                        name: "FK_Solicitudes_EstadoSolicitudes_IdEstadoSolicitud",
                         column: x => x.IdEstadoSolicitud,
-                        principalTable: "EstadoSolicitud",
+                        principalTable: "EstadoSolicitudes",
                         principalColumn: "IdEstadoSolicitud");
                     table.ForeignKey(
                         name: "FK_Solicitudes_Usuarios_IdUsuario",
                         column: x => x.IdUsuario,
                         principalTable: "Usuarios",
                         principalColumn: "IdUsuario");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rendiciones",
+                columns: table => new
+                {
+                    IdRendicion = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdSolicitud = table.Column<int>(type: "int", nullable: false),
+                    IdUsuario = table.Column<int>(type: "int", nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaFin = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Total = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Saldo = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    IdEstadoRendicion = table.Column<int>(type: "int", nullable: false),
+                    ArchivoPdf = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    FechaEnvioRevision = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Observaciones = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rendiciones", x => x.IdRendicion);
+                    table.ForeignKey(
+                        name: "FK_Rendiciones_EstadoRendiciones_IdEstadoRendicion",
+                        column: x => x.IdEstadoRendicion,
+                        principalTable: "EstadoRendiciones",
+                        principalColumn: "IdEstadoRendicion");
+                    table.ForeignKey(
+                        name: "FK_Rendiciones_Solicitudes_IdSolicitud",
+                        column: x => x.IdSolicitud,
+                        principalTable: "Solicitudes",
+                        principalColumn: "IdSolicitud");
+                    table.ForeignKey(
+                        name: "FK_Rendiciones_Usuarios_IdUsuario",
+                        column: x => x.IdUsuario,
+                        principalTable: "Usuarios",
+                        principalColumn: "IdUsuario");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BitacorasVehiculo",
+                columns: table => new
+                {
+                    IdBitacoraVehiculo = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdRendicion = table.Column<int>(type: "int", nullable: false),
+                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Origen = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Destino = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    DistanciaKm = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    MontoAsignado = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Observaciones = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BitacorasVehiculo", x => x.IdBitacoraVehiculo);
+                    table.ForeignKey(
+                        name: "FK_BitacorasVehiculo_Rendiciones_IdRendicion",
+                        column: x => x.IdRendicion,
+                        principalTable: "Rendiciones",
+                        principalColumn: "IdRendicion");
                 });
 
             migrationBuilder.CreateTable(
@@ -164,50 +245,11 @@ namespace Dinacen.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DevolucionesSaldo", x => x.IdDevolucionSaldo);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Rendiciones",
-                columns: table => new
-                {
-                    IdRendicion = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdSolicitud = table.Column<int>(type: "int", nullable: false),
-                    IdUsuario = table.Column<int>(type: "int", nullable: false),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaFin = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Total = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    Saldo = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    IdEstadoRendicion = table.Column<int>(type: "int", nullable: false),
-                    DevolucionSaldoIdDevolucionSaldo = table.Column<int>(type: "int", nullable: true),
-                    ArchivoPdf = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    FechaEnvioRevision = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Observaciones = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Rendiciones", x => x.IdRendicion);
                     table.ForeignKey(
-                        name: "FK_Rendiciones_DevolucionesSaldo_DevolucionSaldoIdDevolucionSaldo",
-                        column: x => x.DevolucionSaldoIdDevolucionSaldo,
-                        principalTable: "DevolucionesSaldo",
-                        principalColumn: "IdDevolucionSaldo");
-                    table.ForeignKey(
-                        name: "FK_Rendiciones_EstadoRendicion_IdEstadoRendicion",
-                        column: x => x.IdEstadoRendicion,
-                        principalTable: "EstadoRendicion",
-                        principalColumn: "IdEstadoRendicion");
-                    table.ForeignKey(
-                        name: "FK_Rendiciones_Solicitudes_IdSolicitud",
-                        column: x => x.IdSolicitud,
-                        principalTable: "Solicitudes",
-                        principalColumn: "IdSolicitud");
-                    table.ForeignKey(
-                        name: "FK_Rendiciones_Usuarios_IdUsuario",
-                        column: x => x.IdUsuario,
-                        principalTable: "Usuarios",
-                        principalColumn: "IdUsuario");
+                        name: "FK_DevolucionesSaldo_Rendiciones_IdRendicion",
+                        column: x => x.IdRendicion,
+                        principalTable: "Rendiciones",
+                        principalColumn: "IdRendicion");
                 });
 
             migrationBuilder.CreateTable(
@@ -241,14 +283,14 @@ namespace Dinacen.Migrations
                         principalTable: "Rendiciones",
                         principalColumn: "IdRendicion");
                     table.ForeignKey(
-                        name: "FK_Gastos_TipoComprobante_IdTipoComprobante",
+                        name: "FK_Gastos_TipoComprobantes_IdTipoComprobante",
                         column: x => x.IdTipoComprobante,
-                        principalTable: "TipoComprobante",
+                        principalTable: "TipoComprobantes",
                         principalColumn: "IdTipoComprobante");
                     table.ForeignKey(
-                        name: "FK_Gastos_TipoGasto_IdTipoGasto",
+                        name: "FK_Gastos_TipoGastos_IdTipoGasto",
                         column: x => x.IdTipoGasto,
-                        principalTable: "TipoGasto",
+                        principalTable: "TipoGastos",
                         principalColumn: "IdTipoGasto");
                 });
 
@@ -274,9 +316,9 @@ namespace Dinacen.Migrations
                 {
                     table.PrimaryKey("PK_Reembolsos", x => x.IdReembolso);
                     table.ForeignKey(
-                        name: "FK_Reembolsos_EstadoReembolso_IdEstadoReembolso",
+                        name: "FK_Reembolsos_EstadoReembolsos_IdEstadoReembolso",
                         column: x => x.IdEstadoReembolso,
-                        principalTable: "EstadoReembolso",
+                        principalTable: "EstadoReembolsos",
                         principalColumn: "IdEstadoReembolso");
                     table.ForeignKey(
                         name: "FK_Reembolsos_Rendiciones_IdRendicion",
@@ -289,6 +331,11 @@ namespace Dinacen.Migrations
                         principalTable: "Usuarios",
                         principalColumn: "IdUsuario");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BitacorasVehiculo_IdRendicion",
+                table: "BitacorasVehiculo",
+                column: "IdRendicion");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DevolucionesSaldo_IdRendicion",
@@ -319,18 +366,12 @@ namespace Dinacen.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Reembolsos_IdRendicion",
                 table: "Reembolsos",
-                column: "IdRendicion",
-                unique: true);
+                column: "IdRendicion");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reembolsos_IdUsuario",
                 table: "Reembolsos",
                 column: "IdUsuario");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Rendiciones_DevolucionSaldoIdDevolucionSaldo",
-                table: "Rendiciones",
-                column: "DevolucionSaldoIdDevolucionSaldo");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rendiciones_IdEstadoRendicion",
@@ -363,20 +404,26 @@ namespace Dinacen.Migrations
                 table: "Usuarios",
                 column: "IdRol");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_DevolucionesSaldo_Rendiciones_IdRendicion",
-                table: "DevolucionesSaldo",
-                column: "IdRendicion",
-                principalTable: "Rendiciones",
-                principalColumn: "IdRendicion");
+            migrationBuilder.CreateIndex(
+                name: "IX_Usuarios_IdZona",
+                table: "Usuarios",
+                column: "IdZona");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Zonas_CodigoZona",
+                table: "Zonas",
+                column: "CodigoZona",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_DevolucionesSaldo_Rendiciones_IdRendicion",
-                table: "DevolucionesSaldo");
+            migrationBuilder.DropTable(
+                name: "BitacorasVehiculo");
+
+            migrationBuilder.DropTable(
+                name: "DevolucionesSaldo");
 
             migrationBuilder.DropTable(
                 name: "Gastos");
@@ -385,34 +432,34 @@ namespace Dinacen.Migrations
                 name: "Reembolsos");
 
             migrationBuilder.DropTable(
-                name: "TipoComprobante");
+                name: "TipoComprobantes");
 
             migrationBuilder.DropTable(
-                name: "TipoGasto");
+                name: "TipoGastos");
 
             migrationBuilder.DropTable(
-                name: "EstadoReembolso");
+                name: "EstadoReembolsos");
 
             migrationBuilder.DropTable(
                 name: "Rendiciones");
 
             migrationBuilder.DropTable(
-                name: "DevolucionesSaldo");
-
-            migrationBuilder.DropTable(
-                name: "EstadoRendicion");
+                name: "EstadoRendiciones");
 
             migrationBuilder.DropTable(
                 name: "Solicitudes");
 
             migrationBuilder.DropTable(
-                name: "EstadoSolicitud");
+                name: "EstadoSolicitudes");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Zonas");
         }
     }
 }

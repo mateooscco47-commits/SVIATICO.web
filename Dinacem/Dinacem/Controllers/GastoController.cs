@@ -1737,112 +1737,175 @@ namespace Dinacem.Controllers
                 totalRendidoCorreo;
 
             var asunto =
-                $"Liquidación de viáticos #{rendicion.IdRendicion} pendiente de revisión";
+    $"Liquidación de viáticos #{rendicion.IdRendicion} pendiente de revisión";
 
             var contenidoHtml = $"""
-        <div style="font-family:Arial,sans-serif;max-width:700px">
-            <h2 style="color:#0d6efd">
-                Nueva liquidación pendiente de revisión
-            </h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background-color:#f2f5f8;font-family:Arial,Helvetica,sans-serif;color:#111111;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f2f5f8;padding:35px 15px;">
+<tr>
+<td align="center">
 
-            <p>
-                El empleado
-                <strong>{nombreEmpleado}</strong>
-                ha enviado una liquidación de gastos.
-            </p>
+<table role="presentation" width="700" cellspacing="0" cellpadding="0" border="0" style="max-width:700px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 3px 15px rgba(0,0,0,0.08);">
 
-            <table style="border-collapse:collapse;width:100%">
-                <tr>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        <strong>Liquidación</strong>
-                    </td>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        #{rendicion.IdRendicion}
-                    </td>
-                </tr>
+<tr>
+<td style="background:#0C4A8A;padding:25px 35px;text-align:center;">
+    <img src="cid:logoDinacen" alt="DINACEN" style="max-width:210px;height:auto;display:block;margin:0 auto 15px;">
+    <div style="height:2px;background:#6AA84F;width:100%;margin-bottom:18px;"></div>
+    <div style="font-size:24px;font-weight:bold;color:#ffffff;">
+        LIQUIDACIÓN DE VIÁTICOS
+    </div>
+    <div style="font-size:16px;color:#ffffff;margin-top:8px;">
+        Pendiente de revisión
+    </div>
+</td>
+</tr>
 
-                <tr>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        <strong>Empleado</strong>
-                    </td>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        {nombreEmpleado}
-                    </td>
-                </tr>
+<tr>
+<td style="padding:35px 40px 20px 40px;">
 
-                <tr>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        <strong>Destino</strong>
-                    </td>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        {rendicion.Solicitud?.Destino}
-                    </td>
-                </tr>
+    <div style="font-size:22px;font-weight:bold;color:#111111;margin-bottom:18px;">
+        Nueva liquidación pendiente de revisión
+    </div>
 
-                <tr>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        <strong>Periodo</strong>
-                    </td>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        {rendicion.FechaInicio:dd/MM/yyyy}
-                        al
-                        {rendicion.FechaFin:dd/MM/yyyy}
-                    </td>
-                </tr>
+    <div style="font-size:17px;line-height:1.7;color:#222222;margin-bottom:25px;">
+        El empleado <strong>{nombreEmpleado}</strong> ha enviado una
+        liquidación de gastos que se encuentra pendiente de revisión.
+    </div>
 
-                <tr>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        <strong>Monto aprobado</strong>
-                    </td>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        S/ {rendicion.Solicitud?.Monto:N2}
-                    </td>
-                </tr>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f7f9fb;border:1px solid #d9e2ea;border-radius:8px;">
+        
+        <tr>
+            <td colspan="2" style="padding:18px 20px;background:#eef4f9;border-bottom:1px solid #d9e2ea;">
+                <div style="font-size:18px;font-weight:bold;color:#0C4A8A;">
+                    Información de la liquidación
+                </div>
+            </td>
+        </tr>
 
-                <tr>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        <strong>Valor de venta</strong>
-                    </td>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        S/ {totalBase:N2}
-                    </td>
-                </tr>
+        <tr>
+            <td width="42%" style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;color:#111111;">
+                Liquidación
+            </td>
+            <td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;color:#111111;">
+                #{rendicion.IdRendicion}
+            </td>
+        </tr>
 
-                <tr>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        <strong>IGV</strong>
-                    </td>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        S/ {totalIgv:N2}
-                    </td>
-                </tr>
+        <tr>
+            <td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;color:#111111;">
+                Empleado
+            </td>
+            <td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;color:#111111;">
+                {nombreEmpleado}
+            </td>
+        </tr>
 
-                <tr>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        <strong>Total rendido</strong>
-                    </td>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        S/ {rendicion.Total:N2}
-                    </td>
-                </tr>
+        <tr>
+            <td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;color:#111111;">
+                Destino
+            </td>
+            <td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;color:#111111;">
+                {rendicion.Solicitud?.Destino}
+            </td>
+        </tr>
 
-                <tr>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        <strong>Saldo</strong>
-                    </td>
-                    <td style="border:1px solid #ddd;padding:8px">
-                        S/ {rendicion.Saldo:N2}
-                    </td>
-                </tr>
-            </table>
+        <tr>
+            <td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;color:#111111;">
+                Periodo
+            </td>
+            <td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;color:#111111;">
+                {rendicion.FechaInicio:dd/MM/yyyy} al {rendicion.FechaFin:dd/MM/yyyy}
+            </td>
+        </tr>
 
-            <p style="margin-top:20px">
-                Se adjunta el PDF de la liquidación.
-                Ingrese al sistema DINACEM para revisar los comprobantes,
-                la devolución y aprobar o rechazar la rendición.
-            </p>
+        <tr>
+            <td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;color:#111111;">
+                Monto aprobado
+            </td>
+            <td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;color:#111111;">
+                S/ {rendicion.Solicitud?.Monto:N2}
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;color:#111111;">
+                Valor de venta
+            </td>
+            <td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;color:#111111;">
+                S/ {totalBase:N2}
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;color:#111111;">
+                IGV
+            </td>
+            <td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;color:#111111;">
+                S/ {totalIgv:N2}
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding:16px 20px;border-bottom:1px solid #e1e7ec;font-size:17px;font-weight:bold;color:#111111;">
+                Total rendido
+            </td>
+            <td style="padding:16px 20px;border-bottom:1px solid #e1e7ec;font-size:19px;font-weight:bold;color:#0C4A8A;">
+                S/ {rendicion.Total:N2}
+            </td>
+        </tr>
+
+        <tr>
+            <td style="padding:16px 20px;font-size:17px;font-weight:bold;color:#111111;">
+                Saldo
+            </td>
+            <td style="padding:16px 20px;font-size:19px;font-weight:bold;color:#6AA84F;">
+                S/ {rendicion.Saldo:N2}
+            </td>
+        </tr>
+
+    </table>
+
+    <div style="margin-top:28px;padding:20px;background:#f7f9fb;border-left:5px solid #0C4A8A;border-radius:5px;">
+        <div style="font-size:16px;line-height:1.7;color:#222222;">
+            Se adjunta el PDF correspondiente a la liquidación.
+            Ingrese al <strong>sistema de gestión de viáticos DINACEN</strong>
+            para revisar los comprobantes, verificar la devolución
+            y proceder con la aprobación o rechazo de la rendición.
         </div>
-        """;
+    </div>
+
+</td>
+</tr>
+
+<tr>
+<td style="background:#0C4A8A;padding:25px 35px;text-align:center;">
+    <div style="font-size:16px;font-weight:bold;color:#ffffff;">
+        DINACEN
+    </div>
+    <div style="font-size:13px;color:#dce8f2;margin-top:7px;">
+        Sistema de Gestión de Viáticos
+    </div>
+    <div style="font-size:12px;color:#c5d5e2;margin-top:12px;">
+        Este mensaje ha sido generado automáticamente.
+        Por favor, no responda a este correo.
+    </div>
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+</body>
+</html>
+""";
 
             var correoEnviado =
                 await _correoService.EnviarAsync(

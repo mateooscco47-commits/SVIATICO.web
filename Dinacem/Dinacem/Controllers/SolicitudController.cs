@@ -19,22 +19,42 @@ namespace Dinacem.Controllers
         }
 
         // =========================================================
-        // VALIDAR SI EL USUARIO TIENE UNA SOLICITUD SIN RENDIR
+        // VALIDAR BLOQUEOS (SOLICITUD ACTIVA O RENDICIÓN PENDIENTE)
         // =========================================================
-
-        private async Task<bool> TieneSolicitudSinRendirAsync(int idUsuario)
+        private async Task<(bool tieneBloqueo, string mensajeError)> ObtenerMotivoBloqueoAsync(int idUsuario)
         {
-            return await _context.Solicitudes.AnyAsync(s =>
+            // 1. Validar si tiene una RENDICIÓN pendiente de revisión (Ej: IdEstadoRendicion == 1)
+            bool tieneRendicionPendiente = await _context.Rendiciones.AnyAsync(r =>
+                r.IdUsuario == idUsuario && r.IdEstadoRendicion == 1
+            );
+
+            if (tieneRendicionPendiente)
+            {
+                return (true, "No puede registrar una nueva solicitud porque tiene una rendición pendiente de revisión.");
+            }
+
+            // 2. Validar si tiene una SOLICITUD pendiente de revisión o aprobada sin rendición
+            var solicitudBloqueante = await _context.Solicitudes.FirstOrDefaultAsync(s =>
                 s.IdUsuario == idUsuario &&
                 (
                     s.IdEstadoSolicitud == 1 ||
                     (
                         s.IdEstadoSolicitud == 2 &&
-                        !_context.Rendiciones.Any(r =>
-                            r.IdSolicitud == s.IdSolicitud)
+                        !_context.Rendiciones.Any(r => r.IdSolicitud == s.IdSolicitud)
                     )
                 )
             );
+
+            if (solicitudBloqueante != null)
+            {
+                string mensaje = solicitudBloqueante.IdEstadoSolicitud == 1
+                    ? "No puede registrar una nueva solicitud porque tiene una solicitud pendiente de revisión."
+                    : "No puede registrar una nueva solicitud porque tiene una solicitud aprobada activa pendiente de rendición.";
+
+                return (true, mensaje);
+            }
+
+            return (false, string.Empty);
         }
 
         // =========================================================
@@ -48,20 +68,14 @@ namespace Dinacem.Controllers
 
             if (idUsuario == null)
             {
-                TempData["errorSolicitud"] =
-                    "La sesión ha expirado. Inicie sesión nuevamente.";
-
                 return RedirectToAction("Index", "Home");
             }
 
-            var tieneSolicitudSinRendir =
-                await TieneSolicitudSinRendirAsync(idUsuario.Value);
+            var (tieneBloqueo, mensajeError) = await ObtenerMotivoBloqueoAsync(idUsuario.Value);
 
-            if (tieneSolicitudSinRendir)
+            if (tieneBloqueo)
             {
-                TempData["errorSolicitud"] =
-                    "No puede registrar una nueva solicitud porque tiene una solicitud pendiente de aprobación o rendición.";
-
+                TempData["errorSolicitud"] = mensajeError;
                 return RedirectToAction(nameof(MisSolicitudes));
             }
 
@@ -80,24 +94,18 @@ namespace Dinacem.Controllers
 
             if (idUsuario == null)
             {
-                TempData["errorSolicitud"] =
-                    "La sesión ha expirado. Inicie sesión nuevamente.";
-
                 return RedirectToAction("Index", "Home");
             }
 
             // -----------------------------------------------------
-            // VALIDAR SOLICITUD ANTERIOR
+            // VALIDAR BLOQUEOS (DOBLE VALIDACIÓN EN POST)
             // -----------------------------------------------------
 
-            var tieneSolicitudSinRendir =
-                await TieneSolicitudSinRendirAsync(idUsuario.Value);
+            var (tieneBloqueo, mensajeError) = await ObtenerMotivoBloqueoAsync(idUsuario.Value);
 
-            if (tieneSolicitudSinRendir)
+            if (tieneBloqueo)
             {
-                TempData["errorSolicitud"] =
-                    "No puede registrar una nueva solicitud porque tiene una solicitud pendiente de aprobación o rendición.";
-
+                TempData["errorSolicitud"] = mensajeError;
                 return RedirectToAction(nameof(MisSolicitudes));
             }
 
@@ -105,8 +113,7 @@ namespace Dinacem.Controllers
             // VALIDAR FECHAS
             // -----------------------------------------------------
 
-            if (solicitud.FechaInicio.Date >
-                solicitud.FechaFin.Date)
+            if (solicitud.FechaInicio.Date > solicitud.FechaFin.Date)
             {
                 ModelState.AddModelError(
                     nameof(solicitud.FechaFin),
@@ -135,7 +142,7 @@ namespace Dinacem.Controllers
 
             solicitud.IdUsuario = idUsuario.Value;
             solicitud.Fecha = DateTime.Now;
-            solicitud.IdEstadoSolicitud = 1;
+            solicitud.IdEstadoSolicitud = 1; // 1 = Pendiente de revisión
             solicitud.Observaciones = string.Empty;
 
             _context.Solicitudes.Add(solicitud);
@@ -148,8 +155,7 @@ namespace Dinacem.Controllers
 
             var empleado = await _context.Usuarios
                 .AsNoTracking()
-                .FirstOrDefaultAsync(u =>
-                    u.IdUsuario == solicitud.IdUsuario);
+                .FirstOrDefaultAsync(u => u.IdUsuario == solicitud.IdUsuario);
 
             var nombreEmpleado = empleado == null
                 ? $"Usuario {solicitud.IdUsuario}"
@@ -173,11 +179,9 @@ namespace Dinacem.Controllers
             // PREPARAR CORREO
             // =====================================================
 
-            string asunto =
-                $"Nueva solicitud de viáticos #{solicitud.IdSolicitud}";
+            string asunto = $"Nueva solicitud de viáticos #{solicitud.IdSolicitud}";
 
-            string urlSistema =
-                $"https://TU-DOMINIO.com/Solicitud/Details/{solicitud.IdSolicitud}";
+            string urlSistema = $"https://TU-DOMINIO.com/Solicitud/Details/{solicitud.IdSolicitud}";
 
             string contenidoHtml = GenerarCorreoSolicitud(
                 solicitud,
@@ -253,62 +257,152 @@ namespace Dinacem.Controllers
         // =========================================================
         // APROBAR SOLICITUD
         // =========================================================
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Aprobar(int id)
+        public async Task<IActionResult> Aprobar(
+    int id,
+    IFormFile comprobante,
+    string observacionAprobacion)
         {
             var solicitud = await _context.Solicitudes
-                .FirstOrDefaultAsync(x =>
-                    x.IdSolicitud == id);
+                .FirstOrDefaultAsync(x => x.IdSolicitud == id);
 
             if (solicitud == null)
             {
+                TempData["errorSolicitud"] = "Solicitud no encontrada.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // =========================================================
+            // VALIDAR COMPROBANTE
+            // =========================================================
+
+            if (comprobante == null || comprobante.Length == 0)
+            {
                 TempData["errorSolicitud"] =
-                    "Solicitud no encontrada.";
+                    "Debe adjuntar el comprobante de depósito.";
 
                 return RedirectToAction(nameof(Index));
             }
 
-            // 2 = Aprobada
+            // Máximo 5 MB
+            if (comprobante.Length > 5 * 1024 * 1024)
+            {
+                TempData["errorSolicitud"] =
+                    "El archivo del comprobante no debe superar los 5MB.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Extensiones permitidas
+            var extensionesPermitidas = new[]
+            {
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".pdf"
+    };
+
+            var extension = Path
+                .GetExtension(comprobante.FileName)
+                .ToLowerInvariant();
+
+            if (!extensionesPermitidas.Contains(extension))
+            {
+                TempData["errorSolicitud"] =
+                    "Formato de archivo no permitido. Solo se permiten JPG, PNG o PDF.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // =========================================================
+            // CREAR CARPETA
+            // =========================================================
+
+            string carpetaDestino = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                "uploads",
+                "comprobantes"
+            );
+
+            if (!Directory.Exists(carpetaDestino))
+            {
+                Directory.CreateDirectory(carpetaDestino);
+            }
+
+            // =========================================================
+            // GENERAR NOMBRE DEL ARCHIVO
+            // =========================================================
+
+            string nombreArchivo =
+                $"Comprobante_{solicitud.IdSolicitud}_{Guid.NewGuid()}{extension}";
+
+            string rutaCompleta = Path.Combine(
+                carpetaDestino,
+                nombreArchivo
+            );
+
+            // =========================================================
+            // GUARDAR ARCHIVO FÍSICAMENTE
+            // =========================================================
+
+            using (var stream = new FileStream(
+                rutaCompleta,
+                FileMode.Create))
+            {
+                await comprobante.CopyToAsync(stream);
+            }
+
+            // =========================================================
+            // GUARDAR RUTA EN BASE DE DATOS
+            // =========================================================
+
+            solicitud.RutaComprobante =
+                $"/uploads/comprobantes/{nombreArchivo}";
+
+            // =========================================================
+            // CAMBIAR ESTADO
+            // =========================================================
+
             solicitud.IdEstadoSolicitud = 2;
-            solicitud.Observaciones = "Solicitud aprobada.";
+
+            // =========================================================
+            // OBSERVACIÓN
+            // =========================================================
+
+            solicitud.Observaciones =
+                !string.IsNullOrWhiteSpace(observacionAprobacion)
+                    ? observacionAprobacion.Trim()
+                    : "Solicitud aprobada y comprobante registrado.";
 
             await _context.SaveChangesAsync();
 
             TempData["mensajeSolicitud"] =
-                "Solicitud aprobada correctamente.";
+                "Solicitud aprobada y comprobante registrado correctamente.";
 
             return RedirectToAction(nameof(Index));
         }
-
         // =========================================================
         // RECHAZAR SOLICITUD
         // =========================================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Rechazar(
-            int id,
-            string observaciones)
+        public async Task<IActionResult> Rechazar(int id, string observaciones)
         {
             var solicitud = await _context.Solicitudes
-                .FirstOrDefaultAsync(x =>
-                    x.IdSolicitud == id);
+                .FirstOrDefaultAsync(x => x.IdSolicitud == id);
 
             if (solicitud == null)
             {
-                TempData["errorSolicitud"] =
-                    "Solicitud no encontrada.";
-
+                TempData["errorSolicitud"] = "Solicitud no encontrada.";
                 return RedirectToAction(nameof(Index));
             }
 
             if (string.IsNullOrWhiteSpace(observaciones))
             {
-                TempData["errorSolicitud"] =
-                    "Debe ingresar las observaciones del rechazo.";
-
+                TempData["errorSolicitud"] = "Debe ingresar las observaciones del rechazo.";
                 return RedirectToAction(nameof(Index));
             }
 
@@ -318,8 +412,7 @@ namespace Dinacem.Controllers
 
             await _context.SaveChangesAsync();
 
-            TempData["mensajeSolicitud"] =
-                "La solicitud fue rechazada correctamente.";
+            TempData["mensajeSolicitud"] = "La solicitud fue rechazada correctamente.";
 
             return RedirectToAction(nameof(Index));
         }
@@ -335,8 +428,7 @@ namespace Dinacem.Controllers
                 .AsNoTracking()
                 .Include(x => x.Usuario)
                 .Include(x => x.EstadoSolicitud)
-                .FirstOrDefaultAsync(x =>
-                    x.IdSolicitud == id);
+                .FirstOrDefaultAsync(x => x.IdSolicitud == id);
 
             if (solicitud == null)
             {
@@ -345,6 +437,8 @@ namespace Dinacem.Controllers
 
             return View(solicitud);
         }
+
+
 
         // =========================================================
         // GENERAR CORREO HTML
