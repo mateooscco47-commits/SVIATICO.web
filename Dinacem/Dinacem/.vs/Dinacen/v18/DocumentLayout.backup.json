@@ -82,8 +82,7 @@
               "RelativeToolTip": "Models\\Entidades\\Solicitud.cs",
               "ViewState": "AgIAACUAAAAAAAAAAAAYwDEAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-28T04:29:01.832Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-28T04:29:01.832Z"
             },
             {
               "$type": "Document",
@@ -95,8 +94,7 @@
               "RelativeToolTip": "Views\\Rendicion\\IndexAdmin.cshtml",
               "ViewState": "AgIAAEIDAAAAAAAAAAAAAEoDAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-28T04:18:51.038Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-28T04:18:51.038Z"
             },
             {
               "$type": "Document",
@@ -108,8 +106,7 @@
               "RelativeToolTip": "Controllers\\SolicitudController.cs",
               "ViewState": "AgIAADgBAAAAAAAAAAAqwIABAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-28T04:03:14.406Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-28T04:03:14.406Z"
             },
             {
               "$type": "Document",
@@ -121,8 +118,7 @@
               "RelativeToolTip": "Views\\Solicitud\\Index.cshtml",
               "ViewState": "AgIAAFABAAAAAAAAAAAYwGYBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-28T03:56:33.981Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-28T03:56:33.981Z"
             },
             {
               "$type": "Document",
@@ -134,8 +130,7 @@
               "RelativeToolTip": "Views\\Solicitud\\Create.cshtml",
               "ViewState": "AgIAAFkAAAAAAAAAAAAAAGIAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-28T03:52:56.355Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-28T03:52:56.355Z"
             },
             {
               "$type": "Document",
@@ -145,7 +140,7 @@
               "RelativeDocumentMoniker": "Models\\Servicios\\RendicionPdfService.cs",
               "ToolTip": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Servicios\\RendicionPdfService.cs",
               "RelativeToolTip": "Models\\Servicios\\RendicionPdfService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAPgEAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEMFAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-08-22T01:13:17.686Z",
               "EditorCaption": ""
@@ -171,7 +166,7 @@
               "RelativeDocumentMoniker": "Controllers\\GastoController.cs",
               "ToolTip": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\GastoController.cs",
               "RelativeToolTip": "Controllers\\GastoController.cs",
-              "ViewState": "AgIAAL0GAAAAAAAAAAAAANAGAAAGAAAAAAAAAA==",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAQwFcHAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-07-24T03:46:24.826Z",
               "EditorCaption": ""

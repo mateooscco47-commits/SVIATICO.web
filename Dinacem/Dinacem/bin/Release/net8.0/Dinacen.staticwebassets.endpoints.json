@@ -7137,7 +7137,7 @@
       ]
     },
     {
-      "Route": "liquidaciones/Liquidacion-3-lucas-altamizaa.9u6pu4fh5r.pdf",
+      "Route": "liquidaciones/Liquidacion-3-lucas-altamizaa.dtd2mgziw8.pdf",
       "AssetFile": "liquidaciones/Liquidacion-3-lucas-altamizaa.pdf",
       "Selectors": [],
       "ResponseHeaders": [
@@ -7151,7 +7151,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1447143"
+          "Value": "40752"
         },
         {
           "Name": "Content-Type",
@@ -7159,21 +7159,21 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"H3M9EZAZTJ6vcCW+gy6//Yth1jUe31ohNCd/aQh+mhg=\""
+          "Value": "\"j4egpXC1+hfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 27 Aug 2026 07:37:33 GMT"
+          "Value": "Thu, 27 Aug 2026 07:51:17 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "9u6pu4fh5r"
+          "Value": "dtd2mgziw8"
         },
         {
           "Name": "integrity",
-          "Value": "sha256-H3M9EZAZTJ6vcCW+gy6//Yth1jUe31ohNCd/aQh+mhg="
+          "Value": "sha256-j4egpXC1+hfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4="
         },
         {
           "Name": "label",
@@ -7196,7 +7196,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1447143"
+          "Value": "40752"
         },
         {
           "Name": "Content-Type",
@@ -7204,17 +7204,17 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"H3M9EZAZTJ6vcCW+gy6//Yth1jUe31ohNCd/aQh+mhg=\""
+          "Value": "\"j4egpXC1+hfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 27 Aug 2026 07:37:33 GMT"
+          "Value": "Thu, 27 Aug 2026 07:51:17 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-H3M9EZAZTJ6vcCW+gy6//Yth1jUe31ohNCd/aQh+mhg="
+          "Value": "sha256-j4egpXC1+hfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4="
         }
       ]
     },

@@ -1044,17 +1044,17 @@
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-IWKwN88CxRaQOOMBnPrEajLcRgY/NZc1sbVqmInTGQc="}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"34176"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022IWKwN88CxRaQOOMBnPrEajLcRgY/NZc1sbVqmInTGQc=\u0022"},{"Name":"Last-Modified","Value":"Fri, 24 Jul 2026 10:00:45 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/Dinacen/liquidaciones/Liquidacion-3-lucas-altamizaa.9u6pu4fh5r.pdf">
+    <StaticWebAssetEndpoint Include="_content/Dinacen/liquidaciones/Liquidacion-3-lucas-altamizaa.dtd2mgziw8.pdf">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-3-lucas-altamizaa.pdf'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"9u6pu4fh5r"},{"Name":"integrity","Value":"sha256-H3M9EZAZTJ6vcCW\u002Bgy6//Yth1jUe31ohNCd/aQh\u002Bmhg="},{"Name":"label","Value":"_content/Dinacen/liquidaciones/Liquidacion-3-lucas-altamizaa.pdf"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"1447143"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022H3M9EZAZTJ6vcCW\u002Bgy6//Yth1jUe31ohNCd/aQh\u002Bmhg=\u0022"},{"Name":"Last-Modified","Value":"Thu, 27 Aug 2026 07:37:33 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"dtd2mgziw8"},{"Name":"integrity","Value":"sha256-j4egpXC1\u002Bhfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4="},{"Name":"label","Value":"_content/Dinacen/liquidaciones/Liquidacion-3-lucas-altamizaa.pdf"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"40752"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022j4egpXC1\u002Bhfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4=\u0022"},{"Name":"Last-Modified","Value":"Thu, 27 Aug 2026 07:51:17 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/Dinacen/liquidaciones/Liquidacion-3-lucas-altamizaa.pdf">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-3-lucas-altamizaa.pdf'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-H3M9EZAZTJ6vcCW\u002Bgy6//Yth1jUe31ohNCd/aQh\u002Bmhg="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"1447143"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022H3M9EZAZTJ6vcCW\u002Bgy6//Yth1jUe31ohNCd/aQh\u002Bmhg=\u0022"},{"Name":"Last-Modified","Value":"Thu, 27 Aug 2026 07:37:33 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-j4egpXC1\u002Bhfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"40752"},{"Name":"Content-Type","Value":"application/pdf"},{"Name":"ETag","Value":"\u0022j4egpXC1\u002Bhfx6xUIQmM7DeRyCfLlSP/3P0Z9w3bpSV4=\u0022"},{"Name":"Last-Modified","Value":"Thu, 27 Aug 2026 07:51:17 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/Dinacen/liquidaciones/Liquidacion-4-José-Huamán-Pérez.lxh3k28a2x.pdf">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-4-José-Huamán-Pérez.pdf'))</AssetFile>

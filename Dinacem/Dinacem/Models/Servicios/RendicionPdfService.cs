@@ -20,6 +20,9 @@ public class RendicionPdfService
     {
         ArgumentNullException.ThrowIfNull(rendicion);
 
+        gastos ??= new List<Gasto>();
+        bitacorasVehiculo ??= new List<BitacoraVehiculo>();
+
         var nombreEmpleado =
             $"{rendicion.Usuario?.Nombres} {rendicion.Usuario?.Apellidos}".Trim();
 
@@ -28,15 +31,23 @@ public class RendicionPdfService
             nombreEmpleado = $"Usuario {rendicion.IdUsuario}";
         }
 
-        gastos ??= new List<Gasto>();
-        bitacorasVehiculo ??= new List<BitacoraVehiculo>();
+        var totalBase =
+            gastos.Sum(g => g.ValorVenta);
 
-        var totalBase = gastos.Sum(g => g.ValorVenta);
-        var totalIgv = gastos.Sum(g => g.IGV);
-        var totalGastos = gastos.Sum(g => g.MontoTotal);
-        var totalVehiculo = bitacorasVehiculo.Sum(b => b.MontoAsignado);
-        var totalKm = bitacorasVehiculo.Sum(b => b.DistanciaKm);
-        var totalRendido = totalGastos + totalVehiculo;
+        var totalIgv =
+            gastos.Sum(g => g.IGV);
+
+        var totalGastos =
+            gastos.Sum(g => g.MontoTotal);
+
+        var totalVehiculo =
+            bitacorasVehiculo.Sum(b => b.MontoAsignado);
+
+        var totalKm =
+            bitacorasVehiculo.Sum(b => b.DistanciaKm);
+
+        var totalRendido =
+            totalGastos + totalVehiculo;
 
         var montoAprobado =
             rendicion.Solicitud?.Monto ?? 0;
@@ -84,6 +95,29 @@ public class RendicionPdfService
         }
 
         // =========================================================
+        // CARGAR VOUCHERS ANTES DE CREAR EL DOCUMENTO
+        // =========================================================
+
+        var imagenesGastos =
+            new Dictionary<int, byte[]?>();
+
+        foreach (var gasto in gastos)
+        {
+            imagenesGastos[gasto.IdGasto] =
+                CargarArchivoImagen(
+                    gasto.Comprobante);
+        }
+
+        byte[]? imagenVoucherDevolucion = null;
+
+        if (devolucion != null)
+        {
+            imagenVoucherDevolucion =
+                CargarArchivoImagen(
+                    devolucion.Voucher);
+        }
+
+        // =========================================================
         // GENERAR DOCUMENTO
         // =========================================================
 
@@ -114,9 +148,17 @@ public class RendicionPdfService
                         {
                             header.Spacing(8);
 
+                            // =================================================
+                            // LOGO + TÍTULO + INFORMACIÓN
+                            // =================================================
+
                             header.Item()
                                 .Row(row =>
                                 {
+                                    // -------------------------------------------------
+                                    // LOGO IZQUIERDO
+                                    // -------------------------------------------------
+
                                     row.ConstantItem(105)
                                         .AlignLeft()
                                         .AlignMiddle()
@@ -124,17 +166,24 @@ public class RendicionPdfService
                                         {
                                             if (logoBytes != null)
                                             {
-                                                logo.Image(logoBytes)
+                                                logo
+                                                    .Width(95)
+                                                    .Image(logoBytes)
                                                     .FitArea();
                                             }
                                             else
                                             {
-                                                logo.Text("DINACEN")
+                                                logo
+                                                    .Text("DINACEN")
                                                     .FontSize(18)
                                                     .Bold()
                                                     .FontColor("#0C4A8A");
                                             }
                                         });
+
+                                    // -------------------------------------------------
+                                    // TÍTULO CENTRADO
+                                    // -------------------------------------------------
 
                                     row.RelativeItem()
                                         .AlignCenter()
@@ -162,6 +211,10 @@ public class RendicionPdfService
                                                 .FontSize(9)
                                                 .FontColor(Colors.Grey.Darken2);
                                         });
+
+                                    // -------------------------------------------------
+                                    // INFORMACIÓN DERECHA
+                                    // -------------------------------------------------
 
                                     row.ConstantItem(105)
                                         .AlignRight()
@@ -192,6 +245,10 @@ public class RendicionPdfService
                                         });
                                 });
 
+                            // =================================================
+                            // LÍNEAS INSTITUCIONALES
+                            // =================================================
+
                             header.Item()
                                 .Height(3)
                                 .Background("#0C4A8A");
@@ -213,6 +270,10 @@ public class RendicionPdfService
                                 .Column(datos =>
                                 {
                                     datos.Spacing(6);
+
+                                    // -------------------------------------------------
+                                    // FILA 1
+                                    // -------------------------------------------------
 
                                     datos.Item()
                                         .Row(row =>
@@ -238,6 +299,10 @@ public class RendicionPdfService
                                                 });
                                         });
 
+                                    // -------------------------------------------------
+                                    // FILA 2
+                                    // -------------------------------------------------
+
                                     datos.Item()
                                         .Row(row =>
                                         {
@@ -261,6 +326,10 @@ public class RendicionPdfService
                                                         rendicion.Usuario?.Celular ?? "-");
                                                 });
                                         });
+
+                                    // -------------------------------------------------
+                                    // FILA 3
+                                    // -------------------------------------------------
 
                                     datos.Item()
                                         .Row(row =>
@@ -288,9 +357,9 @@ public class RendicionPdfService
                                 });
                         });
 
-                    // =================================================
+                    // =========================================================
                     // CONTENIDO
-                    // =================================================
+                    // =========================================================
 
                     page.Content()
                         .PaddingTop(15)
@@ -419,9 +488,14 @@ public class RendicionPdfService
 
                                 foreach (var gasto in gastos)
                                 {
-                                    var imagenVoucher =
-                                        await CargarArchivoImagenAsync(
-                                            gasto.Comprobante);
+                                    byte[]? imagenVoucher = null;
+
+                                    if (imagenesGastos.TryGetValue(
+                                            gasto.IdGasto,
+                                            out var imagen))
+                                    {
+                                        imagenVoucher = imagen;
+                                    }
 
                                     content.Item()
                                         .Element(contenedor =>
@@ -469,6 +543,10 @@ public class RendicionPdfService
                                                         .Height(1)
                                                         .Background("#D8E0E7");
 
+                                                    // -------------------------------------------------
+                                                    // IMAGEN
+                                                    // -------------------------------------------------
+
                                                     if (imagenVoucher != null)
                                                     {
                                                         voucher.Item()
@@ -488,8 +566,7 @@ public class RendicionPdfService
                                                                 "El comprobante fue adjuntado como archivo PDF.")
                                                             .FontSize(10)
                                                             .Bold()
-                                                            .FontColor(
-                                                                "#0C4A8A");
+                                                            .FontColor("#0C4A8A");
                                                     }
                                                     else if (
                                                         !string.IsNullOrWhiteSpace(
@@ -830,12 +907,8 @@ public class RendicionPdfService
                                     });
 
                                 // =================================================
-                                // VOUCHER DE DEVOLUCIÓN
+                                // VOUCHER DEVOLUCIÓN
                                 // =================================================
-
-                                var imagenVoucherDevolucion =
-                                    await CargarArchivoImagenAsync(
-                                        devolucion.Voucher);
 
                                 content.Item()
                                     .PaddingTop(8)
@@ -935,8 +1008,7 @@ public class RendicionPdfService
                                             firma.Item()
                                                 .PaddingTop(5)
                                                 .AlignCenter()
-                                                .Text(
-                                                    "FIRMA DEL EMPLEADO")
+                                                .Text("FIRMA DEL EMPLEADO")
                                                 .Bold()
                                                 .FontSize(9);
 
@@ -960,24 +1032,22 @@ public class RendicionPdfService
                                             firma.Item()
                                                 .PaddingTop(5)
                                                 .AlignCenter()
-                                                .Text(
-                                                    "FIRMA DE APROBACIÓN")
+                                                .Text("FIRMA DE APROBACIÓN")
                                                 .Bold()
                                                 .FontSize(9);
 
                                             firma.Item()
                                                 .PaddingTop(3)
                                                 .AlignCenter()
-                                                .Text(
-                                                    "Responsable de revisión")
+                                                .Text("Responsable de revisión")
                                                 .FontSize(9);
                                         });
                                 });
                         });
 
-                    // =================================================
+                    // =========================================================
                     // FOOTER
-                    // =================================================
+                    // =========================================================
 
                     page.Footer()
                         .PaddingTop(8)
@@ -999,8 +1069,7 @@ public class RendicionPdfService
 
                                     row.RelativeItem()
                                         .AlignCenter()
-                                        .Text(
-                                            "Sistema de Gestión de Viáticos")
+                                        .Text("Sistema de Gestión de Viáticos")
                                         .FontSize(8)
                                         .FontColor(
                                             Colors.Grey.Darken2);
@@ -1026,8 +1095,14 @@ public class RendicionPdfService
                 });
             });
 
+        // =========================================================
+        // GENERAR PDF
+        // =========================================================
+
         await Task.Run(() =>
-            documento.GeneratePdf(rutaFisica));
+        {
+            documento.GeneratePdf(rutaFisica);
+        });
 
         return new ResultadoPdfRendicion
         {
@@ -1041,7 +1116,7 @@ public class RendicionPdfService
     // CARGAR IMAGEN DEL COMPROBANTE
     // =========================================================
 
-    private async Task<byte[]?> CargarArchivoImagenAsync(
+    private byte[]? CargarArchivoImagen(
         string? rutaArchivo)
     {
         if (string.IsNullOrWhiteSpace(rutaArchivo))
@@ -1074,13 +1149,13 @@ public class RendicionPdfService
 
             if (extension != ".jpg" &&
                 extension != ".jpeg" &&
-                extension != ".png")
+                extension != ".png" &&
+                extension != ".webp")
             {
                 return null;
             }
 
-            return await File.ReadAllBytesAsync(
-                rutaFisica);
+            return File.ReadAllBytes(rutaFisica);
         }
         catch
         {
