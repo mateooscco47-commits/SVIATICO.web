@@ -6,11 +6,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dinacen.Migrations
 {
     /// <inheritdoc />
-    public partial class InicialCompleta : Migration
+    public partial class BaselineActual : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "ConfiguracionSistema",
+                columns: table => new
+                {
+                    IdConfiguracion = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TarifaKilometro = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConfiguracionSistema", x => x.IdConfiguracion);
+                });
+
             migrationBuilder.CreateTable(
                 name: "EstadoReembolsos",
                 columns: table => new
@@ -149,7 +162,8 @@ namespace Dinacen.Migrations
                     Destino = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Monto = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     IdEstadoSolicitud = table.Column<int>(type: "int", nullable: false),
-                    Observaciones = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                    Observaciones = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    RutaComprobante = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -216,7 +230,8 @@ namespace Dinacen.Migrations
                     Destino = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     DistanciaKm = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     MontoAsignado = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    Observaciones = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                    Observaciones = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    TarifaKilometro = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -421,6 +436,9 @@ namespace Dinacen.Migrations
         {
             migrationBuilder.DropTable(
                 name: "BitacorasVehiculo");
+
+            migrationBuilder.DropTable(
+                name: "ConfiguracionSistema");
 
             migrationBuilder.DropTable(
                 name: "DevolucionesSaldo");

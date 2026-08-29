@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dinacen.Migrations
 {
     [DbContext(typeof(AplicacionDbContexto))]
-    [Migration("20260827081815_InicialCompleta")]
-    partial class InicialCompleta
+    [Migration("20260829064446_BaselineActual")]
+    partial class BaselineActual
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,11 +61,32 @@ namespace Dinacen.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<decimal>("TarifaKilometro")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("IdBitacoraVehiculo");
 
                     b.HasIndex("IdRendicion");
 
                     b.ToTable("BitacorasVehiculo", (string)null);
+                });
+
+            modelBuilder.Entity("Dinacem.Models.ConfiguracionSistema", b =>
+                {
+                    b.Property<int>("IdConfiguracion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdConfiguracion"));
+
+                    b.Property<decimal>("TarifaKilometro")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("IdConfiguracion");
+
+                    b.ToTable("ConfiguracionSistema", (string)null);
                 });
 
             modelBuilder.Entity("Dinacem.Models.DevolucionSaldo", b =>
@@ -415,6 +436,10 @@ namespace Dinacen.Migrations
                     b.Property<string>("Observaciones")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("RutaComprobante")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("IdSolicitud");
 

@@ -18,12 +18,12 @@ namespace Dinacem.Controllers
             _rendicionPdfService = rendicionPdfService;
         }
 
+
         // =========================================
         // EMPLEADO: LISTAR BITÁCORA
         // =========================================
         [HttpGet]
-        public async Task<IActionResult> Index(
-            int idRendicion)
+        public async Task<IActionResult> Index(int idRendicion)
         {
             var idUsuario =
                 HttpContext.Session.GetInt32("IdUsuario");
@@ -62,8 +62,18 @@ namespace Dinacem.Controllers
                     .OrderBy(b => b.Fecha)
                     .ToListAsync();
 
-            ViewBag.Rendicion =
-                rendicion;
+            // =========================================
+            // OBTENER TARIFA ACTUAL
+            // =========================================
+            var configuracion =
+                await _context.ConfiguracionesSistema
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+
+            ViewBag.Rendicion = rendicion;
+
+            ViewBag.TarifaKilometro =
+                configuracion?.TarifaKilometro ?? 0m;
 
             return View(bitacoras);
         }
@@ -90,13 +100,14 @@ namespace Dinacem.Controllers
                     "Home");
             }
 
+            // =========================================
+            // VALIDAR RENDICIÓN
+            // =========================================
             var rendicion =
                 await _context.Rendiciones
                     .FirstOrDefaultAsync(r =>
-                        r.IdRendicion ==
-                            modelo.IdRendicion &&
-                        r.IdUsuario ==
-                            idUsuario.Value);
+                        r.IdRendicion == modelo.IdRendicion &&
+                        r.IdUsuario == idUsuario.Value);
 
             if (rendicion == null)
             {
@@ -108,6 +119,7 @@ namespace Dinacem.Controllers
                     "Rendicion");
             }
 
+            // Solo mientras esté en proceso
             if (rendicion.IdEstadoRendicion != 1)
             {
                 TempData["error"] =
@@ -117,11 +129,14 @@ namespace Dinacem.Controllers
                     nameof(Index),
                     new
                     {
-                        idRendicion =
-                            modelo.IdRendicion
+                        idRendicion = modelo.IdRendicion
                     });
             }
 
+
+            // =========================================
+            // LIMPIAR DATOS
+            // =========================================
             modelo.Origen =
                 modelo.Origen?.Trim()
                 ?? string.Empty;
@@ -133,6 +148,10 @@ namespace Dinacem.Controllers
             modelo.Observaciones =
                 modelo.Observaciones?.Trim();
 
+
+            // =========================================
+            // VALIDAR FECHA
+            // =========================================
             if (modelo.Fecha == default)
             {
                 ModelState.AddModelError(
@@ -152,22 +171,34 @@ namespace Dinacem.Controllers
                     $"{rendicion.FechaFin:dd/MM/yyyy}.");
             }
 
+
+            // =========================================
+            // VALIDAR ORIGEN
+            // =========================================
             if (string.IsNullOrWhiteSpace(
-                    modelo.Origen))
+                modelo.Origen))
             {
                 ModelState.AddModelError(
                     nameof(modelo.Origen),
                     "Debe ingresar el origen.");
             }
 
+
+            // =========================================
+            // VALIDAR DESTINO
+            // =========================================
             if (string.IsNullOrWhiteSpace(
-                    modelo.Destino))
+                modelo.Destino))
             {
                 ModelState.AddModelError(
                     nameof(modelo.Destino),
                     "Debe ingresar el destino.");
             }
 
+
+            // =========================================
+            // VALIDAR DISTANCIA
+            // =========================================
             if (modelo.DistanciaKm <= 0)
             {
                 ModelState.AddModelError(
@@ -175,15 +206,23 @@ namespace Dinacem.Controllers
                     "La distancia debe ser mayor que cero.");
             }
 
-            // El empleado NO asigna monto
-            modelo.MontoAsignado = 0;
 
+            // =========================================
+            // ESTOS VALORES NO LOS ENVÍA EL EMPLEADO
+            // =========================================
             ModelState.Remove(
                 nameof(modelo.MontoAsignado));
 
             ModelState.Remove(
+                nameof(modelo.TarifaKilometro));
+
+            ModelState.Remove(
                 nameof(modelo.Rendicion));
 
+
+            // =========================================
+            // VALIDAR MODELO
+            // =========================================
             if (!ModelState.IsValid)
             {
                 var errores =
@@ -213,13 +252,85 @@ namespace Dinacem.Controllers
                     });
             }
 
+
+            // =========================================
+            // OBTENER TARIFA CONFIGURADA
+            // =========================================
+            var configuracion =
+                await _context.ConfiguracionesSistema
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+
+            if (configuracion == null)
+            {
+                TempData["error"] =
+                    "No existe una tarifa por kilómetro configurada.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new
+                    {
+                        idRendicion =
+                            modelo.IdRendicion
+                    });
+            }
+
+            if (configuracion.TarifaKilometro <= 0)
+            {
+                TempData["error"] =
+                    "La tarifa por kilómetro configurada no es válida.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new
+                    {
+                        idRendicion =
+                            modelo.IdRendicion
+                    });
+            }
+
+
+            // =========================================
+            // GUARDAR TARIFA UTILIZADA
+            // =========================================
+            modelo.TarifaKilometro =
+                configuracion.TarifaKilometro;
+
+
+            // =========================================
+            // CALCULAR MONTO AUTOMÁTICAMENTE
+            //
+            // Ejemplo:
+            // 120 km x S/ 0.40 = S/ 48.00
+            // =========================================
+            modelo.MontoAsignado =
+                Math.Round(
+                    modelo.DistanciaKm *
+                    modelo.TarifaKilometro,
+                    2,
+                    MidpointRounding.AwayFromZero);
+
+
+            // =========================================
+            // REGISTRAR BITÁCORA
+            // =========================================
             _context.BitacorasVehiculo.Add(
                 modelo);
 
             await _context.SaveChangesAsync();
 
+
+            // =========================================
+            // ACTUALIZAR TOTAL DE LA RENDICIÓN
+            // =========================================
+            await ActualizarTotalesConBitacora(
+                modelo.IdRendicion);
+
+
             TempData["mensaje"] =
-                "Recorrido registrado correctamente.";
+                $"Recorrido registrado correctamente. " +
+                $"Monto calculado: S/ {modelo.MontoAsignado:N2}";
+
 
             return RedirectToAction(
                 nameof(Index),
@@ -250,6 +361,10 @@ namespace Dinacem.Controllers
                     "Home");
             }
 
+
+            // =========================================
+            // VALIDAR RENDICIÓN
+            // =========================================
             var rendicion =
                 await _context.Rendiciones
                     .FirstOrDefaultAsync(r =>
@@ -268,6 +383,7 @@ namespace Dinacem.Controllers
                     "Rendicion");
             }
 
+
             if (rendicion.IdEstadoRendicion != 1)
             {
                 TempData["error"] =
@@ -281,6 +397,10 @@ namespace Dinacem.Controllers
                     });
             }
 
+
+            // =========================================
+            // BUSCAR BITÁCORA
+            // =========================================
             var bitacora =
                 await _context.BitacorasVehiculo
                     .FirstOrDefaultAsync(b =>
@@ -300,200 +420,32 @@ namespace Dinacem.Controllers
                     });
             }
 
+
+            // =========================================
+            // ELIMINAR
+            // =========================================
             _context.BitacorasVehiculo.Remove(
                 bitacora);
 
             await _context.SaveChangesAsync();
 
+
+            // =========================================
+            // RECALCULAR TOTAL
+            // =========================================
+            await ActualizarTotalesConBitacora(
+                idRendicion);
+
+
             TempData["mensaje"] =
                 "Recorrido eliminado correctamente.";
+
 
             return RedirectToAction(
                 nameof(Index),
                 new
                 {
                     idRendicion
-                });
-        }
-
-
-        // =========================================
-        // ADMINISTRADOR: ASIGNAR MONTO
-        // =========================================
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AsignarMonto(
-            int id,
-            decimal monto)
-        {
-            var idRol =
-                HttpContext.Session.GetInt32("IdRol");
-
-            if (idRol != 1)
-            {
-                TempData["error"] =
-                    "No tiene permisos para realizar esta operación.";
-
-                return RedirectToAction(
-                    "Index",
-                    "Home");
-            }
-
-            var bitacora =
-                await _context.BitacorasVehiculo
-                    .Include(b => b.Rendicion)
-                    .FirstOrDefaultAsync(b =>
-                        b.IdBitacoraVehiculo == id);
-
-            if (bitacora == null)
-            {
-                TempData["error"] =
-                    "No se encontró el recorrido.";
-
-                return RedirectToAction(
-                    "IndexAdmin",
-                    "Rendicion");
-            }
-
-            if (bitacora.Rendicion == null)
-            {
-                TempData["error"] =
-                    "No se encontró la rendición asociada.";
-
-                return RedirectToAction(
-                    "IndexAdmin",
-                    "Rendicion");
-            }
-
-            // Solo mientras esté pendiente de revisión
-            if (bitacora.Rendicion.IdEstadoRendicion != 2)
-            {
-                TempData["error"] =
-                    "Solo se puede asignar monto mientras la rendición está pendiente de revisión.";
-
-                return RedirectToAction(
-                    "DetalleAdmin",
-                    "Rendicion",
-                    new
-                    {
-                        id = bitacora.IdRendicion
-                    });
-            }
-
-            if (monto <= 0)
-            {
-                TempData["error"] =
-                    "El monto asignado debe ser mayor que cero.";
-
-                return RedirectToAction(
-                    "DetalleAdmin",
-                    "Rendicion",
-                    new
-                    {
-                        id = bitacora.IdRendicion
-                    });
-            }
-
-            bitacora.MontoAsignado =
-                Math.Round(
-                    monto,
-                    2,
-                    MidpointRounding.AwayFromZero);
-
-            await _context.SaveChangesAsync();
-
-            // Recalcular total y saldo
-            await ActualizarTotalesConBitacora(
-                bitacora.IdRendicion);
-
-            // Regenerar PDF con la bitácora actualizada
-            await RegenerarPdfRendicion(
-                bitacora.IdRendicion);
-
-            TempData["mensaje"] =
-                "Monto de vehículo asignado correctamente.";
-
-            return RedirectToAction(
-                "DetalleAdmin",
-                "Rendicion",
-                new
-                {
-                    id = bitacora.IdRendicion
-                });
-        }
-
-
-        // =========================================
-        // ADMINISTRADOR: QUITAR MONTO ASIGNADO
-        // =========================================
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> QuitarMonto(
-            int id)
-        {
-            var idRol =
-                HttpContext.Session.GetInt32("IdRol");
-
-            if (idRol != 1)
-            {
-                TempData["error"] =
-                    "No tiene permisos para realizar esta operación.";
-
-                return RedirectToAction(
-                    "Index",
-                    "Home");
-            }
-
-            var bitacora =
-                await _context.BitacorasVehiculo
-                    .Include(b => b.Rendicion)
-                    .FirstOrDefaultAsync(b =>
-                        b.IdBitacoraVehiculo == id);
-
-            if (bitacora == null)
-            {
-                TempData["error"] =
-                    "No se encontró el recorrido.";
-
-                return RedirectToAction(
-                    "IndexAdmin",
-                    "Rendicion");
-            }
-
-            if (bitacora.Rendicion == null ||
-                bitacora.Rendicion.IdEstadoRendicion != 2)
-            {
-                TempData["error"] =
-                    "El monto ya no puede modificarse porque la rendición fue procesada.";
-
-                return RedirectToAction(
-                    "DetalleAdmin",
-                    "Rendicion",
-                    new
-                    {
-                        id = bitacora.IdRendicion
-                    });
-            }
-
-            bitacora.MontoAsignado = 0;
-
-            await _context.SaveChangesAsync();
-
-            await ActualizarTotalesConBitacora(
-                bitacora.IdRendicion);
-
-            await RegenerarPdfRendicion(
-                bitacora.IdRendicion);
-
-            TempData["mensaje"] =
-                "El monto asignado fue retirado.";
-
-            return RedirectToAction(
-                "DetalleAdmin",
-                "Rendicion",
-                new
-                {
-                    id = bitacora.IdRendicion
                 });
         }
 
@@ -520,6 +472,10 @@ namespace Dinacem.Controllers
                 return;
             }
 
+
+            // =========================================
+            // TOTAL GASTOS
+            // =========================================
             var totalGastos =
                 await _context.Gastos
                     .Where(g =>
@@ -527,8 +483,12 @@ namespace Dinacem.Controllers
                             idRendicion)
                     .SumAsync(g =>
                         (decimal?)g.MontoTotal)
-                    ?? 0;
+                ?? 0;
 
+
+            // =========================================
+            // TOTAL VEHÍCULO
+            // =========================================
             var totalVehiculo =
                 await _context.BitacorasVehiculo
                     .Where(b =>
@@ -536,18 +496,28 @@ namespace Dinacem.Controllers
                             idRendicion)
                     .SumAsync(b =>
                         (decimal?)b.MontoAsignado)
-                    ?? 0;
+                ?? 0;
 
+
+            // =========================================
+            // TOTAL GENERAL
+            // =========================================
             rendicion.Total =
                 totalGastos +
                 totalVehiculo;
 
+
+            // =========================================
+            // SALDO
+            // =========================================
             rendicion.Saldo =
                 rendicion.Solicitud.Monto -
                 rendicion.Total;
 
+
             await _context.SaveChangesAsync();
         }
+
 
         // =========================================
         // REGENERAR PDF DE LA RENDICIÓN
@@ -560,34 +530,54 @@ namespace Dinacem.Controllers
                     .Include(r => r.Solicitud)
                     .Include(r => r.Usuario)
                     .FirstOrDefaultAsync(r =>
-                        r.IdRendicion == idRendicion);
+                        r.IdRendicion ==
+                            idRendicion);
 
             if (rendicion == null)
             {
                 return;
             }
 
+
+            // =========================================
+            // GASTOS
+            // =========================================
             var gastos =
                 await _context.Gastos
                     .Include(g => g.TipoGasto)
                     .Include(g => g.TipoComprobante)
                     .Where(g =>
-                        g.IdRendicion == idRendicion)
+                        g.IdRendicion ==
+                            idRendicion)
                     .OrderBy(g => g.Fecha)
                     .ToListAsync();
 
+
+            // =========================================
+            // BITÁCORAS
+            // =========================================
             var bitacoras =
                 await _context.BitacorasVehiculo
                     .Where(b =>
-                        b.IdRendicion == idRendicion)
+                        b.IdRendicion ==
+                            idRendicion)
                     .OrderBy(b => b.Fecha)
                     .ToListAsync();
 
+
+            // =========================================
+            // DEVOLUCIÓN
+            // =========================================
             var devolucion =
                 await _context.DevolucionesSaldo
                     .FirstOrDefaultAsync(d =>
-                        d.IdRendicion == idRendicion);
+                        d.IdRendicion ==
+                            idRendicion);
 
+
+            // =========================================
+            // GENERAR PDF
+            // =========================================
             var resultadoPdf =
                 await _rendicionPdfService
                     .GenerarAsync(
@@ -596,11 +586,13 @@ namespace Dinacem.Controllers
                         devolucion,
                         bitacoras);
 
+
             rendicion.ArchivoPdf =
-                $"{resultadoPdf.RutaPublica}?v={DateTime.Now.Ticks}";
+                $"{resultadoPdf.RutaPublica}" +
+                $"?v={DateTime.Now.Ticks}";
+
 
             await _context.SaveChangesAsync();
         }
-
     }
 }

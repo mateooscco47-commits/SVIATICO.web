@@ -1,0 +1,336 @@
+﻿@model Dinacem.Models.ConfiguracionSistema
+
+@{
+    ViewData["Title"] = "Configuración del sistema";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+}
+
+<style>
+
+    .config-wrapper {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px 15px 40px;
+    }
+
+    .config-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 12px rgba(15,23,42,.05);
+    }
+
+    .config-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eaf2fb;
+        color: #0c4a8a;
+        border-radius: 12px;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .config-title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 800;
+        color: #172033;
+    }
+
+    .config-description {
+        margin: 4px 0 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .config-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        box-shadow: 0 3px 12px rgba(15,23,42,.05);
+        overflow: hidden;
+    }
+
+    .config-card-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #e8edf3;
+        font-weight: 800;
+        color: #172033;
+        font-size: 14px;
+    }
+
+    .config-card-body {
+        padding: 22px;
+    }
+
+    .config-info {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+
+    .config-info-title {
+        font-size: 12px;
+        font-weight: 800;
+        color: #334155;
+        margin-bottom: 5px;
+    }
+
+    .config-info-text {
+        margin: 0;
+        color: #64748b;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .tarifa-box {
+        display: grid;
+        grid-template-columns: minmax(0,1fr) 220px;
+        gap: 20px;
+        align-items: end;
+    }
+
+    .form-label {
+        color: #334155;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 6px;
+    }
+
+    .form-control {
+        min-height: 46px;
+        border-radius: 9px;
+        border-color: #d7dee8;
+        font-size: 14px;
+    }
+
+    .input-group-text {
+        min-height: 46px;
+        background: #f8fafc;
+        font-weight: 700;
+    }
+
+    .btn-guardar {
+        min-height: 46px;
+        background: #0c4a8a;
+        border-color: #0c4a8a;
+        color: #ffffff;
+        font-weight: 700;
+        border-radius: 9px;
+    }
+
+        .btn-guardar:hover {
+            background: #083b70;
+            border-color: #083b70;
+            color: #ffffff;
+        }
+
+    .ejemplo-box {
+        margin-top: 20px;
+        background: #eef6ff;
+        border: 1px solid #cfe2ff;
+        border-radius: 10px;
+        padding: 16px;
+    }
+
+        .ejemplo-box strong {
+            color: #0c4a8a;
+        }
+
+    @@media(max-width: 767px) {
+
+        .config-wrapper {
+            padding: 10px;
+        }
+
+        .config-header {
+            align-items: flex-start;
+        }
+
+        .config-title {
+            font-size: 21px;
+        }
+
+        .tarifa-box {
+            grid-template-columns: 1fr;
+        }
+
+        .btn-guardar {
+            width: 100%;
+        }
+    }
+
+</style>
+
+
+<div class="config-wrapper">
+
+    <div class="config-header">
+
+        <div class="config-icon">
+            <i class="bi bi-gear-fill"></i>
+        </div>
+
+        <div>
+
+            <h1 class="config-title">
+                Configuración del sistema
+            </h1>
+
+            <p class="config-description">
+                Configure los parámetros generales del sistema de viáticos.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    @if (TempData["mensaje"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+
+            <i class="bi bi-check-circle me-1"></i>
+
+            @TempData["mensaje"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show">
+
+            <i class="bi bi-exclamation-circle me-1"></i>
+
+            @TempData["error"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
+
+
+    <div class="config-card">
+
+        <div class="config-card-header">
+
+            <i class="bi bi-car-front-fill me-2 text-primary"></i>
+
+            Bitácora vehicular
+
+        </div>
+
+
+        <div class="config-card-body">
+
+            <div class="config-info">
+
+                <div class="config-info-title">
+                    Tarifa por kilómetro
+                </div>
+
+                <p class="config-info-text">
+                    Esta tarifa se utilizará automáticamente para calcular
+                    el monto correspondiente a los recorridos registrados
+                    por los empleados.
+                </p>
+
+            </div>
+
+
+            <form asp-controller="Configuracion"
+                  asp-action="Guardar"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+
+                <div class="tarifa-box">
+
+                    <div>
+
+                        <label class="form-label">
+                            Tarifa vigente
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                S/
+                            </span>
+
+                            <input type="number"
+                                   name="tarifaKilometro"
+                                   class="form-control"
+                                   min="0.01"
+                                   step="0.01"
+                                   value="@Model.TarifaKilometro.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                   required />
+
+                            <span class="input-group-text">
+                                por km
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <button type="submit"
+                            class="btn btn-guardar">
+
+                        <i class="bi bi-save me-1"></i>
+
+                        Guardar cambios
+
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <div class="ejemplo-box">
+
+                <i class="bi bi-calculator me-1"></i>
+
+                <strong>Ejemplo:</strong>
+
+                si la tarifa es
+                S/ @Model.TarifaKilometro.ToString("N2")
+                y el empleado registra 120 km,
+
+                el sistema calculará:
+
+                <strong>
+                    S/ @(120m * Model.TarifaKilometro)
+                </strong>.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

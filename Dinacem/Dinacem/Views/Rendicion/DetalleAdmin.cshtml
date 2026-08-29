@@ -21,9 +21,6 @@
     var totalRendido = totalGastos + totalVehiculo;
 
     var totalKm = bitacorasVehiculo.Sum(x => x.DistanciaKm);
-
-    var hayBitacorasPendientes =
-        bitacorasVehiculo.Any(x => x.MontoAsignado <= 0);
 }
 
 <style>
@@ -215,20 +212,6 @@
             vertical-align: middle;
         }
 
-    .monto-pendiente {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 5px 9px;
-        border-radius: 20px;
-        background: #fff5d6;
-        border: 1px solid #f3dfa0;
-        color: #a97808;
-        font-size: 11px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
     .monto-asignado {
         display: inline-flex;
         align-items: center;
@@ -242,27 +225,6 @@
         font-weight: 700;
         white-space: nowrap;
     }
-
-    .monto-form {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        min-width: 245px;
-    }
-
-        .monto-form .input-group {
-            min-width: 145px;
-        }
-
-        .monto-form .form-control {
-            min-height: 34px;
-            height: 34px;
-            font-size: 12px;
-        }
-
-        .monto-form .btn {
-            white-space: nowrap;
-        }
 
     .tabla-devolucion {
         min-width: 650px;
@@ -1024,18 +986,6 @@
 
                 @if (bitacorasVehiculo.Any())
                 {
-                    @if (hayBitacorasPendientes &&
-                   rendicion.IdEstadoRendicion == 2)
-                    {
-                        <div class="warning-alert">
-                            <i class="bi bi-exclamation-triangle-fill"></i>
-
-                            <div>
-                                Existen recorridos con el monto de combustible pendiente.
-                                Asigne todos los montos antes de aprobar la rendición.
-                            </div>
-                        </div>
-                    }
 
                     <div class="table-responsive">
 
@@ -1047,9 +997,9 @@
                                     <th>Origen</th>
                                     <th>Destino</th>
                                     <th>Distancia</th>
+                                    <th>Tarifa / km</th>
                                     <th>Observaciones</th>
-                                    <th>Monto asignado</th>
-                                    <th>Acción</th>
+                                    <th>Monto calculado</th>
                                 </tr>
                             </thead>
 
@@ -1078,109 +1028,20 @@
                                         </td>
 
                                         <td>
+                                            S/ @item.TarifaKilometro.ToString("N2")
+                                        </td>
+
+                                        <td>
                                             @(string.IsNullOrWhiteSpace(item.Observaciones)
                                                 ? "-"
                                                 : item.Observaciones)
                                         </td>
 
                                         <td>
-                                            @if (item.MontoAsignado > 0)
-                                            {
-                                                <span class="monto-asignado">
-                                                    <i class="bi bi-check-circle-fill"></i>
-                                                    S/ @item.MontoAsignado.ToString("N2")
-                                                </span>
-                                            }
-                                            else
-                                            {
-                                                <span class="monto-pendiente">
-                                                    <i class="bi bi-clock-fill"></i>
-                                                    Pendiente
-                                                </span>
-                                            }
-                                        </td>
-
-                                        <td>
-
-                                            @if (rendicion.IdEstadoRendicion == 2)
-                                            {
-                                                <div class="d-flex flex-column gap-2">
-
-                                                    <form asp-controller="BitacoraVehiculo"
-                                                          asp-action="AsignarMonto"
-                                                          method="post"
-                                                          class="monto-form">
-
-                                                        @Html.AntiForgeryToken()
-
-                                                        <input type="hidden"
-                                                               name="id"
-                                                               value="@item.IdBitacoraVehiculo" />
-
-                                                        <div class="input-group input-group-sm">
-
-                                                            <span class="input-group-text">
-                                                                S/
-                                                            </span>
-
-                                                            <input type="number"
-                                                                   name="monto"
-                                                                   class="form-control"
-                                                                   min="0.01"
-                                                                   step="0.01"
-                                                                   value="@(item.MontoAsignado > 0 ? item.MontoAsignado.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) : "")"
-                                                                   placeholder="0.00"
-                                                                   required />
-
-                                                        </div>
-
-                                                        <button type="submit"
-                                                                class="btn btn-dinacen btn-sm">
-
-                                                            <i class="bi bi-save me-1"></i>
-
-                                                            @(item.MontoAsignado > 0
-                                                                ? "Actualizar"
-                                                                : "Asignar")
-
-                                                        </button>
-
-                                                    </form>
-
-                                                    @if (item.MontoAsignado > 0)
-                                                    {
-                                                        <form asp-controller="BitacoraVehiculo"
-                                                              asp-action="QuitarMonto"
-                                                              method="post">
-
-                                                            @Html.AntiForgeryToken()
-
-                                                            <input type="hidden"
-                                                                   name="id"
-                                                                   value="@item.IdBitacoraVehiculo" />
-
-                                                            <button type="submit"
-                                                                    class="btn btn-outline-danger btn-sm"
-                                                                    onclick="return confirm('¿Desea retirar el monto asignado a este recorrido?');">
-
-                                                                <i class="bi bi-x-circle me-1"></i>
-                                                                Quitar monto
-
-                                                            </button>
-
-                                                        </form>
-                                                    }
-
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted">
-                                                    <i class="bi bi-lock me-1"></i>
-                                                    Bloqueado
-                                                </span>
-                                            }
-
+                                            <span class="monto-asignado">
+                                                <i class="bi bi-calculator-fill"></i>
+                                                S/ @item.MontoAsignado.ToString("N2")
+                                            </span>
                                         </td>
 
                                     </tr>
@@ -1194,7 +1055,7 @@
 
                     <div class="row g-3 mt-2">
 
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-md-6 col-xl-3">
 
                             <div class="summary-card summary-primary">
 
@@ -1210,7 +1071,7 @@
 
                         </div>
 
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-md-6 col-xl-3">
 
                             <div class="summary-card summary-purple">
 
@@ -1226,7 +1087,37 @@
 
                         </div>
 
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-md-6 col-xl-3">
+
+                            <div class="summary-card summary-orange">
+
+                                <span class="summary-label">
+                                    Tarifa por kilómetro
+                                </span>
+
+                                @{
+                                    var tarifasUsadas = bitacorasVehiculo
+                                    .Select(x => x.TarifaKilometro)
+                                    .Distinct()
+                                    .ToList();
+                                }
+
+                                <div class="summary-value">
+                                    @if (tarifasUsadas.Count == 1)
+                                    {
+                                        <span>S/ @tarifasUsadas[0].ToString("N2")</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Varias</span>
+                                    }
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-12 col-md-6 col-xl-3">
 
                             <div class="summary-card summary-green">
 
@@ -1812,8 +1703,7 @@
                                    value="@rendicion.IdRendicion" />
 
                             <button type="submit"
-                                    class="btn btn-aprobar"
-                                    disabled="@(hayBitacorasPendientes ? "disabled" : null)">
+                                    class="btn btn-aprobar">
 
                                 <i class="bi bi-check-circle me-1"></i>
                                 Aprobar rendición
@@ -1821,15 +1711,6 @@
                             </button>
 
                         </form>
-
-                        @if (hayBitacorasPendientes)
-                        {
-                            <span class="text-warning align-self-center small">
-                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                                Asigne primero todos los montos de la bitácora.
-                            </span>
-                        }
-
                         <button type="button"
                                 class="btn btn-outline-danger"
                                 data-bs-toggle="modal"

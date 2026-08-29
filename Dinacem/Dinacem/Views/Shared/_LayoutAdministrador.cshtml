@@ -16,24 +16,18 @@
         :root {
             --sidebar-width: 270px;
             --topbar-height: 75px;
-
             --dinacen-blue: #0C4A8A;
             --dinacen-blue-dark: #083663;
             --dinacen-blue-light: #EBF3FA;
-
             --bg-main: #F8FAFC;
             --white: #FFFFFF;
-
             --text-primary: #0F172A;
             --text-secondary: #334155;
             --text-light: #64748B;
-
             --border-light: #E2E8F0;
             --border: #CBD5E1;
-
             --danger: #DC2626;
             --danger-dark: #B91C1C;
-
             --shadow-sidebar: 2px 0 16px rgba(15, 23, 42, 0.04);
             --shadow-topbar: 0 2px 8px rgba(15, 23, 42, 0.04);
             --shadow-card: 0 4px 12px rgba(12, 74, 138, 0.08), 0 1px 3px rgba(0, 0, 0, 0.03);
@@ -97,37 +91,37 @@
             padding: 0.35rem 0 0.9rem;
         }
 
-        .sidebar-logo::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 48px;
-            height: 3px;
-            transform: translateX(-50%);
-            background-color: var(--dinacen-blue);
-            border-radius: 10px;
-        }
+            .sidebar-logo::after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                width: 48px;
+                height: 3px;
+                transform: translateX(-50%);
+                background-color: var(--dinacen-blue);
+                border-radius: 10px;
+            }
 
-        .sidebar-logo a {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-        }
+            .sidebar-logo a {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+            }
 
-        .sidebar-logo img {
-            display: block;
-            width: 195px;
-            height: 105px;
-            object-fit: contain;
-            transition: transform 0.25s ease;
-        }
+            .sidebar-logo img {
+                display: block;
+                width: 195px;
+                height: 105px;
+                object-fit: contain;
+                transition: transform 0.25s ease;
+            }
 
-        .sidebar-logo img:hover {
-            transform: scale(1.02);
-        }
+                .sidebar-logo img:hover {
+                    transform: scale(1.02);
+                }
 
         /* MENÚ */
         .sidebar-menu {
@@ -139,81 +133,81 @@
             scrollbar-color: #CBD5E1 transparent;
         }
 
-        .sidebar-menu::-webkit-scrollbar {
-            width: 5px;
-        }
+            .sidebar-menu::-webkit-scrollbar {
+                width: 5px;
+            }
 
-        .sidebar-menu::-webkit-scrollbar-thumb {
-            background-color: #CBD5E1;
-            border-radius: 10px;
-        }
+            .sidebar-menu::-webkit-scrollbar-thumb {
+                background-color: #CBD5E1;
+                border-radius: 10px;
+            }
 
-        .sidebar-menu ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+            .sidebar-menu ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
 
-        .sidebar-menu li {
-            margin-bottom: 0.35rem;
-        }
+            .sidebar-menu li {
+                margin-bottom: 0.35rem;
+            }
 
-        .sidebar-menu a {
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0.65rem 0.85rem;
-            position: relative;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.92rem;
-            border-radius: 8px;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+            .sidebar-menu a {
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 0.65rem 0.85rem;
+                position: relative;
+                color: var(--text-secondary);
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 0.92rem;
+                border-radius: 8px;
+                transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            }
 
-        .sidebar-menu a i {
-            width: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.15rem;
-            color: var(--text-light);
-            transition: color 0.2s ease, transform 0.2s ease;
-        }
+                .sidebar-menu a i {
+                    width: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.15rem;
+                    color: var(--text-light);
+                    transition: color 0.2s ease, transform 0.2s ease;
+                }
 
-        .sidebar-menu a:hover {
-            color: var(--dinacen-blue-dark);
-            background-color: var(--dinacen-blue-light);
-        }
+                .sidebar-menu a:hover {
+                    color: var(--dinacen-blue-dark);
+                    background-color: var(--dinacen-blue-light);
+                }
 
-        .sidebar-menu a:hover i {
-            color: var(--dinacen-blue);
-            transform: scale(1.1);
-        }
+                    .sidebar-menu a:hover i {
+                        color: var(--dinacen-blue);
+                        transform: scale(1.1);
+                    }
 
-        .sidebar-menu a.active {
-            color: var(--dinacen-blue-dark);
-            background-color: var(--dinacen-blue-light);
-            font-weight: 700;
-            box-shadow: var(--shadow-card);
-        }
+                .sidebar-menu a.active {
+                    color: var(--dinacen-blue-dark);
+                    background-color: var(--dinacen-blue-light);
+                    font-weight: 700;
+                    box-shadow: var(--shadow-card);
+                }
 
-        .sidebar-menu a.active i {
-            color: var(--dinacen-blue);
-        }
+                    .sidebar-menu a.active i {
+                        color: var(--dinacen-blue);
+                    }
 
-        .sidebar-menu a.active::before {
-            content: "";
-            position: absolute;
-            left: -0.85rem;
-            top: 8px;
-            bottom: 8px;
-            width: 4px;
-            background-color: var(--dinacen-blue);
-            border-radius: 0 4px 4px 0;
-        }
+                    .sidebar-menu a.active::before {
+                        content: "";
+                        position: absolute;
+                        left: -0.85rem;
+                        top: 8px;
+                        bottom: 8px;
+                        width: 4px;
+                        background-color: var(--dinacen-blue);
+                        border-radius: 0 4px 4px 0;
+                    }
 
         /* FOOTER */
         .sidebar-footer {
@@ -242,17 +236,17 @@
             transition: all 0.2s ease;
         }
 
-        .btn-logout i {
-            font-size: 1.1rem;
-            color: var(--white);
-        }
+            .btn-logout i {
+                font-size: 1.1rem;
+                color: var(--white);
+            }
 
-        .btn-logout:hover {
-            background-color: var(--danger-dark);
-            border-color: var(--danger-dark);
-            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3);
-            transform: translateY(-1px);
-        }
+            .btn-logout:hover {
+                background-color: var(--danger-dark);
+                border-color: var(--danger-dark);
+                box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3);
+                transform: translateY(-1px);
+            }
 
         /* CONTENIDO PRINCIPAL */
         .main-wrapper {
@@ -298,10 +292,10 @@
             transition: background-color 0.2s ease;
         }
 
-        .sidebar-toggler:hover {
-            background-color: var(--dinacen-blue-light);
-            color: var(--dinacen-blue);
-        }
+            .sidebar-toggler:hover {
+                background-color: var(--dinacen-blue-light);
+                color: var(--dinacen-blue);
+            }
 
         .topbar-right {
             display: flex;
@@ -323,9 +317,9 @@
             transition: border-color 0.2s ease;
         }
 
-        .user-profile:hover {
-            border-color: var(--dinacen-blue);
-        }
+            .user-profile:hover {
+                border-color: var(--dinacen-blue);
+            }
 
         .user-avatar {
             font-size: 1.65rem;
@@ -380,10 +374,10 @@
             transition: opacity 0.3s ease;
         }
 
-        .sidebar-overlay.show {
-            display: block;
-            opacity: 1;
-        }
+            .sidebar-overlay.show {
+                display: block;
+                opacity: 1;
+            }
 
         /* RESPONSIVE */
         @@media (max-width: 991.98px) {
@@ -391,9 +385,9 @@
                 transform: translateX(-100%);
             }
 
-            .sidebar.show {
-                transform: translateX(0);
-            }
+                .sidebar.show {
+                    transform: translateX(0);
+                }
 
             .main-wrapper {
                 margin-left: 0 !important;
@@ -510,6 +504,15 @@
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Reporte" ? "active" : "")">
                             <i class="bi bi-bar-chart-line-fill"></i>
                             <span>Reportes</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Configuracion"
+                           asp-action="Index"
+                           class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Configuracion" ? "active" : "")">
+                            <i class="bi bi-gear-fill"></i>
+                            <span>Configuración</span>
                         </a>
                     </li>
 

@@ -617,12 +617,13 @@ public class RendicionPdfService
                                     {
                                         table.ColumnsDefinition(columns =>
                                         {
-                                            columns.ConstantColumn(55);
-                                            columns.RelativeColumn(1.3f);
-                                            columns.RelativeColumn(1.3f);
-                                            columns.ConstantColumn(65);
-                                            columns.RelativeColumn(1.5f);
-                                            columns.ConstantColumn(65);
+                                            columns.ConstantColumn(52);
+                                            columns.RelativeColumn(1.15f);
+                                            columns.RelativeColumn(1.15f);
+                                            columns.ConstantColumn(58);
+                                            columns.ConstantColumn(58);
+                                            columns.RelativeColumn(1.25f);
+                                            columns.ConstantColumn(62);
                                         });
 
                                         table.Header(header =>
@@ -642,6 +643,10 @@ public class RendicionPdfService
                                             CeldaCabecera(
                                                 header.Cell(),
                                                 "Distancia");
+
+                                            CeldaCabecera(
+                                                header.Cell(),
+                                                "Tarifa/km\nS/");
 
                                             CeldaCabecera(
                                                 header.Cell(),
@@ -669,6 +674,10 @@ public class RendicionPdfService
                                             CeldaDetalle(
                                                 table.Cell(),
                                                 $"{bitacora.DistanciaKm:N2} km");
+
+                                            CeldaNumero(
+                                                table.Cell(),
+                                                bitacora.TarifaKilometro);
 
                                             CeldaDetalle(
                                                 table.Cell(),
@@ -698,6 +707,27 @@ public class RendicionPdfService
                                             resumenVehiculo,
                                             "Distancia total:",
                                             $"{totalKm:N2} km");
+
+                                        var tarifasUsadas =
+                                            bitacorasVehiculo
+                                                .Select(b => b.TarifaKilometro)
+                                                .Distinct()
+                                                .ToList();
+
+                                        if (tarifasUsadas.Count == 1)
+                                        {
+                                            FilaResumen(
+                                                resumenVehiculo,
+                                                "Tarifa aplicada:",
+                                                $"S/ {tarifasUsadas[0]:N2} / km");
+                                        }
+                                        else if (tarifasUsadas.Count > 1)
+                                        {
+                                            FilaResumen(
+                                                resumenVehiculo,
+                                                "Tarifa aplicada:",
+                                                "Varias tarifas");
+                                        }
 
                                         FilaResumen(
                                             resumenVehiculo,
@@ -750,7 +780,7 @@ public class RendicionPdfService
                                             {
                                                 FilaResumen(
                                                     resumen,
-                                                    "Bitácora vehículo:",
+                                                    "Vehículo por kilometraje:",
                                                     $"S/ {totalVehiculo:N2}");
                                             }
 

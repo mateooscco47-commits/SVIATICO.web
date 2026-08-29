@@ -6,8 +6,13 @@
 
     var rendicion = ViewBag.Rendicion as Dinacem.Models.Rendicion;
 
-    decimal totalKm = Model?.Sum(x => x.DistanciaKm) ?? 0;
-    decimal totalAsignado = Model?.Sum(x => x.MontoAsignado) ?? 0;
+    decimal tarifaKilometro =
+        ViewBag.TarifaKilometro != null
+            ? Convert.ToDecimal(ViewBag.TarifaKilometro)
+            : 0m;
+
+    decimal totalKm = Model?.Sum(x => x.DistanciaKm) ?? 0m;
+    decimal totalAsignado = Model?.Sum(x => x.MontoAsignado) ?? 0m;
 }
 
 <style>
@@ -65,7 +70,7 @@
 
     .summary-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 14px;
         margin-bottom: 20px;
     }
@@ -209,6 +214,64 @@
         font-size: 11px;
         font-weight: 700;
     }
+
+    .tarifa-box {
+        background: #eef6ff;
+        border: 1px solid #cfe2ff;
+        border-radius: 10px;
+        padding: 14px;
+        height: 100%;
+    }
+
+        .tarifa-box .label {
+            display: block;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .tarifa-box .valor {
+            color: #0c4a8a;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .tarifa-box .detalle {
+            margin-top: 4px;
+            color: #64748b;
+            font-size: 10.5px;
+        }
+
+    .monto-calculado-box {
+        background: #edf8f1;
+        border: 1px solid #cde9d5;
+        border-radius: 10px;
+        padding: 14px;
+        height: 100%;
+    }
+
+        .monto-calculado-box .label {
+            display: block;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .monto-calculado-box .valor {
+            color: #198754;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .monto-calculado-box .detalle {
+            margin-top: 4px;
+            color: #64748b;
+            font-size: 10.5px;
+        }
 
     .empty-state {
         text-align: center;
@@ -358,10 +421,26 @@
         </div>
 
 
+        <div class="summary-card">
+
+            <span class="summary-label">
+                Tarifa vigente
+            </span>
+
+            <div class="summary-value">
+                S/ @tarifaKilometro.ToString("N2")
+                <span style="font-size:11px;font-weight:700;color:#64748b;">
+                    / km
+                </span>
+            </div>
+
+        </div>
+
+
         <div class="summary-card green">
 
             <span class="summary-label">
-                Monto asignado
+                Total vehículo
             </span>
 
             <div class="summary-value">
@@ -472,6 +551,7 @@
                             <div class="input-group">
 
                                 <input type="number"
+                                       id="distanciaKm"
                                        name="DistanciaKm"
                                        class="form-control"
                                        min="0.01"
@@ -505,16 +585,65 @@
                         </div>
 
 
+                        <!-- TARIFA VIGENTE -->
+
+                        <div class="col-md-6">
+
+                            <div class="tarifa-box">
+
+                                <span class="label">
+                                    Tarifa vigente
+                                </span>
+
+                                <div class="valor">
+                                    S/ @tarifaKilometro.ToString("N2") por km
+                                </div>
+
+                                <div class="detalle">
+                                    Tarifa definida por el administrador.
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- MONTO CALCULADO -->
+
+                        <div class="col-md-6">
+
+                            <div class="monto-calculado-box">
+
+                                <span class="label">
+                                    Monto calculado
+                                </span>
+
+                                <div class="valor"
+                                     id="montoEstimado">
+                                    S/ 0.00
+                                </div>
+
+                                <div class="detalle"
+                                     id="formulaEstimado">
+                                    0.00 km × S/ @tarifaKilometro.ToString("N2")
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
                         <!-- INFORMACIÓN -->
 
                         <div class="col-12">
 
                             <div class="alert alert-info mb-0">
 
-                                <i class="bi bi-info-circle me-1"></i>
+                                <i class="bi bi-calculator me-1"></i>
 
-                                El monto correspondiente al recorrido será
-                                asignado posteriormente por el administrador.
+                                El monto se calcula automáticamente usando
+                                la distancia registrada y la tarifa vigente
+                                de <strong>S/ @tarifaKilometro.ToString("N2") por km</strong>.
 
                             </div>
 
@@ -582,6 +711,8 @@
 
                         <th>Distancia</th>
 
+                        <th>Tarifa / km</th>
+
                         <th>Monto</th>
 
                         <th>Observaciones</th>
@@ -641,30 +772,26 @@
                                 </td>
 
 
+                                <!-- TARIFA -->
+
+                                <td>
+
+                                    <span class="monto-pendiente">
+                                        S/ @item.TarifaKilometro.ToString("N2")
+                                    </span>
+
+                                </td>
+
+
                                 <!-- MONTO -->
 
                                 <td>
 
-                                    @if (item.MontoAsignado > 0)
-                                    {
+                                    <span class="monto-asignado">
 
-                                        <span class="monto-asignado">
+                                        S/ @item.MontoAsignado.ToString("N2")
 
-                                            S/ @item.MontoAsignado.ToString("N2")
-
-                                        </span>
-
-                                    }
-                                    else
-                                    {
-
-                                        <span class="monto-pendiente">
-
-                                            Pendiente
-
-                                        </span>
-
-                                    }
+                                    </span>
 
                                 </td>
 
@@ -734,7 +861,7 @@
 
                         <tr>
 
-                            <td colspan="7">
+                            <td colspan="8">
 
                                 <div class="empty-state">
 
@@ -765,3 +892,53 @@
     </div>
 
 </div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const distanciaInput =
+            document.getElementById("distanciaKm");
+
+        const montoEstimado =
+            document.getElementById("montoEstimado");
+
+        const formulaEstimado =
+            document.getElementById("formulaEstimado");
+
+        const tarifa =
+    @tarifaKilometro.ToString(
+                 "0.00",
+                 System.Globalization.CultureInfo.InvariantCulture);
+
+        function actualizarCalculo() {
+
+            if (!distanciaInput ||
+                !montoEstimado ||
+                !formulaEstimado) {
+                return;
+            }
+
+            const distancia =
+                parseFloat(distanciaInput.value) || 0;
+
+            const monto =
+                Math.round(
+                    distancia * tarifa * 100
+                ) / 100;
+
+            montoEstimado.textContent =
+                `S/ ${monto.toFixed(2)}`;
+
+            formulaEstimado.textContent =
+                `${distancia.toFixed(2)} km × S/ ${tarifa.toFixed(2)}`;
+        }
+
+        distanciaInput?.addEventListener(
+            "input",
+            actualizarCalculo);
+
+        actualizarCalculo();
+    });
+</script>
+

@@ -71,5 +71,7 @@ namespace Dinacem.Models
 
         [StringLength(500)]
         public string? Observaciones { get; set; }
+
+        public decimal TarifaKilometro { get; set; }
     }
 }

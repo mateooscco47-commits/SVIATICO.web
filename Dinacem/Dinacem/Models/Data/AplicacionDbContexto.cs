@@ -43,8 +43,11 @@ namespace Dinacem.Models
 
         public DbSet<BitacoraVehiculo> BitacorasVehiculo { get; set; }
 
+        public DbSet<ConfiguracionSistema> ConfiguracionesSistema { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+
+        protected override void OnModelCreating(
+            ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -92,6 +95,12 @@ namespace Dinacem.Models
             modelBuilder.Entity<EstadoReembolso>()
                 .ToTable("EstadoReembolsos");
 
+            modelBuilder.Entity<BitacoraVehiculo>()
+                .ToTable("BitacorasVehiculo");
+
+            modelBuilder.Entity<ConfiguracionSistema>()
+                .ToTable("ConfiguracionSistema");
+
 
             // =========================================
             // LLAVES PRIMARIAS
@@ -135,6 +144,12 @@ namespace Dinacem.Models
 
             modelBuilder.Entity<EstadoReembolso>()
                 .HasKey(x => x.IdEstadoReembolso);
+
+            modelBuilder.Entity<BitacoraVehiculo>()
+                .HasKey(x => x.IdBitacoraVehiculo);
+
+            modelBuilder.Entity<ConfiguracionSistema>()
+                .HasKey(x => x.IdConfiguracion);
 
 
             // =========================================
@@ -203,7 +218,8 @@ namespace Dinacem.Models
             modelBuilder.Entity<Solicitud>()
                 .HasOne(s => s.Rendicion)
                 .WithOne(r => r.Solicitud)
-                .HasForeignKey<Rendicion>(r => r.IdSolicitud)
+                .HasForeignKey<Rendicion>(
+                    r => r.IdSolicitud)
                 .OnDelete(DeleteBehavior.NoAction);
 
 
@@ -237,7 +253,8 @@ namespace Dinacem.Models
             modelBuilder.Entity<Rendicion>()
                 .HasOne(r => r.DevolucionSaldo)
                 .WithOne(d => d.Rendicion)
-                .HasForeignKey<DevolucionSaldo>(d => d.IdRendicion)
+                .HasForeignKey<DevolucionSaldo>(
+                    d => d.IdRendicion)
                 .OnDelete(DeleteBehavior.NoAction);
 
 
@@ -310,6 +327,18 @@ namespace Dinacem.Models
 
 
             // =========================================
+            // RENDICIÓN -> BITÁCORAS DE VEHÍCULO
+            // 1 : N
+            // =========================================
+
+            modelBuilder.Entity<BitacoraVehiculo>()
+                .HasOne(b => b.Rendicion)
+                .WithMany(r => r.BitacorasVehiculo)
+                .HasForeignKey(b => b.IdRendicion)
+                .OnDelete(DeleteBehavior.NoAction);
+
+
+            // =========================================
             // ÍNDICE ÚNICO DEVOLUCIÓN
             // =========================================
 
@@ -319,12 +348,17 @@ namespace Dinacem.Models
 
 
             // =========================================
-            // DECIMALES
+            // DECIMALES - SOLICITUD
             // =========================================
 
             modelBuilder.Entity<Solicitud>()
                 .Property(x => x.Monto)
                 .HasPrecision(18, 2);
+
+
+            // =========================================
+            // DECIMALES - RENDICIÓN
+            // =========================================
 
             modelBuilder.Entity<Rendicion>()
                 .Property(x => x.Total)
@@ -333,6 +367,11 @@ namespace Dinacem.Models
             modelBuilder.Entity<Rendicion>()
                 .Property(x => x.Saldo)
                 .HasPrecision(18, 2);
+
+
+            // =========================================
+            // DECIMALES - GASTOS
+            // =========================================
 
             modelBuilder.Entity<Gasto>()
                 .Property(x => x.MontoTotal)
@@ -346,32 +385,48 @@ namespace Dinacem.Models
                 .Property(x => x.IGV)
                 .HasPrecision(18, 2);
 
+
+            // =========================================
+            // DECIMALES - DEVOLUCIÓN
+            // =========================================
+
             modelBuilder.Entity<DevolucionSaldo>()
                 .Property(x => x.Monto)
                 .HasPrecision(18, 2);
+
+
+            // =========================================
+            // DECIMALES - REEMBOLSO
+            // =========================================
 
             modelBuilder.Entity<Reembolso>()
                 .Property(x => x.Monto)
                 .HasPrecision(18, 2);
 
-            modelBuilder.Entity<BitacoraVehiculo>()
-    .ToTable("BitacorasVehiculo");
 
-            modelBuilder.Entity<BitacoraVehiculo>()
-                .HasKey(x => x.IdBitacoraVehiculo);
-
-            modelBuilder.Entity<BitacoraVehiculo>()
-                .HasOne(x => x.Rendicion)
-                .WithMany(r => r.BitacorasVehiculo)
-                .HasForeignKey(x => x.IdRendicion)
-                .OnDelete(DeleteBehavior.NoAction);
+            // =========================================
+            // BITÁCORA VEHÍCULO
+            // =========================================
 
             modelBuilder.Entity<BitacoraVehiculo>()
                 .Property(x => x.DistanciaKm)
                 .HasPrecision(18, 2);
 
             modelBuilder.Entity<BitacoraVehiculo>()
+                .Property(x => x.TarifaKilometro)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<BitacoraVehiculo>()
                 .Property(x => x.MontoAsignado)
+                .HasPrecision(18, 2);
+
+
+            // =========================================
+            // CONFIGURACIÓN DEL SISTEMA
+            // =========================================
+
+            modelBuilder.Entity<ConfiguracionSistema>()
+                .Property(x => x.TarifaKilometro)
                 .HasPrecision(18, 2);
         }
     }
