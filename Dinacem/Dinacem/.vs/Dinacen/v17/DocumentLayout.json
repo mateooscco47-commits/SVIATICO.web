@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\models\\data\\aplicaciondbcontexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\data\\aplicaciondbcontexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\views\\rendicion\\detalleadmin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:views\\rendicion\\detalleadmin.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -34,16 +38,8 @@
       "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:controllers\\bitacoravehiculocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Migrations\\20260829064446_BaselineActual.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Migrations\\20260829064446_BaselineActual.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Migrations\\20260829064333_AgregarTarifaKilometro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Migrations\\20260829064333_AgregarTarifaKilometro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\models\\data\\aplicaciondbcontexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\data\\aplicaciondbcontexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
@@ -60,6 +56,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\models\\entidades\\configuracionsistema.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\entidades\\configuracionsistema.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\dinacem\\dinacem\\migrations\\20260829064446_baselineactual.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:migrations\\20260829064446_baselineactual.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -69,7 +69,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 12,
           "Children": [
             {
               "$type": "Bookmark",
@@ -89,7 +89,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "DetalleAdmin.cshtml",
               "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Rendicion\\DetalleAdmin.cshtml",
               "RelativeDocumentMoniker": "Views\\Rendicion\\DetalleAdmin.cshtml",
@@ -102,7 +102,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "RendicionPdfService_Completo_TarifaPorKilometro (1).cs",
               "DocumentMoniker": "C:\\Users\\lucas\\Downloads\\RendicionPdfService_Completo_TarifaPorKilometro (1).cs",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Downloads\\RendicionPdfService_Completo_TarifaPorKilometro (1).cs",
@@ -110,12 +110,11 @@
               "RelativeToolTip": "..\\..\\..\\..\\..\\Downloads\\RendicionPdfService_Completo_TarifaPorKilometro (1).cs",
               "ViewState": "AgIAADUFAAAAAAAAAAAAwGIFAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-29T06:59:55.049Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-29T06:59:55.049Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "RendicionPdfService.cs",
               "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Servicios\\RendicionPdfService.cs",
               "RelativeDocumentMoniker": "Models\\Servicios\\RendicionPdfService.cs",
@@ -123,12 +122,11 @@
               "RelativeToolTip": "Models\\Servicios\\RendicionPdfService.cs",
               "ViewState": "AgIAADUFAAAAAAAAAAAAwGIFAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-29T06:58:56.098Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-29T06:58:56.098Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\BitacoraVehiculo\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\BitacoraVehiculo\\Index.cshtml",
@@ -136,12 +134,11 @@
               "RelativeToolTip": "Views\\BitacoraVehiculo\\Index.cshtml",
               "ViewState": "AgIAAIMDAAAAAAAAAAAAwLADAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-29T06:56:03.609Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-29T06:56:03.609Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "_LayoutAdministrador.cshtml",
               "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Shared\\_LayoutAdministrador.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_LayoutAdministrador.cshtml",
@@ -149,12 +146,11 @@
               "RelativeToolTip": "Views\\Shared\\_LayoutAdministrador.cshtml",
               "ViewState": "AgIAAEECAAAAAAAAAAAAwG4CAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-29T06:51:34.368Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-29T06:51:34.368Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Configuracion\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Configuracion\\Index.cshtml",
@@ -162,12 +158,11 @@
               "RelativeToolTip": "Views\\Configuracion\\Index.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-08-29T06:50:15.998Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-29T06:50:15.998Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "ConfiguracionController.cs",
               "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\ConfiguracionController.cs",
               "RelativeDocumentMoniker": "Controllers\\ConfiguracionController.cs",
@@ -175,12 +170,11 @@
               "RelativeToolTip": "Controllers\\ConfiguracionController.cs",
               "ViewState": "AgIAAEAAAAAAAAAAAAAAwG0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-29T06:49:35.905Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-29T06:49:35.905Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "BitacoraVehiculoController.cs",
               "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\BitacoraVehiculoController.cs",
               "RelativeDocumentMoniker": "Controllers\\BitacoraVehiculoController.cs",
@@ -188,12 +182,24 @@
               "RelativeToolTip": "Controllers\\BitacoraVehiculoController.cs",
               "ViewState": "AgIAACgCAAAAAAAAAAAAwFUCAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-29T06:47:15.238Z",
+              "WhenOpened": "2026-08-29T06:47:15.238Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AplicacionDbContexto.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Data\\AplicacionDbContexto.cs",
+              "RelativeDocumentMoniker": "Models\\Data\\AplicacionDbContexto.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Data\\AplicacionDbContexto.cs",
+              "RelativeToolTip": "Models\\Data\\AplicacionDbContexto.cs",
+              "ViewState": "AgIAAIYBAAAAAAAAAAAAwJ0BAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-29T06:32:12.045Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 14,
               "Title": "20260829064446_BaselineActual.cs",
               "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Migrations\\20260829064446_BaselineActual.cs",
               "RelativeDocumentMoniker": "Migrations\\20260829064446_BaselineActual.cs",
@@ -201,8 +207,7 @@
               "RelativeToolTip": "Migrations\\20260829064446_BaselineActual.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-29T06:44:46.453Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-29T06:44:46.453Z"
             },
             {
               "$type": "Document",
@@ -214,12 +219,11 @@
               "RelativeToolTip": "Migrations\\20260829064333_AgregarTarifaKilometro.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-29T06:43:33.395Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-29T06:43:33.395Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 10,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -227,12 +231,11 @@
               "RelativeToolTip": "appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-08-29T06:35:33.346Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-29T06:35:33.346Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 11,
               "Title": "20260829063313_AgregarTarifaKilometro.cs",
               "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Migrations\\20260829063313_AgregarTarifaKilometro.cs",
               "RelativeDocumentMoniker": "Migrations\\20260829063313_AgregarTarifaKilometro.cs",
@@ -240,25 +243,11 @@
               "RelativeToolTip": "Migrations\\20260829063313_AgregarTarifaKilometro.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-29T06:33:13.718Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-29T06:33:13.718Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "AplicacionDbContexto.cs",
-              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Data\\AplicacionDbContexto.cs",
-              "RelativeDocumentMoniker": "Models\\Data\\AplicacionDbContexto.cs",
-              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Data\\AplicacionDbContexto.cs",
-              "RelativeToolTip": "Models\\Data\\AplicacionDbContexto.cs",
-              "ViewState": "AgIAACsBAAAAAAAAAAAjwEQBAAA2AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-29T06:32:12.045Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 12,
               "Title": "BitacoraVehiculo.cs",
               "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\BitacoraVehiculo.cs",
               "RelativeDocumentMoniker": "Models\\Entidades\\BitacoraVehiculo.cs",
@@ -266,12 +255,11 @@
               "RelativeToolTip": "Models\\Entidades\\BitacoraVehiculo.cs",
               "ViewState": "AgIAACgAAAAAAAAAAAAowEoAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-29T06:31:15.574Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-29T06:31:15.574Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 13,
               "Title": "ConfiguracionSistema.cs",
               "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\ConfiguracionSistema.cs",
               "RelativeDocumentMoniker": "Models\\Entidades\\ConfiguracionSistema.cs",
@@ -279,8 +267,7 @@
               "RelativeToolTip": "Models\\Entidades\\ConfiguracionSistema.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-08-29T06:30:59.612Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-08-29T06:30:59.612Z"
             }
           ]
         }

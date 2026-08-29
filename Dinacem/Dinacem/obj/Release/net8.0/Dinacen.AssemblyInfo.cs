@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Dinacen")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3b438df3fb1913f69c18defc30920ea4fb964ce2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+82bfbe9f4e0ad2ce5de9c14de579823cf57ef691")]
 [assembly: System.Reflection.AssemblyProductAttribute("Dinacen")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Dinacen")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
