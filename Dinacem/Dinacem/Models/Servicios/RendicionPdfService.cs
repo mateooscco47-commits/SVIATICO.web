@@ -7,7 +7,20 @@ public class RendicionPdfService
 {
     private readonly IWebHostEnvironment _environment;
 
-    public RendicionPdfService(IWebHostEnvironment environment)
+    // =============================================================
+    // COLORES INSTITUCIONALES
+    // =============================================================
+
+    private const string AzulDinacen = "#0C4A8A";
+    private const string VerdeDinacen = "#6AA84F";
+
+    private const string GrisTexto = "#333333";
+    private const string GrisSecundario = "#666666";
+    private const string GrisBorde = "#D9DEE5";
+    private const string GrisSuave = "#F5F7F9";
+
+    public RendicionPdfService(
+        IWebHostEnvironment environment)
     {
         _environment = environment;
     }
@@ -23,13 +36,28 @@ public class RendicionPdfService
         gastos ??= new List<Gasto>();
         bitacorasVehiculo ??= new List<BitacoraVehiculo>();
 
+        // =========================================================
+        // DATOS GENERALES
+        // =========================================================
+
         var nombreEmpleado =
-            $"{rendicion.Usuario?.Nombres} {rendicion.Usuario?.Apellidos}".Trim();
+            $"{rendicion.Usuario?.Nombres} {rendicion.Usuario?.Apellidos}"
+            .Trim();
 
         if (string.IsNullOrWhiteSpace(nombreEmpleado))
         {
-            nombreEmpleado = $"Usuario {rendicion.IdUsuario}";
+            nombreEmpleado =
+                $"Usuario {rendicion.IdUsuario}";
         }
+
+        var correoEmpleado =
+            rendicion.Usuario?.Correo ?? "-";
+
+        var celularEmpleado =
+            rendicion.Usuario?.Celular ?? "-";
+
+        var destino =
+            rendicion.Solicitud?.Destino ?? "-";
 
         var totalBase =
             gastos.Sum(g => g.ValorVenta);
@@ -41,10 +69,12 @@ public class RendicionPdfService
             gastos.Sum(g => g.MontoTotal);
 
         var totalVehiculo =
-            bitacorasVehiculo.Sum(b => b.MontoAsignado);
+            bitacorasVehiculo.Sum(
+                b => b.MontoAsignado);
 
         var totalKm =
-            bitacorasVehiculo.Sum(b => b.DistanciaKm);
+            bitacorasVehiculo.Sum(
+                b => b.DistanciaKm);
 
         var totalRendido =
             totalGastos + totalVehiculo;
@@ -56,10 +86,12 @@ public class RendicionPdfService
             montoAprobado - totalRendido;
 
         var nombreSeguroEmpleado =
-            LimpiarNombreArchivo(nombreEmpleado);
+            LimpiarNombreArchivo(
+                nombreEmpleado);
 
-        var nombreArchivo =
-            $"Liquidacion-{rendicion.IdRendicion}-{nombreSeguroEmpleado}.pdf";
+        // =========================================================
+        // CARPETA
+        // =========================================================
 
         var carpeta =
             Path.Combine(
@@ -68,13 +100,34 @@ public class RendicionPdfService
 
         Directory.CreateDirectory(carpeta);
 
-        var rutaFisica =
+        // =========================================================
+        // NOMBRES DE ARCHIVOS
+        //
+        // Se mantienen los nombres internos "Vouchers"
+        // para no romper el controlador existente.
+        // =========================================================
+
+        var nombreArchivoLiquidacion =
+            $"Liquidacion-{rendicion.IdRendicion}-{nombreSeguroEmpleado}.pdf";
+
+        var nombreArchivoVouchers =
+            $"Comprobantes-{rendicion.IdRendicion}-{nombreSeguroEmpleado}.pdf";
+
+        var rutaFisicaLiquidacion =
             Path.Combine(
                 carpeta,
-                nombreArchivo);
+                nombreArchivoLiquidacion);
 
-        var rutaPublica =
-            $"/liquidaciones/{nombreArchivo}";
+        var rutaFisicaVouchers =
+            Path.Combine(
+                carpeta,
+                nombreArchivoVouchers);
+
+        var rutaPublicaLiquidacion =
+            $"/liquidaciones/{nombreArchivoLiquidacion}";
+
+        var rutaPublicaVouchers =
+            $"/liquidaciones/{nombreArchivoVouchers}";
 
         // =========================================================
         // LOGO DINACEN
@@ -91,11 +144,12 @@ public class RendicionPdfService
         if (File.Exists(rutaLogo))
         {
             logoBytes =
-                await File.ReadAllBytesAsync(rutaLogo);
+                await File.ReadAllBytesAsync(
+                    rutaLogo);
         }
 
         // =========================================================
-        // CARGAR VOUCHERS ANTES DE CREAR EL DOCUMENTO
+        // CARGAR IMÁGENES DE COMPROBANTES
         // =========================================================
 
         var imagenesGastos =
@@ -108,6 +162,10 @@ public class RendicionPdfService
                     gasto.Comprobante);
         }
 
+        // =========================================================
+        // COMPROBANTE DE DEVOLUCIÓN
+        // =========================================================
+
         byte[]? imagenVoucherDevolucion = null;
 
         if (devolucion != null)
@@ -118,10 +176,13 @@ public class RendicionPdfService
         }
 
         // =========================================================
-        // GENERAR DOCUMENTO
+        // =========================================================
+        // PDF 1
+        // LIQUIDACIÓN DE GASTOS DE VIÁTICOS
+        // =========================================================
         // =========================================================
 
-        var documento =
+        var documentoLiquidacion =
             Document.Create(container =>
             {
                 container.Page(page =>
@@ -136,27 +197,27 @@ public class RendicionPdfService
                     page.DefaultTextStyle(text =>
                         text
                             .FontFamily("Arial")
-                            .FontSize(10)
-                            .FontColor(Colors.Black));
+                            .FontSize(9)
+                            .FontColor(GrisTexto));
 
-                    // =================================================
+                    // =====================================================
                     // ENCABEZADO
-                    // =================================================
+                    // =====================================================
 
                     page.Header()
                         .Column(header =>
                         {
-                            header.Spacing(8);
+                            header.Spacing(7);
 
                             // =================================================
-                            // LOGO + TÍTULO + INFORMACIÓN
+                            // CABECERA PRINCIPAL
                             // =================================================
 
                             header.Item()
                                 .Row(row =>
                                 {
                                     // -------------------------------------------------
-                                    // LOGO IZQUIERDO
+                                    // LOGO
                                     // -------------------------------------------------
 
                                     row.ConstantItem(105)
@@ -167,7 +228,7 @@ public class RendicionPdfService
                                             if (logoBytes != null)
                                             {
                                                 logo
-                                                    .Width(95)
+                                                    .Width(92)
                                                     .Image(logoBytes)
                                                     .FitArea();
                                             }
@@ -177,12 +238,13 @@ public class RendicionPdfService
                                                     .Text("DINACEN")
                                                     .FontSize(18)
                                                     .Bold()
-                                                    .FontColor("#0C4A8A");
+                                                    .FontColor(
+                                                        AzulDinacen);
                                             }
                                         });
 
                                     // -------------------------------------------------
-                                    // TÍTULO CENTRADO
+                                    // TÍTULO
                                     // -------------------------------------------------
 
                                     row.RelativeItem()
@@ -190,30 +252,38 @@ public class RendicionPdfService
                                         .AlignMiddle()
                                         .Column(titulo =>
                                         {
-                                            titulo.Item()
-                                                .AlignCenter()
-                                                .Text("LIQUIDACIÓN DE GASTOS")
-                                                .FontSize(18)
-                                                .Bold()
-                                                .FontColor(Colors.Black);
+                                            titulo.Spacing(1);
 
                                             titulo.Item()
                                                 .AlignCenter()
-                                                .Text("DE VIÁTICOS")
-                                                .FontSize(18)
+                                                .Text(
+                                                    "LIQUIDACIÓN DE GASTOS")
+                                                .FontSize(17)
                                                 .Bold()
-                                                .FontColor("#0C4A8A");
+                                                .FontColor(
+                                                    GrisTexto);
+
+                                            titulo.Item()
+                                                .AlignCenter()
+                                                .Text(
+                                                    "DE VIÁTICOS")
+                                                .FontSize(17)
+                                                .Bold()
+                                                .FontColor(
+                                                    AzulDinacen);
 
                                             titulo.Item()
                                                 .PaddingTop(3)
                                                 .AlignCenter()
-                                                .Text("Sistema de Gestión de Viáticos")
-                                                .FontSize(9)
-                                                .FontColor(Colors.Grey.Darken2);
+                                                .Text(
+                                                    "Sistema de Gestión de Viáticos")
+                                                .FontSize(8)
+                                                .FontColor(
+                                                    GrisSecundario);
                                         });
 
                                     // -------------------------------------------------
-                                    // INFORMACIÓN DERECHA
+                                    // NÚMERO DE LIQUIDACIÓN
                                     // -------------------------------------------------
 
                                     row.ConstantItem(105)
@@ -221,151 +291,124 @@ public class RendicionPdfService
                                         .AlignMiddle()
                                         .Column(info =>
                                         {
-                                            info.Item()
-                                                .AlignRight()
-                                                .Text("N.º LIQUIDACIÓN")
-                                                .FontSize(8)
-                                                .Bold()
-                                                .FontColor(Colors.Grey.Darken2);
+                                            info.Spacing(2);
 
                                             info.Item()
                                                 .AlignRight()
-                                                .Text($"#{rendicion.IdRendicion}")
-                                                .FontSize(16)
+                                                .Text(
+                                                    "N.º LIQUIDACIÓN")
+                                                .FontSize(7.5f)
                                                 .Bold()
-                                                .FontColor("#0C4A8A");
+                                                .FontColor(
+                                                    GrisSecundario);
 
                                             info.Item()
-                                                .PaddingTop(4)
+                                                .AlignRight()
+                                                .Text(
+                                                    $"#{rendicion.IdRendicion}")
+                                                .FontSize(15)
+                                                .Bold()
+                                                .FontColor(
+                                                    AzulDinacen);
+
+                                            info.Item()
+                                                .PaddingTop(3)
                                                 .AlignRight()
                                                 .Text(
                                                     $"Emitido: {DateTime.Now:dd/MM/yyyy}")
-                                                .FontSize(8)
-                                                .FontColor(Colors.Grey.Darken2);
+                                                .FontSize(7.5f)
+                                                .FontColor(
+                                                    GrisSecundario);
                                         });
                                 });
 
                             // =================================================
-                            // LÍNEAS INSTITUCIONALES
+                            // LÍNEA INSTITUCIONAL
                             // =================================================
 
                             header.Item()
-                                .Height(3)
-                                .Background("#0C4A8A");
-
-                            header.Item()
+                                .PaddingTop(4)
                                 .Height(2)
-                                .Background("#6AA84F");
+                                .Background(
+                                    AzulDinacen);
+
+                            header.Item()
+                                .Height(1)
+                                .Background(
+                                    VerdeDinacen);
 
                             // =================================================
-                            // DATOS DEL EMPLEADO
+                            // INFORMACIÓN DEL EMPLEADO
                             // =================================================
 
                             header.Item()
-                                .PaddingTop(8)
+                                .PaddingTop(7)
                                 .Border(1)
-                                .BorderColor("#D8E0E7")
-                                .Background("#F7F9FB")
-                                .Padding(10)
+                                .BorderColor(
+                                    GrisBorde)
+                                .Background(
+                                    Colors.White)
+                                .Padding(9)
                                 .Column(datos =>
                                 {
-                                    datos.Spacing(6);
+                                    datos.Spacing(5);
 
-                                    // -------------------------------------------------
                                     // FILA 1
-                                    // -------------------------------------------------
-
                                     datos.Item()
                                         .Row(row =>
                                         {
-                                            row.RelativeItem()
-                                                .Text(text =>
-                                                {
-                                                    text.Span("EMPLEADO: ")
-                                                        .Bold();
+                                            DatoCabecera(
+                                                row.RelativeItem(),
+                                                "EMPLEADO",
+                                                nombreEmpleado);
 
-                                                    text.Span(nombreEmpleado);
-                                                });
-
-                                            row.RelativeItem()
-                                                .Text(text =>
-                                                {
-                                                    text.Span("PERIODO: ")
-                                                        .Bold();
-
-                                                    text.Span(
-                                                        $"{rendicion.FechaInicio:dd/MM/yyyy} " +
-                                                        $"al {rendicion.FechaFin:dd/MM/yyyy}");
-                                                });
+                                            DatoCabecera(
+                                                row.RelativeItem(),
+                                                "PERIODO",
+                                                $"{rendicion.FechaInicio:dd/MM/yyyy} al {rendicion.FechaFin:dd/MM/yyyy}");
                                         });
 
-                                    // -------------------------------------------------
                                     // FILA 2
-                                    // -------------------------------------------------
-
                                     datos.Item()
                                         .Row(row =>
                                         {
-                                            row.RelativeItem()
-                                                .Text(text =>
-                                                {
-                                                    text.Span("CORREO: ")
-                                                        .Bold();
+                                            DatoCabecera(
+                                                row.RelativeItem(),
+                                                "CORREO",
+                                                correoEmpleado);
 
-                                                    text.Span(
-                                                        rendicion.Usuario?.Correo ?? "-");
-                                                });
-
-                                            row.RelativeItem()
-                                                .Text(text =>
-                                                {
-                                                    text.Span("CELULAR: ")
-                                                        .Bold();
-
-                                                    text.Span(
-                                                        rendicion.Usuario?.Celular ?? "-");
-                                                });
+                                            DatoCabecera(
+                                                row.RelativeItem(),
+                                                "CELULAR",
+                                                celularEmpleado);
                                         });
 
-                                    // -------------------------------------------------
                                     // FILA 3
-                                    // -------------------------------------------------
-
                                     datos.Item()
                                         .Row(row =>
                                         {
-                                            row.RelativeItem()
-                                                .Text(text =>
-                                                {
-                                                    text.Span("DESTINO: ")
-                                                        .Bold();
+                                            DatoCabecera(
+                                                row.RelativeItem(),
+                                                "DESTINO",
+                                                destino);
 
-                                                    text.Span(
-                                                        rendicion.Solicitud?.Destino ?? "-");
-                                                });
-
-                                            row.RelativeItem()
-                                                .Text(text =>
-                                                {
-                                                    text.Span("MONTO APROBADO: ")
-                                                        .Bold();
-
-                                                    text.Span(
-                                                        $"S/ {montoAprobado:N2}");
-                                                });
+                                            DatoCabecera(
+                                                row.RelativeItem(),
+                                                "MONTO APROBADO",
+                                                $"S/ {montoAprobado:N2}");
                                         });
                                 });
                         });
 
-                    // =========================================================
+                    // =====================================================
                     // CONTENIDO
-                    // =========================================================
+                    // =====================================================
 
                     page.Content()
-                        .PaddingTop(15)
+                        .PaddingTop(14)
                         .Column(content =>
                         {
-                            content.Spacing(12);
+                            content.Spacing(11);
 
                             // =================================================
                             // DETALLE DE GASTOS
@@ -384,16 +427,17 @@ public class RendicionPdfService
                                 content.Item()
                                     .Table(table =>
                                     {
-                                        table.ColumnsDefinition(columns =>
-                                        {
-                                            columns.ConstantColumn(55);
-                                            columns.RelativeColumn(1.15f);
-                                            columns.RelativeColumn(1.35f);
-                                            columns.RelativeColumn(1.6f);
-                                            columns.ConstantColumn(62);
-                                            columns.ConstantColumn(52);
-                                            columns.ConstantColumn(62);
-                                        });
+                                        table.ColumnsDefinition(
+                                            columns =>
+                                            {
+                                                columns.ConstantColumn(53);
+                                                columns.RelativeColumn(1.15f);
+                                                columns.RelativeColumn(1.35f);
+                                                columns.RelativeColumn(1.6f);
+                                                columns.ConstantColumn(55);
+                                                columns.ConstantColumn(48);
+                                                columns.ConstantColumn(58);
+                                            });
 
                                         table.Header(header =>
                                         {
@@ -430,11 +474,13 @@ public class RendicionPdfService
                                         {
                                             CeldaDetalle(
                                                 table.Cell(),
-                                                gasto.Fecha.ToString("dd/MM/yyyy"));
+                                                gasto.Fecha
+                                                    .ToString("dd/MM/yyyy"));
 
                                             CeldaDetalle(
                                                 table.Cell(),
-                                                gasto.TipoGasto?.Nombre ?? "-");
+                                                gasto.TipoGasto?.Nombre
+                                                    ?? "-");
 
                                             CeldaDetalle(
                                                 table.Cell(),
@@ -463,148 +509,25 @@ public class RendicionPdfService
                             {
                                 content.Item()
                                     .Border(1)
-                                    .BorderColor("#D8E0E7")
-                                    .Padding(10)
+                                    .BorderColor(
+                                        GrisBorde)
+                                    .Padding(14)
                                     .AlignCenter()
                                     .Text(
                                         "No se registraron gastos con comprobante.")
-                                    .FontSize(10);
+                                    .FontSize(9)
+                                    .FontColor(
+                                        GrisSecundario);
                             }
 
                             // =================================================
-                            // VOUCHERS DE GASTOS
-                            // =================================================
-
-                            if (gastos.Any())
-                            {
-                                content.Item()
-                                    .PaddingTop(8)
-                                    .Element(seccion =>
-                                    {
-                                        EncabezadoSeccion(
-                                            seccion,
-                                            "VOUCHERS DE GASTOS");
-                                    });
-
-                                foreach (var gasto in gastos)
-                                {
-                                    byte[]? imagenVoucher = null;
-
-                                    if (imagenesGastos.TryGetValue(
-                                            gasto.IdGasto,
-                                            out var imagen))
-                                    {
-                                        imagenVoucher = imagen;
-                                    }
-
-                                    content.Item()
-                                        .Element(contenedor =>
-                                        {
-                                            contenedor
-                                                .Border(1)
-                                                .BorderColor("#D8E0E7")
-                                                .Background("#F7F9FB")
-                                                .Padding(10)
-                                                .Column(voucher =>
-                                                {
-                                                    voucher.Spacing(7);
-
-                                                    voucher.Item()
-                                                        .Row(row =>
-                                                        {
-                                                            row.RelativeItem()
-                                                                .Text(text =>
-                                                                {
-                                                                    text.Span(
-                                                                        $"Gasto del {gasto.Fecha:dd/MM/yyyy}")
-                                                                        .Bold()
-                                                                        .FontSize(9);
-
-                                                                    text.Span(
-                                                                        $"  |  {gasto.TipoGasto?.Nombre ?? "-"}")
-                                                                        .FontSize(9);
-
-                                                                    text.Span(
-                                                                        $"  |  S/ {gasto.MontoTotal:N2}")
-                                                                        .Bold()
-                                                                        .FontSize(9);
-                                                                });
-
-                                                            row.ConstantItem(90)
-                                                                .AlignRight()
-                                                                .Text(
-                                                                    gasto.TipoComprobante?.Nombre ?? "-")
-                                                                .FontSize(8)
-                                                                .FontColor(
-                                                                    Colors.Grey.Darken2);
-                                                        });
-
-                                                    voucher.Item()
-                                                        .Height(1)
-                                                        .Background("#D8E0E7");
-
-                                                    // -------------------------------------------------
-                                                    // IMAGEN
-                                                    // -------------------------------------------------
-
-                                                    if (imagenVoucher != null)
-                                                    {
-                                                        voucher.Item()
-                                                            .AlignCenter()
-                                                            .MaxHeight(480)
-                                                            .Image(imagenVoucher)
-                                                            .FitArea();
-                                                    }
-                                                    else if (
-                                                        EsArchivoPdf(
-                                                            gasto.Comprobante))
-                                                    {
-                                                        voucher.Item()
-                                                            .AlignCenter()
-                                                            .Padding(20)
-                                                            .Text(
-                                                                "El comprobante fue adjuntado como archivo PDF.")
-                                                            .FontSize(10)
-                                                            .Bold()
-                                                            .FontColor("#0C4A8A");
-                                                    }
-                                                    else if (
-                                                        !string.IsNullOrWhiteSpace(
-                                                            gasto.Comprobante))
-                                                    {
-                                                        voucher.Item()
-                                                            .AlignCenter()
-                                                            .Padding(20)
-                                                            .Text(
-                                                                "No se pudo cargar la imagen del comprobante.")
-                                                            .FontSize(9)
-                                                            .FontColor(
-                                                                Colors.Grey.Darken2);
-                                                    }
-                                                    else
-                                                    {
-                                                        voucher.Item()
-                                                            .AlignCenter()
-                                                            .Padding(20)
-                                                            .Text(
-                                                                "Este gasto no tiene un comprobante adjunto.")
-                                                            .FontSize(9)
-                                                            .FontColor(
-                                                                Colors.Grey.Darken2);
-                                                    }
-                                                });
-                                        });
-                                }
-                            }
-
-                            // =================================================
-                            // BITÁCORA DE VEHÍCULO
+                            // BITÁCORA VEHICULAR
                             // =================================================
 
                             if (bitacorasVehiculo.Any())
                             {
                                 content.Item()
-                                    .PaddingTop(5)
+                                    .PaddingTop(4)
                                     .Element(seccion =>
                                     {
                                         EncabezadoSeccion(
@@ -615,16 +538,17 @@ public class RendicionPdfService
                                 content.Item()
                                     .Table(table =>
                                     {
-                                        table.ColumnsDefinition(columns =>
-                                        {
-                                            columns.ConstantColumn(52);
-                                            columns.RelativeColumn(1.15f);
-                                            columns.RelativeColumn(1.15f);
-                                            columns.ConstantColumn(58);
-                                            columns.ConstantColumn(58);
-                                            columns.RelativeColumn(1.25f);
-                                            columns.ConstantColumn(62);
-                                        });
+                                        table.ColumnsDefinition(
+                                            columns =>
+                                            {
+                                                columns.ConstantColumn(52);
+                                                columns.RelativeColumn(1.15f);
+                                                columns.RelativeColumn(1.15f);
+                                                columns.ConstantColumn(55);
+                                                columns.ConstantColumn(55);
+                                                columns.RelativeColumn(1.25f);
+                                                columns.ConstantColumn(58);
+                                            });
 
                                         table.Header(header =>
                                         {
@@ -657,11 +581,14 @@ public class RendicionPdfService
                                                 "Monto\nS/");
                                         });
 
-                                        foreach (var bitacora in bitacorasVehiculo)
+                                        foreach (
+                                            var bitacora
+                                            in bitacorasVehiculo)
                                         {
                                             CeldaDetalle(
                                                 table.Cell(),
-                                                bitacora.Fecha.ToString("dd/MM/yyyy"));
+                                                bitacora.Fecha
+                                                    .ToString("dd/MM/yyyy"));
 
                                             CeldaDetalle(
                                                 table.Cell(),
@@ -692,16 +619,22 @@ public class RendicionPdfService
                                         }
                                     });
 
+                                // -------------------------------------------------
+                                // RESUMEN VEHÍCULO
+                                // -------------------------------------------------
+
                                 content.Item()
                                     .AlignRight()
-                                    .Width(280)
+                                    .Width(270)
                                     .Border(1)
-                                    .BorderColor("#D8E0E7")
-                                    .Background("#F7F9FB")
-                                    .Padding(10)
+                                    .BorderColor(
+                                        GrisBorde)
+                                    .Background(
+                                        Colors.White)
+                                    .Padding(9)
                                     .Column(resumenVehiculo =>
                                     {
-                                        resumenVehiculo.Spacing(5);
+                                        resumenVehiculo.Spacing(4);
 
                                         FilaResumen(
                                             resumenVehiculo,
@@ -710,7 +643,8 @@ public class RendicionPdfService
 
                                         var tarifasUsadas =
                                             bitacorasVehiculo
-                                                .Select(b => b.TarifaKilometro)
+                                                .Select(
+                                                    b => b.TarifaKilometro)
                                                 .Distinct()
                                                 .ToList();
 
@@ -721,13 +655,20 @@ public class RendicionPdfService
                                                 "Tarifa aplicada:",
                                                 $"S/ {tarifasUsadas[0]:N2} / km");
                                         }
-                                        else if (tarifasUsadas.Count > 1)
+                                        else if (
+                                            tarifasUsadas.Count > 1)
                                         {
                                             FilaResumen(
                                                 resumenVehiculo,
                                                 "Tarifa aplicada:",
                                                 "Varias tarifas");
                                         }
+
+                                        resumenVehiculo.Item()
+                                            .PaddingTop(2)
+                                            .Height(1)
+                                            .Background(
+                                                GrisBorde);
 
                                         FilaResumen(
                                             resumenVehiculo,
@@ -742,7 +683,7 @@ public class RendicionPdfService
                             // =================================================
 
                             content.Item()
-                                .PaddingTop(4)
+                                .PaddingTop(3)
                                 .Element(seccion =>
                                 {
                                     EncabezadoSeccion(
@@ -753,13 +694,20 @@ public class RendicionPdfService
                             content.Item()
                                 .Row(row =>
                                 {
+                                    // -------------------------------------------------
+                                    // RESUMEN DETALLADO
+                                    // -------------------------------------------------
+
                                     row.RelativeItem()
                                         .Border(1)
-                                        .BorderColor("#D8E0E7")
-                                        .Padding(12)
+                                        .BorderColor(
+                                            GrisBorde)
+                                        .Background(
+                                            Colors.White)
+                                        .Padding(11)
                                         .Column(resumen =>
                                         {
-                                            resumen.Spacing(7);
+                                            resumen.Spacing(6);
 
                                             FilaResumen(
                                                 resumen,
@@ -785,9 +733,10 @@ public class RendicionPdfService
                                             }
 
                                             resumen.Item()
-                                                .PaddingTop(4)
+                                                .PaddingTop(2)
                                                 .Height(1)
-                                                .Background("#D8E0E7");
+                                                .Background(
+                                                    GrisBorde);
 
                                             FilaResumen(
                                                 resumen,
@@ -803,41 +752,54 @@ public class RendicionPdfService
 
                                             FilaResumen(
                                                 resumen,
-                                                "SALDO:",
-                                                $"S/ {saldoCalculado:N2}",
+                                                saldoCalculado >= 0
+                                                    ? "SALDO A DEVOLVER:"
+                                                    : "EXCESO RENDIDO:",
+                                                $"S/ {Math.Abs(saldoCalculado):N2}",
                                                 true);
                                         });
 
-                                    row.ConstantItem(12);
+                                    row.ConstantItem(10);
 
-                                    row.ConstantItem(180)
+                                    // -------------------------------------------------
+                                    // TOTAL PRINCIPAL
+                                    // -------------------------------------------------
+
+                                    row.ConstantItem(175)
                                         .Border(1)
-                                        .BorderColor("#0C4A8A")
-                                        .Background("#F1F6FA")
+                                        .BorderColor(
+                                            AzulDinacen)
+                                        .Background(
+                                            Colors.White)
                                         .Padding(12)
                                         .Column(resumenFinal =>
                                         {
-                                            resumenFinal.Spacing(7);
+                                            resumenFinal.Spacing(6);
 
                                             resumenFinal.Item()
                                                 .AlignCenter()
-                                                .Text("TOTAL RENDIDO")
-                                                .FontSize(10)
+                                                .Text(
+                                                    "TOTAL RENDIDO")
+                                                .FontSize(9)
                                                 .Bold()
-                                                .FontColor("#0C4A8A");
+                                                .FontColor(
+                                                    AzulDinacen);
 
                                             resumenFinal.Item()
-                                                .PaddingTop(5)
+                                                .PaddingTop(3)
                                                 .AlignCenter()
                                                 .Text(
                                                     $"S/ {totalRendido:N2}")
-                                                .FontSize(20)
+                                                .FontSize(19)
                                                 .Bold()
-                                                .FontColor(Colors.Black);
+                                                .FontColor(
+                                                    GrisTexto);
 
                                             resumenFinal.Item()
+                                                .PaddingTop(3)
                                                 .Height(2)
-                                                .Background("#6AA84F");
+                                                .Background(
+                                                    VerdeDinacen);
 
                                             resumenFinal.Item()
                                                 .PaddingTop(5)
@@ -846,23 +808,24 @@ public class RendicionPdfService
                                                     saldoCalculado >= 0
                                                         ? "SALDO A DEVOLVER"
                                                         : "EXCESO RENDIDO")
-                                                .FontSize(9)
+                                                .FontSize(8)
                                                 .Bold()
                                                 .FontColor(
-                                                    Colors.Grey.Darken2);
+                                                    GrisSecundario);
 
                                             resumenFinal.Item()
                                                 .AlignCenter()
                                                 .Text(
                                                     $"S/ {Math.Abs(saldoCalculado):N2}")
-                                                .FontSize(15)
+                                                .FontSize(14)
                                                 .Bold()
-                                                .FontColor(Colors.Black);
+                                                .FontColor(
+                                                    GrisTexto);
                                         });
                                 });
 
                             // =================================================
-                            // DEVOLUCIÓN DE SALDO
+                            // DEVOLUCIÓN
                             // =================================================
 
                             if (devolucion != null)
@@ -878,15 +841,17 @@ public class RendicionPdfService
 
                                 content.Item()
                                     .Border(1)
-                                    .BorderColor("#D8E0E7")
-                                    .Background("#F7F9FB")
-                                    .Padding(12)
+                                    .BorderColor(
+                                        GrisBorde)
+                                    .Background(
+                                        Colors.White)
+                                    .Padding(11)
                                     .Row(row =>
                                     {
                                         row.RelativeItem()
                                             .Column(datos =>
                                             {
-                                                datos.Spacing(5);
+                                                datos.Spacing(4);
 
                                                 DatoDevolucion(
                                                     datos,
@@ -902,7 +867,8 @@ public class RendicionPdfService
                                                     datos,
                                                     "Fecha",
                                                     devolucion.Fecha
-                                                        .ToString("dd/MM/yyyy"));
+                                                        .ToString(
+                                                            "dd/MM/yyyy"));
 
                                                 if (!string.IsNullOrWhiteSpace(
                                                         devolucion.Observaciones))
@@ -914,108 +880,29 @@ public class RendicionPdfService
                                                 }
                                             });
 
-                                        row.ConstantItem(150)
+                                        row.ConstantItem(145)
                                             .AlignMiddle()
                                             .Column(monto =>
                                             {
                                                 monto.Item()
                                                     .AlignCenter()
-                                                    .Text("MONTO DEVUELTO")
-                                                    .FontSize(9)
+                                                    .Text(
+                                                        "MONTO DEVUELTO")
+                                                    .FontSize(8)
                                                     .Bold()
-                                                    .FontColor("#0C4A8A");
+                                                    .FontColor(
+                                                        AzulDinacen);
 
                                                 monto.Item()
-                                                    .PaddingTop(4)
+                                                    .PaddingTop(3)
                                                     .AlignCenter()
                                                     .Text(
                                                         $"S/ {devolucion.Monto:N2}")
-                                                    .FontSize(17)
+                                                    .FontSize(16)
                                                     .Bold()
-                                                    .FontColor(Colors.Black);
+                                                    .FontColor(
+                                                        GrisTexto);
                                             });
-                                    });
-
-                                // =================================================
-                                // VOUCHER DEVOLUCIÓN
-                                // =================================================
-
-                                content.Item()
-                                    .PaddingTop(8)
-                                    .Element(seccion =>
-                                    {
-                                        EncabezadoSeccion(
-                                            seccion,
-                                            "VOUCHER DE DEVOLUCIÓN");
-                                    });
-
-                                content.Item()
-                                    .Border(1)
-                                    .BorderColor("#D8E0E7")
-                                    .Background("#F7F9FB")
-                                    .Padding(10)
-                                    .Column(voucher =>
-                                    {
-                                        voucher.Spacing(7);
-
-                                        voucher.Item()
-                                            .Text(
-                                                $"Banco: {devolucion.Banco}  |  " +
-                                                $"Operación: {devolucion.NumeroOperacion}  |  " +
-                                                $"Monto: S/ {devolucion.Monto:N2}")
-                                            .FontSize(9)
-                                            .Bold();
-
-                                        voucher.Item()
-                                            .Height(1)
-                                            .Background("#D8E0E7");
-
-                                        if (imagenVoucherDevolucion != null)
-                                        {
-                                            voucher.Item()
-                                                .AlignCenter()
-                                                .MaxHeight(500)
-                                                .Image(
-                                                    imagenVoucherDevolucion)
-                                                .FitArea();
-                                        }
-                                        else if (
-                                            EsArchivoPdf(
-                                                devolucion.Voucher))
-                                        {
-                                            voucher.Item()
-                                                .AlignCenter()
-                                                .Padding(20)
-                                                .Text(
-                                                    "El voucher de devolución fue adjuntado como archivo PDF.")
-                                                .FontSize(10)
-                                                .Bold()
-                                                .FontColor("#0C4A8A");
-                                        }
-                                        else if (
-                                            !string.IsNullOrWhiteSpace(
-                                                devolucion.Voucher))
-                                        {
-                                            voucher.Item()
-                                                .AlignCenter()
-                                                .Padding(20)
-                                                .Text(
-                                                    "No se pudo cargar la imagen del voucher de devolución.")
-                                                .FontSize(9)
-                                                .FontColor(
-                                                    Colors.Grey.Darken2);
-                                        }
-                                        else
-                                        {
-                                            voucher.Item()
-                                                .AlignCenter()
-                                                .Padding(20)
-                                                .Text(
-                                                    "No se adjuntó voucher de devolución.")
-                                                .FontSize(9)
-                                                .FontColor(
-                                                    Colors.Grey.Darken2);
-                                        }
                                     });
                             }
 
@@ -1024,7 +911,7 @@ public class RendicionPdfService
                             // =================================================
 
                             content.Item()
-                                .PaddingTop(45)
+                                .PaddingTop(38)
                                 .Row(firmas =>
                                 {
                                     firmas.RelativeItem()
@@ -1032,93 +919,105 @@ public class RendicionPdfService
                                         .Column(firma =>
                                         {
                                             firma.Item()
-                                                .Width(200)
+                                                .Width(190)
+                                                .AlignCenter()
                                                 .LineHorizontal(1);
 
                                             firma.Item()
                                                 .PaddingTop(5)
                                                 .AlignCenter()
-                                                .Text("FIRMA DEL EMPLEADO")
+                                                .Text(
+                                                    "FIRMA DEL EMPLEADO")
                                                 .Bold()
-                                                .FontSize(9);
+                                                .FontSize(8.5f);
 
                                             firma.Item()
-                                                .PaddingTop(3)
+                                                .PaddingTop(2)
                                                 .AlignCenter()
-                                                .Text(nombreEmpleado)
-                                                .FontSize(9);
+                                                .Text(
+                                                    nombreEmpleado)
+                                                .FontSize(8);
                                         });
 
-                                    firmas.ConstantItem(80);
+                                    firmas.ConstantItem(75);
 
                                     firmas.RelativeItem()
                                         .AlignCenter()
                                         .Column(firma =>
                                         {
                                             firma.Item()
-                                                .Width(200)
+                                                .Width(190)
+                                                .AlignCenter()
                                                 .LineHorizontal(1);
 
                                             firma.Item()
                                                 .PaddingTop(5)
                                                 .AlignCenter()
-                                                .Text("FIRMA DE APROBACIÓN")
+                                                .Text(
+                                                    "FIRMA DE APROBACIÓN")
                                                 .Bold()
-                                                .FontSize(9);
+                                                .FontSize(8.5f);
 
                                             firma.Item()
-                                                .PaddingTop(3)
+                                                .PaddingTop(2)
                                                 .AlignCenter()
-                                                .Text("Responsable de revisión")
-                                                .FontSize(9);
+                                                .Text(
+                                                    "Responsable de revisión")
+                                                .FontSize(8);
                                         });
                                 });
                         });
 
-                    // =========================================================
+                    // =====================================================
                     // FOOTER
-                    // =========================================================
+                    // =====================================================
 
                     page.Footer()
-                        .PaddingTop(8)
+                        .PaddingTop(7)
                         .Column(footer =>
                         {
                             footer.Item()
                                 .Height(1)
-                                .Background("#D8E0E7");
+                                .Background(
+                                    GrisBorde);
 
                             footer.Item()
-                                .PaddingTop(6)
+                                .PaddingTop(5)
                                 .Row(row =>
                                 {
                                     row.RelativeItem()
-                                        .Text("DINACEN")
-                                        .FontSize(8)
+                                        .Text(
+                                            "DINACEN")
+                                        .FontSize(7.5f)
                                         .Bold()
-                                        .FontColor("#0C4A8A");
+                                        .FontColor(
+                                            AzulDinacen);
 
                                     row.RelativeItem()
                                         .AlignCenter()
-                                        .Text("Sistema de Gestión de Viáticos")
-                                        .FontSize(8)
+                                        .Text(
+                                            "Sistema de Gestión de Viáticos")
+                                        .FontSize(7.5f)
                                         .FontColor(
-                                            Colors.Grey.Darken2);
+                                            GrisSecundario);
 
                                     row.RelativeItem()
                                         .AlignRight()
                                         .Text(text =>
                                         {
-                                            text.Span("Página ")
-                                                .FontSize(8);
+                                            text.Span(
+                                                "Página ")
+                                                .FontSize(7.5f);
 
                                             text.CurrentPageNumber()
-                                                .FontSize(8);
+                                                .FontSize(7.5f);
 
-                                            text.Span(" de ")
-                                                .FontSize(8);
+                                            text.Span(
+                                                " de ")
+                                                .FontSize(7.5f);
 
                                             text.TotalPages()
-                                                .FontSize(8);
+                                                .FontSize(7.5f);
                                         });
                                 });
                         });
@@ -1126,25 +1025,642 @@ public class RendicionPdfService
             });
 
         // =========================================================
-        // GENERAR PDF
+        // GENERAR PDF DE LIQUIDACIÓN
         // =========================================================
 
         await Task.Run(() =>
         {
-            documento.GeneratePdf(rutaFisica);
+            documentoLiquidacion.GeneratePdf(
+                rutaFisicaLiquidacion);
         });
+
+        // =========================================================
+        // =========================================================
+        // PDF 2
+        // COMPROBANTES DE LA RENDICIÓN
+        // =========================================================
+        // =========================================================
+
+        var documentoComprobantes =
+            Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+
+                    page.MarginTop(28);
+                    page.MarginBottom(30);
+                    page.MarginLeft(30);
+                    page.MarginRight(30);
+
+                    page.DefaultTextStyle(text =>
+                        text
+                            .FontFamily("Arial")
+                            .FontSize(9)
+                            .FontColor(
+                                GrisTexto));
+
+                    // =====================================================
+                    // ENCABEZADO
+                    // =====================================================
+
+                    page.Header()
+                        .Column(header =>
+                        {
+                            header.Spacing(7);
+
+                            header.Item()
+                                .Row(row =>
+                                {
+                                    // -------------------------------------------------
+                                    // LOGO
+                                    // -------------------------------------------------
+
+                                    row.ConstantItem(105)
+                                        .AlignLeft()
+                                        .AlignMiddle()
+                                        .Element(logo =>
+                                        {
+                                            if (logoBytes != null)
+                                            {
+                                                logo
+                                                    .Width(92)
+                                                    .Image(logoBytes)
+                                                    .FitArea();
+                                            }
+                                            else
+                                            {
+                                                logo
+                                                    .Text("DINACEN")
+                                                    .FontSize(18)
+                                                    .Bold()
+                                                    .FontColor(
+                                                        AzulDinacen);
+                                            }
+                                        });
+
+                                    // -------------------------------------------------
+                                    // TÍTULO
+                                    // -------------------------------------------------
+
+                                    row.RelativeItem()
+                                        .AlignCenter()
+                                        .AlignMiddle()
+                                        .Column(titulo =>
+                                        {
+                                            titulo.Spacing(1);
+
+                                            titulo.Item()
+                                                .AlignCenter()
+                                                .Text(
+                                                    "COMPROBANTES")
+                                                .FontSize(17)
+                                                .Bold()
+                                                .FontColor(
+                                                    GrisTexto);
+
+                                            titulo.Item()
+                                                .AlignCenter()
+                                                .Text(
+                                                    "DE LA RENDICIÓN")
+                                                .FontSize(17)
+                                                .Bold()
+                                                .FontColor(
+                                                    AzulDinacen);
+
+                                            titulo.Item()
+                                                .PaddingTop(3)
+                                                .AlignCenter()
+                                                .Text(
+                                                    $"Liquidación N.º {rendicion.IdRendicion}")
+                                                .FontSize(8)
+                                                .FontColor(
+                                                    GrisSecundario);
+                                        });
+
+                                    // -------------------------------------------------
+                                    // NÚMERO
+                                    // -------------------------------------------------
+
+                                    row.ConstantItem(105)
+                                        .AlignRight()
+                                        .AlignMiddle()
+                                        .Column(info =>
+                                        {
+                                            info.Spacing(2);
+
+                                            info.Item()
+                                                .AlignRight()
+                                                .Text(
+                                                    "LIQUIDACIÓN")
+                                                .FontSize(7.5f)
+                                                .Bold()
+                                                .FontColor(
+                                                    GrisSecundario);
+
+                                            info.Item()
+                                                .AlignRight()
+                                                .Text(
+                                                    $"#{rendicion.IdRendicion}")
+                                                .FontSize(15)
+                                                .Bold()
+                                                .FontColor(
+                                                    AzulDinacen);
+
+                                            info.Item()
+                                                .PaddingTop(3)
+                                                .AlignRight()
+                                                .Text(
+                                                    $"Emitido: {DateTime.Now:dd/MM/yyyy}")
+                                                .FontSize(7.5f)
+                                                .FontColor(
+                                                    GrisSecundario);
+                                        });
+                                });
+
+                            // =================================================
+                            // LÍNEAS
+                            // =================================================
+
+                            header.Item()
+                                .PaddingTop(4)
+                                .Height(2)
+                                .Background(
+                                    AzulDinacen);
+
+                            header.Item()
+                                .Height(1)
+                                .Background(
+                                    VerdeDinacen);
+
+                            // =================================================
+                            // DATOS DE LA RENDICIÓN
+                            // =================================================
+
+                            header.Item()
+                                .PaddingTop(7)
+                                .Border(1)
+                                .BorderColor(
+                                    GrisBorde)
+                                .Background(
+                                    Colors.White)
+                                .Padding(9)
+                                .Column(datos =>
+                                {
+                                    datos.Spacing(4);
+
+                                    DatoSimple(
+                                        datos,
+                                        "EMPLEADO",
+                                        nombreEmpleado);
+
+                                    DatoSimple(
+                                        datos,
+                                        "DESTINO",
+                                        destino);
+
+                                    DatoSimple(
+                                        datos,
+                                        "PERIODO",
+                                        $"{rendicion.FechaInicio:dd/MM/yyyy} al {rendicion.FechaFin:dd/MM/yyyy}");
+                                });
+                        });
+
+                    // =====================================================
+                    // CONTENIDO
+                    // =====================================================
+
+                    page.Content()
+                        .PaddingTop(14)
+                        .Column(content =>
+                        {
+                            content.Spacing(12);
+
+                            // =================================================
+                            // TÍTULO DE GASTOS
+                            // =================================================
+
+                            content.Item()
+                                .Element(seccion =>
+                                {
+                                    EncabezadoSeccion(
+                                        seccion,
+                                        "COMPROBANTES DE GASTOS");
+                                });
+
+                            // =================================================
+                            // COMPROBANTES DE GASTOS
+                            // =================================================
+
+                            var numeroComprobante = 0;
+
+                            foreach (var gasto in gastos)
+                            {
+                                byte[]? imagenComprobante = null;
+
+                                if (imagenesGastos.TryGetValue(
+                                        gasto.IdGasto,
+                                        out var imagen))
+                                {
+                                    imagenComprobante =
+                                        imagen;
+                                }
+
+                                if (imagenComprobante != null)
+                                {
+                                    numeroComprobante++;
+
+                                    content.Item()
+                                        .Border(1)
+                                        .BorderColor(
+                                            GrisBorde)
+                                        .Background(
+                                            Colors.White)
+                                        .Padding(9)
+                                        .Column(comprobante =>
+                                        {
+                                            comprobante.Spacing(7);
+
+                                            // -----------------------------------------
+                                            // CABECERA DEL COMPROBANTE
+                                            // -----------------------------------------
+
+                                            comprobante.Item()
+                                                .Row(row =>
+                                                {
+                                                    row.RelativeItem()
+                                                        .Column(datos =>
+                                                        {
+                                                            datos.Spacing(2);
+
+                                                            datos.Item()
+                                                                .Text(text =>
+                                                                {
+                                                                    text.Span(
+                                                                        $"COMPROBANTE N.º {numeroComprobante}")
+                                                                        .Bold()
+                                                                        .FontSize(9)
+                                                                        .FontColor(
+                                                                            AzulDinacen);
+
+                                                                    text.Span(
+                                                                        $"   |   {gasto.Fecha:dd/MM/yyyy}")
+                                                                        .FontSize(8)
+                                                                        .FontColor(
+                                                                            GrisSecundario);
+                                                                });
+
+                                                            datos.Item()
+                                                                .Text(text =>
+                                                                {
+                                                                    text.Span(
+                                                                        "Tipo: ")
+                                                                        .Bold()
+                                                                        .FontSize(8);
+
+                                                                    text.Span(
+                                                                        gasto.TipoGasto?.Nombre
+                                                                        ?? "-")
+                                                                        .FontSize(8);
+
+                                                                    text.Span(
+                                                                        "   |   Documento: ")
+                                                                        .Bold()
+                                                                        .FontSize(8);
+
+                                                                    text.Span(
+                                                                        $"{gasto.TipoComprobante?.Nombre ?? "-"} {gasto.Serie}-{gasto.Numero}")
+                                                                        .FontSize(8);
+                                                                });
+                                                        });
+
+                                                    row.ConstantItem(90)
+                                                        .AlignRight()
+                                                        .AlignMiddle()
+                                                        .Text(
+                                                            $"S/ {gasto.MontoTotal:N2}")
+                                                        .FontSize(11)
+                                                        .Bold()
+                                                        .FontColor(
+                                                            GrisTexto);
+                                                });
+
+                                            // -----------------------------------------
+                                            // LÍNEA
+                                            // -----------------------------------------
+
+                                            comprobante.Item()
+                                                .Height(1)
+                                                .Background(
+                                                    GrisBorde);
+
+                                            // -----------------------------------------
+                                            // DETALLE
+                                            // -----------------------------------------
+
+                                            if (!string.IsNullOrWhiteSpace(
+                                                    gasto.Detalle))
+                                            {
+                                                comprobante.Item()
+                                                    .Text(text =>
+                                                    {
+                                                        text.Span(
+                                                            "Detalle: ")
+                                                            .Bold()
+                                                            .FontSize(8);
+
+                                                        text.Span(
+                                                            gasto.Detalle)
+                                                            .FontSize(8);
+                                                    });
+                                            }
+
+                                            // -----------------------------------------
+                                            // IMAGEN
+                                            // -----------------------------------------
+
+                                            comprobante.Item()
+                                                .AlignCenter()
+                                                .MaxHeight(620)
+                                                .Image(
+                                                    imagenComprobante)
+                                                .FitArea();
+                                        });
+                                }
+                            }
+
+                            // =================================================
+                            // COMPROBANTE DE DEVOLUCIÓN
+                            // =================================================
+
+                            if (devolucion != null &&
+                                imagenVoucherDevolucion != null)
+                            {
+                                content.Item()
+                                    .PaddingTop(5)
+                                    .Element(seccion =>
+                                    {
+                                        EncabezadoSeccion(
+                                            seccion,
+                                            "COMPROBANTE DE DEVOLUCIÓN DE SALDO");
+                                    });
+
+                                content.Item()
+                                    .Border(1)
+                                    .BorderColor(
+                                        GrisBorde)
+                                    .Background(
+                                        Colors.White)
+                                    .Padding(9)
+                                    .Column(comprobante =>
+                                    {
+                                        comprobante.Spacing(7);
+
+                                        comprobante.Item()
+                                            .Row(row =>
+                                            {
+                                                row.RelativeItem()
+                                                    .Column(datos =>
+                                                    {
+                                                        datos.Spacing(2);
+
+                                                        datos.Item()
+                                                            .Text(
+                                                                "DEVOLUCIÓN DE SALDO")
+                                                            .Bold()
+                                                            .FontSize(9)
+                                                            .FontColor(
+                                                                AzulDinacen);
+
+                                                        datos.Item()
+                                                            .Text(text =>
+                                                            {
+                                                                text.Span(
+                                                                    "Banco: ")
+                                                                    .Bold()
+                                                                    .FontSize(8);
+
+                                                                text.Span(
+                                                                    devolucion.Banco
+                                                                    ?? "-")
+                                                                    .FontSize(8);
+
+                                                                text.Span(
+                                                                    "   |   Operación: ")
+                                                                    .Bold()
+                                                                    .FontSize(8);
+
+                                                                text.Span(
+                                                                    devolucion.NumeroOperacion
+                                                                    ?? "-")
+                                                                    .FontSize(8);
+                                                            });
+
+                                                        datos.Item()
+                                                            .Text(text =>
+                                                            {
+                                                                text.Span(
+                                                                    "Fecha: ")
+                                                                    .Bold()
+                                                                    .FontSize(8);
+
+                                                                text.Span(
+                                                                    devolucion.Fecha
+                                                                        .ToString(
+                                                                            "dd/MM/yyyy"))
+                                                                    .FontSize(8);
+                                                            });
+                                                    });
+
+                                                row.ConstantItem(95)
+                                                    .AlignRight()
+                                                    .AlignMiddle()
+                                                    .Text(
+                                                        $"S/ {devolucion.Monto:N2}")
+                                                    .FontSize(11)
+                                                    .Bold()
+                                                    .FontColor(
+                                                        GrisTexto);
+                                            });
+
+                                        comprobante.Item()
+                                            .Height(1)
+                                            .Background(
+                                                GrisBorde);
+
+                                        if (!string.IsNullOrWhiteSpace(
+                                                devolucion.Observaciones))
+                                        {
+                                            comprobante.Item()
+                                                .Text(text =>
+                                                {
+                                                    text.Span(
+                                                        "Observaciones: ")
+                                                        .Bold()
+                                                        .FontSize(8);
+
+                                                    text.Span(
+                                                        devolucion.Observaciones)
+                                                        .FontSize(8);
+                                                });
+                                        }
+
+                                        comprobante.Item()
+                                            .AlignCenter()
+                                            .MaxHeight(620)
+                                            .Image(
+                                                imagenVoucherDevolucion)
+                                            .FitArea();
+                                    });
+                            }
+
+                            // =================================================
+                            // SI NO EXISTEN IMÁGENES
+                            // =================================================
+
+                            var cantidadImagenes =
+                                imagenesGastos.Values
+                                    .Count(x => x != null);
+
+                            if (imagenVoucherDevolucion != null)
+                            {
+                                cantidadImagenes++;
+                            }
+
+                            if (cantidadImagenes == 0)
+                            {
+                                content.Item()
+                                    .Border(1)
+                                    .BorderColor(
+                                        GrisBorde)
+                                    .Background(
+                                        Colors.White)
+                                    .Padding(25)
+                                    .AlignCenter()
+                                    .Column(mensaje =>
+                                    {
+                                        mensaje.Spacing(7);
+
+                                        mensaje.Item()
+                                            .AlignCenter()
+                                            .Text(
+                                                "NO HAY COMPROBANTES ADJUNTOS")
+                                            .FontSize(11)
+                                            .Bold()
+                                            .FontColor(
+                                                AzulDinacen);
+
+                                        mensaje.Item()
+                                            .AlignCenter()
+                                            .Text(
+                                                "No se encontraron comprobantes de gastos o comprobantes de devolución registrados como imágenes.")
+                                            .FontSize(8.5f)
+                                            .FontColor(
+                                                GrisSecundario);
+                                    });
+                            }
+                        });
+
+                    // =====================================================
+                    // FOOTER
+                    // =====================================================
+
+                    page.Footer()
+                        .PaddingTop(7)
+                        .Column(footer =>
+                        {
+                            footer.Item()
+                                .Height(1)
+                                .Background(
+                                    GrisBorde);
+
+                            footer.Item()
+                                .PaddingTop(5)
+                                .Row(row =>
+                                {
+                                    row.RelativeItem()
+                                        .Text(
+                                            "DINACEN")
+                                        .FontSize(7.5f)
+                                        .Bold()
+                                        .FontColor(
+                                            AzulDinacen);
+
+                                    row.RelativeItem()
+                                        .AlignCenter()
+                                        .Text(
+                                            "Comprobantes de la rendición")
+                                        .FontSize(7.5f)
+                                        .FontColor(
+                                            GrisSecundario);
+
+                                    row.RelativeItem()
+                                        .AlignRight()
+                                        .Text(text =>
+                                        {
+                                            text.Span(
+                                                "Página ")
+                                                .FontSize(7.5f);
+
+                                            text.CurrentPageNumber()
+                                                .FontSize(7.5f);
+
+                                            text.Span(
+                                                " de ")
+                                                .FontSize(7.5f);
+
+                                            text.TotalPages()
+                                                .FontSize(7.5f);
+                                        });
+                                });
+                        });
+                });
+            });
+
+        // =========================================================
+        // GENERAR PDF DE COMPROBANTES
+        // =========================================================
+
+        await Task.Run(() =>
+        {
+            documentoComprobantes.GeneratePdf(
+                rutaFisicaVouchers);
+        });
+
+        // =========================================================
+        // RETORNAR LOS DOS PDF
+        // =========================================================
 
         return new ResultadoPdfRendicion
         {
-            RutaFisica = rutaFisica,
-            RutaPublica = rutaPublica,
-            NombreArchivo = nombreArchivo
+            // PDF PRINCIPAL
+            RutaFisica =
+                rutaFisicaLiquidacion,
+
+            RutaPublica =
+                rutaPublicaLiquidacion,
+
+            NombreArchivo =
+                nombreArchivoLiquidacion,
+
+            // PDF DE COMPROBANTES
+            //
+            // Se mantienen los nombres de propiedades
+            // "Vouchers" para compatibilidad con tu código actual.
+            RutaFisicaVouchers =
+                rutaFisicaVouchers,
+
+            RutaPublicaVouchers =
+                rutaPublicaVouchers,
+
+            NombreArchivoVouchers =
+                nombreArchivoVouchers
         };
     }
 
-    // =========================================================
+    // =============================================================
     // CARGAR IMAGEN DEL COMPROBANTE
-    // =========================================================
+    // =============================================================
 
     private byte[]? CargarArchivoImagen(
         string? rutaArchivo)
@@ -1185,7 +1701,8 @@ public class RendicionPdfService
                 return null;
             }
 
-            return File.ReadAllBytes(rutaFisica);
+            return File.ReadAllBytes(
+                rutaFisica);
         }
         catch
         {
@@ -1193,9 +1710,9 @@ public class RendicionPdfService
         }
     }
 
-    // =========================================================
+    // =============================================================
     // VERIFICAR SI EL ARCHIVO ES PDF
-    // =========================================================
+    // =============================================================
 
     private static bool EsArchivoPdf(
         string? rutaArchivo)
@@ -1205,53 +1722,113 @@ public class RendicionPdfService
             return false;
         }
 
-        return Path.GetExtension(rutaArchivo)
+        return Path.GetExtension(
+                rutaArchivo)
             .Equals(
                 ".pdf",
                 StringComparison.OrdinalIgnoreCase);
     }
 
-    // =========================================================
+    // =============================================================
     // ENCABEZADO DE SECCIÓN
-    // =========================================================
+    // =============================================================
 
     private static void EncabezadoSeccion(
         IContainer container,
         string texto)
     {
         container
-            .BorderBottom(2)
-            .BorderColor("#0C4A8A")
+            .BorderBottom(1.5f)
+            .BorderColor(
+                AzulDinacen)
             .PaddingBottom(5)
             .Text(texto)
-            .FontSize(11)
+            .FontSize(10.5f)
             .Bold()
-            .FontColor("#0C4A8A");
+            .FontColor(
+                AzulDinacen);
     }
 
-    // =========================================================
+    // =============================================================
+    // DATO DEL ENCABEZADO
+    // =============================================================
+
+    private static void DatoCabecera(
+        IContainer container,
+        string etiqueta,
+        string valor)
+    {
+        container
+            .Text(text =>
+            {
+                text.Span(
+                        $"{etiqueta}: ")
+                    .Bold()
+                    .FontSize(8)
+                    .FontColor(
+                        GrisSecundario);
+
+                text.Span(
+                        valor)
+                    .FontSize(8.5f)
+                    .FontColor(
+                        GrisTexto);
+            });
+    }
+
+    // =============================================================
+    // DATO SIMPLE
+    // =============================================================
+
+    private static void DatoSimple(
+        ColumnDescriptor columna,
+        string etiqueta,
+        string valor)
+    {
+        columna.Item()
+            .Text(text =>
+            {
+                text.Span(
+                        $"{etiqueta}: ")
+                    .Bold()
+                    .FontSize(8)
+                    .FontColor(
+                        GrisSecundario);
+
+                text.Span(
+                        valor)
+                    .FontSize(8.5f)
+                    .FontColor(
+                        GrisTexto);
+            });
+    }
+
+    // =============================================================
     // CELDA CABECERA
-    // =========================================================
+    // =============================================================
 
     private static void CeldaCabecera(
         IContainer container,
         string texto)
     {
         container
-            .Background("#0C4A8A")
+            .Background(
+                AzulDinacen)
             .Border(0.5f)
-            .BorderColor("#D8E0E7")
-            .Padding(6)
+            .BorderColor(
+                AzulDinacen)
+            .Padding(5)
             .AlignMiddle()
             .Text(texto)
-            .FontColor(Colors.White)
+            .FontColor(
+                Colors.White)
             .Bold()
-            .FontSize(8);
+            .FontSize(7.5f);
     }
 
-    // =========================================================
+    // =============================================================
     // CELDA DETALLE
-    // =========================================================
+    // =============================================================
 
     private static void CeldaDetalle(
         IContainer container,
@@ -1259,16 +1836,18 @@ public class RendicionPdfService
     {
         container
             .Border(0.5f)
-            .BorderColor("#D8E0E7")
-            .Padding(6)
+            .BorderColor(
+                GrisBorde)
+            .Padding(5)
             .Text(texto)
-            .FontSize(8.5f)
-            .FontColor(Colors.Black);
+            .FontSize(7.8f)
+            .FontColor(
+                GrisTexto);
     }
 
-    // =========================================================
+    // =============================================================
     // CELDA NUMÉRICA
-    // =========================================================
+    // =============================================================
 
     private static void CeldaNumero(
         IContainer container,
@@ -1276,17 +1855,20 @@ public class RendicionPdfService
     {
         container
             .Border(0.5f)
-            .BorderColor("#D8E0E7")
-            .Padding(6)
+            .BorderColor(
+                GrisBorde)
+            .Padding(5)
             .AlignRight()
-            .Text(monto.ToString("N2"))
-            .FontSize(8.5f)
-            .FontColor(Colors.Black);
+            .Text(
+                monto.ToString("N2"))
+            .FontSize(7.8f)
+            .FontColor(
+                GrisTexto);
     }
 
-    // =========================================================
+    // =============================================================
     // FILA RESUMEN
-    // =========================================================
+    // =============================================================
 
     private static void FilaResumen(
         ColumnDescriptor columna,
@@ -1300,15 +1882,23 @@ public class RendicionPdfService
                 var etiquetaTexto =
                     row.RelativeItem()
                         .Text(etiqueta)
-                        .FontSize(esTotal ? 10 : 9)
-                        .FontColor(Colors.Black);
+                        .FontSize(
+                            esTotal
+                                ? 9
+                                : 8.5f)
+                        .FontColor(
+                            GrisTexto);
 
                 var valorTexto =
                     row.ConstantItem(100)
                         .AlignRight()
                         .Text(valor)
-                        .FontSize(esTotal ? 10 : 9)
-                        .FontColor(Colors.Black);
+                        .FontSize(
+                            esTotal
+                                ? 9
+                                : 8.5f)
+                        .FontColor(
+                            GrisTexto);
 
                 if (esTotal)
                 {
@@ -1318,9 +1908,9 @@ public class RendicionPdfService
             });
     }
 
-    // =========================================================
+    // =============================================================
     // DATO DEVOLUCIÓN
-    // =========================================================
+    // =============================================================
 
     private static void DatoDevolucion(
         ColumnDescriptor columna,
@@ -1330,24 +1920,31 @@ public class RendicionPdfService
         columna.Item()
             .Text(text =>
             {
-                text.Span($"{etiqueta}: ")
+                text.Span(
+                        $"{etiqueta}: ")
                     .Bold()
-                    .FontSize(9);
+                    .FontSize(8)
+                    .FontColor(
+                        GrisSecundario);
 
-                text.Span(valor ?? "-")
-                    .FontSize(9);
+                text.Span(
+                        valor ?? "-")
+                    .FontSize(8.5f)
+                    .FontColor(
+                        GrisTexto);
             });
     }
 
-    // =========================================================
+    // =============================================================
     // LIMPIAR NOMBRE DE ARCHIVO
-    // =========================================================
+    // =============================================================
 
     private static string LimpiarNombreArchivo(
         string nombre)
     {
-        foreach (var caracter in
-                 Path.GetInvalidFileNameChars())
+        foreach (
+            var caracter
+            in Path.GetInvalidFileNameChars())
         {
             nombre =
                 nombre.Replace(
@@ -1355,18 +1952,24 @@ public class RendicionPdfService
                     '-');
         }
 
-        return nombre.Replace(
-            ' ',
-            '-');
+        return nombre
+            .Replace(
+                ' ',
+                '-');
     }
 }
 
-// =========================================================
-// RESULTADO PDF
-// =========================================================
+
+// =============================================================
+// RESULTADO DE LOS DOS PDF
+// =============================================================
 
 public class ResultadoPdfRendicion
 {
+    // =============================================================
+    // PDF PRINCIPAL DE LIQUIDACIÓN
+    // =============================================================
+
     public string RutaFisica { get; set; } =
         string.Empty;
 
@@ -1375,4 +1978,21 @@ public class ResultadoPdfRendicion
 
     public string NombreArchivo { get; set; } =
         string.Empty;
+
+    // =============================================================
+    // PDF DE COMPROBANTES
+    //
+    // Se conservan los nombres "Vouchers" para que
+    // tu controlador actual siga funcionando.
+    // =============================================================
+
+    public string RutaFisicaVouchers { get; set; } =
+        string.Empty;
+
+    public string RutaPublicaVouchers { get; set; } =
+        string.Empty;
+
+    public string NombreArchivoVouchers { get; set; } =
+        string.Empty;
 }
+

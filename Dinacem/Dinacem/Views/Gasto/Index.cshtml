@@ -740,15 +740,19 @@
 
     <div class="page-header">
         <div class="page-header-content">
+
             <div class="page-icon">
                 <i class="bi bi-receipt-cutoff"></i>
             </div>
+
             <div>
                 <h1 class="page-title">Rendición de gastos</h1>
+
                 <p class="page-description">
                     Registre sus gastos y complete la rendición correspondiente a su comisión.
                 </p>
             </div>
+
         </div>
 
         <div class="header-actions">
@@ -759,78 +763,132 @@
                    asp-action="Index"
                    asp-route-idRendicion="@rendicion.IdRendicion"
                    class="btn btn-outline-primary">
+
                     <i class="bi bi-car-front-fill me-1"></i>
                     Bitácora de vehículo
+
                 </a>
             }
 
             <a asp-controller="Rendicion"
                asp-action="Index"
                class="btn btn-outline-secondary">
+
                 <i class="bi bi-arrow-left me-1"></i>
                 Volver a rendiciones
+
             </a>
 
         </div>
     </div>
 
+
     @if (TempData["mensaje"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show alert-custom" role="alert">
+        <div class="alert alert-success alert-dismissible fade show alert-custom"
+             role="alert">
+
             <i class="bi bi-check-circle me-1"></i>
             @TempData["mensaje"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
         </div>
     }
 
+
     @if (TempData["error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show alert-custom" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show alert-custom"
+             role="alert">
+
             <i class="bi bi-exclamation-circle me-1"></i>
             @Html.Raw(TempData["error"])
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
         </div>
     }
+
+
+    <!-- ========================================================= -->
+    <!-- RESUMEN -->
+    <!-- ========================================================= -->
 
     <div class="summary-grid">
 
         <div class="summary-card green">
-            <span class="summary-label">Monto aprobado</span>
+
+            <span class="summary-label">
+                Monto aprobado
+            </span>
+
             <div class="summary-value">
                 S/ @montoAprobado.ToString("N2")
             </div>
+
         </div>
 
+
         <div class="summary-card orange">
-            <span class="summary-label">Total rendido</span>
+
+            <span class="summary-label">
+                Total rendido
+            </span>
+
             <div class="summary-value">
                 S/ @totalRendido.ToString("N2")
             </div>
+
         </div>
 
+
         <div class="summary-card blue">
-            <span class="summary-label">Saldo pendiente</span>
+
+            <span class="summary-label">
+                Saldo pendiente
+            </span>
+
             <div class="summary-value">
                 S/ @saldoPendiente.ToString("N2")
             </div>
+
         </div>
 
+
         <div class="summary-card">
-            <span class="summary-label">Gastos registrados</span>
+
+            <span class="summary-label">
+                Gastos registrados
+            </span>
+
             <div class="summary-value">
                 @(Model?.Count ?? 0)
             </div>
+
         </div>
 
     </div>
+
 
     <div class="content-grid">
 
         <div class="main-column">
 
+            <!-- ========================================================= -->
+            <!-- GASTOS REGISTRADOS -->
+            <!-- ========================================================= -->
+
             <div class="panel">
 
                 <div class="panel-header">
+
                     <span>
                         <i class="bi bi-list-ul me-2 text-primary"></i>
                         Gastos registrados
@@ -839,14 +897,18 @@
                     <span class="mobile-hint">
                         Deslice horizontalmente para ver más.
                     </span>
+
                 </div>
+
 
                 <div class="table-wrapper">
 
                     <table class="table table-gastos align-middle">
 
                         <thead>
+
                             <tr>
+
                                 <th>Fecha</th>
                                 <th>Tipo</th>
                                 <th>Comprobante</th>
@@ -855,72 +917,103 @@
                                 <th>IGV</th>
                                 <th>Total</th>
                                 <th>Acciones</th>
+
                             </tr>
+
                         </thead>
+
 
                         <tbody>
 
                             @if (Model != null && Model.Any())
                             {
+
                                 foreach (var item in Model)
                                 {
+
                                     <tr>
 
                                         <td>
                                             @item.Fecha.ToString("dd/MM/yyyy")
                                         </td>
 
+
                                         <td>
+
                                             <span class="badge-gasto">
                                                 @(item.TipoGasto?.Nombre ?? "Sin tipo")
                                             </span>
+
                                         </td>
 
+
                                         <td>
+
                                             @(item.TipoComprobante?.Nombre ?? "Sin comprobante")
 
                                             @if (!string.IsNullOrWhiteSpace(item.Serie) ||
                                            !string.IsNullOrWhiteSpace(item.Numero))
                                             {
+
                                                 <div class="text-muted mt-1">
+
                                                     @item.Serie - @item.Numero
+
                                                 </div>
+
                                             }
+
                                         </td>
 
+
                                         <td>
+
                                             @(string.IsNullOrWhiteSpace(item.Detalle)
                                                 ? "-"
                                                 : item.Detalle)
+
                                         </td>
 
+
                                         <td>
+
                                             S/ @item.ValorVenta.ToString("N2")
 
                                             @if (item.ExoneracionIGV)
                                             {
+
                                                 <div>
+
                                                     <span class="badge bg-info text-dark mt-1">
                                                         Exonerado
                                                     </span>
+
                                                 </div>
+
                                             }
+
                                         </td>
+
 
                                         <td>
                                             S/ @item.IGV.ToString("N2")
                                         </td>
 
+
                                         <td>
+
                                             <strong>
                                                 S/ @item.MontoTotal.ToString("N2")
                                             </strong>
+
                                         </td>
+
 
                                         <td>
 
                                             @if (rendicion?.IdEstadoRendicion == 1)
                                             {
+
                                                 <form asp-controller="Gasto"
                                                       asp-action="Delete"
                                                       method="post">
@@ -936,34 +1029,55 @@
                                                     <button type="submit"
                                                             class="btn btn-outline-danger btn-sm"
                                                             onclick="return confirm('¿Eliminar este gasto?');">
+
                                                         <i class="bi bi-trash"></i>
+
                                                     </button>
 
                                                 </form>
+
                                             }
                                             else
                                             {
+
                                                 <span class="text-muted small">
                                                     Bloqueado
                                                 </span>
+
                                             }
 
                                         </td>
 
                                     </tr>
+
                                 }
+
                             }
                             else
                             {
+
                                 <tr>
+
                                     <td colspan="8">
+
                                         <div class="empty-state">
+
                                             <i class="bi bi-receipt"></i>
-                                            <div>No hay gastos registrados.</div>
-                                            <small>Los gastos que agregue aparecerán aquí.</small>
+
+                                            <div>
+                                                No hay gastos registrados.
+                                            </div>
+
+                                            <small>
+                                                Los gastos que agregue aparecerán aquí.
+                                            </small>
+
                                         </div>
+
                                     </td>
+
                                 </tr>
+
                             }
 
                         </tbody>
@@ -972,54 +1086,106 @@
 
                 </div>
 
+
                 <div class="table-footer">
+
                     <i class="bi bi-info-circle me-1"></i>
+
                     Mostrando @(Model?.Count ?? 0) gasto(s)
+
                 </div>
+
 
                 <div class="row g-3 p-3">
 
                     <div class="col-md-4">
+
                         <div class="tax-summary">
+
                             <div class="tax-item">
-                                <small>Valor de venta</small>
-                                <strong>S/ @totalValorVenta.ToString("N2")</strong>
+
+                                <small>
+                                    Valor de venta
+                                </small>
+
+                                <strong>
+                                    S/ @totalValorVenta.ToString("N2")
+                                </strong>
+
                             </div>
+
                         </div>
+
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="tax-summary">
-                            <div class="tax-item">
-                                <small>Total IGV</small>
-                                <strong>S/ @totalIgv.ToString("N2")</strong>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="col-md-4">
+
                         <div class="tax-summary">
+
+                            <div class="tax-item">
+
+                                <small>
+                                    Total IGV
+                                </small>
+
+                                <strong>
+                                    S/ @totalIgv.ToString("N2")
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="tax-summary">
+
                             <div class="tax-item total">
-                                <small>Total rendido</small>
-                                <strong>S/ @totalRendido.ToString("N2")</strong>
+
+                                <small>
+                                    Total rendido
+                                </small>
+
+                                <strong>
+                                    S/ @totalRendido.ToString("N2")
+                                </strong>
+
                             </div>
+
                         </div>
+
                     </div>
 
                 </div>
 
             </div>
 
+
+            <!-- ========================================================= -->
+            <!-- REGISTRAR GASTO -->
+            <!-- ========================================================= -->
+
             @if (rendicion?.IdEstadoRendicion == 1)
             {
+
                 <div class="panel">
 
                     <div class="panel-header">
+
                         <span>
+
                             <i class="bi bi-plus-circle me-2 text-primary"></i>
+
                             Registrar gasto
+
                         </span>
+
                     </div>
+
 
                     <div class="panel-body">
 
@@ -1029,393 +1195,813 @@
                               enctype="multipart/form-data"
                               id="formGasto">
 
+
                             <input type="hidden"
                                    name="IdRendicion"
                                    value="@rendicion.IdRendicion" />
 
-                            <div class="form-grid">
 
-                                <div class="form-col-4">
-                                    <label class="form-label">Fecha del gasto</label>
+                            <!-- ================================================= -->
+                            <!-- 1. DATOS PRINCIPALES -->
+                            <!-- ================================================= -->
 
-                                    <input type="date"
-                                           name="Fecha"
-                                           class="form-control"
-                                           min="@rendicion.FechaInicio.ToString("yyyy-MM-dd")"
-                                           max="@rendicion.FechaFin.ToString("yyyy-MM-dd")"
-                                           required />
+                            <div class="mb-4">
 
-                                    <div class="form-text">
-                                        Del @rendicion.FechaInicio.ToString("dd/MM/yyyy")
-                                        al @rendicion.FechaFin.ToString("dd/MM/yyyy")
-                                    </div>
-                                </div>
+                                <h6 class="fw-semibold text-primary mb-3">
 
-                                <div class="form-col-4">
-                                    <label class="form-label">RUC</label>
+                                    <i class="bi bi-info-circle me-1"></i>
 
-                                    <div class="input-group">
-                                        <input type="text"
-                                               id="ruc"
-                                               name="Ruc"
-                                               class="form-control"
-                                               maxlength="11"
-                                               inputmode="numeric"
-                                               pattern="[0-9]{11}"
-                                               placeholder="20123456789"
-                                               autocomplete="off"
-                                               required />
+                                    Datos principales
 
-                                        <button type="button"
-                                                id="btnConsultarRuc"
-                                                class="btn btn-outline-primary">
-                                            <i class="bi bi-search me-1"></i>
-                                            Buscar
-                                        </button>
-                                    </div>
+                                </h6>
 
-                                    <div id="mensajeRuc" class="form-text"></div>
-                                </div>
 
-                                <div class="form-col-4">
-                                    <label class="form-label">Razón social</label>
+                                <div class="form-grid">
 
-                                    <input type="text"
-                                           id="razonSocial"
-                                           name="RazonSocial"
-                                           class="form-control"
-                                           maxlength="200"
-                                           readonly
-                                           required />
-                                </div>
 
-                                <div class="form-col-12">
-                                    <label class="form-label">Domicilio fiscal</label>
+                                    <!-- FECHA -->
 
-                                    <input type="text"
-                                           id="domicilioFiscal"
-                                           name="DomicilioFiscal"
-                                           class="form-control"
-                                           maxlength="300"
-                                           placeholder="Ingrese o corrija el domicilio fiscal"
-                                           required />
+                                    <div class="form-col-4">
 
-                                    <div class="form-text">
-                                        Se completa automáticamente al consultar el RUC.
-                                    </div>
-                                </div>
-
-                                <div class="form-col-4">
-                                    <label class="form-label">Tipo de gasto</label>
-
-                                    <select name="IdTipoGasto"
-                                            class="form-select"
-                                            required>
-
-                                        <option value="">Seleccionar tipo</option>
-
-                                        @if (tiposGasto != null)
-                                        {
-                                            foreach (var item in tiposGasto)
-                                            {
-                                                <option value="@item.IdTipoGasto">
-                                                    @item.Nombre
-                                                </option>
-                                            }
-                                        }
-
-                                    </select>
-                                </div>
-
-                                <div class="form-col-4">
-                                    <label class="form-label">Tipo de comprobante</label>
-
-                                    <select name="IdTipoComprobante"
-                                            class="form-select"
-                                            required>
-
-                                        <option value="">Seleccionar comprobante</option>
-
-                                        @if (tiposComprobante != null)
-                                        {
-                                            foreach (var item in tiposComprobante)
-                                            {
-                                                <option value="@item.IdTipoComprobante">
-                                                    @item.Nombre
-                                                </option>
-                                            }
-                                        }
-
-                                    </select>
-                                </div>
-
-                                <div class="form-col-4">
-                                    <label class="form-label">Serie</label>
-
-                                    <input name="Serie"
-                                           class="form-control"
-                                           maxlength="20"
-                                           placeholder="F001" />
-                                </div>
-
-                                <div class="form-col-4">
-                                    <label class="form-label">Número</label>
-
-                                    <input name="Numero"
-                                           class="form-control"
-                                           maxlength="30"
-                                           placeholder="000123" />
-                                </div>
-
-                                <div class="form-col-4">
-                                    <label class="form-label">Detalle</label>
-
-                                    <input name="Detalle"
-                                           class="form-control"
-                                           maxlength="300"
-                                           placeholder="Ej. Almuerzo" />
-                                </div>
-
-                                <div class="form-col-4">
-                                    <label class="form-label">Monto total</label>
-
-                                    <div class="input-group">
-                                        <span class="input-group-text">S/</span>
-
-                                        <input type="number"
-                                               id="montoTotal"
-                                               name="MontoTotal"
-                                               class="form-control"
-                                               min="0.01"
-                                               step="0.01"
-                                               placeholder="0.00"
-                                               required />
-                                    </div>
-                                </div>
-
-                                <div class="form-col-4">
-                                    <label class="form-label">Tipo de operación</label>
-
-                                    <div class="form-check mt-2">
-                                        <input type="checkbox"
-                                               id="exoneracionIGV"
-                                               name="ExoneracionIGV"
-                                               value="true"
-                                               class="form-check-input" />
-
-                                        <label class="form-check-label"
-                                               for="exoneracionIGV">
-                                            Exonerado de IGV
+                                        <label class="form-label">
+                                            Fecha del gasto
                                         </label>
-                                    </div>
-                                </div>
 
-                                <div class="form-col-4">
-                                    <label class="form-label">Comprobante</label>
-
-                                    <input type="file"
-                                           name="archivo"
-                                           class="form-control"
-                                           accept=".pdf,.jpg,.jpeg,.png" />
-                                </div>
-
-                                <div class="form-col-4">
-                                    <label class="form-label">Valor de venta</label>
-
-                                    <div class="input-group">
-                                        <span class="input-group-text">S/</span>
-
-                                        <input type="number"
-                                               id="valorVenta"
-                                               name="ValorVenta"
+                                        <input type="date"
+                                               name="Fecha"
                                                class="form-control"
-                                               step="0.01"
-                                               value="0.00"
-                                               readonly />
+                                               min="@rendicion.FechaInicio.ToString("yyyy-MM-dd")"
+                                               max="@rendicion.FechaFin.ToString("yyyy-MM-dd")"
+                                               required />
+
+                                        <div class="form-text">
+
+                                            Del @rendicion.FechaInicio.ToString("dd/MM/yyyy")
+                                            al @rendicion.FechaFin.ToString("dd/MM/yyyy")
+
+                                        </div>
+
                                     </div>
-                                </div>
 
-                                <div class="form-col-4">
-                                    <label class="form-label">IGV (18 %)</label>
 
-                                    <div class="input-group">
-                                        <span class="input-group-text">S/</span>
+                                    <!-- TIPO GASTO -->
 
-                                        <input type="number"
-                                               id="igvCalculado"
-                                               name="IGV"
+                                    <div class="form-col-4">
+
+                                        <label class="form-label">
+                                            Tipo de gasto
+                                        </label>
+
+                                        <select name="IdTipoGasto"
+                                                class="form-select"
+                                                required
+                                                id="tipoGasto">
+
+                                            <option value="">
+                                                Seleccionar tipo
+                                            </option>
+
+                                            @if (tiposGasto != null)
+                                            {
+
+                                                foreach (var item in tiposGasto)
+                                                {
+
+                                                    <option value="@item.IdTipoGasto">
+                                                        @item.Nombre
+                                                    </option>
+
+                                                }
+
+                                            }
+
+                                        </select>
+
+                                        <div id="mensajeTipoGasto"
+                                             class="form-text">
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- DETALLE -->
+
+                                    <div class="form-col-4">
+
+                                        <label class="form-label">
+                                            Detalle
+                                        </label>
+
+                                        <input name="Detalle"
                                                class="form-control"
-                                               step="0.01"
-                                               value="0.00"
-                                               readonly />
+                                               maxlength="300"
+                                               placeholder="Ej. Almuerzo" />
+
                                     </div>
+
                                 </div>
 
-                                <div class="form-col-8">
-                                    <label class="form-label">Resumen del comprobante</label>
+                            </div>
 
-                                    <div class="tax-summary">
-                                        <div class="row g-3">
 
-                                            <div class="col-md-4">
-                                                <div class="tax-item">
-                                                    <small>Valor de venta</small>
-                                                    <strong id="resumenValorVenta">S/ 0.00</strong>
-                                                </div>
-                                            </div>
+                            <!-- ================================================= -->
+                            <!-- 2. DATOS DEL PROVEEDOR -->
+                            <!-- ================================================= -->
 
-                                            <div class="col-md-4">
-                                                <div class="tax-item">
-                                                    <small>IGV</small>
-                                                    <strong id="resumenIgv">S/ 0.00</strong>
-                                                </div>
-                                            </div>
+                            <div class="mb-4 pt-3 border-top">
 
-                                            <div class="col-md-4">
-                                                <div class="tax-item total">
-                                                    <small>Total</small>
-                                                    <strong id="resumenTotal">S/ 0.00</strong>
-                                                </div>
+                                <h6 class="fw-semibold text-primary mb-3">
+
+                                    <i class="bi bi-building me-1"></i>
+
+                                    Datos del proveedor
+
+                                </h6>
+
+
+                                <div class="form-grid">
+
+
+                                    <!-- RUC -->
+
+                                    <div class="form-col-4">
+
+                                        <label class="form-label">
+                                            RUC
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <input type="text"
+                                                   id="ruc"
+                                                   name="Ruc"
+                                                   class="form-control"
+                                                   maxlength="11"
+                                                   inputmode="numeric"
+                                                   pattern="[0-9]{11}"
+                                                   placeholder="20123456789"
+                                                   autocomplete="off" />
+
+                                            <button type="button"
+                                                    id="btnConsultarRuc"
+                                                    class="btn btn-outline-primary">
+
+                                                <i class="bi bi-search me-1"></i>
+                                                Buscar
+
+                                            </button>
+
+                                        </div>
+
+                                        <div id="mensajeRuc"
+                                             class="form-text">
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- RAZÓN SOCIAL -->
+
+                                    <div class="form-col-4">
+
+                                        <label class="form-label">
+                                            Razón social
+                                        </label>
+
+                                        <input type="text"
+                                               id="razonSocial"
+                                               name="RazonSocial"
+                                               class="form-control"
+                                               maxlength="200"
+                                               readonly />
+
+                                    </div>
+
+
+                                    <!-- DOMICILIO -->
+
+                                    <div class="form-col-4">
+
+                                        <label class="form-label">
+                                            Domicilio fiscal
+                                        </label>
+
+                                        <input type="text"
+                                               id="domicilioFiscal"
+                                               name="DomicilioFiscal"
+                                               class="form-control"
+                                               maxlength="300"
+                                               placeholder="Ingrese o corrija el domicilio fiscal" />
+
+                                        <div class="form-text">
+                                            Se completa automáticamente al consultar el RUC.
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ================================================= -->
+                            <!-- 3. COMPROBANTE -->
+                            <!-- ================================================= -->
+
+                            <div class="mb-4 pt-3 border-top">
+
+                                <h6 class="fw-semibold text-primary mb-3">
+
+                                    <i class="bi bi-receipt me-1"></i>
+
+                                    Datos del comprobante
+
+                                </h6>
+
+
+                                <!-- MENSAJE MOVILIDAD -->
+
+                                <div id="mensajeMovilidad"
+                                     class="alert alert-info py-2 mb-3"
+                                     style="display:none;">
+
+                                    <i class="bi bi-info-circle me-1"></i>
+
+                                    Para <strong>Movilidad</strong> no es obligatorio
+                                    registrar RUC, comprobante ni voucher.
+
+                                </div>
+
+
+                                <div class="form-grid">
+
+
+                                    <!-- TIPO COMPROBANTE -->
+
+                                    <div class="form-col-4">
+
+                                        <label class="form-label">
+                                            Tipo de comprobante
+                                        </label>
+
+                                        <select id="tipoComprobante"
+                                                name="IdTipoComprobante"
+                                                class="form-select">
+
+                                            <option value="">
+                                                Seleccionar comprobante
+                                            </option>
+
+                                            @if (tiposComprobante != null)
+                                            {
+
+                                                foreach (var item in tiposComprobante)
+                                                {
+
+                                                    <option value="@item.IdTipoComprobante"
+                                                            data-nombre="@item.Nombre">
+
+                                                        @item.Nombre
+
+                                                    </option>
+
+                                                }
+
+                                            }
+
+                                        </select>
+
+                                        <div id="mensajeComprobante"
+                                             class="form-text">
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- SERIE -->
+
+                                    <div class="form-col-4">
+
+                                        <label class="form-label">
+                                            Serie
+                                        </label>
+
+                                        <input name="Serie"
+                                               id="serie"
+                                               class="form-control"
+                                               maxlength="20"
+                                               placeholder="F001" />
+
+                                    </div>
+
+
+                                    <!-- NÚMERO -->
+
+                                    <div class="form-col-4">
+
+                                        <label class="form-label">
+                                            Número
+                                        </label>
+
+                                        <input name="Numero"
+                                               id="numero"
+                                               class="form-control"
+                                               maxlength="30"
+                                               placeholder="000123" />
+
+                                    </div>
+
+
+                                    <!-- ARCHIVO -->
+
+                                    <div class="form-col-4">
+
+                                        <label class="form-label">
+                                            Comprobante / Voucher
+                                        </label>
+
+                                        <input type="file"
+                                               name="archivo"
+                                               id="archivo"
+                                               class="form-control"
+                                               accept=".pdf,.jpg,.jpeg,.png" />
+
+                                        <div id="mensajeArchivo"
+                                             class="form-text">
+
+                                            PDF, JPG, JPEG o PNG.
+                                            <strong>Obligatorio excepto para Movilidad.</strong>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ================================================= -->
+                            <!-- 4. MONTOS -->
+                            <!-- ================================================= -->
+
+                            <div class="mb-4 pt-3 border-top">
+
+                                <h6 class="fw-semibold text-primary mb-3">
+
+                                    <i class="bi bi-calculator me-1"></i>
+
+                                    Información del monto
+
+                                </h6>
+
+
+                                <div class="form-grid">
+
+
+                                    <!-- MONTO -->
+
+                                    <div class="form-col-4">
+
+                                        <label class="form-label">
+                                            Monto total
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                S/
+                                            </span>
+
+                                            <input type="number"
+                                                   id="montoTotal"
+                                                   name="MontoTotal"
+                                                   class="form-control"
+                                                   min="0.01"
+                                                   step="0.01"
+                                                   placeholder="0.00"
+                                                   required />
+
+                                        </div>
+
+
+                                        <div id="mensajeLimiteMonto"
+                                             class="form-text">
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- EXONERACIÓN -->
+
+                                    <div class="form-col-4">
+
+                                        <label class="form-label">
+                                            Tipo de operación
+                                        </label>
+
+                                        <div class="form-check mt-2">
+
+                                            <input type="checkbox"
+                                                   id="exoneracionIGV"
+                                                   name="ExoneracionIGV"
+                                                   value="true"
+                                                   class="form-check-input" />
+
+                                            <label class="form-check-label"
+                                                   for="exoneracionIGV">
+
+                                                Exonerado de IGV
+
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- BASE -->
+
+                                    <div class="form-col-4">
+
+                                        <label class="form-label">
+                                            Valor de venta
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                S/
+                                            </span>
+
+                                            <input type="number"
+                                                   id="valorVenta"
+                                                   name="ValorVenta"
+                                                   class="form-control"
+                                                   step="0.01"
+                                                   value="0.00"
+                                                   readonly />
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- IGV -->
+
+                                    <div class="form-col-4">
+
+                                        <label class="form-label">
+                                            IGV (18 %)
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <span class="input-group-text">
+                                                S/
+                                            </span>
+
+                                            <input type="number"
+                                                   id="igvCalculado"
+                                                   name="IGV"
+                                                   class="form-control"
+                                                   step="0.01"
+                                                   value="0.00"
+                                                   readonly />
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ================================================= -->
+                            <!-- 5. RESUMEN -->
+                            <!-- ================================================= -->
+
+                            <div class="pt-3 border-top">
+
+                                <h6 class="fw-semibold text-primary mb-3">
+
+                                    <i class="bi bi-clipboard-data me-1"></i>
+
+                                    Resumen del comprobante
+
+                                </h6>
+
+
+                                <div class="tax-summary">
+
+                                    <div class="row g-3">
+
+
+                                        <div class="col-md-4">
+
+                                            <div class="tax-item">
+
+                                                <small>
+                                                    Valor de venta
+                                                </small>
+
+                                                <strong id="resumenValorVenta">
+                                                    S/ 0.00
+                                                </strong>
+
                                             </div>
 
                                         </div>
+
+
+                                        <div class="col-md-4">
+
+                                            <div class="tax-item">
+
+                                                <small>
+                                                    IGV
+                                                </small>
+
+                                                <strong id="resumenIgv">
+                                                    S/ 0.00
+                                                </strong>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="col-md-4">
+
+                                            <div class="tax-item total">
+
+                                                <small>
+                                                    Total
+                                                </small>
+
+                                                <strong id="resumenTotal">
+                                                    S/ 0.00
+                                                </strong>
+
+                                            </div>
+
+                                        </div>
+
                                     </div>
+
                                 </div>
 
                             </div>
 
+
+                            <!-- ================================================= -->
+                            <!-- BOTÓN -->
+                            <!-- ================================================= -->
+
                             <div class="mt-4 pt-3 border-top d-flex justify-content-end">
+
                                 <button type="submit"
                                         class="btn btn-primary-custom px-4">
+
                                     <i class="bi bi-plus-circle me-1"></i>
+
                                     Registrar gasto
+
                                 </button>
+
                             </div>
+
 
                         </form>
 
                     </div>
+
                 </div>
+
             }
             else
             {
+
                 <div class="alert alert-info alert-custom mb-0">
+
                     <i class="bi bi-lock me-1"></i>
-                    Esta rendición ya fue enviada. No se pueden agregar ni eliminar gastos.
+
+                    Esta rendición ya fue enviada.
+                    No se pueden agregar ni eliminar gastos.
+
                 </div>
+
             }
 
         </div>
 
+
+        <!-- ========================================================= -->
+        <!-- COLUMNA DERECHA -->
+        <!-- ========================================================= -->
+
         <div class="side-column">
+
 
             <div class="panel">
 
                 <div class="panel-header">
+
                     <span>
+
                         <i class="bi bi-file-earmark-text me-2 text-primary"></i>
+
                         Información de la rendición
+
                     </span>
+
                 </div>
+
 
                 <div class="panel-body p-0">
 
                     <div class="table-responsive">
+
                         <table class="table table-bordered info-table">
 
-                            <tr>
-                                <th>Solicitud</th>
-                                <td>@rendicion?.IdSolicitud</td>
-                            </tr>
 
                             <tr>
-                                <th>Destino</th>
-                                <td>@(rendicion?.Solicitud?.Destino ?? "-")</td>
-                            </tr>
 
-                            <tr>
-                                <th>Motivo</th>
-                                <td>@(rendicion?.Solicitud?.Motivo ?? "-")</td>
-                            </tr>
+                                <th>
+                                    Solicitud
+                                </th>
 
-                            <tr>
-                                <th>Fecha inicio</th>
                                 <td>
+                                    @rendicion?.IdSolicitud
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <th>
+                                    Destino
+                                </th>
+
+                                <td>
+                                    @(rendicion?.Solicitud?.Destino ?? "-")
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <th>
+                                    Motivo
+                                </th>
+
+                                <td>
+                                    @(rendicion?.Solicitud?.Motivo ?? "-")
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <th>
+                                    Fecha inicio
+                                </th>
+
+                                <td>
+
                                     @(rendicion != null
                                         ? rendicion.FechaInicio.ToString("dd/MM/yyyy")
                                         : "-")
+
                                 </td>
+
                             </tr>
 
+
                             <tr>
-                                <th>Fecha fin</th>
+
+                                <th>
+                                    Fecha fin
+                                </th>
+
                                 <td>
+
                                     @(rendicion != null
                                         ? rendicion.FechaFin.ToString("dd/MM/yyyy")
                                         : "-")
+
                                 </td>
+
                             </tr>
 
+
                             <tr>
-                                <th>Monto aprobado</th>
+
+                                <th>
+                                    Monto aprobado
+                                </th>
+
                                 <td>
+
                                     <strong>
                                         S/ @montoAprobado.ToString("N2")
                                     </strong>
+
                                 </td>
+
                             </tr>
 
+
                             <tr>
-                                <th>Estado</th>
+
+                                <th>
+                                    Estado
+                                </th>
+
                                 <td>
+
                                     <span class="estado @estadoClase">
                                         @estadoTexto
                                     </span>
+
                                 </td>
+
                             </tr>
 
+
                         </table>
+
                     </div>
 
                 </div>
+
             </div>
+
+
+            <!-- ========================================================= -->
+            <!-- DEVOLUCIÓN -->
+            <!-- ========================================================= -->
 
             @if (rendicion != null &&
             rendicion.IdEstadoRendicion == 1 &&
             rendicion.Saldo > 0)
             {
+
                 <div class="panel devolucion-box @(devolucion != null ? "ok" : "")">
 
+
                     <div class="panel-header">
+
                         <span>
+
                             <i class="bi bi-bank me-2"></i>
+
                             Devolución de saldo
+
                         </span>
+
                     </div>
+
 
                     <div class="panel-body">
 
+
                         @if (devolucion == null)
                         {
+
                             <div class="alert alert-warning alert-custom">
+
                                 Tiene un saldo pendiente de devolución de
+
                                 <strong>
                                     S/ @rendicion.Saldo.ToString("N2")
                                 </strong>.
+
                                 Registre el depósito antes de enviar la rendición.
+
                             </div>
+
 
                             <form asp-controller="DevolucionSaldo"
                                   asp-action="Registrar"
                                   method="post"
                                   enctype="multipart/form-data">
 
+
                                 <input type="hidden"
                                        name="IdRendicion"
                                        value="@rendicion.IdRendicion" />
 
+
                                 <div class="mb-3">
-                                    <label class="form-label">Monto a devolver</label>
+
+                                    <label class="form-label">
+                                        Monto a devolver
+                                    </label>
 
                                     <input type="number"
                                            name="Monto"
@@ -1423,20 +2009,30 @@
                                            value="@rendicion.Saldo.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
                                            step="0.01"
                                            readonly />
+
                                 </div>
 
+
                                 <div class="mb-3">
-                                    <label class="form-label">Fecha del depósito</label>
+
+                                    <label class="form-label">
+                                        Fecha del depósito
+                                    </label>
 
                                     <input type="date"
                                            name="Fecha"
                                            class="form-control"
                                            value="@DateTime.Now.ToString("yyyy-MM-dd")"
                                            required />
+
                                 </div>
 
+
                                 <div class="mb-3">
-                                    <label class="form-label">Banco</label>
+
+                                    <label class="form-label">
+                                        Banco
+                                    </label>
 
                                     <input type="text"
                                            name="Banco"
@@ -1444,166 +2040,274 @@
                                            maxlength="100"
                                            placeholder="Ej. BCP, BBVA, Interbank"
                                            required />
+
                                 </div>
 
+
                                 <div class="mb-3">
-                                    <label class="form-label">Número de operación</label>
+
+                                    <label class="form-label">
+                                        Número de operación
+                                    </label>
 
                                     <input type="text"
                                            name="NumeroOperacion"
                                            class="form-control"
                                            maxlength="100"
                                            required />
+
                                 </div>
 
+
                                 <div class="mb-3">
-                                    <label class="form-label">Voucher</label>
+
+                                    <label class="form-label">
+                                        Voucher
+                                    </label>
 
                                     <input type="file"
                                            name="voucher"
                                            class="form-control"
                                            accept=".pdf,.jpg,.jpeg,.png"
                                            required />
+
                                 </div>
 
+
                                 <div class="mb-3">
-                                    <label class="form-label">Observaciones</label>
+
+                                    <label class="form-label">
+                                        Observaciones
+                                    </label>
 
                                     <textarea name="Observaciones"
                                               class="form-control"
                                               rows="3"
                                               maxlength="500"></textarea>
+
                                 </div>
+
 
                                 <button type="submit"
                                         class="btn btn-primary-custom w-100">
+
                                     <i class="bi bi-check2-circle me-1"></i>
+
                                     Registrar devolución
+
                                 </button>
 
+
                             </form>
+
                         }
                         else
                         {
+
                             <div class="alert alert-success alert-custom">
+
                                 <i class="bi bi-check-circle me-1"></i>
+
                                 Devolución registrada correctamente.
+
                             </div>
 
+
                             <div class="table-responsive">
+
                                 <table class="table table-bordered info-table">
 
+
                                     <tr>
-                                        <th>Monto</th>
+
+                                        <th>
+                                            Monto
+                                        </th>
+
                                         <td>
                                             S/ @devolucion.Monto.ToString("N2")
                                         </td>
+
                                     </tr>
 
+
                                     <tr>
-                                        <th>Fecha</th>
+
+                                        <th>
+                                            Fecha
+                                        </th>
+
                                         <td>
                                             @devolucion.Fecha.ToString("dd/MM/yyyy")
                                         </td>
+
                                     </tr>
 
-                                    <tr>
-                                        <th>Banco</th>
-                                        <td>@devolucion.Banco</td>
-                                    </tr>
 
                                     <tr>
-                                        <th>Operación</th>
-                                        <td>@devolucion.NumeroOperacion</td>
-                                    </tr>
 
-                                    <tr>
-                                        <th>Voucher</th>
+                                        <th>
+                                            Banco
+                                        </th>
+
                                         <td>
+                                            @devolucion.Banco
+                                        </td>
+
+                                    </tr>
+
+
+                                    <tr>
+
+                                        <th>
+                                            Operación
+                                        </th>
+
+                                        <td>
+                                            @devolucion.NumeroOperacion
+                                        </td>
+
+                                    </tr>
+
+
+                                    <tr>
+
+                                        <th>
+                                            Voucher
+                                        </th>
+
+                                        <td>
+
                                             @if (!string.IsNullOrWhiteSpace(devolucion.Voucher))
                                             {
+
                                                 <a href="@devolucion.Voucher"
                                                    target="_blank"
                                                    rel="noopener"
                                                    class="btn btn-outline-primary btn-sm voucher-link">
+
                                                     <i class="bi bi-file-earmark-arrow-up me-1"></i>
+
                                                     Ver voucher
+
                                                 </a>
+
                                             }
                                             else
                                             {
+
                                                 <span class="text-muted">
                                                     Sin archivo
                                                 </span>
+
                                             }
+
                                         </td>
+
                                     </tr>
 
+
                                     <tr>
-                                        <th>Observaciones</th>
+
+                                        <th>
+                                            Observaciones
+                                        </th>
+
                                         <td>
+
                                             @(string.IsNullOrWhiteSpace(devolucion.Observaciones)
                                                 ? "-"
                                                 : devolucion.Observaciones)
+
                                         </td>
+
                                     </tr>
 
+
                                 </table>
+
                             </div>
+
 
                             <form asp-controller="DevolucionSaldo"
                                   asp-action="Eliminar"
                                   method="post"
                                   class="mt-3">
 
+
                                 <input type="hidden"
                                        name="id"
                                        value="@devolucion.IdDevolucionSaldo" />
+
 
                                 <input type="hidden"
                                        name="idRendicion"
                                        value="@rendicion.IdRendicion" />
 
+
                                 <button type="submit"
                                         class="btn btn-outline-danger w-100"
                                         onclick="return confirm('¿Desea eliminar la devolución registrada?');">
+
                                     <i class="bi bi-trash me-1"></i>
+
                                     Eliminar devolución
+
                                 </button>
 
+
                             </form>
+
                         }
 
                     </div>
+
                 </div>
+
             }
+
+
+            <!-- ========================================================= -->
+            <!-- ACCIONES -->
+            <!-- ========================================================= -->
 
             <div class="panel">
 
                 <div class="panel-header">
+
                     <span>
+
                         <i class="bi bi-lightning-charge me-2 text-primary"></i>
+
                         Acciones
+
                     </span>
+
                 </div>
+
 
                 <div class="panel-body">
 
                     <div class="action-stack">
 
+
                         @if (rendicion?.IdEstadoRendicion == 1)
                         {
+
                             var puedeEnviar =
                             rendicion.Total > 0 &&
                             (rendicion.Saldo <= 0 || devolucion != null);
+
 
                             <form asp-controller="Gasto"
                                   asp-action="EnviarRendicion"
                                   method="post">
 
+
                                 <input type="hidden"
                                        name="idRendicion"
                                        value="@rendicion.IdRendicion" />
+
 
                                 <button type="submit"
                                         class="btn btn-success w-100"
@@ -1611,55 +2315,86 @@
                                         onclick="return confirm('¿Desea enviar esta rendición para revisión?');">
 
                                     <i class="bi bi-send-check me-1"></i>
+
                                     Finalizar y enviar
+
                                 </button>
+
 
                             </form>
 
+
                             @if (rendicion.Total <= 0)
                             {
+
                                 <p class="action-note">
+
                                     <i class="bi bi-exclamation-circle me-1"></i>
+
                                     Debe registrar al menos un gasto.
+
                                 </p>
+
                             }
                             else if (rendicion.Saldo > 0 && devolucion == null)
                             {
+
                                 <p class="action-note">
+
                                     <i class="bi bi-exclamation-circle me-1"></i>
+
                                     Debe registrar la devolución del saldo pendiente.
+
                                 </p>
+
                             }
+
                         }
+
 
                         @if (rendicion != null)
                         {
+
                             <a asp-controller="BitacoraVehiculo"
                                asp-action="Index"
                                asp-route-idRendicion="@rendicion.IdRendicion"
                                class="btn btn-outline-primary">
+
                                 <i class="bi bi-car-front-fill me-1"></i>
+
                                 Bitácora de vehículo
+
                             </a>
+
                         }
+
 
                         <a asp-controller="Rendicion"
                            asp-action="MisRendiciones"
                            class="btn btn-outline-secondary">
+
                             <i class="bi bi-clock-history me-1"></i>
+
                             Historial de rendiciones
+
                         </a>
+
 
                         <a asp-controller="Rendicion"
                            asp-action="Index"
                            class="btn btn-outline-secondary">
+
                             <i class="bi bi-arrow-left me-1"></i>
+
                             Volver a rendiciones
+
                         </a>
+
 
                     </div>
 
                 </div>
+
             </div>
 
         </div>
@@ -1668,126 +2403,1503 @@
 
 </div>
 
+
+<!-- ============================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ============================================================= -->
+
 <script>
-    document.addEventListener("DOMContentLoaded",function(){
-        const ruc=document.getElementById("ruc");
-        const btnRuc=document.getElementById("btnConsultarRuc");
-        const razonSocial=document.getElementById("razonSocial");
-        const domicilio=document.getElementById("domicilioFiscal");
-        const mensajeRuc=document.getElementById("mensajeRuc");
-        let ultimaConsulta="";
 
-        async function consultarRuc(){
-            const numero=ruc.value.trim();
+document.addEventListener("DOMContentLoaded", function () {
 
-            if(numero===ultimaConsulta)return;
 
-            razonSocial.value="";
-            domicilio.value="";
-            mensajeRuc.textContent="";
+    // =========================================================
+    // ELEMENTOS
+    // =========================================================
 
-            if(!/^\d{11}$/.test(numero)){
-                mensajeRuc.textContent="Ingrese un RUC válido de 11 dígitos.";
-                mensajeRuc.className="form-text text-danger";
-                return;
+    const formGasto =
+        document.getElementById("formGasto");
+
+
+    const ruc =
+        document.getElementById("ruc");
+
+
+    const btnRuc =
+        document.getElementById("btnConsultarRuc");
+
+
+    const razonSocial =
+        document.getElementById("razonSocial");
+
+
+    const domicilio =
+        document.getElementById("domicilioFiscal");
+
+
+    const mensajeRuc =
+        document.getElementById("mensajeRuc");
+
+
+    const tipoGasto =
+        document.getElementById("tipoGasto");
+
+
+    const mensajeTipoGasto =
+        document.getElementById("mensajeTipoGasto");
+
+
+    const tipoComprobante =
+        document.getElementById("tipoComprobante");
+
+
+    const mensajeComprobante =
+        document.getElementById("mensajeComprobante");
+
+
+    const mensajeMovilidad =
+        document.getElementById("mensajeMovilidad");
+
+
+    const archivo =
+        document.getElementById("archivo");
+
+
+    const mensajeArchivo =
+        document.getElementById("mensajeArchivo");
+
+
+    const serie =
+        document.getElementById("serie");
+
+
+    const numero =
+        document.getElementById("numero");
+
+
+    const fechaGasto =
+        document.querySelector('input[name="Fecha"]');
+
+
+    const montoTotal =
+        document.getElementById("montoTotal");
+
+
+    const exoneracion =
+        document.getElementById("exoneracionIGV");
+
+
+    const valorVenta =
+        document.getElementById("valorVenta");
+
+
+    const igv =
+        document.getElementById("igvCalculado");
+
+
+    const resumenBase =
+        document.getElementById("resumenValorVenta");
+
+
+    const resumenIgv =
+        document.getElementById("resumenIgv");
+
+
+    const resumenTotal =
+        document.getElementById("resumenTotal");
+
+
+    const mensajeLimiteMonto =
+        document.getElementById("mensajeLimiteMonto");
+
+
+    let ultimaConsulta = "";
+
+
+    // =========================================================
+    // LÍMITES
+    // =========================================================
+
+    const LIMITE_ALIMENTACION = 40.00;
+
+    const LIMITE_HOSPEDAJE = 50.00;
+
+
+    // =========================================================
+    // NORMALIZAR TEXTO
+    // =========================================================
+
+    function normalizarTexto(texto) {
+
+        return (texto || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .trim();
+
+    }
+
+
+    // =========================================================
+    // OBTENER NOMBRE TIPO GASTO
+    // =========================================================
+
+    function obtenerNombreTipo() {
+
+        if (!tipoGasto)
+            return "";
+
+        return tipoGasto.options[
+            tipoGasto.selectedIndex
+        ]?.text || "";
+
+    }
+
+
+    // =========================================================
+    // SABER SI ES MOVILIDAD
+    // =========================================================
+
+    function esMovilidad() {
+
+        const tipo =
+            normalizarTexto(
+                obtenerNombreTipo()
+            );
+
+        return tipo.includes("movilidad");
+
+    }
+
+
+    // =========================================================
+    // ACTUALIZAR REQUISITOS SEGÚN TIPO
+    // =========================================================
+
+    function actualizarRequisitos() {
+
+        const movilidad =
+            esMovilidad();
+
+
+        // =====================================================
+        // MOVILIDAD
+        // =====================================================
+
+        if (movilidad) {
+
+            // ---------------------------------------------
+            // RUC
+            // ---------------------------------------------
+
+            ruc?.removeAttribute("required");
+
+
+            // ---------------------------------------------
+            // RAZÓN SOCIAL
+            // ---------------------------------------------
+
+            razonSocial?.removeAttribute("required");
+
+
+            // ---------------------------------------------
+            // DOMICILIO
+            // ---------------------------------------------
+
+            domicilio?.removeAttribute("required");
+
+
+            // ---------------------------------------------
+            // COMPROBANTE
+            // ---------------------------------------------
+
+            tipoComprobante?.removeAttribute("required");
+
+
+            // ---------------------------------------------
+            // ARCHIVO
+            // ---------------------------------------------
+
+            archivo?.removeAttribute("required");
+
+
+            // ---------------------------------------------
+            // SERIE
+            // ---------------------------------------------
+
+            serie?.removeAttribute("required");
+
+
+            // ---------------------------------------------
+            // NÚMERO
+            // ---------------------------------------------
+
+            numero?.removeAttribute("required");
+
+
+            // ---------------------------------------------
+            // MENSAJE
+            // ---------------------------------------------
+
+            if (mensajeMovilidad) {
+
+                mensajeMovilidad.style.display =
+                    "block";
+
             }
 
-            btnRuc.disabled=true;
-            btnRuc.innerHTML='<span class="spinner-border spinner-border-sm me-1"></span>Buscando...';
 
-            try{
-                const url='@Url.Action("ConsultarRuc", "Gasto")'+'?ruc='+encodeURIComponent(numero);
+            if (mensajeArchivo) {
 
-                const response=await fetch(url,{
-                    method:"GET",
-                    headers:{"Accept":"application/json"}
-                });
+                mensajeArchivo.innerHTML =
+                    "PDF, JPG, JPEG o PNG. " +
+                    "<strong>Opcional para Movilidad.</strong>";
 
-                let data;
-
-                try{
-                    data=await response.json();
-                }catch{
-                    throw new Error("La respuesta del servidor no es válida.");
-                }
-
-                if(!response.ok){
-                    throw new Error(data?.mensaje||"No se encontró el RUC.");
-                }
-
-                razonSocial.value=data?.razonSocial??"";
-                domicilio.value=data?.domicilioFiscal??"";
-
-                mensajeRuc.textContent=`Estado: ${data?.estado??"-"} | Condición: ${data?.condicion??"-"}`;
-                mensajeRuc.className="form-text text-success";
-                ultimaConsulta=numero;
-
-            }catch(error){
-                ultimaConsulta="";
-                mensajeRuc.textContent=error.message||"No se pudo consultar el RUC.";
-                mensajeRuc.className="form-text text-danger";
-            }finally{
-                btnRuc.disabled=false;
-                btnRuc.innerHTML='<i class="bi bi-search me-1"></i>Buscar';
             }
+
+
+            if (mensajeTipoGasto) {
+
+                mensajeTipoGasto.textContent =
+                    "Movilidad: RUC, comprobante y voucher son opcionales.";
+
+                mensajeTipoGasto.className =
+                    "form-text text-success";
+
+            }
+
+
+            // ---------------------------------------------
+            // LIMPIAR VALIDACIONES VISUALES
+            // ---------------------------------------------
+
+            ruc?.classList.remove("is-invalid");
+
+            tipoComprobante?.classList.remove("is-invalid");
+
+            archivo?.classList.remove("is-invalid");
+
+
         }
 
-        if(ruc&&btnRuc){
-            btnRuc.addEventListener("click",consultarRuc);
+        // =====================================================
+        // OTROS TIPOS
+        // =====================================================
 
-            ruc.addEventListener("blur",function(){
-                if(/^\d{11}$/.test(ruc.value.trim())){
+        else {
+
+            // ---------------------------------------------
+            // RUC OBLIGATORIO
+            // ---------------------------------------------
+
+            ruc?.setAttribute(
+                "required",
+                "required"
+            );
+
+
+            // ---------------------------------------------
+            // RAZÓN SOCIAL
+            // ---------------------------------------------
+
+            razonSocial?.setAttribute(
+                "required",
+                "required"
+            );
+
+
+            // ---------------------------------------------
+            // DOMICILIO
+            // ---------------------------------------------
+
+            domicilio?.setAttribute(
+                "required",
+                "required"
+            );
+
+
+            // ---------------------------------------------
+            // COMPROBANTE
+            // ---------------------------------------------
+
+            tipoComprobante?.setAttribute(
+                "required",
+                "required"
+            );
+
+
+            // ---------------------------------------------
+            // ARCHIVO
+            // ---------------------------------------------
+
+            archivo?.setAttribute(
+                "required",
+                "required"
+            );
+
+
+            // ---------------------------------------------
+            // SERIE
+            // ---------------------------------------------
+
+            serie?.removeAttribute("required");
+
+
+            // ---------------------------------------------
+            // NÚMERO
+            // ---------------------------------------------
+
+            numero?.removeAttribute("required");
+
+
+            // ---------------------------------------------
+            // MENSAJE
+            // ---------------------------------------------
+
+            if (mensajeMovilidad) {
+
+                mensajeMovilidad.style.display =
+                    "none";
+
+            }
+
+
+            if (mensajeArchivo) {
+
+                mensajeArchivo.innerHTML =
+                    "PDF, JPG, JPEG o PNG. " +
+                    "<strong>Obligatorio excepto para Movilidad.</strong>";
+
+            }
+
+
+            if (mensajeTipoGasto) {
+
+                mensajeTipoGasto.textContent =
+                    "";
+
+                mensajeTipoGasto.className =
+                    "form-text";
+
+            }
+
+        }
+
+    }
+
+
+    // =========================================================
+    // CONSULTAR RUC
+    // =========================================================
+
+    async function consultarRuc() {
+
+        // -----------------------------------------------------
+        // MOVILIDAD NO NECESITA RUC
+        // -----------------------------------------------------
+
+        if (esMovilidad()) {
+
+            return;
+
+        }
+
+
+        const numeroRuc =
+            ruc.value.trim();
+
+
+        if (numeroRuc === ultimaConsulta)
+            return;
+
+
+        razonSocial.value = "";
+
+        domicilio.value = "";
+
+        mensajeRuc.textContent = "";
+
+
+        if (!/^\d{11}$/.test(numeroRuc)) {
+
+            mensajeRuc.textContent =
+                "Ingrese un RUC válido de 11 dígitos.";
+
+            mensajeRuc.className =
+                "form-text text-danger";
+
+            return;
+
+        }
+
+
+        btnRuc.disabled = true;
+
+
+        btnRuc.innerHTML =
+            '<span class="spinner-border spinner-border-sm me-1"></span>Buscando...';
+
+
+        try {
+
+            const url =
+                '@Url.Action("ConsultarRuc", "Gasto")' +
+                '?ruc=' +
+                encodeURIComponent(numeroRuc);
+
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    }
+                );
+
+
+            let data;
+
+
+            try {
+
+                data =
+                    await response.json();
+
+            }
+            catch {
+
+                throw new Error(
+                    "La respuesta del servidor no es válida."
+                );
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data?.mensaje ||
+                    "No se encontró el RUC."
+                );
+
+            }
+
+
+            razonSocial.value =
+                data?.razonSocial ?? "";
+
+
+            domicilio.value =
+                data?.domicilioFiscal ?? "";
+
+
+            mensajeRuc.textContent =
+                `Estado: ${data?.estado ?? "-"} | Condición: ${data?.condicion ?? "-"}`;
+
+
+            mensajeRuc.className =
+                "form-text text-success";
+
+
+            ultimaConsulta =
+                numeroRuc;
+
+
+            validarComprobantePorRuc();
+
+        }
+        catch (error) {
+
+            ultimaConsulta = "";
+
+            mensajeRuc.textContent =
+                error.message ||
+                "No se pudo consultar el RUC.";
+
+            mensajeRuc.className =
+                "form-text text-danger";
+
+        }
+        finally {
+
+            btnRuc.disabled = false;
+
+            btnRuc.innerHTML =
+                '<i class="bi bi-search me-1"></i>Buscar';
+
+        }
+
+    }
+
+
+    // =========================================================
+    // VALIDAR COMPROBANTE SEGÚN RUC
+    // =========================================================
+
+    function validarComprobantePorRuc() {
+
+        // =====================================================
+        // MOVILIDAD
+        // =====================================================
+
+        if (esMovilidad()) {
+
+            mensajeComprobante.textContent =
+                "Para Movilidad el comprobante es opcional.";
+
+            mensajeComprobante.className =
+                "form-text text-success";
+
+            tipoComprobante?.classList.remove(
+                "is-invalid"
+            );
+
+            return true;
+
+        }
+
+
+        if (!ruc || !tipoComprobante)
+            return true;
+
+
+        const numeroRuc =
+            ruc.value.trim();
+
+
+        const opcionSeleccionada =
+            tipoComprobante.options[
+                tipoComprobante.selectedIndex
+            ];
+
+
+        const nombreComprobante =
+            opcionSeleccionada?.text || "";
+
+
+        // =====================================================
+        // RUC 20
+        // =====================================================
+
+        if (numeroRuc.startsWith("20")) {
+
+            if (!normalizarTexto(nombreComprobante)
+                .includes("factura")) {
+
+
+                mensajeComprobante.textContent =
+                    "Para un RUC que empieza con 20, únicamente se permite registrar una FACTURA.";
+
+
+                mensajeComprobante.className =
+                    "form-text text-danger";
+
+
+                tipoComprobante.classList.add(
+                    "is-invalid"
+                );
+
+
+                return false;
+
+            }
+
+
+            mensajeComprobante.textContent =
+                "RUC iniciado en 20: comprobante válido.";
+
+
+            mensajeComprobante.className =
+                "form-text text-success";
+
+
+            tipoComprobante.classList.remove(
+                "is-invalid"
+            );
+
+
+            return true;
+
+        }
+
+
+        mensajeComprobante.textContent =
+            "";
+
+
+        tipoComprobante.classList.remove(
+            "is-invalid"
+        );
+
+
+        return true;
+
+    }
+
+
+    // =========================================================
+    // EVENTOS RUC
+    // =========================================================
+
+    if (ruc && btnRuc) {
+
+        btnRuc.addEventListener(
+            "click",
+            consultarRuc
+        );
+
+
+        ruc.addEventListener(
+            "blur",
+            function () {
+
+                if (
+                    !esMovilidad() &&
+                    /^\d{11}$/.test(
+                        ruc.value.trim()
+                    )
+                ) {
+
                     consultarRuc();
-                }
-            });
 
-            ruc.addEventListener("input",function(){
-                ruc.value=ruc.value.replace(/\D/g,"").slice(0,11);
-
-                if(ruc.value!==ultimaConsulta){
-                    ultimaConsulta="";
-                    razonSocial.value="";
-                    domicilio.value="";
-                    mensajeRuc.textContent="";
                 }
-            });
+
+            }
+        );
+
+
+        ruc.addEventListener(
+            "input",
+            function () {
+
+                ruc.value =
+                    ruc.value
+                        .replace(/\D/g, "")
+                        .slice(0, 11);
+
+
+                if (
+                    ruc.value !==
+                    ultimaConsulta
+                ) {
+
+                    ultimaConsulta = "";
+
+                    razonSocial.value = "";
+
+                    domicilio.value = "";
+
+                    mensajeRuc.textContent = "";
+
+                    mensajeComprobante.textContent = "";
+
+                    tipoComprobante?.classList.remove(
+                        "is-invalid"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    // =========================================================
+    // CAMBIO TIPO COMPROBANTE
+    // =========================================================
+
+    tipoComprobante?.addEventListener(
+        "change",
+        function () {
+
+            validarComprobantePorRuc();
+
+        }
+    );
+
+
+    // =========================================================
+    // CAMBIO TIPO DE GASTO
+    // =========================================================
+
+    tipoGasto?.addEventListener(
+        "change",
+        function () {
+
+            actualizarRequisitos();
+
+            validarComprobantePorRuc();
+
+            validarLimiteDiario(true);
+
+            calcularIgv();
+
+        }
+    );
+
+
+    // =========================================================
+    // LÍMITES SEGÚN TIPO
+    // =========================================================
+
+    function obtenerLimiteTipo() {
+
+        if (!tipoGasto)
+            return null;
+
+
+        const texto =
+            tipoGasto.options[
+                tipoGasto.selectedIndex
+            ]?.text || "";
+
+
+        const tipo =
+            normalizarTexto(texto);
+
+
+        if (tipo.includes("alimentacion"))
+            return LIMITE_ALIMENTACION;
+
+
+        if (tipo.includes("hospedaje"))
+            return LIMITE_HOSPEDAJE;
+
+
+        return null;
+
+    }
+
+
+    // =========================================================
+    // OBTENER TOTAL EXISTENTE
+    // =========================================================
+
+    function obtenerTotalExistentePorDia(
+        fecha,
+        tipo
+    ) {
+
+        if (!fecha || !tipo)
+            return 0;
+
+
+        const tipoBuscado =
+            normalizarTexto(tipo);
+
+
+        let totalExistente = 0;
+
+
+        const filas =
+            document.querySelectorAll(
+                ".table-gastos tbody tr"
+            );
+
+
+        filas.forEach(
+            function (fila) {
+
+                const celdas =
+                    fila.querySelectorAll("td");
+
+
+                if (celdas.length < 7)
+                    return;
+
+
+                const fechaTexto =
+                    celdas[0]
+                        .textContent
+                        .trim();
+
+
+                const partes =
+                    fechaTexto.split("/");
+
+
+                if (partes.length !== 3)
+                    return;
+
+
+                const fechaFila =
+                    `${partes[2]}-${partes[1].padStart(2, "0")}-${partes[0].padStart(2, "0")}`;
+
+
+                if (fechaFila !== fecha)
+                    return;
+
+
+                const tipoFila =
+                    normalizarTexto(
+                        celdas[1].textContent
+                    );
+
+
+                if (!tipoFila.includes(tipoBuscado))
+                    return;
+
+
+                const totalTexto =
+                    celdas[6]
+                        .textContent
+                        .replace("S/", "")
+                        .replace(/,/g, "")
+                        .trim();
+
+
+                const total =
+                    parseFloat(totalTexto) || 0;
+
+
+                totalExistente += total;
+
+            }
+        );
+
+
+        return totalExistente;
+
+    }
+
+
+    // =========================================================
+    // VALIDAR LÍMITE DIARIO
+    // =========================================================
+
+    function validarLimiteDiario(
+        mostrarMensaje = true
+    ) {
+
+        if (
+            !fechaGasto ||
+            !tipoGasto ||
+            !montoTotal
+        ) {
+
+            return true;
+
         }
 
-        const montoTotal=document.getElementById("montoTotal");
-        const exoneracion=document.getElementById("exoneracionIGV");
-        const valorVenta=document.getElementById("valorVenta");
-        const igv=document.getElementById("igvCalculado");
-        const resumenBase=document.getElementById("resumenValorVenta");
-        const resumenIgv=document.getElementById("resumenIgv");
-        const resumenTotal=document.getElementById("resumenTotal");
 
-        function calcularIgv(){
-            if(!montoTotal||!valorVenta||!igv)return;
+        const fecha =
+            fechaGasto.value;
 
-            const total=parseFloat(montoTotal.value)||0;
-            let base=0;
-            let impuesto=0;
 
-            if(total>0){
-                if(exoneracion?.checked){
-                    base=total;
-                }else{
-                    base=Math.round((total/1.18)*100)/100;
-                    impuesto=Math.round((total-base)*100)/100;
-                }
+        const tipo =
+            obtenerNombreTipo();
+
+
+        const limite =
+            obtenerLimiteTipo();
+
+
+        const monto =
+            parseFloat(
+                montoTotal.value
+            ) || 0;
+
+
+        // -----------------------------------------------------
+        // No es alimentación ni hospedaje
+        // -----------------------------------------------------
+
+        if (!limite) {
+
+            if (mensajeLimiteMonto) {
+
+                mensajeLimiteMonto.textContent =
+                    "";
+
+                mensajeLimiteMonto.className =
+                    "form-text";
+
             }
 
-            valorVenta.value=base.toFixed(2);
-            igv.value=impuesto.toFixed(2);
 
-            if(resumenBase)resumenBase.textContent=`S/ ${base.toFixed(2)}`;
-            if(resumenIgv)resumenIgv.textContent=`S/ ${impuesto.toFixed(2)}`;
-            if(resumenTotal)resumenTotal.textContent=`S/ ${total.toFixed(2)}`;
+            montoTotal.removeAttribute("max");
+
+
+            return true;
+
         }
 
-        montoTotal?.addEventListener("input",calcularIgv);
-        exoneracion?.addEventListener("change",calcularIgv);
 
-        calcularIgv();
-    });
+        // -----------------------------------------------------
+        // Fecha
+        // -----------------------------------------------------
+
+        if (!fecha) {
+
+            if (mostrarMensaje) {
+
+                mensajeLimiteMonto.textContent =
+                    "Seleccione la fecha del gasto.";
+
+                mensajeLimiteMonto.className =
+                    "form-text text-danger";
+
+            }
+
+
+            return false;
+
+        }
+
+
+        const totalExistente =
+            obtenerTotalExistentePorDia(
+                fecha,
+                tipo
+            );
+
+
+        const disponible =
+            Math.max(
+                0,
+                limite - totalExistente
+            );
+
+
+        montoTotal.max =
+            disponible.toFixed(2);
+
+
+        // -----------------------------------------------------
+        // LÍMITE ALCANZADO
+        // -----------------------------------------------------
+
+        if (totalExistente >= limite) {
+
+            if (mostrarMensaje) {
+
+                mensajeLimiteMonto.textContent =
+                    `${tipo}: ya alcanzó el límite diario de S/ ${limite.toFixed(2)}.`;
+
+                mensajeLimiteMonto.className =
+                    "form-text text-danger";
+
+            }
+
+
+            return false;
+
+        }
+
+
+        // -----------------------------------------------------
+        // EXCEDE DISPONIBLE
+        // -----------------------------------------------------
+
+        if (monto > disponible) {
+
+            if (mostrarMensaje) {
+
+                mensajeLimiteMonto.textContent =
+                    `El máximo permitido para ${tipo.toLowerCase()} en esta fecha es S/ ${disponible.toFixed(2)}. El límite diario es S/ ${limite.toFixed(2)}.`;
+
+                mensajeLimiteMonto.className =
+                    "form-text text-danger";
+
+            }
+
+
+            return false;
+
+        }
+
+
+        // -----------------------------------------------------
+        // INFORMACIÓN
+        // -----------------------------------------------------
+
+        if (mostrarMensaje) {
+
+            mensajeLimiteMonto.textContent =
+                `Límite diario: S/ ${limite.toFixed(2)} | ` +
+                `Registrado: S/ ${totalExistente.toFixed(2)} | ` +
+                `Disponible: S/ ${disponible.toFixed(2)}`;
+
+            mensajeLimiteMonto.className =
+                "form-text text-muted";
+
+        }
+
+
+        return true;
+
+    }
+
+
+    // =========================================================
+    // CALCULAR IGV
+    // =========================================================
+
+    function calcularIgv() {
+
+        if (
+            !montoTotal ||
+            !valorVenta ||
+            !igv
+        ) {
+
+            return;
+
+        }
+
+
+        const total =
+            parseFloat(
+                montoTotal.value
+            ) || 0;
+
+
+        let base = 0;
+
+        let impuesto = 0;
+
+
+        if (total > 0) {
+
+            if (exoneracion?.checked) {
+
+                base = total;
+
+            }
+            else {
+
+                base =
+                    Math.round(
+                        (total / 1.18) * 100
+                    ) / 100;
+
+
+                impuesto =
+                    Math.round(
+                        (total - base) * 100
+                    ) / 100;
+
+            }
+
+        }
+
+
+        valorVenta.value =
+            base.toFixed(2);
+
+
+        igv.value =
+            impuesto.toFixed(2);
+
+
+        if (resumenBase) {
+
+            resumenBase.textContent =
+                `S/ ${base.toFixed(2)}`;
+
+        }
+
+
+        if (resumenIgv) {
+
+            resumenIgv.textContent =
+                `S/ ${impuesto.toFixed(2)}`;
+
+        }
+
+
+        if (resumenTotal) {
+
+            resumenTotal.textContent =
+                `S/ ${total.toFixed(2)}`;
+
+        }
+
+    }
+
+
+    // =========================================================
+    // EVENTOS FECHA
+    // =========================================================
+
+    fechaGasto?.addEventListener(
+        "change",
+        function () {
+
+            validarLimiteDiario(true);
+
+            calcularIgv();
+
+        }
+    );
+
+
+    // =========================================================
+    // EVENTO MONTO
+    // =========================================================
+
+    montoTotal?.addEventListener(
+        "input",
+        function () {
+
+            validarLimiteDiario(true);
+
+            calcularIgv();
+
+        }
+    );
+
+
+    // =========================================================
+    // EVENTO EXONERACIÓN
+    // =========================================================
+
+    exoneracion?.addEventListener(
+        "change",
+        calcularIgv
+    );
+
+
+    // =========================================================
+    // VALIDACIÓN FINAL
+    // =========================================================
+
+    formGasto?.addEventListener(
+        "submit",
+        function (event) {
+
+
+            // =====================================================
+            // IDENTIFICAR MOVILIDAD
+            // =====================================================
+
+            const movilidad =
+                esMovilidad();
+
+
+            // =====================================================
+            // MOVILIDAD
+            // =====================================================
+
+            if (movilidad) {
+
+                /*
+                 * IMPORTANTE:
+                 *
+                 * Para movilidad NO se valida:
+                 *
+                 * - RUC
+                 * - Razón social
+                 * - Domicilio
+                 * - Tipo comprobante
+                 * - Serie
+                 * - Número
+                 * - Archivo/voucher
+                 *
+                 * Por eso aquí NO se bloquea el formulario.
+                 */
+
+            }
+
+            // =====================================================
+            // OTROS TIPOS
+            // =====================================================
+
+            else {
+
+                // -------------------------------------------------
+                // 1. RUC
+                // -------------------------------------------------
+
+                const numeroRuc =
+                    ruc?.value.trim() || "";
+
+
+                if (!/^\d{11}$/.test(numeroRuc)) {
+
+                    event.preventDefault();
+
+
+                    mostrarAlerta(
+                        "RUC obligatorio",
+                        "Para este tipo de gasto debe ingresar un RUC válido de 11 dígitos.",
+                        "error"
+                    );
+
+
+                    ruc?.focus();
+
+
+                    return;
+
+                }
+
+
+                // -------------------------------------------------
+                // 2. RUC 20 → FACTURA
+                // -------------------------------------------------
+
+                if (
+                    numeroRuc.startsWith("20")
+                ) {
+
+                    const opcion =
+                        tipoComprobante?.options[
+                            tipoComprobante.selectedIndex
+                        ];
+
+
+                    const comprobante =
+                        normalizarTexto(
+                            opcion?.text || ""
+                        );
+
+
+                    if (
+                        !comprobante.includes(
+                            "factura"
+                        )
+                    ) {
+
+                        event.preventDefault();
+
+
+                        mostrarAlerta(
+                            "Comprobante no permitido",
+                            "El RUC ingresado empieza con 20. Para este tipo de RUC únicamente se permite registrar una FACTURA.",
+                            "warning"
+                        );
+
+
+                        tipoComprobante?.focus();
+
+
+                        return;
+
+                    }
+
+                }
+
+
+                // -------------------------------------------------
+                // 3. COMPROBANTE
+                // -------------------------------------------------
+
+                if (
+                    !tipoComprobante ||
+                    !tipoComprobante.value
+                ) {
+
+                    event.preventDefault();
+
+
+                    mostrarAlerta(
+                        "Comprobante obligatorio",
+                        "Debe seleccionar el tipo de comprobante para este tipo de gasto.",
+                        "warning"
+                    );
+
+
+                    tipoComprobante?.focus();
+
+
+                    return;
+
+                }
+
+
+                // -------------------------------------------------
+                // 4. ARCHIVO
+                // -------------------------------------------------
+
+                if (
+                    !archivo ||
+                    archivo.files.length === 0
+                ) {
+
+                    event.preventDefault();
+
+
+                    mostrarAlerta(
+                        "Voucher obligatorio",
+                        "Debe adjuntar el comprobante o voucher del gasto.",
+                        "warning"
+                    );
+
+
+                    archivo?.focus();
+
+
+                    return;
+
+                }
+
+            }
+
+
+            // =====================================================
+            // 5. LÍMITE DIARIO
+            // =====================================================
+
+            if (
+                !validarLimiteDiario(true)
+            ) {
+
+                event.preventDefault();
+
+
+                const fecha =
+                    fechaGasto?.value || "";
+
+
+                const tipo =
+                    obtenerNombreTipo();
+
+
+                const limite =
+                    obtenerLimiteTipo();
+
+
+                const monto =
+                    parseFloat(
+                        montoTotal?.value
+                    ) || 0;
+
+
+                const existente =
+                    obtenerTotalExistentePorDia(
+                        fecha,
+                        tipo
+                    );
+
+
+                const disponible =
+                    limite !== null
+                        ? Math.max(
+                            0,
+                            limite - existente
+                        )
+                        : 0;
+
+
+                if (
+                    limite !== null &&
+                    existente >= limite
+                ) {
+
+                    mostrarAlerta(
+                        "Límite diario alcanzado",
+                        `Ya registró S/ ${existente.toFixed(2)} en ${tipo.toLowerCase()} para el día seleccionado.<br><br>` +
+                        `<strong>Límite permitido: S/ ${limite.toFixed(2)}</strong><br>` +
+                        `No puede registrar otro gasto de este tipo en esta fecha.`,
+                        "warning"
+                    );
+
+                }
+                else if (
+                    limite !== null &&
+                    monto > disponible
+                ) {
+
+                    mostrarAlerta(
+                        "Monto excede el límite",
+                        `El gasto ingresado es de <strong>S/ ${monto.toFixed(2)}</strong>.<br><br>` +
+                        `Ya tiene registrado: <strong>S/ ${existente.toFixed(2)}</strong>.<br>` +
+                        `Disponible: <strong>S/ ${disponible.toFixed(2)}</strong>.<br><br>` +
+                        `Límite diario de ${tipo.toLowerCase()}: <strong>S/ ${limite.toFixed(2)}</strong>.`,
+                        "warning"
+                    );
+
+                }
+                else {
+
+                    mostrarAlerta(
+                        "No se puede registrar",
+                        "El gasto no cumple con las restricciones establecidas.",
+                        "warning"
+                    );
+
+                }
+
+
+                montoTotal?.focus();
+
+
+                return;
+
+            }
+
+        }
+    );
+
+
+    // =========================================================
+    // ALERTAS
+    // =========================================================
+
+    function mostrarAlerta(
+        titulo,
+        mensaje,
+        tipo
+    ) {
+
+        if (
+            typeof Swal !==
+            "undefined"
+        ) {
+
+            Swal.fire({
+
+                icon: tipo,
+
+                title: titulo,
+
+                html: mensaje,
+
+                confirmButtonText:
+                    "Entendido",
+
+                confirmButtonColor:
+                    "#0C4A8A"
+
+            });
+
+
+            return;
+
+        }
+
+
+        const mensajePlano =
+            mensaje.replace(
+                /<[^>]*>/g,
+                ""
+            );
+
+
+        alert(
+            titulo +
+            "\n\n" +
+            mensajePlano
+        );
+
+    }
+
+
+    // =========================================================
+    // INICIALIZAR
+    // =========================================================
+
+    actualizarRequisitos();
+
+    calcularIgv();
+
+    validarLimiteDiario(false);
+
+});
+
 </script>

@@ -581,429 +581,1020 @@
 </style>
 
 <div class="solicitudes-page">
+
+    <!-- ========================================================= -->
+    <!-- ENCABEZADO -->
+    <!-- ========================================================= -->
+
     <div class="page-header">
+
         <div>
+
             <h1 class="page-title">
                 <i class="bi bi-file-earmark-text-fill me-2"></i>
                 Solicitudes de Viáticos
             </h1>
+
             <p class="page-description">
                 Revise, apruebe o rechace las solicitudes registradas por los empleados.
             </p>
+
         </div>
+
         <div class="page-header-actions">
-            <a asp-controller="Principal" asp-action="Index" class="btn-volver">
+
+            <a asp-controller="Principal"
+               asp-action="Index"
+               class="btn-volver">
+
                 <i class="bi bi-arrow-left"></i>
                 Volver al panel
+
             </a>
+
         </div>
+
     </div>
+
+
+    <!-- ========================================================= -->
+    <!-- MENSAJE DE ÉXITO -->
+    <!-- ========================================================= -->
 
     @if (TempData["mensajeSolicitud"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show alerta-solicitud alerta-success" role="alert">
+        <div class="alert alert-success alert-dismissible fade show alerta-solicitud alerta-success"
+             role="alert">
+
             <i class="bi bi-check-circle-fill me-2"></i>
+
             @TempData["mensajeSolicitud"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+
         </div>
     }
+
+
+    <!-- ========================================================= -->
+    <!-- MENSAJE DE ERROR -->
+    <!-- ========================================================= -->
 
     @if (TempData["errorSolicitud"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show alerta-solicitud alerta-error" role="alert">
+        <div class="alert alert-danger alert-dismissible fade show alerta-solicitud alerta-error"
+             role="alert">
+
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
             @Html.Raw(TempData["errorSolicitud"])
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Cerrar">
+            </button>
+
         </div>
     }
 
+
+    <!-- ========================================================= -->
+    <!-- TARJETAS DE RESUMEN -->
+    <!-- ========================================================= -->
+
     <div class="row g-3 mb-4">
+
+        <!-- TOTAL -->
+
         <div class="col-md-6 col-xl-3">
+
             <div class="resumen-card">
+
                 <div class="d-flex justify-content-between align-items-center">
+
                     <div>
-                        <span class="resumen-label">Total de solicitudes</span>
-                        <h3 class="resumen-value">@totalSolicitudes</h3>
+
+                        <span class="resumen-label">
+                            Total de solicitudes
+                        </span>
+
+                        <h3 class="resumen-value">
+                            @totalSolicitudes
+                        </h3>
+
                     </div>
+
                     <div class="resumen-icon resumen-blue">
+
                         <i class="bi bi-file-earmark-text"></i>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
+
+        <!-- PENDIENTES -->
+
         <div class="col-md-6 col-xl-3">
+
             <div class="resumen-card">
+
                 <div class="d-flex justify-content-between align-items-center">
+
                     <div>
-                        <span class="resumen-label">Solicitudes pendientes</span>
-                        <h3 class="resumen-value">@pendientes</h3>
+
+                        <span class="resumen-label">
+                            Solicitudes pendientes
+                        </span>
+
+                        <h3 class="resumen-value">
+                            @pendientes
+                        </h3>
+
                     </div>
+
                     <div class="resumen-icon resumen-yellow">
+
                         <i class="bi bi-clock"></i>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
+
+        <!-- APROBADAS -->
+
         <div class="col-md-6 col-xl-3">
+
             <div class="resumen-card">
+
                 <div class="d-flex justify-content-between align-items-center">
+
                     <div>
-                        <span class="resumen-label">Solicitudes aprobadas</span>
-                        <h3 class="resumen-value">@aprobadas</h3>
+
+                        <span class="resumen-label">
+                            Solicitudes aprobadas
+                        </span>
+
+                        <h3 class="resumen-value">
+                            @aprobadas
+                        </h3>
+
                     </div>
+
                     <div class="resumen-icon resumen-green">
+
                         <i class="bi bi-check-circle"></i>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
+
+        <!-- RECHAZADAS -->
+
         <div class="col-md-6 col-xl-3">
+
             <div class="resumen-card">
+
                 <div class="d-flex justify-content-between align-items-center">
+
                     <div>
-                        <span class="resumen-label">Solicitudes rechazadas</span>
-                        <h3 class="resumen-value">@rechazadas</h3>
+
+                        <span class="resumen-label">
+                            Solicitudes rechazadas
+                        </span>
+
+                        <h3 class="resumen-value">
+                            @rechazadas
+                        </h3>
+
                     </div>
+
                     <div class="resumen-icon resumen-red">
+
                         <i class="bi bi-x-circle"></i>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
+
+    <!-- ========================================================= -->
+    <!-- FILTROS -->
+    <!-- ========================================================= -->
 
     <div class="filtros-card">
+
         <div class="search-box">
+
             <i class="bi bi-search search-icon"></i>
-            <input type="search" id="buscadorSolicitudes" class="search-input" placeholder="Buscar empleado, zona, destino, motivo o estado..." autocomplete="off">
-            <button type="button" id="limpiarBusqueda" class="search-clear" title="Limpiar búsqueda">
+
+            <input type="search"
+                   id="buscadorSolicitudes"
+                   class="search-input"
+                   placeholder="Buscar empleado, zona, destino, motivo o estado..."
+                   autocomplete="off">
+
+            <button type="button"
+                    id="limpiarBusqueda"
+                    class="search-clear"
+                    title="Limpiar búsqueda">
+
                 <i class="bi bi-x-lg"></i>
+
             </button>
+
         </div>
+
+
         <div class="date-filter">
-            <label for="fechaDesde" class="date-label">Fecha desde</label>
-            <input type="date" id="fechaDesde" class="form-control">
+
+            <label for="fechaDesde"
+                   class="date-label">
+
+                Fecha desde
+
+            </label>
+
+            <input type="date"
+                   id="fechaDesde"
+                   class="form-control">
+
         </div>
+
+
         <div class="date-filter">
-            <label for="fechaHasta" class="date-label">Fecha hasta</label>
-            <input type="date" id="fechaHasta" class="form-control">
+
+            <label for="fechaHasta"
+                   class="date-label">
+
+                Fecha hasta
+
+            </label>
+
+            <input type="date"
+                   id="fechaHasta"
+                   class="form-control">
+
         </div>
-        <button type="button" id="limpiarFiltros" class="btn-limpiar">
+
+
+        <button type="button"
+                id="limpiarFiltros"
+                class="btn-limpiar">
+
             <i class="bi bi-arrow-counterclockwise me-1"></i>
+
             Limpiar
+
         </button>
+
     </div>
 
+
+    <!-- ========================================================= -->
+    <!-- TABLA DE SOLICITUDES -->
+    <!-- ========================================================= -->
+
     <div class="solicitudes-card">
+
         <div class="solicitudes-card-header">
+
             <h2 class="solicitudes-card-title">
+
                 <i class="bi bi-list-ul me-2"></i>
+
                 Lista de solicitudes
+
             </h2>
+
         </div>
 
+
         <div class="table-wrapper">
-            <table class="solicitudes-table" id="tablaSolicitudes">
+
+            <table class="solicitudes-table"
+                   id="tablaSolicitudes">
+
                 <thead>
+
                     <tr>
+
                         <th>#</th>
+
                         <th>Empleado</th>
+
                         <th>Periodo</th>
+
                         <th>Destino</th>
+
                         <th>Motivo</th>
+
                         <th>Monto</th>
+
                         <th>Estado</th>
+
                         <th>Observación</th>
+
                         <th>Acciones</th>
+
                     </tr>
+
                 </thead>
+
+
                 <tbody>
-                   @if (Model != null && Model.Any())
+
+                    @if (Model != null && Model.Any())
                     {
                         foreach (var item in Model)
                         {
-                            var zona = item.Usuario?.Zona?.CodigoZona ?? "";
-                            var estadoTexto = item.IdEstadoSolicitud == 1
-                                ? "Pendiente"
-                                : item.IdEstadoSolicitud == 2
-                                    ? "Aprobada"
-                                    : item.IdEstadoSolicitud == 3
-                                        ? "Rechazada"
-                                        : "Sin estado";
+                            var zona =
+                                item.Usuario?.Zona?.CodigoZona ?? "";
 
-                            <tr data-fecha="@item.Fecha.ToString("yyyy-MM-dd")" data-zona="@zona" data-estado="@estadoTexto">
+                            var estadoTexto =
+                                item.IdEstadoSolicitud == 1
+                                    ? "Pendiente"
+                                    : item.IdEstadoSolicitud == 2
+                                        ? "Aprobada"
+                                        : item.IdEstadoSolicitud == 3
+                                            ? "Rechazada"
+                                            : "Sin estado";
+
+
+                            <tr data-fecha="@item.Fecha.ToString("yyyy-MM-dd")"
+                                data-zona="@zona"
+                                data-estado="@estadoTexto">
+
+
+                                <!-- ID -->
+
                                 <td>
-                                    <strong>#@item.IdSolicitud</strong>
+
+                                    <strong>
+                                        #@item.IdSolicitud
+                                    </strong>
+
                                 </td>
+
+
+                                <!-- EMPLEADO -->
+
                                 <td>
+
                                     <div class="empleado-nombre">
-                                        @item.Usuario?.Nombres @item.Usuario?.Apellidos
+
+                                        @item.Usuario?.Nombres
+                                        @item.Usuario?.Apellidos
+
                                     </div>
+
+
                                     @if (!string.IsNullOrWhiteSpace(item.Usuario?.Correo))
                                     {
-                                        <div class="empleado-correo">@item.Usuario.Correo</div>
+                                        <div class="empleado-correo">
+
+                                            @item.Usuario.Correo
+
+                                        </div>
                                     }
+
                                 </td>
+
+
+                                <!-- PERIODO -->
+
                                 <td>
+
                                     <div class="periodo">
+
                                         @item.FechaInicio.ToString("dd/MM/yyyy")
+
                                         <br>
-                                        <small>hasta @item.FechaFin.ToString("dd/MM/yyyy")</small>
+
+                                        <small>
+                                            hasta
+                                            @item.FechaFin.ToString("dd/MM/yyyy")
+                                        </small>
+
                                     </div>
+
                                 </td>
-                                <td>@item.Destino</td>
-                                <td>@item.Motivo</td>
+
+
+                                <!-- DESTINO -->
+
                                 <td>
-                                    <span class="monto">S/ @item.Monto.ToString("N2")</span>
+                                    @item.Destino
                                 </td>
+
+
+                                <!-- MOTIVO -->
+
                                 <td>
+                                    @item.Motivo
+                                </td>
+
+
+                                <!-- MONTO -->
+
+                                <td>
+
+                                    <span class="monto">
+
+                                        S/
+                                        @item.Monto.ToString("N2")
+
+                                    </span>
+
+                                </td>
+
+
+                                <!-- ESTADO -->
+
+                                <td>
+
                                     @if (item.IdEstadoSolicitud == 1)
                                     {
                                         <span class="estado estado-pendiente">
+
                                             <i class="bi bi-clock-fill"></i>
+
                                             Pendiente
+
                                         </span>
                                     }
                                     else if (item.IdEstadoSolicitud == 2)
                                     {
                                         <span class="estado estado-aprobado">
+
                                             <i class="bi bi-check-circle-fill"></i>
+
                                             Aprobada
+
                                         </span>
                                     }
                                     else if (item.IdEstadoSolicitud == 3)
                                     {
                                         <span class="estado estado-rechazado">
+
                                             <i class="bi bi-x-circle-fill"></i>
+
                                             Rechazada
+
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="estado bg-secondary text-white">Sin estado</span>
+                                        <span class="estado bg-secondary text-white">
+
+                                            Sin estado
+
+                                        </span>
                                     }
+
                                 </td>
+
+
+                                <!-- OBSERVACIÓN -->
+
                                 <td>
-                                    @if (item.IdEstadoSolicitud == 3 && !string.IsNullOrWhiteSpace(item.Observaciones))
+
+                                    @if (item.IdEstadoSolicitud == 3 &&
+                                         !string.IsNullOrWhiteSpace(item.Observaciones))
                                     {
-                                        <div class="observacion-rechazo">@item.Observaciones</div>
+                                        <div class="observacion-rechazo">
+
+                                            @item.Observaciones
+
+                                        </div>
                                     }
                                     else
                                     {
-                                        <span class="text-muted">—</span>
+                                        <span class="text-muted">
+                                            —
+                                        </span>
                                     }
+
                                 </td>
-                               <td>
-    <div class="acciones">
 
-        @if (item.IdEstadoSolicitud == 1)
-        {
-            <button type="button"
-                    class="btn-accion btn-aprobar"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalAprobar-@item.IdSolicitud">
-                <i class="bi bi-check-circle"></i>
-                Aprobar
-            </button>
 
-            <button type="button"
-                    class="btn-accion btn-rechazar"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalRechazar-@item.IdSolicitud">
-                <i class="bi bi-x-circle"></i>
-                Rechazar
-            </button>
-        }
-        else
-        {
-            <div class="acciones-procesada">
+                                <!-- ACCIONES -->
 
-                <span class="procesada">
-                    <i class="bi bi-lock-fill"></i>
-                    Procesada
-                </span>
+                                <td>
 
-                @if (item.IdEstadoSolicitud == 2 &&
-                     !string.IsNullOrWhiteSpace(item.RutaComprobante))
-                {
-                    <a href="@item.RutaComprobante"
-                       target="_blank"
-                       class="btn-voucher"
-                       title="Ver voucher">
-                        <i class="bi bi-file-earmark-text"></i>
-                        Voucher
-                    </a>
-                }
+                                    <div class="acciones">
 
-            </div>
-        }
+                                        @if (item.IdEstadoSolicitud == 1)
+                                        {
+                                            <!-- APROBAR -->
 
-    </div>
-</td>
+                                            <button type="button"
+                                                    class="btn-accion btn-aprobar"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalAprobar-@item.IdSolicitud">
+
+                                                <i class="bi bi-check-circle"></i>
+
+                                                Aprobar
+
+                                            </button>
+
+
+                                            <!-- RECHAZAR -->
+
+                                            <button type="button"
+                                                    class="btn-accion btn-rechazar"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalRechazar-@item.IdSolicitud">
+
+                                                <i class="bi bi-x-circle"></i>
+
+                                                Rechazar
+
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <div class="acciones-procesada">
+
+                                                <span class="procesada">
+
+                                                    <i class="bi bi-lock-fill"></i>
+
+                                                    Procesada
+
+                                                </span>
+
+
+                                                <!-- COMPROBANTE -->
+
+                                                @if (item.IdEstadoSolicitud == 2 &&
+                                                     !string.IsNullOrWhiteSpace(item.RutaComprobante))
+                                                {
+                                                    <a href="@item.RutaComprobante"
+                                                       target="_blank"
+                                                       class="btn-voucher"
+                                                       title="Ver comprobante">
+
+                                                        <i class="bi bi-file-earmark-text"></i>
+
+                                                        Comprobante
+
+                                                    </a>
+                                                }
+
+                                            </div>
+                                        }
+
+                                    </div>
+
+                                </td>
+
                             </tr>
                         }
                     }
                     else
                     {
                         <tr>
-                            <td colspan="9" class="sin-resultados">
+
+                            <td colspan="9"
+                                class="sin-resultados">
+
                                 <i class="bi bi-inbox"></i>
+
                                 No hay solicitudes registradas.
+
                             </td>
+
                         </tr>
                     }
+
                 </tbody>
+
             </table>
+
         </div>
+
     </div>
+
 </div>
 
-@if (Model != null && Model.Any(x => x.IdEstadoSolicitud == 1))
+
+<!-- ============================================================= -->
+<!-- MODALES PARA SOLICITUDES PENDIENTES -->
+<!-- ============================================================= -->
+
+@if (Model != null &&
+     Model.Any(x => x.IdEstadoSolicitud == 1))
 {
     foreach (var item in Model.Where(x => x.IdEstadoSolicitud == 1))
     {
-        <div class="modal fade" id="modalAprobar-@item.IdSolicitud" tabindex="-1" aria-labelledby="modalAprobarLabel-@item.IdSolicitud" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
+
+        <!-- ========================================================= -->
+        <!-- MODAL APROBAR -->
+        <!-- ========================================================= -->
+
+        <div class="modal fade"
+             id="modalAprobar-@item.IdSolicitud"
+             tabindex="-1"
+             aria-labelledby="modalAprobarLabel-@item.IdSolicitud"
+             aria-hidden="true">
+
+            <div class="modal-dialog modal-md modal-dialog-centered">
+
                 <div class="modal-content modal-aprobacion-content">
+
+
+                    <!-- CABECERA -->
+
                     <div class="modal-header modal-aprobacion-header">
-                        <h5 class="modal-title modal-aprobacion-title" id="modalAprobarLabel-@item.IdSolicitud">
-                            <i class="bi bi-cash-coin me-2"></i>
-                            Aprobar Solicitud y Registrar Comprobante
+
+                        <h5 class="modal-title modal-aprobacion-title"
+                            id="modalAprobarLabel-@item.IdSolicitud">
+
+                            <i class="bi bi-check-circle-fill me-2"></i>
+
+                            Aprobar solicitud
+
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Cerrar">
+                        </button>
+
                     </div>
-                    <form asp-controller="Solicitud" asp-action="Aprobar" method="post" enctype="multipart/form-data">
+
+
+                    <!-- FORMULARIO -->
+
+                    <form asp-controller="Solicitud"
+                          asp-action="Aprobar"
+                          method="post"
+                          enctype="multipart/form-data">
+
                         @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@item.IdSolicitud">
-                        <div class="modal-body modal-aprobacion-body">
-                            <div class="row g-4">
-                                <div class="col-12 col-lg-6 columna-izquierda">
-                                    <h6 class="seccion-titulo">
-                                        <i class="bi bi-upload me-1"></i>
-                                        Subir Comprobante de Depósito
-                                    </h6>
-                                    <div class="mb-3">
-                                        <label class="form-label form-label-custom">
-                                            Seleccionar archivo (Imagen o PDF) <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="file" name="comprobante" class="form-control form-control-custom" accept=".jpg,.jpeg,.png,.pdf" required>
-                                        <small class="text-muted d-block mt-1 form-text-custom">
-                                            Formatos permitidos: JPG, PNG o PDF (Máx. 5MB).
-                                        </small>
+
+
+                        <input type="hidden"
+                               name="id"
+                               value="@item.IdSolicitud">
+
+
+                        <!-- CUERPO -->
+
+                        <div class="modal-body">
+
+
+                            <!-- RESUMEN DE LA SOLICITUD -->
+
+                            <div class="aprobacion-resumen mb-3">
+
+                                <div class="row g-2">
+
+                                    <!-- EMPLEADO -->
+
+                                    <div class="col-12">
+
+                                        <div class="dato-aprobacion">
+
+                                            <span class="dato-label">
+                                                Empleado
+                                            </span>
+
+                                            <span class="dato-valor">
+
+                                                @item.Usuario?.Nombres
+                                                @item.Usuario?.Apellidos
+
+                                            </span>
+
+                                        </div>
+
                                     </div>
-                                    <div class="mb-3">
-                                        <label class="form-label form-label-custom">
-                                            Observaciones o detalles de la transferencia (Opcional)
-                                        </label>
-                                        <textarea name="observacionAprobacion" class="form-control" rows="3" placeholder="Número de operación, banco emisor, etc..."></textarea>
+
+
+                                    <!-- DESTINO -->
+
+                                    <div class="col-8">
+
+                                        <div class="dato-aprobacion">
+
+                                            <span class="dato-label">
+                                                Destino
+                                            </span>
+
+                                            <span class="dato-valor">
+
+                                                @item.Destino
+
+                                            </span>
+
+                                        </div>
+
                                     </div>
+
+
+                                    <!-- MONTO -->
+
+                                    <div class="col-4">
+
+                                        <div class="dato-aprobacion">
+
+                                            <span class="dato-label">
+                                                Monto
+                                            </span>
+
+                                            <span class="dato-valor monto-aprobacion">
+
+                                                S/ @item.Monto.ToString("N2")
+
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
                                 </div>
-                                <div class="col-12 col-lg-6">
-                                    <h6 class="seccion-titulo">
-                                        <i class="bi bi-clock-history me-1"></i>
-                                        Historial de Depósitos / Pagos
-                                    </h6>
-                                    <div class="table-responsive tabla-depositos-container">
-                                        <table class="table table-sm table-striped mb-0 tabla-depositos">
-                                            <thead>
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Monto</th>
-                                                    <th>Comprobante</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>15/05/2026</td>
-                                                    <td>S/ 450.00</td>
-                                                    <td>
-                                                        <a href="#" target="_blank" class="btn btn-sm btn-outline-primary py-0 px-1 btn-ver-comprobante">
-                                                            <i class="bi bi-file-earmark-pdf"></i> Ver
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>10/04/2026</td>
-                                                    <td>S/ 300.00</td>
-                                                    <td>
-                                                        <a href="#" target="_blank" class="btn btn-sm btn-outline-primary py-0 px-1 btn-ver-comprobante">
-                                                            <i class="bi bi-file-earmark-image"></i> Ver
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <small class="text-muted d-block mt-2 form-text-custom">
-                                        * Muestra los depósitos previos realizados asociados a este usuario/solicitud.
-                                    </small>
-                                </div>
+
                             </div>
+
+
+                            <!-- COMPROBANTE -->
+
+                            <div class="mb-3">
+
+                                <label class="form-label form-label-custom">
+
+                                    <i class="bi bi-paperclip me-1"></i>
+
+                                    Comprobante
+
+                                    <span class="text-muted">
+                                        (opcional)
+                                    </span>
+
+                                </label>
+
+
+                                <input type="file"
+                                       name="comprobante"
+                                       class="form-control form-control-custom"
+                                       accept=".jpg,.jpeg,.png,.pdf">
+
+
+                                <small class="text-muted">
+
+                                    JPG, PNG o PDF · Máximo 5 MB.
+
+                                </small>
+
+                            </div>
+
+
+                            <!-- OBSERVACIÓN -->
+
+                            <div class="mb-0">
+
+                                <label class="form-label form-label-custom">
+
+                                    <i class="bi bi-chat-left-text me-1"></i>
+
+                                    Observación
+
+                                    <span class="text-muted">
+                                        (opcional)
+                                    </span>
+
+                                </label>
+
+
+                                <textarea name="observacionAprobacion"
+                                          class="form-control"
+                                          rows="2"
+                                          maxlength="1000"
+                                          placeholder="Ingrese una observación..."></textarea>
+
+                            </div>
+
                         </div>
+
+
+                        <!-- PIE DEL MODAL -->
+
                         <div class="modal-footer modal-aprobacion-footer">
-                            <button type="button" class="btn btn-secondary btn-cancelar-custom" data-bs-dismiss="modal">
+
+                            <button type="button"
+                                    class="btn btn-outline-secondary btn-cancelar-custom"
+                                    data-bs-dismiss="modal">
+
+                                <i class="bi bi-x-lg me-1"></i>
+
                                 Cancelar
+
                             </button>
-                            <button type="submit" class="btn btn-success btn-confirmar-custom">
-                                <i class="bi bi-check2-all me-1"></i>
-                                Confirmar Aprobación y Guardar
+
+
+                            <button type="submit"
+                                    class="btn btn-success btn-confirmar-custom">
+
+                                <i class="bi bi-check-lg me-1"></i>
+
+                                Aprobar solicitud
+
                             </button>
+
                         </div>
+
                     </form>
+
                 </div>
+
             </div>
+
         </div>
 
-        <div class="modal fade" id="modalRechazar-@item.IdSolicitud" tabindex="-1" aria-labelledby="tituloRechazar-@item.IdSolicitud" aria-hidden="true">
+
+        <!-- ========================================================= -->
+        <!-- MODAL RECHAZAR -->
+        <!-- ========================================================= -->
+
+        <div class="modal fade"
+             id="modalRechazar-@item.IdSolicitud"
+             tabindex="-1"
+             aria-labelledby="tituloRechazar-@item.IdSolicitud"
+             aria-hidden="true">
+
             <div class="modal-dialog modal-dialog-centered">
+
                 <div class="modal-content">
-                    <form asp-controller="Solicitud" asp-action="Rechazar" method="post">
+
+                    <form asp-controller="Solicitud"
+                          asp-action="Rechazar"
+                          method="post">
+
                         @Html.AntiForgeryToken()
+
+
+                        <!-- CABECERA -->
+
                         <div class="modal-header modal-header-rechazo">
-                            <h5 class="modal-title" id="tituloRechazar-@item.IdSolicitud">
+
+                            <h5 class="modal-title"
+                                id="tituloRechazar-@item.IdSolicitud">
+
                                 <i class="bi bi-exclamation-triangle-fill me-1"></i>
+
                                 Rechazar solicitud #@item.IdSolicitud
+
                             </h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+
+
+                            <button type="button"
+                                    class="btn-close btn-close-white"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Cerrar">
+                            </button>
+
                         </div>
+
+
+                        <!-- CUERPO -->
+
                         <div class="modal-body">
-                            <input type="hidden" name="id" value="@item.IdSolicitud">
+
+                            <input type="hidden"
+                                   name="id"
+                                   value="@item.IdSolicitud">
+
+
                             <div class="alert alert-warning">
-                                <strong>Empleado:</strong>
-                                @item.Usuario?.Nombres @item.Usuario?.Apellidos
+
+                                <strong>
+                                    Empleado:
+                                </strong>
+
+                                @item.Usuario?.Nombres
+                                @item.Usuario?.Apellidos
+
                                 <br>
-                                <strong>Zona:</strong>
+
+                                <strong>
+                                    Zona:
+                                </strong>
+
                                 @item.Usuario?.Zona?.CodigoZona
+
                                 <br>
-                                <strong>Destino:</strong>
+
+                                <strong>
+                                    Destino:
+                                </strong>
+
                                 @item.Destino
+
                             </div>
+
+
                             <div class="mb-3">
-                                <label for="observaciones-@item.IdSolicitud" class="form-label">
+
+                                <label for="observaciones-@item.IdSolicitud"
+                                       class="form-label">
+
                                     Motivo del rechazo
+
                                 </label>
-                                <textarea id="observaciones-@item.IdSolicitud" name="observaciones" class="form-control" rows="5" maxlength="1000" placeholder="Explique claramente por qué se rechaza la solicitud..." required></textarea>
+
+
+                                <textarea id="observaciones-@item.IdSolicitud"
+                                          name="observaciones"
+                                          class="form-control"
+                                          rows="5"
+                                          maxlength="1000"
+                                          placeholder="Explique claramente por qué se rechaza la solicitud..."
+                                          required></textarea>
+
+
                                 <small class="text-muted">
+
                                     Esta observación será visible para el empleado.
+
                                 </small>
+
                             </div>
+
                         </div>
+
+
+                        <!-- PIE -->
+
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">
+
                                 Cancelar
+
                             </button>
-                            <button type="submit" class="btn btn-danger">
+
+
+                            <button type="submit"
+                                    class="btn btn-danger">
+
                                 <i class="bi bi-x-circle me-1"></i>
+
                                 Confirmar rechazo
+
                             </button>
+
                         </div>
+
                     </form>
+
                 </div>
+
             </div>
+
         </div>
+
     }
 }
 
+
+<!-- ============================================================= -->
+<!-- JAVASCRIPT -->
+<!-- ============================================================= -->
+
 @section Scripts {
+
     <script src="~/js/IndexSolicitud.js"></script>
+
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dinacen.Migrations
 {
     [DbContext(typeof(AplicacionDbContexto))]
-    [Migration("20260829064446_BaselineActual")]
-    partial class BaselineActual
+    [Migration("20260830022816_DinacenViaticosDB")]
+    partial class DinacenViaticosDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

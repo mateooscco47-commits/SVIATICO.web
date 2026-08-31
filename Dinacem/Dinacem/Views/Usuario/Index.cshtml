@@ -720,8 +720,6 @@
 }
 </style>
 
-
-
 <div class="usuarios-page">
 
     <div class="page-header">
@@ -865,11 +863,20 @@
                                 name="IdRol"
                                 class="form-select"
                                 required>
+
                             <option value="">Seleccione un rol</option>
+
                             <option value="1">Administrador</option>
                             <option value="2">Supervisor</option>
-                            <option value="3">Representante</option>
+                            <option value="3">Auditor</option>
+                            <option value="4">Representante DINACEN</option>
+                            <option value="5">Representante Laboratorio</option>
+
                         </select>
+
+                        <small class="text-muted">
+                            Seleccione el rol que tendrá el usuario dentro del sistema.
+                        </small>
                     </div>
 
                     <div class="col-md-6">

@@ -434,6 +434,10 @@
 
                 <div class="row g-4">
 
+                    <!-- ================================================= -->
+                    <!-- USUARIO DE ACCESO -->
+                    <!-- ================================================= -->
+
                     <div class="col-md-6">
                         <label asp-for="UsuarioAcceso" class="form-label">
                             Usuario de acceso
@@ -449,6 +453,11 @@
                         </span>
                     </div>
 
+
+                    <!-- ================================================= -->
+                    <!-- ROL -->
+                    <!-- ================================================= -->
+
                     <div class="col-md-6">
                         <label asp-for="IdRol" class="form-label">
                             Rol
@@ -457,16 +466,36 @@
                         <select asp-for="IdRol"
                                 class="form-select"
                                 required>
-                            <option value="">Seleccione un rol</option>
-                            <option value="1">Administrador</option>
-                            <option value="2">Supervisor</option>
-                            <option value="3">Representante</option>
+
+                            <option value="">
+                                Seleccione un rol
+                            </option>
+
+                            @if (ViewBag.Roles != null)
+                            {
+                                foreach (var rol in ViewBag.Roles)
+                                {
+                                    <option value="@rol.IdRol">
+                                        @rol.Nombre
+                                    </option>
+                                }
+                            }
+
                         </select>
+
+                        <small class="text-muted">
+                            Seleccione el rol que tendrá el usuario dentro del sistema.
+                        </small>
 
                         <span asp-validation-for="IdRol"
                               class="text-danger">
                         </span>
                     </div>
+
+
+                    <!-- ================================================= -->
+                    <!-- NOMBRES -->
+                    <!-- ================================================= -->
 
                     <div class="col-md-6">
                         <label asp-for="Nombres" class="form-label">
@@ -482,6 +511,11 @@
                         </span>
                     </div>
 
+
+                    <!-- ================================================= -->
+                    <!-- APELLIDOS -->
+                    <!-- ================================================= -->
+
                     <div class="col-md-6">
                         <label asp-for="Apellidos" class="form-label">
                             Apellidos
@@ -495,6 +529,11 @@
                               class="text-danger">
                         </span>
                     </div>
+
+
+                    <!-- ================================================= -->
+                    <!-- CORREO -->
+                    <!-- ================================================= -->
 
                     <div class="col-md-6">
                         <label asp-for="Correo" class="form-label">
@@ -512,6 +551,11 @@
                         </span>
                     </div>
 
+
+                    <!-- ================================================= -->
+                    <!-- CELULAR -->
+                    <!-- ================================================= -->
+
                     <div class="col-md-6">
                         <label asp-for="Celular" class="form-label">
                             Celular
@@ -528,19 +572,26 @@
                         </span>
                     </div>
 
+
+                    <!-- ================================================= -->
+                    <!-- ZONA -->
+                    <!-- ================================================= -->
+
                     <div class="col-md-6">
                         <label class="form-label">
                             Zona
                         </label>
 
                         <div class="input-group">
-                            
 
                             <input type="text"
-                                   value="@(Model.Zona != null ? Model.Zona.CodigoZona : "Sin zona asignada")"
+                                   value="@(Model.Zona != null
+                                       ? Model.Zona.CodigoZona
+                                       : "Sin zona asignada")"
                                    class="form-control"
                                    readonly
                                    tabindex="-1" />
+
                         </div>
 
                         <div class="password-help">
@@ -548,6 +599,11 @@
                             La zona no puede modificarse desde este formulario.
                         </div>
                     </div>
+
+
+                    <!-- ================================================= -->
+                    <!-- CONTRASEÑA -->
+                    <!-- ================================================= -->
 
                     <div class="col-md-6">
                         <label asp-for="Contrasenia" class="form-label">
@@ -571,28 +627,49 @@
 
                 </div>
 
+
+                <!-- ===================================================== -->
+                <!-- INFORMACIÓN -->
+                <!-- ===================================================== -->
+
                 <div class="alert alert-light border mt-4 mb-0">
+
                     <div class="d-flex align-items-start">
+
                         <i class="bi bi-info-circle text-primary me-2 mt-1"></i>
 
-                        
+                        <small class="text-muted">
+                            Los cambios realizados se aplicarán al usuario
+                            después de guardar la información.
+                        </small>
+
                     </div>
+
                 </div>
+
+
+                <!-- ===================================================== -->
+                <!-- BOTONES -->
+                <!-- ===================================================== -->
 
                 <div class="usuario-edit-actions">
 
                     <a asp-controller="Usuario"
                        asp-action="Index"
                        class="btn-cancelar">
+
                         <i class="bi bi-x-circle"></i>
                         Cancelar
+
                     </a>
 
                     <button type="submit"
                             class="btn-guardar"
                             id="btnGuardarCambios">
+
                         <i class="bi bi-check-circle"></i>
                         Guardar cambios
+
                     </button>
 
                 </div>
@@ -603,6 +680,7 @@
     </div>
 </div>
 
+
 @section Scripts {
 
     @{
@@ -612,58 +690,129 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const formulario = document.getElementById("formEditarUsuario");
-            const btnGuardar = document.getElementById("btnGuardarCambios");
 
-            document.querySelectorAll(".celular-input").forEach(function (input) {
-                input.addEventListener("input", function () {
-                    this.value = this.value.replace(/\D/g, "").slice(0, 9);
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const formulario =
+                document.getElementById("formEditarUsuario");
+
+            const btnGuardar =
+                document.getElementById("btnGuardarCambios");
+
+
+            // =========================================================
+            // VALIDAR CELULAR
+            // =========================================================
+
+            document
+                .querySelectorAll(".celular-input")
+                .forEach(function (input) {
+
+                    input.addEventListener("input", function () {
+
+                        this.value = this.value
+                            .replace(/\D/g, "")
+                            .slice(0, 9);
+
+                    });
+
                 });
-            });
+
+
+            // =========================================================
+            // CONFIRMAR GUARDADO
+            // =========================================================
 
             if (formulario && btnGuardar) {
+
                 formulario.addEventListener("submit", function (event) {
+
                     event.preventDefault();
 
+
+                    // -------------------------------------------------
+                    // VALIDACIÓN HTML
+                    // -------------------------------------------------
+
                     if (!formulario.checkValidity()) {
+
                         formulario.reportValidity();
+
                         return;
                     }
 
+
+                    // -------------------------------------------------
+                    // CONFIRMACIÓN SWEETALERT
+                    // -------------------------------------------------
+
                     Swal.fire({
+
                         icon: "question",
+
                         title: "¿Guardar cambios?",
+
                         html: `
-                            <div style="font-size:14px;color:#4b5563;line-height:1.6;">
+                            <div style="
+                                font-size:14px;
+                                color:#4b5563;
+                                line-height:1.6;
+                            ">
                                 ¿Está seguro de que desea guardar
                                 los cambios realizados en este usuario?
+
                                 <br>
+
                                 <strong style="color:#334155;">
                                     La información será actualizada.
                                 </strong>
                             </div>
                         `,
+
                         showCancelButton: true,
-                        confirmButtonText: '<i class="bi bi-check-circle me-1"></i> Sí, guardar cambios',
-                        cancelButtonText: '<i class="bi bi-x-circle me-1"></i> Cancelar',
+
+                        confirmButtonText:
+                            '<i class="bi bi-check-circle me-1"></i> Sí, guardar cambios',
+
+                        cancelButtonText:
+                            '<i class="bi bi-x-circle me-1"></i> Cancelar',
+
                         reverseButtons: true,
+
                         focusCancel: true,
+
                         buttonsStyling: false,
+
                         customClass: {
+
                             popup: "swal-usuario-popup",
+
                             title: "swal-usuario-title",
+
                             htmlContainer: "swal-usuario-text",
-                            confirmButton: "swal-btn-confirmar swal-btn-guardar",
-                            cancelButton: "swal-btn-cancelar"
+
+                            confirmButton:
+                                "swal-btn-confirmar swal-btn-guardar",
+
+                            cancelButton:
+                                "swal-btn-cancelar"
                         }
+
                     }).then(function (resultado) {
+
                         if (resultado.isConfirmed) {
+
                             formulario.submit();
+
                         }
+
                     });
+
                 });
+
             }
+
         });
+
     </script>
 }

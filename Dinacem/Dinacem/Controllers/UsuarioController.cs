@@ -20,6 +20,10 @@ namespace Dinacem.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            // -----------------------------------------------------
+            // OBTENER USUARIOS
+            // -----------------------------------------------------
+
             var usuarios = await _context.Usuarios
                 .Include(u => u.Rol)
                 .Include(u => u.Zona)
@@ -27,15 +31,34 @@ namespace Dinacem.Controllers
                 .ThenBy(u => u.Apellidos)
                 .ToListAsync();
 
+            // -----------------------------------------------------
+            // OBTENER ZONAS ACTIVAS
+            // -----------------------------------------------------
+
             var zonas = await _context.Zonas
                 .Where(z => z.Estado)
                 .OrderBy(z => z.CodigoZona)
                 .ToListAsync();
 
+            // -----------------------------------------------------
+            // OBTENER ROLES ACTIVOS
+            // -----------------------------------------------------
+
+            var roles = await _context.Roles
+                .Where(r => r.Estado)
+                .OrderBy(r => r.IdRol)
+                .ToListAsync();
+
+            // -----------------------------------------------------
+            // ENVIAR DATOS A LA VISTA
+            // -----------------------------------------------------
+
             ViewBag.Zonas = zonas;
+            ViewBag.Roles = roles;
 
             return View(usuarios);
         }
+
 
         // =========================================================
         // CREAR USUARIO
@@ -45,6 +68,10 @@ namespace Dinacem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Usuario usuario)
         {
+            // -----------------------------------------------------
+            // LIMPIAR DATOS
+            // -----------------------------------------------------
+
             usuario.UsuarioAcceso = usuario.UsuarioAcceso?.Trim();
             usuario.Nombres = usuario.Nombres?.Trim();
             usuario.Apellidos = usuario.Apellidos?.Trim();
@@ -214,6 +241,8 @@ namespace Dinacem.Controllers
             // -----------------------------------------------------
 
             usuario.Estado = true;
+
+            // Las relaciones se establecen mediante las FK.
             usuario.Rol = null;
             usuario.Zona = null;
 
@@ -227,6 +256,7 @@ namespace Dinacem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
         // =========================================================
         // EDITAR USUARIO - GET
         // =========================================================
@@ -234,6 +264,10 @@ namespace Dinacem.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
+            // -----------------------------------------------------
+            // OBTENER USUARIO + ZONA
+            // -----------------------------------------------------
+
             var usuario = await _context.Usuarios
                 .Include(u => u.Zona)
                 .FirstOrDefaultAsync(u =>
@@ -247,8 +281,24 @@ namespace Dinacem.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // -----------------------------------------------------
+            // OBTENER ROLES ACTIVOS
+            // -----------------------------------------------------
+
+            var roles = await _context.Roles
+                .Where(r => r.Estado)
+                .OrderBy(r => r.IdRol)
+                .ToListAsync();
+
+            // -----------------------------------------------------
+            // ENVIAR ROLES A EDIT.CSHTML
+            // -----------------------------------------------------
+
+            ViewBag.Roles = roles;
+
             return View(usuario);
         }
+
 
         // =========================================================
         // EDITAR USUARIO - POST
@@ -258,6 +308,10 @@ namespace Dinacem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Usuario modelo)
         {
+            // -----------------------------------------------------
+            // BUSCAR USUARIO
+            // -----------------------------------------------------
+
             var usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(u =>
                     u.IdUsuario == modelo.IdUsuario);
@@ -306,7 +360,7 @@ namespace Dinacem.Controllers
             modelo.Celular = modelo.Celular?.Trim();
 
             // -----------------------------------------------------
-            // VALIDAR DATOS OBLIGATORIOS
+            // VALIDAR USUARIO DE ACCESO
             // -----------------------------------------------------
 
             if (string.IsNullOrWhiteSpace(modelo.UsuarioAcceso))
@@ -317,6 +371,10 @@ namespace Dinacem.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // -----------------------------------------------------
+            // VALIDAR NOMBRES
+            // -----------------------------------------------------
+
             if (string.IsNullOrWhiteSpace(modelo.Nombres))
             {
                 TempData["UsuarioError"] =
@@ -325,6 +383,10 @@ namespace Dinacem.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            // -----------------------------------------------------
+            // VALIDAR APELLIDOS
+            // -----------------------------------------------------
+
             if (string.IsNullOrWhiteSpace(modelo.Apellidos))
             {
                 TempData["UsuarioError"] =
@@ -332,6 +394,10 @@ namespace Dinacem.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+
+            // -----------------------------------------------------
+            // VALIDAR CORREO
+            // -----------------------------------------------------
 
             if (string.IsNullOrWhiteSpace(modelo.Correo))
             {
@@ -405,6 +471,7 @@ namespace Dinacem.Controllers
             // -----------------------------------------------------
             // LA ZONA NO SE MODIFICA
             // -----------------------------------------------------
+            // Se conserva la zona que ya tiene el usuario.
 
             // -----------------------------------------------------
             // CONTRASEÑA
@@ -415,6 +482,10 @@ namespace Dinacem.Controllers
                 usuario.Contrasenia = modelo.Contrasenia;
             }
 
+            // -----------------------------------------------------
+            // GUARDAR CAMBIOS
+            // -----------------------------------------------------
+
             await _context.SaveChangesAsync();
 
             TempData["UsuarioMensaje"] =
@@ -422,6 +493,7 @@ namespace Dinacem.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
 
         // =========================================================
         // DESACTIVAR USUARIO
@@ -452,6 +524,7 @@ namespace Dinacem.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
 
         // =========================================================
         // ACTIVAR USUARIO

@@ -18,12 +18,60 @@ public class CorreoService
         _logger = logger;
     }
 
+    // =========================================================
+    // MÉTODO ACTUAL - UN SOLO ADJUNTO
+    // =========================================================
+
     public async Task<bool> EnviarAsync(
         IEnumerable<string> destinatarios,
         string asunto,
         string contenidoHtml,
         string? rutaAdjunto = null,
         string? nombreAdjunto = null)
+    {
+        return await EnviarInternoAsync(
+            destinatarios,
+            asunto,
+            contenidoHtml,
+            rutaAdjunto != null
+                ? new List<(string Ruta, string Nombre)>
+                {
+                    (
+                        rutaAdjunto,
+                        nombreAdjunto ?? Path.GetFileName(rutaAdjunto)
+                    )
+                }
+                : new List<(string Ruta, string Nombre)>());
+    }
+
+
+    // =========================================================
+    // NUEVO MÉTODO - MÚLTIPLES ADJUNTOS
+    // =========================================================
+
+    public async Task<bool> EnviarAsync(
+        IEnumerable<string> destinatarios,
+        string asunto,
+        string contenidoHtml,
+        IEnumerable<(string Ruta, string Nombre)> adjuntos)
+    {
+        return await EnviarInternoAsync(
+            destinatarios,
+            asunto,
+            contenidoHtml,
+            adjuntos);
+    }
+
+
+    // =========================================================
+    // MÉTODO INTERNO PARA CONSTRUIR Y ENVIAR EL CORREO
+    // =========================================================
+
+    private async Task<bool> EnviarInternoAsync(
+        IEnumerable<string> destinatarios,
+        string asunto,
+        string contenidoHtml,
+        IEnumerable<(string Ruta, string Nombre)> adjuntos)
     {
         // ==========================================
         // VALIDAR DESTINATARIOS
@@ -103,19 +151,29 @@ public class CorreoService
                 var logo =
                     bodyBuilder.LinkedResources.Add(rutaLogo);
 
-                // Este mismo identificador se utiliza
-                // en el HTML:
-                //
-                // <img src="cid:logoDinacen">
+                // ==========================================
+                // IDENTIFICADOR DEL LOGO
+                // ==========================================
 
                 logo.ContentId = "logoDinacen";
 
-                // Indicar que la imagen es interna
-                // y debe mostrarse dentro del correo.
+
+                // ==========================================
+                // IMAGEN INLINE
+                // ==========================================
 
                 logo.ContentDisposition =
                     new ContentDisposition(
                         ContentDisposition.Inline);
+
+
+                // ==========================================
+                // ASEGURAR TIPO MIME
+                // ==========================================
+
+                logo.ContentType.MediaType = "image";
+                logo.ContentType.MediaSubtype = "png";
+
 
                 _logger.LogInformation(
                     "Logo DINACEN agregado correctamente al correo.");
@@ -136,28 +194,56 @@ public class CorreoService
 
 
             // ==========================================
-            // ARCHIVO ADJUNTO
+            // ARCHIVOS ADJUNTOS
             // ==========================================
 
-            if (!string.IsNullOrWhiteSpace(rutaAdjunto) &&
-                System.IO.File.Exists(rutaAdjunto))
+            var listaAdjuntos =
+                adjuntos?
+                    .Where(a =>
+                        !string.IsNullOrWhiteSpace(a.Ruta))
+                    .ToList()
+                ?? new List<(string Ruta, string Nombre)>();
+
+
+            foreach (var adjunto in listaAdjuntos)
             {
-                if (!string.IsNullOrWhiteSpace(nombreAdjunto))
+                // ==========================================
+                // VALIDAR QUE EXISTA EL ARCHIVO
+                // ==========================================
+
+                if (!System.IO.File.Exists(adjunto.Ruta))
                 {
-                    bodyBuilder.Attachments.Add(
-                        nombreAdjunto,
-                        await System.IO.File.ReadAllBytesAsync(
-                            rutaAdjunto));
-                }
-                else
-                {
-                    bodyBuilder.Attachments.Add(
-                        rutaAdjunto);
+                    _logger.LogWarning(
+                        "No se encontró el archivo adjunto: {Ruta}",
+                        adjunto.Ruta);
+
+                    continue;
                 }
 
+
+                // ==========================================
+                // NOMBRE DEL ARCHIVO
+                // ==========================================
+
+                string nombreArchivo =
+                    !string.IsNullOrWhiteSpace(adjunto.Nombre)
+                        ? adjunto.Nombre
+                        : Path.GetFileName(adjunto.Ruta);
+
+
+                // ==========================================
+                // AGREGAR PDF
+                // ==========================================
+
+                bodyBuilder.Attachments.Add(
+                    nombreArchivo,
+                    await System.IO.File.ReadAllBytesAsync(
+                        adjunto.Ruta));
+
+
                 _logger.LogInformation(
-                    "Archivo adjunto agregado al correo: {RutaAdjunto}",
-                    rutaAdjunto);
+                    "Archivo adjunto agregado al correo: {NombreArchivo}",
+                    nombreArchivo);
             }
 
 
@@ -206,9 +292,14 @@ public class CorreoService
             await cliente.DisconnectAsync(true);
 
 
+            // ==========================================
+            // LOG
+            // ==========================================
+
             _logger.LogInformation(
                 "Correo enviado correctamente a: {Destinatarios}",
                 string.Join(", ", correos));
+
 
             return true;
         }

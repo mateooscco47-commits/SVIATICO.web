@@ -12,6 +12,37 @@ namespace Dinacem.Controllers
         private readonly RendicionPdfService _rendicionPdfService;
         private readonly CorreoService _correoService;
 
+        // =========================================================
+        // CONSTANTES
+        // =========================================================
+
+        private const int ROL_ADMINISTRADOR = 1;
+
+        private const int ESTADO_RENDICION_BORRADOR = 1;
+        private const int ESTADO_RENDICION_PENDIENTE_REVISION = 2;
+
+        private const int ESTADO_REEMBOLSO_PENDIENTE = 1;
+
+        private const decimal LIMITE_ALIMENTACION_DIARIO = 40m;
+        private const decimal LIMITE_HOSPEDAJE_DIARIO = 50m;
+
+        private const decimal TASA_IGV = 0.18m;
+
+        private const long TAMANIO_MAXIMO_COMPROBANTE =
+            5 * 1024 * 1024;
+
+        private static readonly string[] ExtensionesPermitidas =
+        {
+        ".pdf",
+        ".jpg",
+        ".jpeg",
+        ".png"
+    };
+
+        // =========================================================
+        // CONSTRUCTOR
+        // =========================================================
+
         public GastoController(
             AplicacionDbContexto context,
             RucService rucService,
@@ -27,6 +58,7 @@ namespace Dinacem.Controllers
         // =========================================================
         // MOSTRAR RENDICIÓN Y GASTOS
         // =========================================================
+
         [HttpGet]
         public async Task<IActionResult> Index(int idRendicion)
         {
@@ -38,7 +70,8 @@ namespace Dinacem.Controllers
 
             if (rendicion == null)
             {
-                TempData["error"] = "No se encontró la rendición.";
+                TempData["error"] =
+                    "No se encontró la rendición.";
 
                 return RedirectToAction(
                     "Index",
@@ -48,19 +81,22 @@ namespace Dinacem.Controllers
             var gastos = await _context.Gastos
                 .Include(g => g.TipoGasto)
                 .Include(g => g.TipoComprobante)
-                .Where(g => g.IdRendicion == idRendicion)
+                .Where(g =>
+                    g.IdRendicion == idRendicion)
                 .OrderByDescending(g => g.Fecha)
                 .ToListAsync();
 
             ViewBag.Rendicion = rendicion;
 
-            ViewBag.TiposGasto = await _context.TipoGastos
-                .OrderBy(t => t.Nombre)
-                .ToListAsync();
+            ViewBag.TiposGasto =
+                await _context.TipoGastos
+                    .OrderBy(t => t.Nombre)
+                    .ToListAsync();
 
-            ViewBag.TiposComprobante = await _context.TipoComprobantes
-                .OrderBy(t => t.Nombre)
-                .ToListAsync();
+            ViewBag.TiposComprobante =
+                await _context.TipoComprobantes
+                    .OrderBy(t => t.Nombre)
+                    .ToListAsync();
 
             ViewBag.DevolucionSaldo =
                 await _context.DevolucionesSaldo
@@ -80,6 +116,7 @@ namespace Dinacem.Controllers
         // =========================================================
         // CONSULTAR RUC
         // =========================================================
+
         [HttpGet]
         public async Task<IActionResult> ConsultarRuc(string ruc)
         {
@@ -88,6 +125,18 @@ namespace Dinacem.Controllers
                 return BadRequest(new
                 {
                     mensaje = "Ingrese un número de RUC."
+                });
+            }
+
+            ruc = ruc.Trim();
+
+            if (ruc.Length != 11 ||
+                !ruc.All(char.IsDigit))
+            {
+                return BadRequest(new
+                {
+                    mensaje =
+                        "El RUC debe contener exactamente 11 dígitos."
                 });
             }
 
@@ -115,16 +164,15 @@ namespace Dinacem.Controllers
         // =========================================================
         // REGISTRAR GASTO
         // =========================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             Gasto gasto,
             IFormFile? archivo)
         {
-            var rendicion = await _context.Rendiciones
-                .Include(r => r.Solicitud)
-                .FirstOrDefaultAsync(r =>
-                    r.IdRendicion == gasto.IdRendicion);
+            var rendicion = await ObtenerRendicionAsync(
+                gasto.IdRendicion);
 
             if (rendicion == null)
             {
@@ -136,7 +184,8 @@ namespace Dinacem.Controllers
                     "Rendicion");
             }
 
-            if (rendicion.IdEstadoRendicion != 1)
+            if (rendicion.IdEstadoRendicion !=
+                ESTADO_RENDICION_BORRADOR)
             {
                 TempData["error"] =
                     "La rendición ya fue enviada y no permite registrar más gastos.";
@@ -149,253 +198,94 @@ namespace Dinacem.Controllers
                     });
             }
 
-            // =====================================================
-            // LIMPIAR CAMPOS
-            // =====================================================
+            LimpiarCampos(gasto);
 
-            gasto.Ruc = gasto.Ruc?.Trim();
-            gasto.RazonSocial = gasto.RazonSocial?.Trim();
-            gasto.DomicilioFiscal = gasto.DomicilioFiscal?.Trim();
-            gasto.Serie = gasto.Serie?.Trim();
-            gasto.Numero = gasto.Numero?.Trim();
-            gasto.Detalle = gasto.Detalle?.Trim();
-
-            ModelState.Remove(nameof(gasto.RazonSocial));
-            ModelState.Remove(nameof(gasto.DomicilioFiscal));
-            ModelState.Remove(nameof(gasto.ValorVenta));
-            ModelState.Remove(nameof(gasto.IGV));
+            EliminarValidacionesCalculadas(
+                nameof(gasto.RazonSocial),
+                nameof(gasto.DomicilioFiscal),
+                nameof(gasto.ValorVenta),
+                nameof(gasto.IGV));
 
             // =====================================================
-            // VALIDAR FECHA
-            // =====================================================
-
-            if (gasto.Fecha == default)
-            {
-                ModelState.AddModelError(
-                    nameof(gasto.Fecha),
-                    "Debe ingresar la fecha del gasto.");
-            }
-            else if (
-                gasto.Fecha.Date < rendicion.FechaInicio.Date ||
-                gasto.Fecha.Date > rendicion.FechaFin.Date)
-            {
-                ModelState.AddModelError(
-                    nameof(gasto.Fecha),
-                    $"La fecha del gasto debe estar entre " +
-                    $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
-                    $"{rendicion.FechaFin:dd/MM/yyyy}. " +
-                    "Puede registrar el gasto posteriormente, " +
-                    "pero la fecha del comprobante debe pertenecer " +
-                    "al periodo aprobado.");
-            }
-
-            // =====================================================
-            // VALIDAR MONTO
-            // =====================================================
-
-            if (gasto.MontoTotal <= 0)
-            {
-                ModelState.AddModelError(
-                    nameof(gasto.MontoTotal),
-                    "El monto total debe ser mayor que cero.");
-            }
-
-            // =====================================================
-            // CALCULAR VALOR DE VENTA E IGV
-            // =====================================================
-
-            if (gasto.MontoTotal > 0)
-            {
-                if (gasto.ExoneracionIGV)
-                {
-                    gasto.ValorVenta =
-                        Math.Round(
-                            gasto.MontoTotal,
-                            2,
-                            MidpointRounding.AwayFromZero);
-
-                    gasto.IGV = 0;
-                }
-                else
-                {
-                    gasto.ValorVenta =
-                        Math.Round(
-                            gasto.MontoTotal / 1.18m,
-                            2,
-                            MidpointRounding.AwayFromZero);
-
-                    gasto.IGV =
-                        Math.Round(
-                            gasto.MontoTotal - gasto.ValorVenta,
-                            2,
-                            MidpointRounding.AwayFromZero);
-                }
-            }
-
-            // =====================================================
-            // VALIDAR TIPO DE GASTO Y LÍMITE DIARIO
+            // OBTENER TIPO DE GASTO
             // =====================================================
 
             var tipoGasto =
-                await _context.TipoGastos
-                    .FirstOrDefaultAsync(t =>
-                        t.IdTipoGasto == gasto.IdTipoGasto);
+                await ObtenerTipoGastoAsync(
+                    gasto.IdTipoGasto);
 
             if (tipoGasto == null)
             {
                 ModelState.AddModelError(
                     nameof(gasto.IdTipoGasto),
                     "El tipo de gasto seleccionado no existe.");
-            }
-            else if (gasto.Fecha != default)
-            {
-                decimal limiteDiario = 0;
 
-                if (tipoGasto.Nombre.Equals(
-                    "Hospedaje",
-                    StringComparison.OrdinalIgnoreCase))
+                return await ProcesarErroresCreate(
+                    gasto.IdRendicion);
+            }
+
+            bool esMovilidad =
+                EsMovilidad(tipoGasto);
+
+            // =====================================================
+            // VALIDAR FECHA
+            // =====================================================
+
+            ValidarFechaGasto(
+                gasto.Fecha,
+                rendicion,
+                incluirMensajeDetallado: true);
+
+            // =====================================================
+            // VALIDAR MONTO
+            // =====================================================
+
+            ValidarMonto(gasto.MontoTotal);
+
+            // =====================================================
+            // CALCULAR IGV
+            // =====================================================
+
+            CalcularImpuestos(gasto);
+
+            // =====================================================
+            // CONFIGURAR MOVILIDAD
+            // =====================================================
+
+            if (esMovilidad)
+            {
+                LimpiarDatosComprobante(gasto);
+            }
+
+            // =====================================================
+            // VALIDAR LÍMITE DIARIO
+            // =====================================================
+
+            if (gasto.Fecha != default)
+            {
+                await ValidarLimiteDiarioAsync(
+                    gasto,
+                    tipoGasto,
+                    gasto.IdGasto);
+            }
+
+            // =====================================================
+            // VALIDAR DATOS DEL COMPROBANTE
+            // SOLO SI NO ES MOVILIDAD
+            // =====================================================
+
+            if (!esMovilidad)
+            {
+                ValidarDatosComprobante(
+                    gasto);
+
+                if (ModelState.IsValid)
                 {
-                    limiteDiario = 50;
-                }
-                else if (tipoGasto.Nombre.Equals(
-                    "Alimentación",
-                    StringComparison.OrdinalIgnoreCase))
-                {
-                    limiteDiario = 40;
+                    await ValidarRucAsync(gasto);
                 }
 
-                if (limiteDiario > 0)
-                {
-                    DateTime inicioDia = gasto.Fecha.Date;
-                    DateTime finDia = inicioDia.AddDays(1);
-
-                    decimal montoRegistradoEseDia =
-                        await _context.Gastos
-                            .Where(g =>
-                                g.IdRendicion == gasto.IdRendicion &&
-                                g.IdTipoGasto == gasto.IdTipoGasto &&
-                                g.Fecha >= inicioDia &&
-                                g.Fecha < finDia)
-                            .SumAsync(g =>
-                                (decimal?)g.MontoTotal) ?? 0;
-
-                    decimal nuevoTotalDelDia =
-                        montoRegistradoEseDia +
-                        gasto.MontoTotal;
-
-                    if (nuevoTotalDelDia > limiteDiario)
-                    {
-                        decimal disponible =
-                            limiteDiario -
-                            montoRegistradoEseDia;
-
-                        if (disponible < 0)
-                        {
-                            disponible = 0;
-                        }
-
-                        ModelState.AddModelError(
-                            nameof(gasto.MontoTotal),
-                            $"El límite diario para {tipoGasto.Nombre} es " +
-                            $"S/ {limiteDiario:N2}. " +
-                            $"El {gasto.Fecha:dd/MM/yyyy} ya tiene registrado " +
-                            $"S/ {montoRegistradoEseDia:N2}. " +
-                            $"Solo puede agregar hasta S/ {disponible:N2}.");
-                    }
-                }
-            }
-
-            // =====================================================
-            // VALIDAR RUC
-            // =====================================================
-
-            if (string.IsNullOrWhiteSpace(gasto.Ruc) ||
-                gasto.Ruc.Length != 11 ||
-                !gasto.Ruc.All(char.IsDigit))
-            {
-                ModelState.AddModelError(
-                    nameof(gasto.Ruc),
-                    "El RUC debe contener exactamente 11 dígitos.");
-            }
-
-            // =====================================================
-            // CONSULTAR RUC
-            // =====================================================
-
-            if (ModelState.IsValid)
-            {
-                var domicilioIngresado =
-                    gasto.DomicilioFiscal;
-
-                var consultaRuc =
-                    await _rucService.ConsultarAsync(
-                        gasto.Ruc!);
-
-                if (!consultaRuc.Exito)
-                {
-                    ModelState.AddModelError(
-                        nameof(gasto.Ruc),
-                        consultaRuc.Mensaje ??
-                        "No se pudo validar el RUC.");
-                }
-                else
-                {
-                    gasto.Ruc =
-                        string.IsNullOrWhiteSpace(consultaRuc.Ruc)
-                            ? gasto.Ruc
-                            : consultaRuc.Ruc.Trim();
-
-                    gasto.RazonSocial =
-                        consultaRuc.RazonSocial?.Trim();
-
-                    if (string.IsNullOrWhiteSpace(
-                        domicilioIngresado))
-                    {
-                        gasto.DomicilioFiscal =
-                            consultaRuc.DomicilioFiscal?.Trim();
-                    }
-                    else
-                    {
-                        gasto.DomicilioFiscal =
-                            domicilioIngresado.Trim();
-                    }
-                }
-            }
-
-            // =====================================================
-            // VALIDAR RAZÓN SOCIAL
-            // =====================================================
-
-            if (string.IsNullOrWhiteSpace(
-                gasto.RazonSocial))
-            {
-                ModelState.AddModelError(
-                    nameof(gasto.RazonSocial),
-                    "No se encontró la razón social del RUC.");
-            }
-            else if (gasto.RazonSocial.Length > 250)
-            {
-                ModelState.AddModelError(
-                    nameof(gasto.RazonSocial),
-                    "La razón social no puede superar los 250 caracteres.");
-            }
-
-            // =====================================================
-            // VALIDAR DOMICILIO
-            // =====================================================
-
-            if (string.IsNullOrWhiteSpace(
-                gasto.DomicilioFiscal))
-            {
-                ModelState.AddModelError(
-                    nameof(gasto.DomicilioFiscal),
-                    "Debe ingresar el domicilio fiscal.");
-            }
-            else if (gasto.DomicilioFiscal.Length > 300)
-            {
-                ModelState.AddModelError(
-                    nameof(gasto.DomicilioFiscal),
-                    "El domicilio fiscal no puede superar los 300 caracteres.");
+                ValidarDatosProveedor(
+                    gasto);
             }
 
             // =====================================================
@@ -404,103 +294,40 @@ namespace Dinacem.Controllers
 
             if (!ModelState.IsValid)
             {
-                var errores = ModelState
-                    .Where(x =>
-                        x.Value != null &&
-                        x.Value.Errors.Count > 0)
-                    .Select(x =>
-                        $"{x.Key}: {string.Join(
-                            ", ",
-                            x.Value!.Errors.Select(e =>
-                                string.IsNullOrWhiteSpace(e.ErrorMessage)
-                                    ? "Valor no válido."
-                                    : e.ErrorMessage))}");
-
-                TempData["error"] =
-                    string.Join("<br>", errores);
-
-                return RedirectToAction(
-                    nameof(Index),
-                    new
-                    {
-                        idRendicion = gasto.IdRendicion
-                    });
+                return await ProcesarErroresCreate(
+                    gasto.IdRendicion);
             }
 
             // =====================================================
-            // VALIDAR Y GUARDAR COMPROBANTE
+            // GUARDAR COMPROBANTE
             // =====================================================
 
-            if (archivo != null &&
-                archivo.Length > 0)
+            if (!esMovilidad)
             {
-                string[] extensionesPermitidas =
-                {
-                    ".pdf",
-                    ".jpg",
-                    ".jpeg",
-                    ".png"
-                };
+                var resultadoArchivo =
+                    await GuardarComprobanteAsync(
+                        archivo);
 
-                var extension =
-                    Path.GetExtension(
-                        archivo.FileName)
-                    .ToLowerInvariant();
-
-                if (!extensionesPermitidas.Contains(extension))
+                if (!resultadoArchivo.Exito)
                 {
                     TempData["error"] =
-                        "El comprobante debe ser PDF, JPG, JPEG o PNG.";
+                        resultadoArchivo.Mensaje;
 
                     return RedirectToAction(
                         nameof(Index),
                         new
                         {
-                            idRendicion = gasto.IdRendicion
+                            idRendicion =
+                                gasto.IdRendicion
                         });
                 }
-
-                const long tamanioMaximo =
-                    5 * 1024 * 1024;
-
-                if (archivo.Length > tamanioMaximo)
-                {
-                    TempData["error"] =
-                        "El comprobante no debe superar los 5 MB.";
-
-                    return RedirectToAction(
-                        nameof(Index),
-                        new
-                        {
-                            idRendicion = gasto.IdRendicion
-                        });
-                }
-
-                var nombreArchivo =
-                    $"{Guid.NewGuid()}{extension}";
-
-                var carpeta =
-                    Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "comprobantes");
-
-                Directory.CreateDirectory(carpeta);
-
-                var rutaCompleta =
-                    Path.Combine(
-                        carpeta,
-                        nombreArchivo);
-
-                await using var stream =
-                    new FileStream(
-                        rutaCompleta,
-                        FileMode.Create);
-
-                await archivo.CopyToAsync(stream);
 
                 gasto.Comprobante =
-                    $"/comprobantes/{nombreArchivo}";
+                    resultadoArchivo.RutaPublica;
+            }
+            else
+            {
+                gasto.Comprobante = null;
             }
 
             // =====================================================
@@ -511,8 +338,16 @@ namespace Dinacem.Controllers
 
             await _context.SaveChangesAsync();
 
+            // =====================================================
+            // ACTUALIZAR TOTALES
+            // =====================================================
+
             await ActualizarTotalesRendicion(
                 gasto.IdRendicion);
+
+            // =====================================================
+            // MENSAJE
+            // =====================================================
 
             TempData["mensaje"] =
                 gasto.ExoneracionIGV
@@ -527,20 +362,19 @@ namespace Dinacem.Controllers
                 nameof(Index),
                 new
                 {
-                    idRendicion = gasto.IdRendicion
+                    idRendicion =
+                        gasto.IdRendicion
                 });
         }
 
         // =========================================================
         // EDITAR GASTO - ADMINISTRADOR
         // =========================================================
+
         [HttpGet]
         public async Task<IActionResult> EditAdmin(int id)
         {
-            var idRol =
-                HttpContext.Session.GetInt32("IdRol");
-
-            if (idRol != 1)
+            if (!EsAdministrador())
             {
                 TempData["error"] =
                     "No tiene permisos para editar gastos.";
@@ -579,7 +413,8 @@ namespace Dinacem.Controllers
                     "Rendicion");
             }
 
-            if (gasto.Rendicion.IdEstadoRendicion != 2)
+            if (gasto.Rendicion.IdEstadoRendicion !=
+                ESTADO_RENDICION_PENDIENTE_REVISION)
             {
                 TempData["error"] =
                     "Solo se pueden editar gastos de una rendición pendiente de revisión.";
@@ -612,16 +447,14 @@ namespace Dinacem.Controllers
         // =========================================================
         // GUARDAR EDICIÓN DE GASTO - ADMINISTRADOR
         // =========================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAdmin(
             Gasto modelo,
             IFormFile? archivo)
         {
-            var idRol =
-                HttpContext.Session.GetInt32("IdRol");
-
-            if (idRol != 1)
+            if (!EsAdministrador())
             {
                 TempData["error"] =
                     "No tiene permisos para editar gastos.";
@@ -659,9 +492,11 @@ namespace Dinacem.Controllers
                     "Rendicion");
             }
 
-            var rendicion = gasto.Rendicion;
+            var rendicion =
+                gasto.Rendicion;
 
-            if (rendicion.IdEstadoRendicion != 2)
+            if (rendicion.IdEstadoRendicion !=
+                ESTADO_RENDICION_PENDIENTE_REVISION)
             {
                 TempData["error"] =
                     "Solo se pueden editar gastos de una rendición pendiente de revisión.";
@@ -679,96 +514,25 @@ namespace Dinacem.Controllers
             // LIMPIAR CAMPOS
             // =====================================================
 
-            modelo.Ruc = modelo.Ruc?.Trim();
-            modelo.RazonSocial = modelo.RazonSocial?.Trim();
-            modelo.DomicilioFiscal = modelo.DomicilioFiscal?.Trim();
-            modelo.Serie = modelo.Serie?.Trim();
-            modelo.Numero = modelo.Numero?.Trim();
-            modelo.Detalle = modelo.Detalle?.Trim();
+            LimpiarCampos(modelo);
 
-            ModelState.Remove(nameof(modelo.RazonSocial));
-            ModelState.Remove(nameof(modelo.DomicilioFiscal));
-            ModelState.Remove(nameof(modelo.ValorVenta));
-            ModelState.Remove(nameof(modelo.IGV));
-            ModelState.Remove(nameof(modelo.Comprobante));
-            ModelState.Remove(nameof(modelo.Rendicion));
-            ModelState.Remove(nameof(modelo.TipoGasto));
-            ModelState.Remove(nameof(modelo.TipoComprobante));
+            EliminarValidacionesCalculadas(
+                nameof(modelo.RazonSocial),
+                nameof(modelo.DomicilioFiscal),
+                nameof(modelo.ValorVenta),
+                nameof(modelo.IGV),
+                nameof(modelo.Comprobante),
+                nameof(modelo.Rendicion),
+                nameof(modelo.TipoGasto),
+                nameof(modelo.TipoComprobante));
 
             // =====================================================
-            // VALIDAR FECHA
-            // =====================================================
-
-            if (modelo.Fecha == default)
-            {
-                ModelState.AddModelError(
-                    nameof(modelo.Fecha),
-                    "Debe ingresar la fecha del gasto.");
-            }
-            else if (
-                modelo.Fecha.Date < rendicion.FechaInicio.Date ||
-                modelo.Fecha.Date > rendicion.FechaFin.Date)
-            {
-                ModelState.AddModelError(
-                    nameof(modelo.Fecha),
-                    $"La fecha del gasto debe estar entre " +
-                    $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
-                    $"{rendicion.FechaFin:dd/MM/yyyy}.");
-            }
-
-            // =====================================================
-            // VALIDAR MONTO
-            // =====================================================
-
-            if (modelo.MontoTotal <= 0)
-            {
-                ModelState.AddModelError(
-                    nameof(modelo.MontoTotal),
-                    "El monto total debe ser mayor que cero.");
-            }
-
-            // =====================================================
-            // CALCULAR IGV
-            // =====================================================
-
-            if (modelo.MontoTotal > 0)
-            {
-                if (modelo.ExoneracionIGV)
-                {
-                    modelo.ValorVenta =
-                        Math.Round(
-                            modelo.MontoTotal,
-                            2,
-                            MidpointRounding.AwayFromZero);
-
-                    modelo.IGV = 0;
-                }
-                else
-                {
-                    modelo.ValorVenta =
-                        Math.Round(
-                            modelo.MontoTotal / 1.18m,
-                            2,
-                            MidpointRounding.AwayFromZero);
-
-                    modelo.IGV =
-                        Math.Round(
-                            modelo.MontoTotal -
-                            modelo.ValorVenta,
-                            2,
-                            MidpointRounding.AwayFromZero);
-                }
-            }
-
-            // =====================================================
-            // VALIDAR TIPO DE GASTO
+            // OBTENER TIPO DE GASTO
             // =====================================================
 
             var tipoGasto =
-                await _context.TipoGastos
-                    .FirstOrDefaultAsync(t =>
-                        t.IdTipoGasto ==
-                        modelo.IdTipoGasto);
+                await ObtenerTipoGastoAsync(
+                    modelo.IdTipoGasto);
 
             if (tipoGasto == null)
             {
@@ -776,180 +540,71 @@ namespace Dinacem.Controllers
                     nameof(modelo.IdTipoGasto),
                     "El tipo de gasto seleccionado no existe.");
             }
-            else if (modelo.Fecha != default)
-            {
-                decimal limiteDiario = 0;
 
-                if (tipoGasto.Nombre.Equals(
-                    "Hospedaje",
-                    StringComparison.OrdinalIgnoreCase))
+            bool esMovilidad =
+                tipoGasto != null &&
+                EsMovilidad(tipoGasto);
+
+            // =====================================================
+            // VALIDAR FECHA
+            // =====================================================
+
+            ValidarFechaGasto(
+                modelo.Fecha,
+                rendicion,
+                incluirMensajeDetallado: false);
+
+            // =====================================================
+            // VALIDAR MONTO
+            // =====================================================
+
+            ValidarMonto(
+                modelo.MontoTotal);
+
+            // =====================================================
+            // CALCULAR IGV
+            // =====================================================
+
+            CalcularImpuestos(modelo);
+
+            // =====================================================
+            // CONFIGURAR MOVILIDAD
+            // =====================================================
+
+            if (esMovilidad)
+            {
+                LimpiarDatosComprobante(modelo);
+            }
+
+            // =====================================================
+            // VALIDAR LÍMITE DIARIO
+            // =====================================================
+
+            if (tipoGasto != null &&
+                modelo.Fecha != default)
+            {
+                await ValidarLimiteDiarioAsync(
+                    modelo,
+                    tipoGasto,
+                    gasto.IdGasto);
+            }
+
+            // =====================================================
+            // VALIDAR COMPROBANTE
+            // =====================================================
+
+            if (!esMovilidad)
+            {
+                ValidarDatosComprobante(
+                    modelo);
+
+                if (ModelState.IsValid)
                 {
-                    limiteDiario = 50;
-                }
-                else if (tipoGasto.Nombre.Equals(
-                    "Alimentación",
-                    StringComparison.OrdinalIgnoreCase))
-                {
-                    limiteDiario = 40;
+                    await ValidarRucAsync(modelo);
                 }
 
-                if (limiteDiario > 0)
-                {
-                    DateTime inicioDia =
-                        modelo.Fecha.Date;
-
-                    DateTime finDia =
-                        inicioDia.AddDays(1);
-
-                    decimal montoRegistradoEseDia =
-                        await _context.Gastos
-                            .Where(g =>
-                                g.IdRendicion ==
-                                    gasto.IdRendicion &&
-                                g.IdGasto !=
-                                    gasto.IdGasto &&
-                                g.IdTipoGasto ==
-                                    modelo.IdTipoGasto &&
-                                g.Fecha >= inicioDia &&
-                                g.Fecha < finDia)
-                            .SumAsync(g =>
-                                (decimal?)g.MontoTotal) ?? 0;
-
-                    decimal nuevoTotalDelDia =
-                        montoRegistradoEseDia +
-                        modelo.MontoTotal;
-
-                    if (nuevoTotalDelDia >
-                        limiteDiario)
-                    {
-                        decimal disponible =
-                            limiteDiario -
-                            montoRegistradoEseDia;
-
-                        if (disponible < 0)
-                        {
-                            disponible = 0;
-                        }
-
-                        ModelState.AddModelError(
-                            nameof(modelo.MontoTotal),
-                            $"El límite diario para {tipoGasto.Nombre} es " +
-                            $"S/ {limiteDiario:N2}. " +
-                            $"Solo puede dejar este gasto hasta " +
-                            $"S/ {disponible:N2}.");
-                    }
-                }
-            }
-
-            // =====================================================
-            // VALIDAR TIPO DE COMPROBANTE
-            // =====================================================
-
-            var tipoComprobanteExiste =
-                await _context.TipoComprobantes
-                    .AnyAsync(t =>
-                        t.IdTipoComprobante ==
-                        modelo.IdTipoComprobante);
-
-            if (!tipoComprobanteExiste)
-            {
-                ModelState.AddModelError(
-                    nameof(modelo.IdTipoComprobante),
-                    "El tipo de comprobante seleccionado no existe.");
-            }
-
-            // =====================================================
-            // VALIDAR RUC
-            // =====================================================
-
-            if (string.IsNullOrWhiteSpace(modelo.Ruc) ||
-                modelo.Ruc.Length != 11 ||
-                !modelo.Ruc.All(char.IsDigit))
-            {
-                ModelState.AddModelError(
-                    nameof(modelo.Ruc),
-                    "El RUC debe contener exactamente 11 dígitos.");
-            }
-
-            // =====================================================
-            // CONSULTAR RUC
-            // =====================================================
-
-            if (ModelState.IsValid)
-            {
-                var domicilioIngresado =
-                    modelo.DomicilioFiscal;
-
-                var consultaRuc =
-                    await _rucService.ConsultarAsync(
-                        modelo.Ruc!);
-
-                if (!consultaRuc.Exito)
-                {
-                    ModelState.AddModelError(
-                        nameof(modelo.Ruc),
-                        consultaRuc.Mensaje ??
-                        "No se pudo validar el RUC.");
-                }
-                else
-                {
-                    modelo.Ruc =
-                        string.IsNullOrWhiteSpace(
-                            consultaRuc.Ruc)
-                            ? modelo.Ruc
-                            : consultaRuc.Ruc.Trim();
-
-                    modelo.RazonSocial =
-                        consultaRuc.RazonSocial?.Trim();
-
-                    if (string.IsNullOrWhiteSpace(
-                        domicilioIngresado))
-                    {
-                        modelo.DomicilioFiscal =
-                            consultaRuc.DomicilioFiscal?.Trim();
-                    }
-                    else
-                    {
-                        modelo.DomicilioFiscal =
-                            domicilioIngresado.Trim();
-                    }
-                }
-            }
-
-            // =====================================================
-            // VALIDAR RAZÓN SOCIAL
-            // =====================================================
-
-            if (string.IsNullOrWhiteSpace(
-                modelo.RazonSocial))
-            {
-                ModelState.AddModelError(
-                    nameof(modelo.RazonSocial),
-                    "No se encontró la razón social del RUC.");
-            }
-            else if (modelo.RazonSocial.Length > 250)
-            {
-                ModelState.AddModelError(
-                    nameof(modelo.RazonSocial),
-                    "La razón social no puede superar los 250 caracteres.");
-            }
-
-            // =====================================================
-            // VALIDAR DOMICILIO
-            // =====================================================
-
-            if (string.IsNullOrWhiteSpace(
-                modelo.DomicilioFiscal))
-            {
-                ModelState.AddModelError(
-                    nameof(modelo.DomicilioFiscal),
-                    "Debe ingresar el domicilio fiscal.");
-            }
-            else if (modelo.DomicilioFiscal.Length > 300)
-            {
-                ModelState.AddModelError(
-                    nameof(modelo.DomicilioFiscal),
-                    "El domicilio fiscal no puede superar los 300 caracteres.");
+                ValidarDatosProveedor(
+                    modelo);
             }
 
             // =====================================================
@@ -958,22 +613,7 @@ namespace Dinacem.Controllers
 
             if (!ModelState.IsValid)
             {
-                var errores =
-                    ModelState
-                        .Where(x =>
-                            x.Value != null &&
-                            x.Value.Errors.Count > 0)
-                        .Select(x =>
-                            $"{x.Key}: {string.Join(
-                                ", ",
-                                x.Value!.Errors.Select(e =>
-                                    string.IsNullOrWhiteSpace(
-                                        e.ErrorMessage)
-                                        ? "Valor no válido."
-                                        : e.ErrorMessage))}");
-
-                TempData["error"] =
-                    string.Join("<br>", errores);
+                AgregarErroresTempData();
 
                 return RedirectToAction(
                     nameof(EditAdmin),
@@ -990,26 +630,18 @@ namespace Dinacem.Controllers
             string? nuevaRutaComprobante = null;
             string? nuevaRutaFisica = null;
 
-            if (archivo != null &&
+            if (!esMovilidad &&
+                archivo != null &&
                 archivo.Length > 0)
             {
-                string[] extensionesPermitidas =
-                {
-                    ".pdf",
-                    ".jpg",
-                    ".jpeg",
-                    ".png"
-                };
+                var resultadoArchivo =
+                    await GuardarComprobanteAsync(
+                        archivo);
 
-                var extension =
-                    Path.GetExtension(
-                        archivo.FileName)
-                    .ToLowerInvariant();
-
-                if (!extensionesPermitidas.Contains(extension))
+                if (!resultadoArchivo.Exito)
                 {
                     TempData["error"] =
-                        "El comprobante debe ser PDF, JPG, JPEG o PNG.";
+                        resultadoArchivo.Mensaje;
 
                     return RedirectToAction(
                         nameof(EditAdmin),
@@ -1018,97 +650,101 @@ namespace Dinacem.Controllers
                             id = gasto.IdGasto
                         });
                 }
-
-                const long tamanioMaximo =
-                    5 * 1024 * 1024;
-
-                if (archivo.Length >
-                    tamanioMaximo)
-                {
-                    TempData["error"] =
-                        "El comprobante no debe superar los 5 MB.";
-
-                    return RedirectToAction(
-                        nameof(EditAdmin),
-                        new
-                        {
-                            id = gasto.IdGasto
-                        });
-                }
-
-                var nombreArchivo =
-                    $"{Guid.NewGuid()}{extension}";
-
-                var carpeta =
-                    Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        "comprobantes");
-
-                Directory.CreateDirectory(carpeta);
-
-                nuevaRutaFisica =
-                    Path.Combine(
-                        carpeta,
-                        nombreArchivo);
-
-                await using var stream =
-                    new FileStream(
-                        nuevaRutaFisica,
-                        FileMode.Create);
-
-                await archivo.CopyToAsync(stream);
 
                 nuevaRutaComprobante =
-                    $"/comprobantes/{nombreArchivo}";
+                    resultadoArchivo.RutaPublica;
+
+                nuevaRutaFisica =
+                    resultadoArchivo.RutaFisica;
             }
 
             // =====================================================
-            // ACTUALIZAR GASTO
+            // GUARDAR REFERENCIA ANTERIOR
             // =====================================================
 
             var comprobanteAnterior =
                 gasto.Comprobante;
 
-            gasto.Fecha = modelo.Fecha;
-            gasto.IdTipoGasto = modelo.IdTipoGasto;
-            gasto.IdTipoComprobante = modelo.IdTipoComprobante;
-            gasto.Ruc = modelo.Ruc;
-            gasto.RazonSocial = modelo.RazonSocial;
-            gasto.DomicilioFiscal = modelo.DomicilioFiscal;
-            gasto.Serie = modelo.Serie;
-            gasto.Numero = modelo.Numero;
-            gasto.Detalle = modelo.Detalle;
-            gasto.MontoTotal = modelo.MontoTotal;
-            gasto.ValorVenta = modelo.ValorVenta;
-            gasto.IGV = modelo.IGV;
-            gasto.ExoneracionIGV = modelo.ExoneracionIGV;
+            // =====================================================
+            // ACTUALIZAR ENTIDAD
+            // =====================================================
 
-            if (!string.IsNullOrWhiteSpace(
+            gasto.Fecha =
+                modelo.Fecha;
+
+            gasto.IdTipoGasto =
+                modelo.IdTipoGasto;
+
+            gasto.IdTipoComprobante =
+                esMovilidad
+                    ? null
+                    : modelo.IdTipoComprobante;
+
+            gasto.Ruc =
+                esMovilidad
+                    ? null
+                    : modelo.Ruc;
+
+            gasto.RazonSocial =
+                esMovilidad
+                    ? null
+                    : modelo.RazonSocial;
+
+            gasto.DomicilioFiscal =
+                esMovilidad
+                    ? null
+                    : modelo.DomicilioFiscal;
+
+            gasto.Serie =
+                esMovilidad
+                    ? null
+                    : modelo.Serie;
+
+            gasto.Numero =
+                esMovilidad
+                    ? null
+                    : modelo.Numero;
+
+            gasto.Detalle =
+                modelo.Detalle;
+
+            gasto.MontoTotal =
+                modelo.MontoTotal;
+
+            gasto.ValorVenta =
+                modelo.ValorVenta;
+
+            gasto.IGV =
+                modelo.IGV;
+
+            gasto.ExoneracionIGV =
+                modelo.ExoneracionIGV;
+
+            // =====================================================
+            // ACTUALIZAR COMPROBANTE
+            // =====================================================
+
+            if (esMovilidad)
+            {
+                gasto.Comprobante = null;
+            }
+            else if (!string.IsNullOrWhiteSpace(
                 nuevaRutaComprobante))
             {
                 gasto.Comprobante =
                     nuevaRutaComprobante;
             }
 
+            // =====================================================
+            // GUARDAR Y REGENERAR PDF
+            // =====================================================
+
             try
             {
-                // =================================================
-                // GUARDAR GASTO
-                // =================================================
-
                 await _context.SaveChangesAsync();
-
-                // =================================================
-                // ACTUALIZAR TOTALES
-                // =================================================
 
                 await ActualizarTotalesRendicion(
                     gasto.IdRendicion);
-
-                // =================================================
-                // RECARGAR RENDICIÓN
-                // =================================================
 
                 var rendicionActualizada =
                     await _context.Rendiciones
@@ -1132,10 +768,6 @@ namespace Dinacem.Controllers
                         });
                 }
 
-                // =================================================
-                // RECARGAR GASTOS
-                // =================================================
-
                 var gastosActualizados =
                     await _context.Gastos
                         .Include(g => g.TipoGasto)
@@ -1146,21 +778,13 @@ namespace Dinacem.Controllers
                         .OrderBy(g => g.Fecha)
                         .ToListAsync();
 
-                // =================================================
-                // DEVOLUCIÓN
-                // =================================================
-
                 var devolucionActualizada =
                     await _context.DevolucionesSaldo
                         .FirstOrDefaultAsync(d =>
                             d.IdRendicion ==
                             gasto.IdRendicion);
 
-                // =================================================
-                // BITÁCORA
-                // =================================================
-
-                var bitacorasVehiculoActualizadas =
+                var bitacorasActualizadas =
                     await _context.BitacorasVehiculo
                         .Where(b =>
                             b.IdRendicion ==
@@ -1168,16 +792,12 @@ namespace Dinacem.Controllers
                         .OrderBy(b => b.Fecha)
                         .ToListAsync();
 
-                // =================================================
-                // REGENERAR PDF
-                // =================================================
-
                 var resultadoPdf =
                     await _rendicionPdfService.GenerarAsync(
                         rendicionActualizada,
                         gastosActualizados,
                         devolucionActualizada,
-                        bitacorasVehiculoActualizadas);
+                        bitacorasActualizadas);
 
                 rendicionActualizada.ArchivoPdf =
                     $"{resultadoPdf.RutaPublica}?v={DateTime.Now.Ticks}";
@@ -1186,20 +806,8 @@ namespace Dinacem.Controllers
             }
             catch (Exception ex)
             {
-                if (!string.IsNullOrWhiteSpace(
-                    nuevaRutaFisica) &&
-                    System.IO.File.Exists(
-                        nuevaRutaFisica))
-                {
-                    try
-                    {
-                        System.IO.File.Delete(
-                            nuevaRutaFisica);
-                    }
-                    catch
-                    {
-                    }
-                }
+                EliminarArchivoFisico(
+                    nuevaRutaFisica);
 
                 TempData["error"] =
                     "No se pudo actualizar completamente el gasto y regenerar el PDF. " +
@@ -1217,36 +825,16 @@ namespace Dinacem.Controllers
             // ELIMINAR COMPROBANTE ANTERIOR
             // =====================================================
 
-            if (!string.IsNullOrWhiteSpace(
-                nuevaRutaComprobante) &&
-                !string.IsNullOrWhiteSpace(
-                comprobanteAnterior))
+            if (esMovilidad)
             {
-                var rutaRelativaAnterior =
-                    comprobanteAnterior
-                        .TrimStart('/')
-                        .Replace(
-                            '/',
-                            Path.DirectorySeparatorChar);
-
-                var rutaAnterior =
-                    Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        rutaRelativaAnterior);
-
-                if (System.IO.File.Exists(
-                    rutaAnterior))
-                {
-                    try
-                    {
-                        System.IO.File.Delete(
-                            rutaAnterior);
-                    }
-                    catch
-                    {
-                    }
-                }
+                EliminarComprobante(
+                    comprobanteAnterior);
+            }
+            else if (!string.IsNullOrWhiteSpace(
+                nuevaRutaComprobante))
+            {
+                EliminarComprobante(
+                    comprobanteAnterior);
             }
 
             TempData["mensaje"] =
@@ -1264,6 +852,7 @@ namespace Dinacem.Controllers
         // =========================================================
         // ELIMINAR GASTO
         // =========================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(
@@ -1273,7 +862,8 @@ namespace Dinacem.Controllers
             var rendicion =
                 await _context.Rendiciones
                     .FirstOrDefaultAsync(r =>
-                        r.IdRendicion == idRendicion);
+                        r.IdRendicion ==
+                        idRendicion);
 
             if (rendicion == null)
             {
@@ -1285,7 +875,8 @@ namespace Dinacem.Controllers
                     "Rendicion");
             }
 
-            if (rendicion.IdEstadoRendicion != 1)
+            if (rendicion.IdEstadoRendicion !=
+                ESTADO_RENDICION_BORRADOR)
             {
                 TempData["error"] =
                     "No se pueden eliminar gastos de una rendición enviada.";
@@ -1317,33 +908,15 @@ namespace Dinacem.Controllers
                     });
             }
 
-            if (!string.IsNullOrWhiteSpace(
-                gasto.Comprobante))
-            {
-                var rutaRelativa =
-                    gasto.Comprobante
-                        .TrimStart('/')
-                        .Replace(
-                            '/',
-                            Path.DirectorySeparatorChar);
-
-                var rutaCompleta =
-                    Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        "wwwroot",
-                        rutaRelativa);
-
-                if (System.IO.File.Exists(
-                    rutaCompleta))
-                {
-                    System.IO.File.Delete(
-                        rutaCompleta);
-                }
-            }
+            var comprobante =
+                gasto.Comprobante;
 
             _context.Gastos.Remove(gasto);
 
             await _context.SaveChangesAsync();
+
+            EliminarComprobante(
+                comprobante);
 
             await ActualizarTotalesRendicion(
                 idRendicion);
@@ -1362,13 +935,15 @@ namespace Dinacem.Controllers
         // =========================================================
         // ENVIAR RENDICIÓN
         // =========================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EnviarRendicion(
             int idRendicion)
         {
             var idUsuario =
-                HttpContext.Session.GetInt32("IdUsuario");
+                HttpContext.Session.GetInt32(
+                    "IdUsuario");
 
             if (idUsuario == null)
             {
@@ -1398,7 +973,8 @@ namespace Dinacem.Controllers
                     "Rendicion");
             }
 
-            if (rendicion.IdEstadoRendicion != 1)
+            if (rendicion.IdEstadoRendicion !=
+                ESTADO_RENDICION_BORRADOR)
             {
                 TempData["error"] =
                     "Esta rendición ya fue enviada o finalizada.";
@@ -1413,14 +989,16 @@ namespace Dinacem.Controllers
                     .Include(g => g.TipoGasto)
                     .Include(g => g.TipoComprobante)
                     .Where(g =>
-                        g.IdRendicion == idRendicion)
+                        g.IdRendicion ==
+                        idRendicion)
                     .OrderBy(g => g.Fecha)
                     .ToListAsync();
 
             var bitacorasVehiculo =
                 await _context.BitacorasVehiculo
                     .Where(b =>
-                        b.IdRendicion == idRendicion)
+                        b.IdRendicion ==
+                        idRendicion)
                     .OrderBy(b => b.Fecha)
                     .ToListAsync();
 
@@ -1438,54 +1016,20 @@ namespace Dinacem.Controllers
                     });
             }
 
+            // =====================================================
+            // DEVOLUCIÓN
+            // =====================================================
+
             var devolucion =
                 await _context.DevolucionesSaldo
                     .FirstOrDefaultAsync(d =>
-                        d.IdRendicion == idRendicion);
+                        d.IdRendicion ==
+                        idRendicion);
 
-            // =====================================================
-            // VALIDAR DEVOLUCIÓN
-            // =====================================================
-
-            if (rendicion.Saldo > 0 &&
-                devolucion == null)
+            if (!ValidarDevolucion(
+                rendicion,
+                devolucion))
             {
-                TempData["error"] =
-                    $"Debe registrar la devolución de " +
-                    $"S/ {rendicion.Saldo:N2} antes de enviar.";
-
-                return RedirectToAction(
-                    nameof(Index),
-                    new
-                    {
-                        idRendicion
-                    });
-            }
-
-            if (rendicion.Saldo > 0 &&
-                devolucion != null &&
-                devolucion.Monto != rendicion.Saldo)
-            {
-                TempData["error"] =
-                    $"El monto devuelto debe ser exactamente " +
-                    $"S/ {rendicion.Saldo:N2}.";
-
-                return RedirectToAction(
-                    nameof(Index),
-                    new
-                    {
-                        idRendicion
-                    });
-            }
-
-            if (rendicion.Saldo > 0 &&
-                devolucion != null &&
-                string.IsNullOrWhiteSpace(
-                    devolucion.Voucher))
-            {
-                TempData["error"] =
-                    "La devolución debe tener un voucher adjunto.";
-
                 return RedirectToAction(
                     nameof(Index),
                     new
@@ -1495,72 +1039,11 @@ namespace Dinacem.Controllers
             }
 
             // =====================================================
-            // GENERAR REEMBOLSO
+            // REEMBOLSO
             // =====================================================
 
-            if (rendicion.Saldo < 0)
-            {
-                decimal montoReembolso =
-                    Math.Abs(rendicion.Saldo);
-
-                var reembolsoExistente =
-                    await _context.Reembolsos
-                        .FirstOrDefaultAsync(r =>
-                            r.IdRendicion == idRendicion);
-
-                if (reembolsoExistente == null)
-                {
-                    var nuevoReembolso =
-                        new Reembolso
-                        {
-                            IdRendicion =
-                                rendicion.IdRendicion,
-
-                            IdUsuario =
-                                rendicion.IdUsuario,
-
-                            Monto =
-                                montoReembolso,
-
-                            FechaSolicitud =
-                                DateTime.Now,
-
-                            IdEstadoReembolso = 1
-                        };
-
-                    _context.Reembolsos.Add(
-                        nuevoReembolso);
-                }
-                else
-                {
-                    reembolsoExistente.Monto =
-                        montoReembolso;
-
-                    reembolsoExistente.FechaSolicitud =
-                        DateTime.Now;
-
-                    reembolsoExistente.IdEstadoReembolso =
-                        1;
-
-                    reembolsoExistente.FechaAprobacion =
-                        null;
-
-                    reembolsoExistente.FechaPago =
-                        null;
-
-                    reembolsoExistente.Banco =
-                        null;
-
-                    reembolsoExistente.NumeroOperacion =
-                        null;
-
-                    reembolsoExistente.ComprobantePago =
-                        null;
-
-                    reembolsoExistente.Observaciones =
-                        null;
-                }
-            }
+            await ProcesarReembolsoAsync(
+                rendicion);
 
             // =====================================================
             // GENERAR PDF
@@ -1601,8 +1084,8 @@ namespace Dinacem.Controllers
             rendicion.FechaEnvioRevision =
                 DateTime.Now;
 
-            // 2 = Pendiente de revisión
-            rendicion.IdEstadoRendicion = 2;
+            rendicion.IdEstadoRendicion =
+                ESTADO_RENDICION_PENDIENTE_REVISION;
 
             await _context.SaveChangesAsync();
 
@@ -1613,9 +1096,10 @@ namespace Dinacem.Controllers
             var correosAdministradores =
                 await _context.Usuarios
                     .Where(u =>
-                        u.IdRol == 1 &&
+                        u.IdRol == ROL_ADMINISTRADOR &&
                         u.Estado &&
-                        !string.IsNullOrWhiteSpace(u.Correo))
+                        !string.IsNullOrWhiteSpace(
+                            u.Correo))
                     .Select(u => u.Correo!)
                     .ToListAsync();
 
@@ -1624,17 +1108,20 @@ namespace Dinacem.Controllers
                 $"{rendicion.Usuario?.Apellidos}";
 
             var totalBase =
-                gastos.Sum(g => g.ValorVenta);
+                gastos.Sum(g =>
+                    g.ValorVenta);
 
             var totalIgv =
-                gastos.Sum(g => g.IGV);
+                gastos.Sum(g =>
+                    g.IGV);
 
             var totalGastosCorreo =
-                gastos.Sum(g => g.MontoTotal);
+                gastos.Sum(g =>
+                    g.MontoTotal);
 
             var totalVehiculoCorreo =
-                bitacorasVehiculo.Sum(
-                    b => b.MontoAsignado);
+                bitacorasVehiculo.Sum(b =>
+                    b.MontoAsignado);
 
             var totalRendidoCorreo =
                 totalGastosCorreo +
@@ -1647,184 +1134,68 @@ namespace Dinacem.Controllers
             var asunto =
                 $"Liquidación de viáticos #{rendicion.IdRendicion} pendiente de revisión";
 
-            var contenidoHtml = $"""
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-</head>
-<body style="margin:0;padding:0;background-color:#f2f5f8;font-family:Arial,Helvetica,sans-serif;color:#111111;">
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f2f5f8;padding:35px 15px;">
-<tr>
-<td align="center">
-<table role="presentation" width="700" cellspacing="0" cellpadding="0" border="0" style="max-width:700px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;">
+            var contenidoHtml =
+                GenerarCorreoLiquidacion(
+                    rendicion,
+                    nombreEmpleado,
+                    totalBase,
+                    totalIgv,
+                    saldoCorreo);
 
-<tr>
-<td style="background:#0C4A8A;padding:25px 35px;text-align:center;">
-<img src="cid:logoDinacen" alt="DINACEN" style="max-width:210px;height:auto;display:block;margin:0 auto 15px;">
-<div style="height:2px;background:#6AA84F;width:100%;margin-bottom:18px;"></div>
-<div style="font-size:24px;font-weight:bold;color:#ffffff;">
-LIQUIDACIÓN DE VIÁTICOS
-</div>
-<div style="font-size:16px;color:#ffffff;margin-top:8px;">
-Pendiente de revisión
-</div>
-</td>
-</tr>
+            // =====================================================
+            // PREPARAR LOS DOS PDF PARA EL CORREO
+            // =====================================================
 
-<tr>
-<td style="padding:35px 40px 20px 40px;">
+            var adjuntosCorreo =
+                new List<(string Ruta, string Nombre)>();
 
-<div style="font-size:22px;font-weight:bold;color:#111111;margin-bottom:18px;">
-Nueva liquidación pendiente de revisión
-</div>
+            // =====================================================
+            // PDF PRINCIPAL DE LIQUIDACIÓN
+            // =====================================================
 
-<div style="font-size:17px;line-height:1.7;color:#222222;margin-bottom:25px;">
-El empleado <strong>{nombreEmpleado}</strong> ha enviado una
-liquidación de gastos que se encuentra pendiente de revisión.
-</div>
+            if (!string.IsNullOrWhiteSpace(
+                    resultadoPdf.RutaFisica) &&
+                System.IO.File.Exists(
+                    resultadoPdf.RutaFisica))
+            {
+                adjuntosCorreo.Add(
+                    (
+                        resultadoPdf.RutaFisica,
+                        resultadoPdf.NombreArchivo
+                    ));
+            }
 
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f7f9fb;border:1px solid #d9e2ea;border-radius:8px;">
+            // =====================================================
+            // PDF DE VOUCHERS
+            // =====================================================
 
-<tr>
-<td colspan="2" style="padding:18px 20px;background:#eef4f9;border-bottom:1px solid #d9e2ea;">
-<div style="font-size:18px;font-weight:bold;color:#0C4A8A;">
-Información de la liquidación
-</div>
-</td>
-</tr>
+            if (!string.IsNullOrWhiteSpace(
+                    resultadoPdf.RutaFisicaVouchers) &&
+                System.IO.File.Exists(
+                    resultadoPdf.RutaFisicaVouchers))
+            {
+                adjuntosCorreo.Add(
+                    (
+                        resultadoPdf.RutaFisicaVouchers,
+                        resultadoPdf.NombreArchivoVouchers
+                    ));
+            }
 
-<tr>
-<td width="42%" style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;">
-Liquidación
-</td>
-<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;">
-#{rendicion.IdRendicion}
-</td>
-</tr>
-
-<tr>
-<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;">
-Empleado
-</td>
-<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;">
-{nombreEmpleado}
-</td>
-</tr>
-
-<tr>
-<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;">
-Destino
-</td>
-<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;">
-{rendicion.Solicitud?.Destino}
-</td>
-</tr>
-
-<tr>
-<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;">
-Periodo
-</td>
-<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;">
-{rendicion.FechaInicio:dd/MM/yyyy} al {rendicion.FechaFin:dd/MM/yyyy}
-</td>
-</tr>
-
-<tr>
-<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;">
-Monto aprobado
-</td>
-<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;">
-S/ {rendicion.Solicitud?.Monto:N2}
-</td>
-</tr>
-
-<tr>
-<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;">
-Valor de venta
-</td>
-<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;">
-S/ {totalBase:N2}
-</td>
-</tr>
-
-<tr>
-<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;">
-IGV
-</td>
-<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;">
-S/ {totalIgv:N2}
-</td>
-</tr>
-
-<tr>
-<td style="padding:16px 20px;border-bottom:1px solid #e1e7ec;font-size:17px;font-weight:bold;">
-Total rendido
-</td>
-<td style="padding:16px 20px;border-bottom:1px solid #e1e7ec;font-size:19px;font-weight:bold;color:#0C4A8A;">
-S/ {rendicion.Total:N2}
-</td>
-</tr>
-
-<tr>
-<td style="padding:16px 20px;font-size:17px;font-weight:bold;">
-Saldo
-</td>
-<td style="padding:16px 20px;font-size:19px;font-weight:bold;color:#6AA84F;">
-S/ {rendicion.Saldo:N2}
-</td>
-</tr>
-
-</table>
-
-<div style="margin-top:28px;padding:20px;background:#f7f9fb;border-left:5px solid #0C4A8A;border-radius:5px;">
-<div style="font-size:16px;line-height:1.7;color:#222222;">
-Se adjunta el PDF correspondiente a la liquidación.
-Ingrese al <strong>sistema de gestión de viáticos DINACEN</strong>
-para revisar los comprobantes, verificar la devolución
-y proceder con la aprobación o rechazo de la rendición.
-</div>
-</div>
-
-</td>
-</tr>
-
-<tr>
-<td style="background:#0C4A8A;padding:25px 35px;text-align:center;">
-<div style="font-size:16px;font-weight:bold;color:#ffffff;">
-DINACEN
-</div>
-<div style="font-size:13px;color:#dce8f2;margin-top:7px;">
-Sistema de Gestión de Viáticos
-</div>
-<div style="font-size:12px;color:#c5d5e2;margin-top:12px;">
-Este mensaje ha sido generado automáticamente.
-Por favor, no responda a este correo.
-</div>
-</td>
-</tr>
-
-</table>
-</td>
-</tr>
-</table>
-</body>
-</html>
-""";
+            // =====================================================
+            // ENVIAR CORREO CON LOS DOS PDF
+            // =====================================================
 
             var correoEnviado =
                 await _correoService.EnviarAsync(
                     correosAdministradores,
                     asunto,
                     contenidoHtml,
-                    resultadoPdf.RutaFisica,
-                    resultadoPdf.NombreArchivo);
+                    adjuntosCorreo);
 
             TempData["mensaje"] =
                 correoEnviado
-                    ? "La rendición fue enviada para revisión y el PDF fue enviado a los administradores."
-                    : "La rendición y el PDF fueron guardados, pero no fue posible enviar el correo.";
+                    ? "La rendición fue enviada para revisión y los PDF de liquidación y vouchers fueron enviados a los administradores."
+                    : "La rendición y los PDF fueron guardados, pero no fue posible enviar el correo.";
 
             return RedirectToAction(
                 "MisRendiciones",
@@ -1834,6 +1205,7 @@ Por favor, no responda a este correo.
         // =========================================================
         // ACTUALIZAR TOTAL Y SALDO
         // =========================================================
+
         private async Task ActualizarTotalesRendicion(
             int idRendicion)
         {
@@ -1841,7 +1213,8 @@ Por favor, no responda a este correo.
                 await _context.Rendiciones
                     .Include(r => r.Solicitud)
                     .FirstOrDefaultAsync(r =>
-                        r.IdRendicion == idRendicion);
+                        r.IdRendicion ==
+                        idRendicion);
 
             if (rendicion == null ||
                 rendicion.Solicitud == null)
@@ -1852,29 +1225,1220 @@ Por favor, no responda a este correo.
             var totalGastos =
                 await _context.Gastos
                     .Where(g =>
-                        g.IdRendicion == idRendicion)
+                        g.IdRendicion ==
+                        idRendicion)
                     .SumAsync(g =>
-                        (decimal?)g.MontoTotal) ?? 0;
+                        (decimal?)g.MontoTotal) ?? 0m;
 
             var totalVehiculo =
                 await _context.BitacorasVehiculo
                     .Where(b =>
-                        b.IdRendicion == idRendicion)
+                        b.IdRendicion ==
+                        idRendicion)
                     .SumAsync(b =>
-                        (decimal?)b.MontoAsignado) ?? 0;
+                        (decimal?)b.MontoAsignado) ?? 0m;
 
-            var total =
+            rendicion.Total =
                 totalGastos +
                 totalVehiculo;
 
-            rendicion.Total =
-                total;
-
             rendicion.Saldo =
                 rendicion.Solicitud.Monto -
-                total;
+                rendicion.Total;
 
             await _context.SaveChangesAsync();
+        }
+
+        // =========================================================
+        // OBTENER RENDICIÓN
+        // =========================================================
+
+        private async Task<Rendicion?> ObtenerRendicionAsync(
+            int idRendicion)
+        {
+            return await _context.Rendiciones
+                .Include(r => r.Solicitud)
+                .FirstOrDefaultAsync(r =>
+                    r.IdRendicion ==
+                    idRendicion);
+        }
+
+        // =========================================================
+        // OBTENER TIPO DE GASTO
+        // =========================================================
+
+        private async Task<TipoGasto?> ObtenerTipoGastoAsync(
+            int idTipoGasto)
+        {
+            return await _context.TipoGastos
+                .FirstOrDefaultAsync(t =>
+                    t.IdTipoGasto ==
+                    idTipoGasto);
+        }
+
+        // =========================================================
+        // DETERMINAR SI ES ADMINISTRADOR
+        // =========================================================
+
+        private bool EsAdministrador()
+        {
+            var idRol =
+                HttpContext.Session.GetInt32(
+                    "IdRol");
+
+            return idRol == ROL_ADMINISTRADOR;
+        }
+
+        // =========================================================
+        // DETERMINAR SI ES MOVILIDAD
+        // =========================================================
+
+        private static bool EsMovilidad(
+            TipoGasto tipoGasto)
+        {
+            return tipoGasto.Nombre
+                .Trim()
+                .Equals(
+                    "Movilidad",
+                    StringComparison.OrdinalIgnoreCase);
+        }
+
+        // =========================================================
+        // OBTENER LÍMITE DIARIO
+        // =========================================================
+
+        private static decimal ObtenerLimiteDiario(
+            TipoGasto tipoGasto)
+        {
+            var nombre =
+                tipoGasto.Nombre.Trim();
+
+            if (nombre.Equals(
+                "Alimentación",
+                StringComparison.OrdinalIgnoreCase))
+            {
+                return LIMITE_ALIMENTACION_DIARIO;
+            }
+
+            if (nombre.Equals(
+                "Hospedaje",
+                StringComparison.OrdinalIgnoreCase))
+            {
+                return LIMITE_HOSPEDAJE_DIARIO;
+            }
+
+            return 0m;
+        }
+
+        // =========================================================
+        // LIMPIAR CAMPOS
+        // =========================================================
+
+        private static void LimpiarCampos(
+            Gasto gasto)
+        {
+            gasto.Ruc =
+                gasto.Ruc?.Trim();
+
+            gasto.RazonSocial =
+                gasto.RazonSocial?.Trim();
+
+            gasto.DomicilioFiscal =
+                gasto.DomicilioFiscal?.Trim();
+
+            gasto.Serie =
+                gasto.Serie?.Trim();
+
+            gasto.Numero =
+                gasto.Numero?.Trim();
+
+            gasto.Detalle =
+                gasto.Detalle?.Trim();
+        }
+
+        // =========================================================
+        // LIMPIAR DATOS DE COMPROBANTE
+        // =========================================================
+
+        private static void LimpiarDatosComprobante(
+            Gasto gasto)
+        {
+            gasto.Ruc = null;
+            gasto.RazonSocial = null;
+            gasto.DomicilioFiscal = null;
+
+            gasto.IdTipoComprobante = null;
+
+            gasto.Serie = null;
+            gasto.Numero = null;
+
+            gasto.Comprobante = null;
+        }
+
+        // =========================================================
+        // ELIMINAR VALIDACIONES CALCULADAS
+        // =========================================================
+
+        private void EliminarValidacionesCalculadas(
+            params string[] propiedades)
+        {
+            foreach (var propiedad in propiedades)
+            {
+                ModelState.Remove(propiedad);
+            }
+        }
+
+        // =========================================================
+        // VALIDAR FECHA
+        // =========================================================
+
+        private void ValidarFechaGasto(
+            DateTime fecha,
+            Rendicion rendicion,
+            bool incluirMensajeDetallado)
+        {
+            if (fecha == default)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.Fecha),
+                    "Debe ingresar la fecha del gasto.");
+
+                return;
+            }
+
+            if (fecha.Date <
+                    rendicion.FechaInicio.Date ||
+                fecha.Date >
+                    rendicion.FechaFin.Date)
+            {
+                var mensaje =
+                    $"La fecha del gasto debe estar entre " +
+                    $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
+                    $"{rendicion.FechaFin:dd/MM/yyyy}.";
+
+                if (incluirMensajeDetallado)
+                {
+                    mensaje +=
+                        " Puede registrar el gasto posteriormente, " +
+                        "pero la fecha del comprobante debe pertenecer " +
+                        "al periodo aprobado.";
+                }
+
+                ModelState.AddModelError(
+                    nameof(Gasto.Fecha),
+                    mensaje);
+            }
+        }
+
+        // =========================================================
+        // VALIDAR MONTO
+        // =========================================================
+
+        private void ValidarMonto(
+            decimal monto)
+        {
+            if (monto <= 0)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.MontoTotal),
+                    "El monto total debe ser mayor que cero.");
+            }
+        }
+
+        // =========================================================
+        // CALCULAR IMPUESTOS
+        // =========================================================
+
+        private static void CalcularImpuestos(
+            Gasto gasto)
+        {
+            if (gasto.MontoTotal <= 0)
+            {
+                gasto.ValorVenta = 0;
+                gasto.IGV = 0;
+                return;
+            }
+
+            if (gasto.ExoneracionIGV)
+            {
+                gasto.ValorVenta =
+                    Math.Round(
+                        gasto.MontoTotal,
+                        2,
+                        MidpointRounding.AwayFromZero);
+
+                gasto.IGV = 0;
+
+                return;
+            }
+
+            gasto.ValorVenta =
+                Math.Round(
+                    gasto.MontoTotal /
+                    (1 + TASA_IGV),
+                    2,
+                    MidpointRounding.AwayFromZero);
+
+            gasto.IGV =
+                Math.Round(
+                    gasto.MontoTotal -
+                    gasto.ValorVenta,
+                    2,
+                    MidpointRounding.AwayFromZero);
+        }
+
+        // =========================================================
+        // VALIDAR LÍMITE DIARIO
+        // =========================================================
+
+        private async Task ValidarLimiteDiarioAsync(
+            Gasto gasto,
+            TipoGasto tipoGasto,
+            int idGastoExcluir)
+        {
+            var limiteDiario =
+                ObtenerLimiteDiario(tipoGasto);
+
+            if (limiteDiario <= 0)
+            {
+                return;
+            }
+
+            var inicioDia =
+                gasto.Fecha.Date;
+
+            var finDia =
+                inicioDia.AddDays(1);
+
+            var query =
+                _context.Gastos
+                    .Where(g =>
+                        g.IdRendicion ==
+                            gasto.IdRendicion &&
+                        g.IdTipoGasto ==
+                            gasto.IdTipoGasto &&
+                        g.Fecha >= inicioDia &&
+                        g.Fecha < finDia);
+
+            if (idGastoExcluir > 0)
+            {
+                query =
+                    query.Where(g =>
+                        g.IdGasto !=
+                        idGastoExcluir);
+            }
+
+            var montoRegistrado =
+                await query
+                    .SumAsync(g =>
+                        (decimal?)g.MontoTotal) ?? 0m;
+
+            var nuevoTotal =
+                montoRegistrado +
+                gasto.MontoTotal;
+
+            if (nuevoTotal <= limiteDiario)
+            {
+                return;
+            }
+
+            var disponible =
+                limiteDiario -
+                montoRegistrado;
+
+            if (disponible < 0)
+            {
+                disponible = 0;
+            }
+
+            ModelState.AddModelError(
+                nameof(Gasto.MontoTotal),
+                $"El límite diario para {tipoGasto.Nombre} es " +
+                $"S/ {limiteDiario:N2}. " +
+                $"El {gasto.Fecha:dd/MM/yyyy} ya tiene registrado " +
+                $"S/ {montoRegistrado:N2}. " +
+                $"Solo puede registrar hasta S/ {disponible:N2}.");
+        }
+
+        // =========================================================
+        // VALIDAR DATOS DEL COMPROBANTE
+        // =========================================================
+
+        private void ValidarDatosComprobante(
+            Gasto gasto)
+        {
+            if (string.IsNullOrWhiteSpace(
+                gasto.Ruc))
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.Ruc),
+                    "Debe ingresar el RUC.");
+            }
+            else if (
+                gasto.Ruc.Length != 11 ||
+                !gasto.Ruc.All(char.IsDigit))
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.Ruc),
+                    "El RUC debe contener exactamente 11 dígitos.");
+            }
+
+            var tipoComprobanteExiste =
+                _context.TipoComprobantes.Any(
+                    t =>
+                        t.IdTipoComprobante ==
+                        gasto.IdTipoComprobante);
+
+            if (!tipoComprobanteExiste)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.IdTipoComprobante),
+                    "El tipo de comprobante seleccionado no existe.");
+            }
+        }
+
+        // =========================================================
+        // VALIDAR RUC
+        // =========================================================
+
+        private async Task ValidarRucAsync(
+            Gasto gasto)
+        {
+            if (string.IsNullOrWhiteSpace(
+                gasto.Ruc))
+            {
+                return;
+            }
+
+            var domicilioIngresado =
+                gasto.DomicilioFiscal;
+
+            var consulta =
+                await _rucService.ConsultarAsync(
+                    gasto.Ruc);
+
+            if (!consulta.Exito)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.Ruc),
+                    consulta.Mensaje ??
+                    "No se pudo validar el RUC.");
+
+                return;
+            }
+
+            gasto.Ruc =
+                string.IsNullOrWhiteSpace(
+                    consulta.Ruc)
+                    ? gasto.Ruc
+                    : consulta.Ruc.Trim();
+
+            gasto.RazonSocial =
+                consulta.RazonSocial?.Trim();
+
+            if (string.IsNullOrWhiteSpace(
+                domicilioIngresado))
+            {
+                gasto.DomicilioFiscal =
+                    consulta.DomicilioFiscal?.Trim();
+            }
+            else
+            {
+                gasto.DomicilioFiscal =
+                    domicilioIngresado.Trim();
+            }
+        }
+
+        // =========================================================
+        // VALIDAR PROVEEDOR
+        // =========================================================
+
+        private void ValidarDatosProveedor(
+            Gasto gasto)
+        {
+            if (string.IsNullOrWhiteSpace(
+                gasto.RazonSocial))
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.RazonSocial),
+                    "No se encontró la razón social del RUC.");
+            }
+            else if (
+                gasto.RazonSocial.Length > 250)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.RazonSocial),
+                    "La razón social no puede superar los 250 caracteres.");
+            }
+
+            if (string.IsNullOrWhiteSpace(
+                gasto.DomicilioFiscal))
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.DomicilioFiscal),
+                    "Debe ingresar el domicilio fiscal.");
+            }
+            else if (
+                gasto.DomicilioFiscal.Length > 300)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.DomicilioFiscal),
+                    "El domicilio fiscal no puede superar los 300 caracteres.");
+            }
+        }
+
+        // =========================================================
+        // GUARDAR COMPROBANTE
+        // =========================================================
+
+        private async Task<ResultadoArchivo> GuardarComprobanteAsync(
+            IFormFile? archivo)
+        {
+            if (archivo == null ||
+                archivo.Length == 0)
+            {
+                return new ResultadoArchivo
+                {
+                    Exito = true,
+                    RutaPublica = null,
+                    RutaFisica = null
+                };
+            }
+
+            var extension =
+                Path.GetExtension(
+                    archivo.FileName)
+                .ToLowerInvariant();
+
+            if (!ExtensionesPermitidas.Contains(
+                extension))
+            {
+                return new ResultadoArchivo
+                {
+                    Exito = false,
+                    Mensaje =
+                        "El comprobante debe ser PDF, JPG, JPEG o PNG."
+                };
+            }
+
+            if (archivo.Length >
+                TAMANIO_MAXIMO_COMPROBANTE)
+            {
+                return new ResultadoArchivo
+                {
+                    Exito = false,
+                    Mensaje =
+                        "El comprobante no debe superar los 5 MB."
+                };
+            }
+
+            var nombreArchivo =
+                $"{Guid.NewGuid()}{extension}";
+
+            var carpeta =
+                Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "comprobantes");
+
+            Directory.CreateDirectory(
+                carpeta);
+
+            var rutaFisica =
+                Path.Combine(
+                    carpeta,
+                    nombreArchivo);
+
+            await using var stream =
+                new FileStream(
+                    rutaFisica,
+                    FileMode.Create);
+
+            await archivo.CopyToAsync(
+                stream);
+
+            return new ResultadoArchivo
+            {
+                Exito = true,
+
+                RutaPublica =
+                    $"/comprobantes/{nombreArchivo}",
+
+                RutaFisica =
+                    rutaFisica
+            };
+        }
+
+        // =========================================================
+        // ELIMINAR COMPROBANTE
+        // =========================================================
+
+        private void EliminarComprobante(
+            string? rutaPublica)
+        {
+            if (string.IsNullOrWhiteSpace(
+                rutaPublica))
+            {
+                return;
+            }
+
+            var rutaRelativa =
+                rutaPublica
+                    .TrimStart('/')
+                    .Replace(
+                        '/',
+                        Path.DirectorySeparatorChar);
+
+            var rutaFisica =
+                Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    rutaRelativa);
+
+            EliminarArchivoFisico(
+                rutaFisica);
+        }
+
+        // =========================================================
+        // ELIMINAR ARCHIVO FÍSICO
+        // =========================================================
+
+        private static void EliminarArchivoFisico(
+            string? rutaFisica)
+        {
+            if (string.IsNullOrWhiteSpace(
+                rutaFisica))
+            {
+                return;
+            }
+
+            if (!System.IO.File.Exists(
+                rutaFisica))
+            {
+                return;
+            }
+
+            try
+            {
+                System.IO.File.Delete(
+                    rutaFisica);
+            }
+            catch
+            {
+                // No detener la operación principal
+                // si falla la eliminación física.
+            }
+        }
+
+        // =========================================================
+        // PROCESAR ERRORES DE CREATE
+        // =========================================================
+
+        private async Task<IActionResult> ProcesarErroresCreate(
+            int idRendicion)
+        {
+            AgregarErroresTempData();
+
+            return RedirectToAction(
+                nameof(Index),
+                new
+                {
+                    idRendicion
+                });
+        }
+
+        // =========================================================
+        // AGREGAR ERRORES A TEMPDATA
+        // =========================================================
+
+        private void AgregarErroresTempData()
+        {
+            var errores =
+                ModelState
+                    .Where(x =>
+                        x.Value != null &&
+                        x.Value.Errors.Count > 0)
+                    .Select(x =>
+                        $"{x.Key}: {string.Join(
+                            ", ",
+                            x.Value!.Errors.Select(e =>
+                                string.IsNullOrWhiteSpace(
+                                    e.ErrorMessage)
+                                    ? "Valor no válido."
+                                    : e.ErrorMessage))}");
+
+            TempData["error"] =
+                string.Join(
+                    "<br>",
+                    errores);
+        }
+
+        // =========================================================
+        // VALIDAR DEVOLUCIÓN
+        // =========================================================
+
+        private bool ValidarDevolucion(
+            Rendicion rendicion,
+            DevolucionSaldo? devolucion)
+        {
+            if (rendicion.Saldo <= 0)
+            {
+                return true;
+            }
+
+            if (devolucion == null)
+            {
+                TempData["error"] =
+                    $"Debe registrar la devolución de " +
+                    $"S/ {rendicion.Saldo:N2} antes de enviar.";
+
+                return false;
+            }
+
+            if (devolucion.Monto !=
+                rendicion.Saldo)
+            {
+                TempData["error"] =
+                    $"El monto devuelto debe ser exactamente " +
+                    $"S/ {rendicion.Saldo:N2}.";
+
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(
+                devolucion.Voucher))
+            {
+                TempData["error"] =
+                    "La devolución debe tener un voucher adjunto.";
+
+                return false;
+            }
+
+            return true;
+        }
+
+        // =========================================================
+        // PROCESAR REEMBOLSO
+        // =========================================================
+
+        private async Task ProcesarReembolsoAsync(
+            Rendicion rendicion)
+        {
+            if (rendicion.Saldo >= 0)
+            {
+                return;
+            }
+
+            var montoReembolso =
+                Math.Abs(
+                    rendicion.Saldo);
+
+            var reembolsoExistente =
+                await _context.Reembolsos
+                    .FirstOrDefaultAsync(r =>
+                        r.IdRendicion ==
+                        rendicion.IdRendicion);
+
+            if (reembolsoExistente == null)
+            {
+                var nuevoReembolso =
+                    new Reembolso
+                    {
+                        IdRendicion =
+                            rendicion.IdRendicion,
+
+                        IdUsuario =
+                            rendicion.IdUsuario,
+
+                        Monto =
+                            montoReembolso,
+
+                        FechaSolicitud =
+                            DateTime.Now,
+
+                        IdEstadoReembolso =
+                            ESTADO_REEMBOLSO_PENDIENTE
+                    };
+
+                _context.Reembolsos.Add(
+                    nuevoReembolso);
+
+                return;
+            }
+
+            reembolsoExistente.Monto =
+                montoReembolso;
+
+            reembolsoExistente.FechaSolicitud =
+                DateTime.Now;
+
+            reembolsoExistente.IdEstadoReembolso =
+                ESTADO_REEMBOLSO_PENDIENTE;
+
+            reembolsoExistente.FechaAprobacion =
+                null;
+
+            reembolsoExistente.FechaPago =
+                null;
+
+            reembolsoExistente.Banco =
+                null;
+
+            reembolsoExistente.NumeroOperacion =
+                null;
+
+            reembolsoExistente.ComprobantePago =
+                null;
+
+            reembolsoExistente.Observaciones =
+                null;
+        }
+
+        // =========================================================
+        // GENERAR CORREO DE LIQUIDACIÓN
+        // =========================================================
+
+        private static string GenerarCorreoLiquidacion(
+            Rendicion rendicion,
+            string nombreEmpleado,
+            decimal totalBase,
+            decimal totalIgv,
+            decimal saldo)
+        {
+            return $"""
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0">
+</head>
+
+<body style="
+margin:0;
+padding:0;
+background-color:#f2f5f8;
+font-family:Arial,Helvetica,sans-serif;
+color:#111111;">
+
+<table role="presentation"
+       width="100%"
+       cellspacing="0"
+       cellpadding="0"
+       border="0"
+       style="
+       background-color:#f2f5f8;
+       padding:35px 15px;">
+
+<tr>
+<td align="center">
+
+<table role="presentation"
+       width="700"
+       cellspacing="0"
+       cellpadding="0"
+       border="0"
+       style="
+       max-width:700px;
+       width:100%;
+       background:#ffffff;
+       border-radius:12px;
+       overflow:hidden;">
+
+<!-- ENCABEZADO -->
+
+<tr>
+<td style="
+background:#0C4A8A;
+padding:25px 35px;
+text-align:center;">
+
+<div style="
+background:#ffffff;
+display:inline-block;
+padding:10px 18px;
+border-radius:8px;
+margin-bottom:15px;">
+
+<img src="cid:logoDinacen"
+     alt="DINACEN"
+     style="
+     max-width:210px;
+     height:auto;
+     display:block;
+     margin:0 auto;">
+
+</div>
+
+<div style="
+height:2px;
+background:#6AA84F;
+width:100%;
+margin-bottom:18px;">
+</div>
+
+<div style="
+font-size:24px;
+font-weight:bold;
+color:#ffffff;">
+LIQUIDACIÓN DE VIÁTICOS
+</div>
+
+<div style="
+font-size:16px;
+color:#ffffff;
+margin-top:8px;">
+Pendiente de revisión
+</div>
+
+</td>
+</tr>
+
+<!-- CONTENIDO -->
+
+<tr>
+<td style="
+padding:35px 40px 20px 40px;">
+
+<div style="
+font-size:22px;
+font-weight:bold;
+color:#111111;
+margin-bottom:18px;">
+
+Nueva liquidación pendiente de revisión
+
+</div>
+
+<div style="
+font-size:17px;
+line-height:1.7;
+color:#222222;
+margin-bottom:25px;">
+
+El empleado
+<strong>{nombreEmpleado}</strong>
+ha enviado una liquidación de gastos
+que se encuentra pendiente de revisión.
+
+</div>
+
+<table role="presentation"
+       width="100%"
+       cellspacing="0"
+       cellpadding="0"
+       border="0"
+       style="
+       background:#f7f9fb;
+       border:1px solid #d9e2ea;
+       border-radius:8px;">
+
+<tr>
+<td colspan="2"
+    style="
+    padding:18px 20px;
+    background:#eef4f9;
+    border-bottom:1px solid #d9e2ea;">
+
+<div style="
+font-size:18px;
+font-weight:bold;
+color:#0C4A8A;">
+
+Información de la liquidación
+
+</div>
+
+</td>
+</tr>
+
+<tr>
+<td width="42%"
+    style="
+    padding:14px 20px;
+    border-bottom:1px solid #e1e7ec;
+    font-size:16px;
+    font-weight:bold;">
+
+Liquidación
+
+</td>
+
+<td style="
+padding:14px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:16px;">
+
+#{rendicion.IdRendicion}
+
+</td>
+</tr>
+
+<tr>
+<td style="
+padding:14px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:16px;
+font-weight:bold;">
+
+Empleado
+
+</td>
+
+<td style="
+padding:14px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:16px;">
+
+{nombreEmpleado}
+
+</td>
+</tr>
+
+<tr>
+<td style="
+padding:14px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:16px;
+font-weight:bold;">
+
+Destino
+
+</td>
+
+<td style="
+padding:14px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:16px;">
+
+{rendicion.Solicitud?.Destino}
+
+</td>
+</tr>
+
+<tr>
+<td style="
+padding:14px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:16px;
+font-weight:bold;">
+
+Periodo
+
+</td>
+
+<td style="
+padding:14px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:16px;">
+
+{rendicion.FechaInicio:dd/MM/yyyy}
+al
+{rendicion.FechaFin:dd/MM/yyyy}
+
+</td>
+</tr>
+
+<tr>
+<td style="
+padding:14px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:16px;
+font-weight:bold;">
+
+Monto aprobado
+
+</td>
+
+<td style="
+padding:14px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:16px;
+font-weight:bold;">
+
+S/ {rendicion.Solicitud?.Monto:N2}
+
+</td>
+</tr>
+
+<tr>
+<td style="
+padding:14px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:16px;
+font-weight:bold;">
+
+Valor de venta
+
+</td>
+
+<td style="
+padding:14px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:16px;">
+
+S/ {totalBase:N2}
+
+</td>
+</tr>
+
+<tr>
+<td style="
+padding:14px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:16px;
+font-weight:bold;">
+
+IGV
+
+</td>
+
+<td style="
+padding:14px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:16px;">
+
+S/ {totalIgv:N2}
+
+</td>
+</tr>
+
+<tr>
+<td style="
+padding:16px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:17px;
+font-weight:bold;">
+
+Total rendido
+
+</td>
+
+<td style="
+padding:16px 20px;
+border-bottom:1px solid #e1e7ec;
+font-size:19px;
+font-weight:bold;
+color:#0C4A8A;">
+
+S/ {rendicion.Total:N2}
+
+</td>
+</tr>
+
+<tr>
+<td style="
+padding:16px 20px;
+font-size:17px;
+font-weight:bold;">
+
+Saldo
+
+</td>
+
+<td style="
+padding:16px 20px;
+font-size:19px;
+font-weight:bold;
+color:#6AA84F;">
+
+S/ {saldo:N2}
+
+</td>
+</tr>
+
+</table>
+
+<div style="
+margin-top:28px;
+padding:20px;
+background:#f7f9fb;
+border-left:5px solid #0C4A8A;
+border-radius:5px;">
+
+<div style="
+font-size:16px;
+line-height:1.7;
+color:#222222;">
+
+Se adjuntan los PDF correspondientes a la
+<strong>liquidación</strong> y a los
+<strong>vouchers</strong> registrados.
+
+Ingrese al <strong>sistema de gestión de viáticos DINACEN</strong>
+para revisar los comprobantes, verificar la devolución
+y proceder con la aprobación o rechazo de la rendición.
+
+</div>
+
+</div>
+
+</td>
+</tr>
+
+<!-- PIE -->
+
+<tr>
+<td style="
+background:#0C4A8A;
+padding:25px 35px;
+text-align:center;">
+
+<div style="
+font-size:16px;
+font-weight:bold;
+color:#ffffff;">
+
+DINACEN
+
+</div>
+
+<div style="
+font-size:13px;
+color:#dce8f2;
+margin-top:7px;">
+
+Sistema de Gestión de Viáticos
+
+</div>
+
+<div style="
+font-size:12px;
+color:#c5d5e2;
+margin-top:12px;">
+
+Este mensaje ha sido generado automáticamente.
+Por favor, no responda a este correo.
+
+</div>
+
+</td>
+</tr>
+
+</table>
+</td>
+</tr>
+
+</table>
+
+</body>
+</html>
+""";
+        }
+
+        // =========================================================
+        // RESULTADO PARA ARCHIVOS
+        // =========================================================
+
+        private sealed class ResultadoArchivo
+        {
+            public bool Exito { get; set; }
+
+            public string? Mensaje { get; set; }
+
+            public string? RutaPublica { get; set; }
+
+            public string? RutaFisica { get; set; }
         }
     }
 }

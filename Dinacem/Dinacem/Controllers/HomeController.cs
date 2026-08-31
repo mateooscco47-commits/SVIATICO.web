@@ -1,4 +1,4 @@
-using System.Diagnostics;
+ï»¿using System.Diagnostics;
 using Dinacem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,10 +21,12 @@ namespace Dinacem.Controllers
         // =========================================
         // MOSTRAR LOGIN
         // =========================================
+
         [HttpGet]
         public IActionResult Index()
         {
-            // Si había sesión anterior, no la borramos aquí.
+            // Si habÃ­a una sesiÃ³n anterior,
+            // no la eliminamos aquÃ­.
             return View();
         }
 
@@ -32,6 +34,7 @@ namespace Dinacem.Controllers
         // =========================================
         // PROCESAR LOGIN
         // =========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(
@@ -56,7 +59,7 @@ namespace Dinacem.Controllers
                 {
                     success = false,
                     message =
-                        "Ingrese usuario y contraseña."
+                        "Ingrese usuario y contraseÃ±a."
                 });
             }
 
@@ -77,13 +80,13 @@ namespace Dinacem.Controllers
                 {
                     success = false,
                     message =
-                        "Usuario o contraseña incorrectos."
+                        "Usuario o contraseÃ±a incorrectos."
                 });
             }
 
 
             // =========================================
-            // VALIDAR ESTADO
+            // VALIDAR ESTADO DEL USUARIO
             // =========================================
 
             if (!user.Estado)
@@ -93,13 +96,13 @@ namespace Dinacem.Controllers
                     success = false,
                     message =
                         "El usuario se encuentra desactivado. " +
-                        "Comuníquese con el administrador."
+                        "ComunÃ­quese con el administrador."
                 });
             }
 
 
             // =========================================
-            // VALIDAR CONTRASEÑA
+            // VALIDAR CONTRASEÃ‘A
             // SIN CIFRADO
             // =========================================
 
@@ -109,7 +112,7 @@ namespace Dinacem.Controllers
                 {
                     success = false,
                     message =
-                        "Usuario o contraseña incorrectos."
+                        "Usuario o contraseÃ±a incorrectos."
                 });
             }
 
@@ -130,14 +133,55 @@ namespace Dinacem.Controllers
 
 
             // =========================================
-            // LIMPIAR SESIÓN ANTERIOR
+            // VALIDAR ESTADO DEL ROL
+            // =========================================
+
+            if (!user.Rol.Estado)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message =
+                        "El rol asignado al usuario se encuentra " +
+                        "desactivado."
+                });
+            }
+
+
+            // =========================================
+            // VALIDAR ROLES PERMITIDOS
+            // =========================================
+
+            var rolesPermitidos = new[]
+            {
+            1, // Administrador
+            2, // Supervisor
+            3, // Auditor
+            4, // Representante DINACEN
+            5  // Representante Laboratorio
+        };
+
+            if (!rolesPermitidos.Contains(user.IdRol))
+            {
+                return Json(new
+                {
+                    success = false,
+                    message =
+                        "El usuario no tiene un rol vÃ¡lido " +
+                        "para ingresar al sistema."
+                });
+            }
+
+
+            // =========================================
+            // LIMPIAR SESIÃ“N ANTERIOR
             // =========================================
 
             HttpContext.Session.Clear();
 
 
             // =========================================
-            // GUARDAR SESIÓN
+            // GUARDAR DATOS DE SESIÃ“N
             // =========================================
 
             HttpContext.Session.SetInt32(
@@ -162,29 +206,53 @@ namespace Dinacem.Controllers
 
 
             // =========================================
-            // REDIRECCIÓN SEGÚN ROL
+            // REDIRECCIÃ“N SEGÃšN ROL
             //
             // 1 = Administrador
-            // 2 = Empleado
+            // 2 = Supervisor
+            // 3 = Auditor
+            // 4 = Representante DINACEN
+            // 5 = Representante Laboratorio
+            //
+            // ADMINISTRADOR â†’ Principal
+            // TODOS LOS DEMÃS â†’ Empleado
             // =========================================
 
             string? redirectUrl =
                 user.IdRol switch
                 {
+                    // Administrador
                     1 => Url.Action(
                         "Index",
                         "Principal"),
 
+                    // Supervisor
                     2 => Url.Action(
                         "Index",
                         "Empleado"),
 
+                    // Auditor
+                    3 => Url.Action(
+                        "Index",
+                        "Empleado"),
+
+                    // Representante DINACEN
+                    4 => Url.Action(
+                        "Index",
+                        "Empleado"),
+
+                    // Representante Laboratorio
+                    5 => Url.Action(
+                        "Index",
+                        "Empleado"),
+
+                    // Rol no reconocido
                     _ => null
                 };
 
 
             // =========================================
-            // ROL NO RECONOCIDO
+            // VALIDAR REDIRECCIÃ“N
             // =========================================
 
             if (string.IsNullOrWhiteSpace(
@@ -196,7 +264,7 @@ namespace Dinacem.Controllers
                 {
                     success = false,
                     message =
-                        "El usuario no tiene un rol válido."
+                        "El usuario no tiene un rol vÃ¡lido."
                 });
             }
 
@@ -208,25 +276,29 @@ namespace Dinacem.Controllers
             return Json(new
             {
                 success = true,
+
                 nombre =
                     $"{user.Nombres} {user.Apellidos}",
+
                 rol =
                     user.Rol.Nombre,
+
                 redirectUrl
             });
         }
 
 
         // =========================================
-        // CERRAR SESIÓN
+        // CERRAR SESIÃ“N
         // =========================================
+
         [HttpGet]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
 
             TempData["mensaje"] =
-                "La sesión se cerró correctamente.";
+                "La sesiÃ³n se cerrÃ³ correctamente.";
 
             return RedirectToAction(
                 nameof(Index));
@@ -236,6 +308,7 @@ namespace Dinacem.Controllers
         // =========================================
         // PRIVACY
         // =========================================
+
         public IActionResult Privacy()
         {
             return View();
@@ -245,6 +318,7 @@ namespace Dinacem.Controllers
         // =========================================
         // ERROR
         // =========================================
+
         [ResponseCache(
             Duration = 0,
             Location = ResponseCacheLocation.None,

@@ -24,8 +24,7 @@ namespace Dinacem.Models
         [ForeignKey(nameof(IdTipoGasto))]
         public TipoGasto? TipoGasto { get; set; }
 
-        [Required]
-        public int IdTipoComprobante { get; set; }
+        public int? IdTipoComprobante { get; set; }
 
         [ForeignKey(nameof(IdTipoComprobante))]
         public TipoComprobante? TipoComprobante { get; set; }
