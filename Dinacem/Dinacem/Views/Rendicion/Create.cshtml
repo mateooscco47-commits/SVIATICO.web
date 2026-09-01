@@ -374,22 +374,7 @@
         </a>
     </div>
 
-    @if (TempData["error"] != null)
-    {
-        <div class="mensaje mensaje-error alert alert-dismissible fade show">
-            <i class="bi bi-exclamation-circle-fill"></i>
-
-            <span>
-                @Html.Raw(TempData["error"])
-            </span>
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Cerrar">
-            </button>
-        </div>
-    }
+ 
 
     <div class="rendicion-card">
 

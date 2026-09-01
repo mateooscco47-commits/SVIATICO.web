@@ -125,23 +125,7 @@
         </a>
     </div>
 
-    @if (TempData["mensaje"] != null)
-    {
-        <div class="mensaje mensaje-exito alert alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle-fill"></i>
-            <span>@TempData["mensaje"]</span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-        </div>
-    }
-
-    @if (TempData["error"] != null)
-    {
-        <div class="mensaje mensaje-error alert alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-circle-fill"></i>
-            <span>@Html.Raw(TempData["error"])</span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-        </div>
-    }
+   
 
     <div class="panel">
 

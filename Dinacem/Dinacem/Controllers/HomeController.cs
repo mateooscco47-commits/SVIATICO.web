@@ -295,15 +295,16 @@ namespace Dinacem.Controllers
         [HttpGet]
         public IActionResult Logout()
         {
+            // Limpiar todos los datos de la sesión
             HttpContext.Session.Clear();
 
-            TempData["mensaje"] =
+            // Mensaje que será enviado únicamente al Login
+            TempData["LogoutSuccess"] =
                 "La sesión se cerró correctamente.";
 
-            return RedirectToAction(
-                nameof(Index));
+            // Redirigir al Login
+            return RedirectToAction(nameof(Index));
         }
-
 
         // =========================================
         // PRIVACY

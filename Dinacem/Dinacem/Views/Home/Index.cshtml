@@ -23,20 +23,46 @@
     <div class="login-container">
         <div class="login-card">
 
+            @* =========================================
+               MENSAJE DE CIERRE DE SESIÓN
+               ========================================= *@
+            @if (TempData["LogoutSuccess"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show mb-4"
+                     role="alert">
+
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    @TempData["LogoutSuccess"]
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Cerrar">
+                    </button>
+                </div>
+            }
+
             <div class="text-center mb-4">
                 <img src="~/images/logo-dinacen.png" class="logo" alt="DINACEN" />
                 <h1 class="titulo mt-3">SISTEMA DE VIÁTICOS</h1>
             </div>
 
-            <form asp-controller="Home" asp-action="Login" method="post" autocomplete="off" id="loginForm">
+            <form asp-controller="Home"
+                  asp-action="Login"
+                  method="post"
+                  autocomplete="off"
+                  id="loginForm">
+
                 @Html.AntiForgeryToken()
 
                 <div class="mb-3">
                     <label class="form-label">Usuario:</label>
+
                     <div class="input-group custom-input-group">
                         <span class="input-group-text">
                             <i class="bi bi-person"></i>
                         </span>
+
                         <input type="text"
                                class="form-control"
                                id="usuarioInput"
@@ -48,63 +74,116 @@
 
                 <div class="mb-4">
                     <label class="form-label">Contraseña:</label>
+
                     <div class="input-group custom-input-group">
                         <span class="input-group-text">
                             <i class="bi bi-lock-fill"></i>
                         </span>
+
                         <input type="password"
                                class="form-control"
                                id="passwordInput"
                                name="password"
                                autocomplete="current-password"
                                required />
-                        <button class="btn btn-toggle-password" type="button" id="btnTogglePassword" tabindex="-1">
+
+                        <button class="btn btn-toggle-password"
+                                type="button"
+                                id="btnTogglePassword"
+                                tabindex="-1">
+
                             <i class="bi bi-eye-fill"></i>
+
                         </button>
                     </div>
                 </div>
 
-                <button type="submit" id="btnSubmit" class="btn btn-login w-100">
+                <button type="submit"
+                        id="btnSubmit"
+                        class="btn btn-login w-100">
+
                     Ingresar
+
                 </button>
             </form>
 
-            <div class="text-center mt-4 card-footer-text" style="font-size: 0.75rem;">
-    <i class="bi bi-shield-lock-fill"></i> Acceso exclusivo para el personal de DINACEN S.A.C.
-</div>
+            <div class="text-center mt-4 card-footer-text"
+                 style="font-size: 0.75rem;">
+
+                <i class="bi bi-shield-lock-fill"></i>
+                Acceso exclusivo para el personal de DINACEN S.A.C.
+
+            </div>
 
         </div>
     </div>
 
     <!-- MODAL DE ERROR -->
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade"
+         id="errorModal"
+         tabindex="-1"
+         aria-hidden="true">
+
         <div class="modal-dialog modal-dialog-centered">
+
             <div class="modal-content text-center p-4">
+
                 <div class="modal-body">
+
                     <div class="icon-circle-error mb-3 mx-auto text-danger fs-1">
                         <i class="bi bi-exclamation-triangle-fill"></i>
                     </div>
-                    <h3 class="modal-welcome-title text-danger">Error de Acceso</h3>
-                    <p class="modal-welcome-text" id="errorModalText"></p>
-                    <button type="button" class="btn btn-danger mt-3 px-4" data-bs-dismiss="modal">Entendido</button>
+
+                    <h3 class="modal-welcome-title text-danger">
+                        Error de Acceso
+                    </h3>
+
+                    <p class="modal-welcome-text"
+                       id="errorModalText">
+                    </p>
+
+                    <button type="button"
+                            class="btn btn-danger mt-3 px-4"
+                            data-bs-dismiss="modal">
+
+                        Entendido
+
+                    </button>
+
                 </div>
             </div>
         </div>
     </div>
 
     <!-- MODAL DE BIENVENIDO -->
-    <div class="modal fade" id="welcomeModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal fade"
+         id="welcomeModal"
+         tabindex="-1"
+         aria-hidden="true"
+         data-bs-backdrop="static">
+
         <div class="modal-dialog modal-dialog-centered">
+
             <div class="modal-content text-center p-4">
+
                 <div class="modal-body">
+
                     <div class="icon-circle mb-3 mx-auto text-success fs-1">
                         <i class="bi bi-check-circle-fill"></i>
                     </div>
-                    <h3 class="modal-welcome-title">Bienvenido</h3>
-                    <p class="modal-welcome-text" id="welcomeUserText"></p>
-                    <div class="spinner-border text-primary mt-2" role="status">
-                        
+
+                    <h3 class="modal-welcome-title">
+                        Bienvenido
+                    </h3>
+
+                    <p class="modal-welcome-text"
+                       id="welcomeUserText">
+                    </p>
+
+                    <div class="spinner-border text-primary mt-2"
+                         role="status">
                     </div>
+
                 </div>
             </div>
         </div>

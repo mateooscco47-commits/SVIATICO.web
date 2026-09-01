@@ -197,40 +197,6 @@
     </div>
 
 
-    @if (TempData["mensaje"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show">
-
-            <i class="bi bi-check-circle me-1"></i>
-
-            @TempData["mensaje"]
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert">
-            </button>
-
-        </div>
-    }
-
-
-    @if (TempData["error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show">
-
-            <i class="bi bi-exclamation-circle me-1"></i>
-
-            @TempData["error"]
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert">
-            </button>
-
-        </div>
-    }
-
-
     <div class="config-card">
 
         <div class="config-card-header">
@@ -324,7 +290,7 @@
                 el sistema calculará:
 
                 <strong>
-                    S/ @(120m * Model.TarifaKilometro)
+                    S/ @((120m * Model.TarifaKilometro).ToString("N2"))
                 </strong>.
 
             </div>
