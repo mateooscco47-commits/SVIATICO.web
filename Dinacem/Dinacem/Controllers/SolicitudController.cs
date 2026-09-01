@@ -178,11 +178,15 @@ namespace Dinacem.Controllers
             var correosAdministradores =
                 await _context.Usuarios
                     .AsNoTracking()
+                    .Include(u => u.Rol)
                     .Where(u =>
-                        u.IdRol == 1 &&
+                        u.Rol != null &&
+                        u.Rol.Nombre == "Administrador" &&
                         u.Estado &&
+                        u.IdUsuario != solicitud.IdUsuario &&
                         !string.IsNullOrWhiteSpace(u.Correo))
-                    .Select(u => u.Correo!)
+                    .Select(u => u.Correo!.Trim())
+                    .Distinct()
                     .ToListAsync();
 
 

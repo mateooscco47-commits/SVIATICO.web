@@ -905,6 +905,88 @@
       ]
     },
     {
+      "Route": "comprobantes/aba7fe20-b095-4fd5-9e4d-81f5ff6fa27a.fdscqr1o4z.png",
+      "AssetFile": "comprobantes/aba7fe20-b095-4fd5-9e4d-81f5ff6fa27a.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1148226"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"XS8IpWffZ0HcUK+3lO3knl4suJDDgLtN263g0Zv8dhY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 29 Aug 2026 07:06:23 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "fdscqr1o4z"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-XS8IpWffZ0HcUK+3lO3knl4suJDDgLtN263g0Zv8dhY="
+        },
+        {
+          "Name": "label",
+          "Value": "comprobantes/aba7fe20-b095-4fd5-9e4d-81f5ff6fa27a.png"
+        }
+      ]
+    },
+    {
+      "Route": "comprobantes/aba7fe20-b095-4fd5-9e4d-81f5ff6fa27a.png",
+      "AssetFile": "comprobantes/aba7fe20-b095-4fd5-9e4d-81f5ff6fa27a.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1148226"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"XS8IpWffZ0HcUK+3lO3knl4suJDDgLtN263g0Zv8dhY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 29 Aug 2026 07:06:23 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-XS8IpWffZ0HcUK+3lO3knl4suJDDgLtN263g0Zv8dhY="
+        }
+      ]
+    },
+    {
       "Route": "comprobantes/c1872443-c8dc-4b72-8cf1-3104741560b8.h526emb886.pdf",
       "AssetFile": "comprobantes/c1872443-c8dc-4b72-8cf1-3104741560b8.pdf",
       "Selectors": [],
@@ -987,6 +1069,88 @@
       ]
     },
     {
+      "Route": "comprobantes/c1d6a795-3aad-4e9c-bf8a-efeed4f3e8bc.png",
+      "AssetFile": "comprobantes/c1d6a795-3aad-4e9c-bf8a-efeed4f3e8bc.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "43303"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"e71dvUrWvA49HzldPs2xIjkweeHOaUwdUcqANu3GQtY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Sep 2026 05:48:05 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-e71dvUrWvA49HzldPs2xIjkweeHOaUwdUcqANu3GQtY="
+        }
+      ]
+    },
+    {
+      "Route": "comprobantes/c1d6a795-3aad-4e9c-bf8a-efeed4f3e8bc.zar113bx78.png",
+      "AssetFile": "comprobantes/c1d6a795-3aad-4e9c-bf8a-efeed4f3e8bc.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "43303"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"e71dvUrWvA49HzldPs2xIjkweeHOaUwdUcqANu3GQtY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Sep 2026 05:48:05 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "zar113bx78"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-e71dvUrWvA49HzldPs2xIjkweeHOaUwdUcqANu3GQtY="
+        },
+        {
+          "Name": "label",
+          "Value": "comprobantes/c1d6a795-3aad-4e9c-bf8a-efeed4f3e8bc.png"
+        }
+      ]
+    },
+    {
       "Route": "comprobantes/c43e824d-54fa-45e2-b71b-786d89515015.fdscqr1o4z.png",
       "AssetFile": "comprobantes/c43e824d-54fa-45e2-b71b-786d89515015.png",
       "Selectors": [],
@@ -1065,6 +1229,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-XS8IpWffZ0HcUK+3lO3knl4suJDDgLtN263g0Zv8dhY="
+        }
+      ]
+    },
+    {
+      "Route": "comprobantes/c7d11dce-5dfe-45b7-bf0b-686933900617.png",
+      "AssetFile": "comprobantes/c7d11dce-5dfe-45b7-bf0b-686933900617.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "43303"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"e71dvUrWvA49HzldPs2xIjkweeHOaUwdUcqANu3GQtY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Sep 2026 05:48:05 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-e71dvUrWvA49HzldPs2xIjkweeHOaUwdUcqANu3GQtY="
+        }
+      ]
+    },
+    {
+      "Route": "comprobantes/c7d11dce-5dfe-45b7-bf0b-686933900617.zar113bx78.png",
+      "AssetFile": "comprobantes/c7d11dce-5dfe-45b7-bf0b-686933900617.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "43303"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"e71dvUrWvA49HzldPs2xIjkweeHOaUwdUcqANu3GQtY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Sep 2026 05:48:05 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "zar113bx78"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-e71dvUrWvA49HzldPs2xIjkweeHOaUwdUcqANu3GQtY="
+        },
+        {
+          "Name": "label",
+          "Value": "comprobantes/c7d11dce-5dfe-45b7-bf0b-686933900617.png"
         }
       ]
     },
@@ -7711,6 +7957,88 @@
       ]
     },
     {
+      "Route": "liquidaciones/Liquidacion-4-lucas-altamizaa.6wm60pjmhu.pdf",
+      "AssetFile": "liquidaciones/Liquidacion-4-lucas-altamizaa.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1507506"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Zm1fDf70PXBCfWCZrA772D1PQEVuInrLUKH00wy9naY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 29 Aug 2026 07:06:49 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "6wm60pjmhu"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Zm1fDf70PXBCfWCZrA772D1PQEVuInrLUKH00wy9naY="
+        },
+        {
+          "Name": "label",
+          "Value": "liquidaciones/Liquidacion-4-lucas-altamizaa.pdf"
+        }
+      ]
+    },
+    {
+      "Route": "liquidaciones/Liquidacion-4-lucas-altamizaa.pdf",
+      "AssetFile": "liquidaciones/Liquidacion-4-lucas-altamizaa.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1507506"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Zm1fDf70PXBCfWCZrA772D1PQEVuInrLUKH00wy9naY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sat, 29 Aug 2026 07:06:49 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Zm1fDf70PXBCfWCZrA772D1PQEVuInrLUKH00wy9naY="
+        }
+      ]
+    },
+    {
       "Route": "liquidaciones/Liquidacion-5-Lucía-Castillo-Rojas.18nbmcfcps.pdf",
       "AssetFile": "liquidaciones/Liquidacion-5-Lucía-Castillo-Rojas.pdf",
       "Selectors": [],
@@ -7789,6 +8117,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-UcAxXKD2JeVMWqAR5ha3RrkPGSkLpEoISeIJUgwccm4="
+        }
+      ]
+    },
+    {
+      "Route": "liquidaciones/Liquidacion-6-Hedin-Torres-Lazaro.9bjlerkys3.pdf",
+      "AssetFile": "liquidaciones/Liquidacion-6-Hedin-Torres-Lazaro.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "111917"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"BS9/dUI4b2FzcWc4Y2reWIP/Nl1OlEBa6LOfyGOXshY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Sep 2026 05:48:05 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "9bjlerkys3"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-BS9/dUI4b2FzcWc4Y2reWIP/Nl1OlEBa6LOfyGOXshY="
+        },
+        {
+          "Name": "label",
+          "Value": "liquidaciones/Liquidacion-6-Hedin-Torres-Lazaro.pdf"
+        }
+      ]
+    },
+    {
+      "Route": "liquidaciones/Liquidacion-6-Hedin-Torres-Lazaro.pdf",
+      "AssetFile": "liquidaciones/Liquidacion-6-Hedin-Torres-Lazaro.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "111917"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"BS9/dUI4b2FzcWc4Y2reWIP/Nl1OlEBa6LOfyGOXshY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Sep 2026 05:48:05 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-BS9/dUI4b2FzcWc4Y2reWIP/Nl1OlEBa6LOfyGOXshY="
         }
       ]
     },
@@ -8035,6 +8445,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-c28ahukMgd8WGHg1Awi4RrZfvmfxNs2lDS8LpWGhtz4="
+        }
+      ]
+    },
+    {
+      "Route": "liquidaciones/Vouchers-6-Hedin-Torres-Lazaro.pdf",
+      "AssetFile": "liquidaciones/Vouchers-6-Hedin-Torres-Lazaro.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "442095"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"FQ4p2w0aK1Cb7DrO3VVdFC/OSXm5Bwih6PJf4+UbIlA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Sep 2026 05:48:05 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-FQ4p2w0aK1Cb7DrO3VVdFC/OSXm5Bwih6PJf4+UbIlA="
+        }
+      ]
+    },
+    {
+      "Route": "liquidaciones/Vouchers-6-Hedin-Torres-Lazaro.vr4zzvxosc.pdf",
+      "AssetFile": "liquidaciones/Vouchers-6-Hedin-Torres-Lazaro.pdf",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "442095"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "application/pdf"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"FQ4p2w0aK1Cb7DrO3VVdFC/OSXm5Bwih6PJf4+UbIlA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Sep 2026 05:48:05 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vr4zzvxosc"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-FQ4p2w0aK1Cb7DrO3VVdFC/OSXm5Bwih6PJf4+UbIlA="
+        },
+        {
+          "Name": "label",
+          "Value": "liquidaciones/Vouchers-6-Hedin-Torres-Lazaro.pdf"
         }
       ]
     },
@@ -8367,6 +8859,88 @@
       ]
     },
     {
+      "Route": "uploads/comprobantes/Comprobante_8_b4ff2230-e86e-46c5-8106-d52a51d75163.png",
+      "AssetFile": "uploads/comprobantes/Comprobante_8_b4ff2230-e86e-46c5-8106-d52a51d75163.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "43303"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"e71dvUrWvA49HzldPs2xIjkweeHOaUwdUcqANu3GQtY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Sep 2026 05:48:05 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-e71dvUrWvA49HzldPs2xIjkweeHOaUwdUcqANu3GQtY="
+        }
+      ]
+    },
+    {
+      "Route": "uploads/comprobantes/Comprobante_8_b4ff2230-e86e-46c5-8106-d52a51d75163.zar113bx78.png",
+      "AssetFile": "uploads/comprobantes/Comprobante_8_b4ff2230-e86e-46c5-8106-d52a51d75163.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "43303"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"e71dvUrWvA49HzldPs2xIjkweeHOaUwdUcqANu3GQtY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Sep 2026 05:48:05 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "zar113bx78"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-e71dvUrWvA49HzldPs2xIjkweeHOaUwdUcqANu3GQtY="
+        },
+        {
+          "Name": "label",
+          "Value": "uploads/comprobantes/Comprobante_8_b4ff2230-e86e-46c5-8106-d52a51d75163.png"
+        }
+      ]
+    },
+    {
       "Route": "vouchers-devolucion/03932076-d975-403f-b4c2-920c6527daad.jpeg",
       "AssetFile": "vouchers-devolucion/03932076-d975-403f-b4c2-920c6527daad.jpeg",
       "Selectors": [],
@@ -8527,6 +9101,88 @@
         {
           "Name": "label",
           "Value": "vouchers-devolucion/06be49fc-18fd-4678-bf55-35bc7263afc0.png"
+        }
+      ]
+    },
+    {
+      "Route": "vouchers-devolucion/0af52450-d8bf-49ee-985b-f76f912aa22e.png",
+      "AssetFile": "vouchers-devolucion/0af52450-d8bf-49ee-985b-f76f912aa22e.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2467124"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"g7whl2AOk+dJFo7xddaFFrdWKkqdfJ3HibmM2/vNj1I=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Sep 2026 05:48:05 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-g7whl2AOk+dJFo7xddaFFrdWKkqdfJ3HibmM2/vNj1I="
+        }
+      ]
+    },
+    {
+      "Route": "vouchers-devolucion/0af52450-d8bf-49ee-985b-f76f912aa22e.z4xf7cdizf.png",
+      "AssetFile": "vouchers-devolucion/0af52450-d8bf-49ee-985b-f76f912aa22e.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2467124"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"g7whl2AOk+dJFo7xddaFFrdWKkqdfJ3HibmM2/vNj1I=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 01 Sep 2026 05:48:05 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "z4xf7cdizf"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-g7whl2AOk+dJFo7xddaFFrdWKkqdfJ3HibmM2/vNj1I="
+        },
+        {
+          "Name": "label",
+          "Value": "vouchers-devolucion/0af52450-d8bf-49ee-985b-f76f912aa22e.png"
         }
       ]
     },

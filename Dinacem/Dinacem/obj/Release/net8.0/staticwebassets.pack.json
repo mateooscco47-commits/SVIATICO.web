@@ -45,12 +45,24 @@
       "PackagePath": "staticwebassets\\comprobantes\\85e15cd6-0754-441c-8446-5ad25eff7ace.pdf"
     },
     {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\aba7fe20-b095-4fd5-9e4d-81f5ff6fa27a.png",
+      "PackagePath": "staticwebassets\\comprobantes\\aba7fe20-b095-4fd5-9e4d-81f5ff6fa27a.png"
+    },
+    {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\c1872443-c8dc-4b72-8cf1-3104741560b8.pdf",
       "PackagePath": "staticwebassets\\comprobantes\\c1872443-c8dc-4b72-8cf1-3104741560b8.pdf"
     },
     {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\c1d6a795-3aad-4e9c-bf8a-efeed4f3e8bc.png",
+      "PackagePath": "staticwebassets\\comprobantes\\c1d6a795-3aad-4e9c-bf8a-efeed4f3e8bc.png"
+    },
+    {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\c43e824d-54fa-45e2-b71b-786d89515015.png",
       "PackagePath": "staticwebassets\\comprobantes\\c43e824d-54fa-45e2-b71b-786d89515015.png"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\c7d11dce-5dfe-45b7-bf0b-686933900617.png",
+      "PackagePath": "staticwebassets\\comprobantes\\c7d11dce-5dfe-45b7-bf0b-686933900617.png"
     },
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Admin.css",
@@ -377,8 +389,16 @@
       "PackagePath": "staticwebassets\\liquidaciones\\Liquidacion-4-Leonel-Gonzales.pdf"
     },
     {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-4-lucas-altamizaa.pdf",
+      "PackagePath": "staticwebassets\\liquidaciones\\Liquidacion-4-lucas-altamizaa.pdf"
+    },
+    {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-5-Lucía-Castillo-Rojas.pdf",
       "PackagePath": "staticwebassets\\liquidaciones\\Liquidacion-5-Lucía-Castillo-Rojas.pdf"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-6-Hedin-Torres-Lazaro.pdf",
+      "PackagePath": "staticwebassets\\liquidaciones\\Liquidacion-6-Hedin-Torres-Lazaro.pdf"
     },
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-6-José-Huamán-Pérez.pdf",
@@ -391,6 +411,10 @@
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-8-Carlos-Rios.pdf",
       "PackagePath": "staticwebassets\\liquidaciones\\Liquidacion-8-Carlos-Rios.pdf"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Vouchers-6-Hedin-Torres-Lazaro.pdf",
+      "PackagePath": "staticwebassets\\liquidaciones\\Vouchers-6-Hedin-Torres-Lazaro.pdf"
     },
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\reembolsos\\72e6d48d-28bd-4383-9186-0a98c77f8c92.png",
@@ -409,12 +433,20 @@
       "PackagePath": "staticwebassets\\uploads\\comprobantes\\Comprobante_5_1bbaf80b-42ee-47f4-bed8-4a4adfa01753.png"
     },
     {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\uploads\\comprobantes\\Comprobante_8_b4ff2230-e86e-46c5-8106-d52a51d75163.png",
+      "PackagePath": "staticwebassets\\uploads\\comprobantes\\Comprobante_8_b4ff2230-e86e-46c5-8106-d52a51d75163.png"
+    },
+    {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\vouchers-devolucion\\03932076-d975-403f-b4c2-920c6527daad.jpeg",
       "PackagePath": "staticwebassets\\vouchers-devolucion\\03932076-d975-403f-b4c2-920c6527daad.jpeg"
     },
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\vouchers-devolucion\\06be49fc-18fd-4678-bf55-35bc7263afc0.png",
       "PackagePath": "staticwebassets\\vouchers-devolucion\\06be49fc-18fd-4678-bf55-35bc7263afc0.png"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\vouchers-devolucion\\0af52450-d8bf-49ee-985b-f76f912aa22e.png",
+      "PackagePath": "staticwebassets\\vouchers-devolucion\\0af52450-d8bf-49ee-985b-f76f912aa22e.png"
     },
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\vouchers-devolucion\\1206653c-988c-4dfa-9b7b-27a747d09978.pdf",
