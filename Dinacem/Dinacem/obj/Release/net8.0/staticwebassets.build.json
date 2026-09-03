@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "SrmMWthg8veuJWYpoli3FO8rOsEOuzg4FWhxj0pkFNI=",
+  "Hash": "6g3fbDXEH3K0GDEMs2WWmuiaQqzaZsNq6y5K8zl+NtI=",
   "Source": "Dinacen",
   "BasePath": "_content/Dinacen",
   "Mode": "Default",
@@ -31,8 +31,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "ScopedCss",
       "AssetTraitValue": "ApplicationBundle",
-      "Fingerprint": "v98q9b8s45",
-      "Integrity": "nR5StL5h/U6Xq5XZmy2diKmqFsziushucPdjGggc43Y=",
+      "Fingerprint": "bis87ulh52",
+      "Integrity": "U3F0IWOgRKVuobUAW7u1BBGOv1DNF5jivctQo6NvaNs=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\obj\\Release\\net8.0\\scopedcss\\bundle\\Dinacen.styles.css"
@@ -52,8 +52,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "ScopedCss",
       "AssetTraitValue": "ProjectBundle",
-      "Fingerprint": "v98q9b8s45",
-      "Integrity": "nR5StL5h/U6Xq5XZmy2diKmqFsziushucPdjGggc43Y=",
+      "Fingerprint": "bis87ulh52",
+      "Integrity": "U3F0IWOgRKVuobUAW7u1BBGOv1DNF5jivctQo6NvaNs=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\obj\\Release\\net8.0\\scopedcss\\projectbundle\\Dinacen.bundle.scp.css"
@@ -4282,6 +4282,96 @@
       ]
     },
     {
+      "Route": "Dinacen.bis87ulh52.bundle.scp.css",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\obj\\Release\\net8.0\\scopedcss\\projectbundle\\Dinacen.bundle.scp.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1125"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"U3F0IWOgRKVuobUAW7u1BBGOv1DNF5jivctQo6NvaNs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 03 Sep 2026 07:09:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bis87ulh52"
+        },
+        {
+          "Name": "label",
+          "Value": "Dinacen.bundle.scp.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-U3F0IWOgRKVuobUAW7u1BBGOv1DNF5jivctQo6NvaNs="
+        }
+      ]
+    },
+    {
+      "Route": "Dinacen.bis87ulh52.styles.css",
+      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\obj\\Release\\net8.0\\scopedcss\\bundle\\Dinacen.styles.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1125"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"U3F0IWOgRKVuobUAW7u1BBGOv1DNF5jivctQo6NvaNs=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 03 Sep 2026 07:09:15 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bis87ulh52"
+        },
+        {
+          "Name": "label",
+          "Value": "Dinacen.styles.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-U3F0IWOgRKVuobUAW7u1BBGOv1DNF5jivctQo6NvaNs="
+        }
+      ]
+    },
+    {
       "Route": "Dinacen.bundle.scp.css",
       "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\obj\\Release\\net8.0\\scopedcss\\projectbundle\\Dinacen.bundle.scp.css",
       "Selectors": [],
@@ -4300,11 +4390,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"nR5StL5h/U6Xq5XZmy2diKmqFsziushucPdjGggc43Y=\""
+          "Value": "\"U3F0IWOgRKVuobUAW7u1BBGOv1DNF5jivctQo6NvaNs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 10 Jul 2026 08:28:50 GMT"
+          "Value": "Thu, 03 Sep 2026 07:09:15 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4314,7 +4404,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-nR5StL5h/U6Xq5XZmy2diKmqFsziushucPdjGggc43Y="
+          "Value": "sha256-U3F0IWOgRKVuobUAW7u1BBGOv1DNF5jivctQo6NvaNs="
         }
       ]
     },
@@ -4337,11 +4427,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"nR5StL5h/U6Xq5XZmy2diKmqFsziushucPdjGggc43Y=\""
+          "Value": "\"U3F0IWOgRKVuobUAW7u1BBGOv1DNF5jivctQo6NvaNs=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Fri, 10 Jul 2026 08:28:50 GMT"
+          "Value": "Thu, 03 Sep 2026 07:09:15 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -4351,97 +4441,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-nR5StL5h/U6Xq5XZmy2diKmqFsziushucPdjGggc43Y="
-        }
-      ]
-    },
-    {
-      "Route": "Dinacen.v98q9b8s45.bundle.scp.css",
-      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\obj\\Release\\net8.0\\scopedcss\\projectbundle\\Dinacen.bundle.scp.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1125"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"nR5StL5h/U6Xq5XZmy2diKmqFsziushucPdjGggc43Y=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 10 Jul 2026 08:28:50 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "v98q9b8s45"
-        },
-        {
-          "Name": "label",
-          "Value": "Dinacen.bundle.scp.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-nR5StL5h/U6Xq5XZmy2diKmqFsziushucPdjGggc43Y="
-        }
-      ]
-    },
-    {
-      "Route": "Dinacen.v98q9b8s45.styles.css",
-      "AssetFile": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\obj\\Release\\net8.0\\scopedcss\\bundle\\Dinacen.styles.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "1125"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"nR5StL5h/U6Xq5XZmy2diKmqFsziushucPdjGggc43Y=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Fri, 10 Jul 2026 08:28:50 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "v98q9b8s45"
-        },
-        {
-          "Name": "label",
-          "Value": "Dinacen.styles.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-nR5StL5h/U6Xq5XZmy2diKmqFsziushucPdjGggc43Y="
+          "Value": "sha256-U3F0IWOgRKVuobUAW7u1BBGOv1DNF5jivctQo6NvaNs="
         }
       ]
     },

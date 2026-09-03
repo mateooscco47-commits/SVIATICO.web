@@ -56,6 +56,13 @@ namespace Dinacem.Controllers
             ViewBag.Zonas = zonas;
             ViewBag.Roles = roles;
 
+            // -----------------------------------------------------
+            // MOSTRAR EL SIGUIENTE USUARIO DE ACCESO
+            // -----------------------------------------------------
+
+            ViewBag.SiguienteUsuarioAcceso =
+                await GenerarSiguienteUsuarioAccesoAsync();
+
             return View(usuarios);
         }
 
@@ -72,7 +79,6 @@ namespace Dinacem.Controllers
             // LIMPIAR DATOS
             // -----------------------------------------------------
 
-            usuario.UsuarioAcceso = usuario.UsuarioAcceso?.Trim();
             usuario.Nombres = usuario.Nombres?.Trim();
             usuario.Apellidos = usuario.Apellidos?.Trim();
             usuario.Correo = usuario.Correo?.Trim();
@@ -129,16 +135,9 @@ namespace Dinacem.Controllers
             }
 
             // -----------------------------------------------------
-            // VALIDAR USUARIO DE ACCESO
+            // USUARIO DE ACCESO AUTOMÁTICO
             // -----------------------------------------------------
-
-            if (string.IsNullOrWhiteSpace(usuario.UsuarioAcceso))
-            {
-                TempData["UsuarioError"] =
-                    "Debe ingresar el usuario de acceso.";
-
-                return RedirectToAction(nameof(Index));
-            }
+            // Se generará más abajo con formato p001, p002, p003...
 
             // -----------------------------------------------------
             // VALIDAR NOMBRES
@@ -203,21 +202,11 @@ namespace Dinacem.Controllers
             }
 
             // -----------------------------------------------------
-            // VALIDAR USUARIO ÚNICO
+            // GENERAR USUARIO DE ACCESO AUTOMÁTICAMENTE
             // -----------------------------------------------------
 
-            var usuarioAccesoExiste = await _context.Usuarios
-                .AnyAsync(u =>
-                    u.UsuarioAcceso.ToLower() ==
-                    usuario.UsuarioAcceso.ToLower());
-
-            if (usuarioAccesoExiste)
-            {
-                TempData["UsuarioError"] =
-                    "El usuario de acceso ya está registrado.";
-
-                return RedirectToAction(nameof(Index));
-            }
+            usuario.UsuarioAcceso =
+                await GenerarSiguienteUsuarioAccesoAsync();
 
             // -----------------------------------------------------
             // VALIDAR CORREO ÚNICO
@@ -251,7 +240,7 @@ namespace Dinacem.Controllers
             await _context.SaveChangesAsync();
 
             TempData["UsuarioMensaje"] =
-                "Usuario registrado correctamente.";
+                $"Usuario registrado correctamente. Usuario de acceso: {usuario.UsuarioAcceso}";
 
             return RedirectToAction(nameof(Index));
         }
@@ -492,6 +481,60 @@ namespace Dinacem.Controllers
                 "Usuario actualizado correctamente.";
 
             return RedirectToAction(nameof(Index));
+        }
+
+
+        // =========================================================
+        // GENERAR SIGUIENTE USUARIO DE ACCESO
+        // =========================================================
+
+        private async Task<string> GenerarSiguienteUsuarioAccesoAsync()
+        {
+            var usuariosAcceso = await _context.Usuarios
+                .AsNoTracking()
+                .Where(u =>
+                    u.UsuarioAcceso != null &&
+                    u.UsuarioAcceso.StartsWith("p"))
+                .Select(u => u.UsuarioAcceso)
+                .ToListAsync();
+
+            int ultimoNumero = 0;
+
+            foreach (var usuarioAcceso in usuariosAcceso)
+            {
+                if (string.IsNullOrWhiteSpace(usuarioAcceso))
+                {
+                    continue;
+                }
+
+                string valor = usuarioAcceso.Trim();
+
+                if (valor.Length < 2)
+                {
+                    continue;
+                }
+
+                string parteNumerica = valor.Substring(1);
+
+                if (int.TryParse(parteNumerica, out int numero) &&
+                    numero > ultimoNumero)
+                {
+                    ultimoNumero = numero;
+                }
+            }
+
+            int siguienteNumero = ultimoNumero + 1;
+            string siguienteUsuario = $"p{siguienteNumero:D3}";
+
+            while (await _context.Usuarios
+                .AnyAsync(u =>
+                    u.UsuarioAcceso == siguienteUsuario))
+            {
+                siguienteNumero++;
+                siguienteUsuario = $"p{siguienteNumero:D3}";
+            }
+
+            return siguienteUsuario;
         }
 
 
