@@ -7,20 +7,26 @@ wwwroot\comprobantes\7a94e963-4f5d-45c3-932b-d1c8e0cd8837.pdf
 wwwroot\comprobantes\847eefdb-5ceb-4efd-a72e-86b6c2e705d0.png
 wwwroot\comprobantes\84e7cb3c-6010-454e-9b14-a23c6b0646cc.png
 wwwroot\comprobantes\85e15cd6-0754-441c-8446-5ad25eff7ace.pdf
+wwwroot\comprobantes\a4805190-1cfd-4c79-8c61-70957e26ca46.png
 wwwroot\comprobantes\aba7fe20-b095-4fd5-9e4d-81f5ff6fa27a.png
 wwwroot\comprobantes\c1872443-c8dc-4b72-8cf1-3104741560b8.pdf
 wwwroot\comprobantes\c1d6a795-3aad-4e9c-bf8a-efeed4f3e8bc.png
 wwwroot\comprobantes\c43e824d-54fa-45e2-b71b-786d89515015.png
 wwwroot\comprobantes\c7d11dce-5dfe-45b7-bf0b-686933900617.png
+wwwroot\comprobantes\def23031-6b90-4e7b-8586-7d929c3356df.png
+wwwroot\comprobantes\f7e73018-40d9-48dc-b45c-b11f3107aa75.png
 wwwroot\css\Admin.css
+wwwroot\css\BitacoraVehiculo.css
 wwwroot\css\dashboard-admin.css
 wwwroot\css\dashboard-empleado.css
+wwwroot\css\IndexGasto.css
 wwwroot\css\IndexSolicitud.css
 wwwroot\css\IndexUsuario.css
 wwwroot\css\Login.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
 wwwroot\Images\logo-dinacen.png
+wwwroot\js\IndexGasto.js
 wwwroot\js\IndexLiquidacion.js
 wwwroot\js\IndexPrincipal.js
 wwwroot\js\IndexSolicitud.js
@@ -84,6 +90,7 @@ wwwroot\lib\jquery\dist\jquery.js
 wwwroot\lib\jquery\dist\jquery.min.js
 wwwroot\lib\jquery\dist\jquery.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\liquidaciones\Comprobantes-5-Leonel-Lopez-Aliaga.pdf
 wwwroot\liquidaciones\Liquidacion-1-lucas-altamiza.pdf
 wwwroot\liquidaciones\Liquidacion-2-angel-asd.pdf
 wwwroot\liquidaciones\Liquidacion-2-Juan-Perez-Garcia.pdf
@@ -95,6 +102,7 @@ wwwroot\liquidaciones\Liquidacion-3-Summer-Zambrano.pdf
 wwwroot\liquidaciones\Liquidacion-4-José-Huamán-Pérez.pdf
 wwwroot\liquidaciones\Liquidacion-4-Leonel-Gonzales.pdf
 wwwroot\liquidaciones\Liquidacion-4-lucas-altamizaa.pdf
+wwwroot\liquidaciones\Liquidacion-5-Leonel-Lopez-Aliaga.pdf
 wwwroot\liquidaciones\Liquidacion-5-Lucía-Castillo-Rojas.pdf
 wwwroot\liquidaciones\Liquidacion-6-Hedin-Torres-Lazaro.pdf
 wwwroot\liquidaciones\Liquidacion-6-José-Huamán-Pérez.pdf
@@ -117,3 +125,4 @@ wwwroot\vouchers-devolucion\5786ce69-b9e9-4a93-a1a5-dff7ed78fec7.png
 wwwroot\vouchers-devolucion\963d0d93-3d99-4b42-9c9c-00bf43ad8dd1.pdf
 wwwroot\vouchers-devolucion\c072bc93-de73-48d3-b0f7-7bdb70a7aaf5.png
 wwwroot\vouchers-devolucion\c60b99f3-b9a6-4aab-abcf-aa899eee667b.png
+wwwroot\vouchers-devolucion\e162efda-0453-46b3-b267-dcbcdb9448eb.png

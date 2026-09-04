@@ -23,8 +23,13 @@ namespace Dinacem.Controllers
 
         private const int ESTADO_REEMBOLSO_PENDIENTE = 1;
 
+        // Alimentación: máximo acumulado por día
         private const decimal LIMITE_ALIMENTACION_DIARIO = 40m;
-        private const decimal LIMITE_HOSPEDAJE_DIARIO = 50m;
+
+        // Hospedaje: tarifa máxima por día
+        // El límite total se calcula:
+        // DiasHospedaje × S/ 50.00
+        private const decimal LIMITE_HOSPEDAJE_POR_DIA = 50m;
 
         private const decimal TASA_IGV = 0.18m;
 
@@ -33,11 +38,11 @@ namespace Dinacem.Controllers
 
         private static readonly string[] ExtensionesPermitidas =
         {
-        ".pdf",
-        ".jpg",
-        ".jpeg",
-        ".png"
-    };
+            ".pdf",
+            ".jpg",
+            ".jpeg",
+            ".png"
+        };
 
         // =========================================================
         // CONSTRUCTOR
@@ -171,8 +176,9 @@ namespace Dinacem.Controllers
             Gasto gasto,
             IFormFile? archivo)
         {
-            var rendicion = await ObtenerRendicionAsync(
-                gasto.IdRendicion);
+            var rendicion =
+                await ObtenerRendicionAsync(
+                    gasto.IdRendicion);
 
             if (rendicion == null)
             {
@@ -194,7 +200,8 @@ namespace Dinacem.Controllers
                     nameof(Index),
                     new
                     {
-                        idRendicion = gasto.IdRendicion
+                        idRendicion =
+                            gasto.IdRendicion
                     });
             }
 
@@ -227,8 +234,11 @@ namespace Dinacem.Controllers
             bool esMovilidad =
                 EsMovilidad(tipoGasto);
 
+            bool esHospedaje =
+                EsHospedaje(tipoGasto);
+
             // =====================================================
-            // VALIDAR FECHA
+            // VALIDAR FECHA GENERAL DEL GASTO
             // =====================================================
 
             ValidarFechaGasto(
@@ -240,7 +250,8 @@ namespace Dinacem.Controllers
             // VALIDAR MONTO
             // =====================================================
 
-            ValidarMonto(gasto.MontoTotal);
+            ValidarMonto(
+                gasto.MontoTotal);
 
             // =====================================================
             // CALCULAR IGV
@@ -255,13 +266,25 @@ namespace Dinacem.Controllers
             if (esMovilidad)
             {
                 LimpiarDatosComprobante(gasto);
+                LimpiarDatosHospedaje(gasto);
+            }
+            else if (!esHospedaje)
+            {
+                LimpiarDatosHospedaje(gasto);
             }
 
             // =====================================================
-            // VALIDAR LÍMITE DIARIO
+            // VALIDAR LÍMITES
             // =====================================================
 
-            if (gasto.Fecha != default)
+            if (esHospedaje)
+            {
+                await ValidarHospedajeAsync(
+                    gasto,
+                    rendicion,
+                    gasto.IdGasto);
+            }
+            else if (gasto.Fecha != default)
             {
                 await ValidarLimiteDiarioAsync(
                     gasto,
@@ -270,22 +293,20 @@ namespace Dinacem.Controllers
             }
 
             // =====================================================
-            // VALIDAR DATOS DEL COMPROBANTE
+            // VALIDAR COMPROBANTE
             // SOLO SI NO ES MOVILIDAD
             // =====================================================
 
             if (!esMovilidad)
             {
-                ValidarDatosComprobante(
-                    gasto);
+                ValidarDatosComprobante(gasto);
 
                 if (ModelState.IsValid)
                 {
                     await ValidarRucAsync(gasto);
                 }
 
-                ValidarDatosProveedor(
-                    gasto);
+                ValidarDatosProveedor(gasto);
             }
 
             // =====================================================
@@ -545,8 +566,12 @@ namespace Dinacem.Controllers
                 tipoGasto != null &&
                 EsMovilidad(tipoGasto);
 
+            bool esHospedaje =
+                tipoGasto != null &&
+                EsHospedaje(tipoGasto);
+
             // =====================================================
-            // VALIDAR FECHA
+            // VALIDAR FECHA GENERAL
             // =====================================================
 
             ValidarFechaGasto(
@@ -568,25 +593,39 @@ namespace Dinacem.Controllers
             CalcularImpuestos(modelo);
 
             // =====================================================
-            // CONFIGURAR MOVILIDAD
+            // CONFIGURAR MOVILIDAD / HOSPEDAJE
             // =====================================================
 
             if (esMovilidad)
             {
                 LimpiarDatosComprobante(modelo);
+                LimpiarDatosHospedaje(modelo);
+            }
+            else if (!esHospedaje)
+            {
+                LimpiarDatosHospedaje(modelo);
             }
 
             // =====================================================
-            // VALIDAR LÍMITE DIARIO
+            // VALIDAR LÍMITES
             // =====================================================
 
-            if (tipoGasto != null &&
-                modelo.Fecha != default)
+            if (tipoGasto != null)
             {
-                await ValidarLimiteDiarioAsync(
-                    modelo,
-                    tipoGasto,
-                    gasto.IdGasto);
+                if (esHospedaje)
+                {
+                    await ValidarHospedajeAsync(
+                        modelo,
+                        rendicion,
+                        gasto.IdGasto);
+                }
+                else if (modelo.Fecha != default)
+                {
+                    await ValidarLimiteDiarioAsync(
+                        modelo,
+                        tipoGasto,
+                        gasto.IdGasto);
+                }
             }
 
             // =====================================================
@@ -721,6 +760,28 @@ namespace Dinacem.Controllers
                 modelo.ExoneracionIGV;
 
             // =====================================================
+            // DATOS DE HOSPEDAJE
+            // =====================================================
+
+            if (esHospedaje)
+            {
+                gasto.FechaInicioHospedaje =
+                    modelo.FechaInicioHospedaje;
+
+                gasto.FechaFinHospedaje =
+                    modelo.FechaFinHospedaje;
+
+                gasto.DiasHospedaje =
+                    modelo.DiasHospedaje;
+            }
+            else
+            {
+                gasto.FechaInicioHospedaje = null;
+                gasto.FechaFinHospedaje = null;
+                gasto.DiasHospedaje = 0;
+            }
+
+            // =====================================================
             // ACTUALIZAR COMPROBANTE
             // =====================================================
 
@@ -756,6 +817,9 @@ namespace Dinacem.Controllers
 
                 if (rendicionActualizada == null)
                 {
+                    EliminarArchivoFisico(
+                        nuevaRutaFisica);
+
                     TempData["error"] =
                         "El gasto fue actualizado, pero no se pudo cargar la rendición para regenerar el PDF.";
 
@@ -1143,7 +1207,7 @@ namespace Dinacem.Controllers
                     saldoCorreo);
 
             // =====================================================
-            // PREPARAR LOS DOS PDF PARA EL CORREO
+            // PREPARAR PDF PARA CORREO
             // =====================================================
 
             var adjuntosCorreo =
@@ -1182,7 +1246,7 @@ namespace Dinacem.Controllers
             }
 
             // =====================================================
-            // ENVIAR CORREO CON LOS DOS PDF
+            // ENVIAR CORREO
             // =====================================================
 
             var correoEnviado =
@@ -1286,7 +1350,8 @@ namespace Dinacem.Controllers
                 HttpContext.Session.GetInt32(
                     "IdRol");
 
-            return idRol == ROL_ADMINISTRADOR;
+            return idRol ==
+                ROL_ADMINISTRADOR;
         }
 
         // =========================================================
@@ -1304,27 +1369,48 @@ namespace Dinacem.Controllers
         }
 
         // =========================================================
+        // DETERMINAR SI ES HOSPEDAJE
+        // =========================================================
+
+        private static bool EsHospedaje(
+            TipoGasto tipoGasto)
+        {
+            return tipoGasto.Nombre
+                .Trim()
+                .Equals(
+                    "Hospedaje",
+                    StringComparison.OrdinalIgnoreCase);
+        }
+
+        // =========================================================
+        // DETERMINAR SI ES ALIMENTACIÓN
+        // =========================================================
+
+        private static bool EsAlimentacion(
+            TipoGasto tipoGasto)
+        {
+            return tipoGasto.Nombre
+                .Trim()
+                .Equals(
+                    "Alimentación",
+                    StringComparison.OrdinalIgnoreCase);
+        }
+
+        // =========================================================
         // OBTENER LÍMITE DIARIO
+        //
+        // SOLO ALIMENTACIÓN TIENE LÍMITE DIARIO.
+        //
+        // Hospedaje:
+        // DiasHospedaje × S/ 50
         // =========================================================
 
         private static decimal ObtenerLimiteDiario(
             TipoGasto tipoGasto)
         {
-            var nombre =
-                tipoGasto.Nombre.Trim();
-
-            if (nombre.Equals(
-                "Alimentación",
-                StringComparison.OrdinalIgnoreCase))
+            if (EsAlimentacion(tipoGasto))
             {
                 return LIMITE_ALIMENTACION_DIARIO;
-            }
-
-            if (nombre.Equals(
-                "Hospedaje",
-                StringComparison.OrdinalIgnoreCase))
-            {
-                return LIMITE_HOSPEDAJE_DIARIO;
             }
 
             return 0m;
@@ -1364,15 +1450,32 @@ namespace Dinacem.Controllers
             Gasto gasto)
         {
             gasto.Ruc = null;
+
             gasto.RazonSocial = null;
+
             gasto.DomicilioFiscal = null;
 
             gasto.IdTipoComprobante = null;
 
             gasto.Serie = null;
+
             gasto.Numero = null;
 
             gasto.Comprobante = null;
+        }
+
+        // =========================================================
+        // LIMPIAR DATOS DE HOSPEDAJE
+        // =========================================================
+
+        private static void LimpiarDatosHospedaje(
+            Gasto gasto)
+        {
+            gasto.FechaInicioHospedaje = null;
+
+            gasto.FechaFinHospedaje = null;
+
+            gasto.DiasHospedaje = 0;
         }
 
         // =========================================================
@@ -1389,7 +1492,7 @@ namespace Dinacem.Controllers
         }
 
         // =========================================================
-        // VALIDAR FECHA
+        // VALIDAR FECHA GENERAL DEL GASTO
         // =========================================================
 
         private void ValidarFechaGasto(
@@ -1456,6 +1559,7 @@ namespace Dinacem.Controllers
             {
                 gasto.ValorVenta = 0;
                 gasto.IGV = 0;
+
                 return;
             }
 
@@ -1489,6 +1593,14 @@ namespace Dinacem.Controllers
 
         // =========================================================
         // VALIDAR LÍMITE DIARIO
+        //
+        // SOLO ALIMENTACIÓN.
+        //
+        // Alimentación:
+        // S/ 40 acumulado por fecha.
+        //
+        // Hospedaje:
+        // SE VALIDA EN ValidarHospedajeAsync().
         // =========================================================
 
         private async Task ValidarLimiteDiarioAsync(
@@ -1496,6 +1608,15 @@ namespace Dinacem.Controllers
             TipoGasto tipoGasto,
             int idGastoExcluir)
         {
+            // =====================================================
+            // SOLO ALIMENTACIÓN
+            // =====================================================
+
+            if (!EsAlimentacion(tipoGasto))
+            {
+                return;
+            }
+
             var limiteDiario =
                 ObtenerLimiteDiario(tipoGasto);
 
@@ -1504,11 +1625,19 @@ namespace Dinacem.Controllers
                 return;
             }
 
+            // =====================================================
+            // FECHA
+            // =====================================================
+
             var inicioDia =
                 gasto.Fecha.Date;
 
             var finDia =
                 inicioDia.AddDays(1);
+
+            // =====================================================
+            // GASTOS EXISTENTES DEL MISMO TIPO Y DÍA
+            // =====================================================
 
             var query =
                 _context.Gastos
@@ -1520,6 +1649,10 @@ namespace Dinacem.Controllers
                         g.Fecha >= inicioDia &&
                         g.Fecha < finDia);
 
+            // =====================================================
+            // EXCLUIR GASTO ACTUAL AL EDITAR
+            // =====================================================
+
             if (idGastoExcluir > 0)
             {
                 query =
@@ -1528,14 +1661,26 @@ namespace Dinacem.Controllers
                         idGastoExcluir);
             }
 
+            // =====================================================
+            // MONTO YA REGISTRADO
+            // =====================================================
+
             var montoRegistrado =
                 await query
                     .SumAsync(g =>
                         (decimal?)g.MontoTotal) ?? 0m;
 
+            // =====================================================
+            // NUEVO TOTAL
+            // =====================================================
+
             var nuevoTotal =
                 montoRegistrado +
                 gasto.MontoTotal;
+
+            // =====================================================
+            // VALIDAR
+            // =====================================================
 
             if (nuevoTotal <= limiteDiario)
             {
@@ -1558,6 +1703,195 @@ namespace Dinacem.Controllers
                 $"El {gasto.Fecha:dd/MM/yyyy} ya tiene registrado " +
                 $"S/ {montoRegistrado:N2}. " +
                 $"Solo puede registrar hasta S/ {disponible:N2}.");
+        }
+
+        // =========================================================
+        // VALIDAR HOSPEDAJE
+        //
+        // REGLA:
+        //
+        // MÁXIMO =
+        // DiasHospedaje × S/ 50.00
+        //
+        // EJEMPLOS:
+        //
+        // 1 día = S/ 50
+        // 2 días = S/ 100
+        // 3 días = S/ 150
+        // 4 días = S/ 200
+        //
+        // NO SE USA EL LÍMITE DIARIO ACUMULADO.
+        // =========================================================
+
+        private async Task ValidarHospedajeAsync(
+            Gasto gasto,
+            Rendicion rendicion,
+            int idGastoExcluir)
+        {
+            // =====================================================
+            // FECHA INICIO
+            // =====================================================
+
+            if (gasto.FechaInicioHospedaje == null)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.FechaInicioHospedaje),
+                    "Debe ingresar la fecha de inicio del hospedaje.");
+
+                return;
+            }
+
+            // =====================================================
+            // FECHA FIN
+            // =====================================================
+
+            if (gasto.FechaFinHospedaje == null)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.FechaFinHospedaje),
+                    "Debe ingresar la fecha de fin del hospedaje.");
+
+                return;
+            }
+
+            var fechaInicio =
+                gasto.FechaInicioHospedaje.Value.Date;
+
+            var fechaFin =
+                gasto.FechaFinHospedaje.Value.Date;
+
+            // =====================================================
+            // VALIDAR ORDEN
+            // =====================================================
+
+            if (fechaFin < fechaInicio)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.FechaFinHospedaje),
+                    "La fecha de fin del hospedaje no puede ser anterior a la fecha de inicio.");
+
+                return;
+            }
+
+            // =====================================================
+            // DÍAS MANUALES
+            //
+            // IMPORTANTE:
+            // NO SE CALCULA A PARTIR DE LAS FECHAS.
+            // SE UTILIZA EL VALOR INGRESADO.
+            // =====================================================
+
+            if (gasto.DiasHospedaje < 1)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.DiasHospedaje),
+                    "La cantidad de días de hospedaje debe ser como mínimo 1.");
+
+                return;
+            }
+
+            // =====================================================
+            // VALIDAR PERIODO DE RENDICIÓN
+            // =====================================================
+
+            if (fechaInicio <
+                    rendicion.FechaInicio.Date ||
+                fechaInicio >
+                    rendicion.FechaFin.Date)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.FechaInicioHospedaje),
+                    $"La fecha de inicio del hospedaje debe estar entre " +
+                    $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
+                    $"{rendicion.FechaFin:dd/MM/yyyy}.");
+
+                return;
+            }
+
+            if (fechaFin <
+                    rendicion.FechaInicio.Date ||
+                fechaFin >
+                    rendicion.FechaFin.Date)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.FechaFinHospedaje),
+                    $"La fecha de fin del hospedaje debe estar entre " +
+                    $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
+                    $"{rendicion.FechaFin:dd/MM/yyyy}.");
+
+                return;
+            }
+
+            // =====================================================
+            // BUSCAR HOSPEDAJES EXISTENTES
+            // =====================================================
+
+            var hospedajes =
+                _context.Gastos
+                    .Where(g =>
+                        g.IdRendicion ==
+                            gasto.IdRendicion &&
+                        g.IdTipoGasto ==
+                            gasto.IdTipoGasto &&
+                        g.FechaInicioHospedaje != null &&
+                        g.FechaFinHospedaje != null);
+
+            // =====================================================
+            // EXCLUIR GASTO ACTUAL AL EDITAR
+            // =====================================================
+
+            if (idGastoExcluir > 0)
+            {
+                hospedajes =
+                    hospedajes.Where(g =>
+                        g.IdGasto !=
+                        idGastoExcluir);
+            }
+
+            // =====================================================
+            // VALIDAR CRUCE DE FECHAS
+            // =====================================================
+
+            var existeCruce =
+                await hospedajes.AnyAsync(g =>
+                    fechaInicio <=
+                        g.FechaFinHospedaje!.Value.Date &&
+                    fechaFin >=
+                        g.FechaInicioHospedaje!.Value.Date);
+
+            if (existeCruce)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.FechaInicioHospedaje),
+                    "El periodo de hospedaje se cruza con otro hospedaje ya registrado en esta rendición.");
+
+                return;
+            }
+
+            // =====================================================
+            // CALCULAR LÍMITE
+            //
+            // DÍAS MANUALES × S/ 50
+            // =====================================================
+
+            var limiteHospedaje =
+                gasto.DiasHospedaje *
+                LIMITE_HOSPEDAJE_POR_DIA;
+
+            // =====================================================
+            // VALIDAR MONTO
+            // =====================================================
+
+            if (gasto.MontoTotal >
+                limiteHospedaje)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.MontoTotal),
+                    $"El monto máximo permitido para hospedaje es " +
+                    $"S/ {limiteHospedaje:N2}, considerando " +
+                    $"{gasto.DiasHospedaje} día(s) × " +
+                    $"S/ {LIMITE_HOSPEDAJE_POR_DIA:N2}.");
+            }
         }
 
         // =========================================================
@@ -1825,8 +2159,7 @@ namespace Dinacem.Controllers
             }
             catch
             {
-                // No detener la operación principal
-                // si falla la eliminación física.
+                // No detener la operación principal.
             }
         }
 
@@ -1838,6 +2171,8 @@ namespace Dinacem.Controllers
             int idRendicion)
         {
             AgregarErroresTempData();
+
+            await Task.CompletedTask;
 
             return RedirectToAction(
                 nameof(Index),
@@ -2005,13 +2340,19 @@ namespace Dinacem.Controllers
             decimal totalIgv,
             decimal saldo)
         {
-            return $"""
+            return $$"""
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport"
       content="width=device-width,initial-scale=1.0">
+
+<title>Liquidación de Viáticos - DINACEN</title>
+
 </head>
 
 <body style="
@@ -2031,6 +2372,7 @@ color:#111111;">
        padding:35px 15px;">
 
 <tr>
+
 <td align="center">
 
 <table role="presentation"
@@ -2043,62 +2385,102 @@ color:#111111;">
        width:100%;
        background:#ffffff;
        border-radius:12px;
-       overflow:hidden;">
+       overflow:hidden;
+       box-shadow:0 4px 15px rgba(0,0,0,0.08);">
 
-<!-- ENCABEZADO -->
+
+<!-- ===================================================== -->
+<!-- LOGO -->
+<!-- ===================================================== -->
 
 <tr>
-<td style="
-background:#0C4A8A;
-padding:25px 35px;
-text-align:center;">
 
-<div style="
+<td style="
 background:#ffffff;
-display:inline-block;
-padding:10px 18px;
-border-radius:8px;
-margin-bottom:15px;">
+padding:30px 35px 20px 35px;
+text-align:center;">
 
 <img src="cid:logoDinacen"
      alt="DINACEN"
      style="
-     max-width:210px;
+     width:210px;
+     max-width:80%;
      height:auto;
      display:block;
      margin:0 auto;">
 
-</div>
+</td>
+
+</tr>
+
+
+<!-- ===================================================== -->
+<!-- LINEA INSTITUCIONAL -->
+<!-- ===================================================== -->
+
+<tr>
+
+<td style="
+background:#ffffff;
+padding:0 35px 22px 35px;
+text-align:center;">
 
 <div style="
-height:2px;
+height:4px;
 background:#6AA84F;
 width:100%;
-margin-bottom:18px;">
-</div>
-
-<div style="
-font-size:24px;
-font-weight:bold;
-color:#ffffff;">
-LIQUIDACIÓN DE VIÁTICOS
-</div>
-
-<div style="
-font-size:16px;
-color:#ffffff;
-margin-top:8px;">
-Pendiente de revisión
+border-radius:3px;">
 </div>
 
 </td>
+
 </tr>
 
-<!-- CONTENIDO -->
+
+<!-- ===================================================== -->
+<!-- ENCABEZADO -->
+<!-- ===================================================== -->
 
 <tr>
+
 <td style="
-padding:35px 40px 20px 40px;">
+background:#0C4A8A;
+padding:24px 35px;
+text-align:center;">
+
+<div style="
+font-size:25px;
+font-weight:bold;
+color:#ffffff;
+line-height:1.3;">
+
+LIQUIDACIÓN DE VIÁTICOS
+
+</div>
+
+<div style="
+font-size:15px;
+color:#ffffff;
+margin-top:8px;
+opacity:0.95;">
+
+Pendiente de revisión
+
+</div>
+
+</td>
+
+</tr>
+
+
+<!-- ===================================================== -->
+<!-- CONTENIDO -->
+<!-- ===================================================== -->
+
+<tr>
+
+<td style="
+padding:35px 40px 25px 40px;">
 
 <div style="
 font-size:22px;
@@ -2110,18 +2492,24 @@ Nueva liquidación pendiente de revisión
 
 </div>
 
+
 <div style="
-font-size:17px;
+font-size:16px;
 line-height:1.7;
 color:#222222;
 margin-bottom:25px;">
 
 El empleado
-<strong>{nombreEmpleado}</strong>
+<strong>{{nombreEmpleado}}</strong>
 ha enviado una liquidación de gastos
 que se encuentra pendiente de revisión.
 
 </div>
+
+
+<!-- ===================================================== -->
+<!-- INFORMACIÓN -->
+<!-- ===================================================== -->
 
 <table role="presentation"
        width="100%"
@@ -2129,11 +2517,13 @@ que se encuentra pendiente de revisión.
        cellpadding="0"
        border="0"
        style="
-       background:#f7f9fb;
+       background:#ffffff;
        border:1px solid #d9e2ea;
-       border-radius:8px;">
+       border-radius:8px;
+       overflow:hidden;">
 
 <tr>
+
 <td colspan="2"
     style="
     padding:18px 20px;
@@ -2150,15 +2540,21 @@ Información de la liquidación
 </div>
 
 </td>
+
 </tr>
 
+
+<!-- RENDICIÓN -->
+
 <tr>
+
 <td width="42%"
     style="
     padding:14px 20px;
     border-bottom:1px solid #e1e7ec;
-    font-size:16px;
-    font-weight:bold;">
+    font-size:15px;
+    font-weight:bold;
+    color:#333333;">
 
 Liquidación
 
@@ -2167,19 +2563,26 @@ Liquidación
 <td style="
 padding:14px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:16px;">
+font-size:15px;
+color:#333333;">
 
-#{rendicion.IdRendicion}
+#{{rendicion.IdRendicion}}
 
 </td>
+
 </tr>
 
+
+<!-- EMPLEADO -->
+
 <tr>
+
 <td style="
 padding:14px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:16px;
-font-weight:bold;">
+font-size:15px;
+font-weight:bold;
+color:#333333;">
 
 Empleado
 
@@ -2188,19 +2591,26 @@ Empleado
 <td style="
 padding:14px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:16px;">
+font-size:15px;
+color:#333333;">
 
-{nombreEmpleado}
+{{nombreEmpleado}}
 
 </td>
+
 </tr>
 
+
+<!-- DESTINO -->
+
 <tr>
+
 <td style="
 padding:14px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:16px;
-font-weight:bold;">
+font-size:15px;
+font-weight:bold;
+color:#333333;">
 
 Destino
 
@@ -2209,19 +2619,26 @@ Destino
 <td style="
 padding:14px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:16px;">
+font-size:15px;
+color:#333333;">
 
-{rendicion.Solicitud?.Destino}
+{{rendicion.Solicitud?.Destino}}
 
 </td>
+
 </tr>
 
+
+<!-- PERIODO -->
+
 <tr>
+
 <td style="
 padding:14px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:16px;
-font-weight:bold;">
+font-size:15px;
+font-weight:bold;
+color:#333333;">
 
 Periodo
 
@@ -2230,21 +2647,28 @@ Periodo
 <td style="
 padding:14px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:16px;">
+font-size:15px;
+color:#333333;">
 
-{rendicion.FechaInicio:dd/MM/yyyy}
+{{rendicion.FechaInicio:dd/MM/yyyy}}
 al
-{rendicion.FechaFin:dd/MM/yyyy}
+{{rendicion.FechaFin:dd/MM/yyyy}}
 
 </td>
+
 </tr>
 
+
+<!-- MONTO APROBADO -->
+
 <tr>
+
 <td style="
 padding:14px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:16px;
-font-weight:bold;">
+font-size:15px;
+font-weight:bold;
+color:#333333;">
 
 Monto aprobado
 
@@ -2253,20 +2677,27 @@ Monto aprobado
 <td style="
 padding:14px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:16px;
-font-weight:bold;">
+font-size:15px;
+font-weight:bold;
+color:#333333;">
 
-S/ {rendicion.Solicitud?.Monto:N2}
+S/ {{rendicion.Solicitud?.Monto:N2}}
 
 </td>
+
 </tr>
 
+
+<!-- VALOR DE VENTA -->
+
 <tr>
+
 <td style="
 padding:14px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:16px;
-font-weight:bold;">
+font-size:15px;
+font-weight:bold;
+color:#333333;">
 
 Valor de venta
 
@@ -2275,19 +2706,26 @@ Valor de venta
 <td style="
 padding:14px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:16px;">
+font-size:15px;
+color:#333333;">
 
-S/ {totalBase:N2}
+S/ {{totalBase:N2}}
 
 </td>
+
 </tr>
 
+
+<!-- IGV -->
+
 <tr>
+
 <td style="
 padding:14px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:16px;
-font-weight:bold;">
+font-size:15px;
+font-weight:bold;
+color:#333333;">
 
 IGV
 
@@ -2296,19 +2734,26 @@ IGV
 <td style="
 padding:14px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:16px;">
+font-size:15px;
+color:#333333;">
 
-S/ {totalIgv:N2}
+S/ {{totalIgv:N2}}
 
 </td>
+
 </tr>
 
+
+<!-- TOTAL RENDIDO -->
+
 <tr>
+
 <td style="
 padding:16px 20px;
 border-bottom:1px solid #e1e7ec;
-font-size:17px;
-font-weight:bold;">
+font-size:16px;
+font-weight:bold;
+color:#333333;">
 
 Total rendido
 
@@ -2321,16 +2766,22 @@ font-size:19px;
 font-weight:bold;
 color:#0C4A8A;">
 
-S/ {rendicion.Total:N2}
+S/ {{rendicion.Total:N2}}
 
 </td>
+
 </tr>
 
+
+<!-- SALDO -->
+
 <tr>
+
 <td style="
 padding:16px 20px;
-font-size:17px;
-font-weight:bold;">
+font-size:16px;
+font-weight:bold;
+color:#333333;">
 
 Saldo
 
@@ -2342,12 +2793,18 @@ font-size:19px;
 font-weight:bold;
 color:#6AA84F;">
 
-S/ {saldo:N2}
+S/ {{saldo:N2}}
 
 </td>
+
 </tr>
 
 </table>
+
+
+<!-- ===================================================== -->
+<!-- INFORMACIÓN ADICIONAL -->
+<!-- ===================================================== -->
 
 <div style="
 margin-top:28px;
@@ -2357,7 +2814,7 @@ border-left:5px solid #0C4A8A;
 border-radius:5px;">
 
 <div style="
-font-size:16px;
+font-size:15px;
 line-height:1.7;
 color:#222222;">
 
@@ -2365,7 +2822,10 @@ Se adjuntan los PDF correspondientes a la
 <strong>liquidación</strong> y a los
 <strong>vouchers</strong> registrados.
 
-Ingrese al <strong>sistema de gestión de viáticos DINACEN</strong>
+<br><br>
+
+Ingrese al
+<strong>sistema de gestión de viáticos DINACEN</strong>
 para revisar los comprobantes, verificar la devolución
 y proceder con la aprobación o rechazo de la rendición.
 
@@ -2374,24 +2834,30 @@ y proceder con la aprobación o rechazo de la rendición.
 </div>
 
 </td>
+
 </tr>
 
+
+<!-- ===================================================== -->
 <!-- PIE -->
+<!-- ===================================================== -->
 
 <tr>
+
 <td style="
 background:#0C4A8A;
 padding:25px 35px;
 text-align:center;">
 
 <div style="
-font-size:16px;
+font-size:17px;
 font-weight:bold;
 color:#ffffff;">
 
 DINACEN
 
 </div>
+
 
 <div style="
 font-size:13px;
@@ -2402,26 +2868,34 @@ Sistema de Gestión de Viáticos
 
 </div>
 
+
 <div style="
 font-size:12px;
 color:#c5d5e2;
-margin-top:12px;">
+margin-top:12px;
+line-height:1.5;">
 
 Este mensaje ha sido generado automáticamente.
+<br>
 Por favor, no responda a este correo.
 
 </div>
 
 </td>
+
 </tr>
 
+
 </table>
+
 </td>
+
 </tr>
 
 </table>
 
 </body>
+
 </html>
 """;
         }

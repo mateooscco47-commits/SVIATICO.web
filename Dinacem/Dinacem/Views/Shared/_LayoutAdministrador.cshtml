@@ -379,64 +379,127 @@
                 opacity: 1;
             }
 
-        /* RESPONSIVE */
-        @@media (max-width: 991.98px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
+        /* =========================================
+   RESPONSIVE - TABLETS Y CELULARES
+   ========================================= */
 
-                .sidebar.show {
-                    transform: translateX(0);
-                }
+@@media (max-width: 991.98px) {
 
-            .main-wrapper {
-                margin-left: 0 !important;
-            }
+    .sidebar {
+        width: var(--sidebar-width);
+        transform: translateX(-100%);
+        visibility: hidden;
+    }
 
-            .sidebar-toggler {
-                display: flex;
-            }
+    .sidebar.show {
+        transform: translateX(0);
+        visibility: visible;
+    }
 
-            .topbar {
-                padding: 0 1.15rem;
-            }
+    .main-wrapper {
+        margin-left: 0 !important;
+        width: 100%;
+    }
 
-            .content {
-                padding: 1.25rem;
-            }
-        }
+    .sidebar-toggler {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        margin: 0;
+        background-color: transparent;
+        border: none;
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        cursor: pointer;
+        border-radius: 8px;
+        z-index: 1050;
+    }
 
-        @@media (max-width: 575.98px) {
-            .topbar {
-                padding: 0 0.85rem;
-                height: 64px;
-            }
+    .sidebar-toggler:hover,
+    .sidebar-toggler:focus {
+        background-color: var(--dinacen-blue-light);
+        color: var(--dinacen-blue);
+        outline: none;
+    }
 
-            .content {
-                padding: 1rem 0.85rem;
-            }
+    .topbar {
+        padding: 0 1.15rem;
+    }
 
-            .user-details {
-                display: none !important;
-            }
+    .content {
+        padding: 1.25rem;
+    }
+}
 
-            .user-profile {
-                padding: 0.3rem;
-                border: none;
-                background: transparent;
-                box-shadow: none;
-            }
 
-            .user-avatar {
-                font-size: 1.85rem;
-            }
-        }
+/* =========================================
+   CELULARES
+   ========================================= */
 
-        @@media (min-width: 1400px) {
-            .content {
-                padding: 2rem 2.25rem;
-            }
-        }
+@@media (max-width: 575.98px) {
+
+    .topbar {
+        padding: 0 0.85rem;
+        height: 64px;
+    }
+
+    .content {
+        padding: 1rem 0.85rem;
+    }
+
+    .user-details {
+        display: none !important;
+    }
+
+    .user-profile {
+        padding: 0.3rem;
+        border: none;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .user-avatar {
+        font-size: 1.85rem;
+    }
+
+    .sidebar-toggler {
+        display: flex !important;
+    }
+}
+
+
+/* =========================================
+   PANTALLAS GRANDES
+   ========================================= */
+
+@@media (min-width: 992px) {
+
+    .sidebar {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    .sidebar-toggler {
+        display: none !important;
+    }
+
+}
+
+
+/* =========================================
+   MONITORES GRANDES
+   ========================================= */
+
+@@media (min-width: 1400px) {
+
+    .content {
+        padding: 2rem 2.25rem;
+    }
+
+}
     </style>
 </head>
 
@@ -575,44 +638,93 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
 
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggler = document.getElementById('sidebarToggler');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggler = document.getElementById('sidebarToggler');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-            function toggleSidebar() {
-                sidebar.classList.toggle('show');
-                sidebarOverlay.classList.toggle('show');
+        // =========================================
+        // VERIFICAR ELEMENTOS
+        // =========================================
+        if (!sidebar || !sidebarToggler || !sidebarOverlay) {
+            console.error('No se encontraron los elementos del menú lateral.');
+            return;
+        }
 
-                document.body.style.overflow =
-                    sidebar.classList.contains('show')
-                        ? 'hidden'
-                        : '';
-            }
+        // =========================================
+        // ABRIR / CERRAR MENÚ
+        // =========================================
+        function toggleSidebar() {
 
-            if (sidebarToggler) {
-                sidebarToggler.addEventListener('click', toggleSidebar);
-            }
+            const abierto = sidebar.classList.toggle('show');
 
-            if (sidebarOverlay) {
-                sidebarOverlay.addEventListener('click', toggleSidebar);
-            }
+            sidebarOverlay.classList.toggle('show', abierto);
 
-            window.addEventListener('resize', function () {
+            document.body.style.overflow = abierto
+                ? 'hidden'
+                : '';
+        }
 
-                if (window.innerWidth > 991.98) {
+        // =========================================
+        // BOTÓN ☰
+        // =========================================
+        sidebarToggler.addEventListener('click', function (e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            toggleSidebar();
+        });
+
+        // =========================================
+        // CERRAR TOCANDO EL FONDO OSCURO
+        // =========================================
+        sidebarOverlay.addEventListener('click', function () {
+
+            sidebar.classList.remove('show');
+            sidebarOverlay.classList.remove('show');
+            document.body.style.overflow = '';
+        });
+
+        // =========================================
+        // CERRAR AL SELECCIONAR UNA OPCIÓN
+        // =========================================
+        const menuLinks = sidebar.querySelectorAll('.sidebar-menu a');
+
+        menuLinks.forEach(function (link) {
+
+            link.addEventListener('click', function () {
+
+                if (window.innerWidth <= 991.98) {
 
                     sidebar.classList.remove('show');
                     sidebarOverlay.classList.remove('show');
-                    document.body.style.overflow = '';
 
+                    document.body.style.overflow = '';
                 }
 
             });
 
         });
-    </script>
+
+        // =========================================
+        // CONTROLAR CAMBIO DE TAMAÑO
+        // =========================================
+        window.addEventListener('resize', function () {
+
+            if (window.innerWidth >= 992) {
+
+                sidebar.classList.remove('show');
+                sidebarOverlay.classList.remove('show');
+
+                document.body.style.overflow = '';
+            }
+
+        });
+
+    });
+</script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/Layout.js" asp-append-version="true"></script>

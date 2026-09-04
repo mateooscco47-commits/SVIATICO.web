@@ -200,6 +200,9 @@ namespace Dinacen.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<int?>("DiasHospedaje")
+                        .HasColumnType("int");
+
                     b.Property<string>("DomicilioFiscal")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
@@ -210,6 +213,12 @@ namespace Dinacen.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("FechaFinHospedaje")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaInicioHospedaje")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("IGV")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -217,7 +226,7 @@ namespace Dinacen.Migrations
                     b.Property<int>("IdRendicion")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdTipoComprobante")
+                    b.Property<int?>("IdTipoComprobante")
                         .HasColumnType("int");
 
                     b.Property<int>("IdTipoGasto")
@@ -562,6 +571,36 @@ namespace Dinacen.Migrations
                     b.ToTable("Zonas", (string)null);
                 });
 
+            modelBuilder.Entity("Dinacen.Models.Entidades.Ruta", b =>
+                {
+                    b.Property<int>("IdRuta")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdRuta"));
+
+                    b.Property<string>("Destino")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Kilometros")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Origen")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("IdRuta");
+
+                    b.ToTable("Rutas", (string)null);
+                });
+
             modelBuilder.Entity("Dinacem.Models.BitacoraVehiculo", b =>
                 {
                     b.HasOne("Dinacem.Models.Rendicion", "Rendicion")
@@ -595,8 +634,7 @@ namespace Dinacen.Migrations
                     b.HasOne("Dinacem.Models.TipoComprobante", "TipoComprobante")
                         .WithMany()
                         .HasForeignKey("IdTipoComprobante")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Dinacem.Models.TipoGasto", "TipoGasto")
                         .WithMany()

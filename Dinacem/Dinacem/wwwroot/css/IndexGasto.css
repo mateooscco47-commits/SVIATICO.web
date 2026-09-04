@@ -1,0 +1,864 @@
+﻿:root {
+    --dinacen-primary: #0c4a8a;
+    --dinacen-primary-dark: #083b70;
+    --dinacen-primary-soft: #eaf2fb;
+    --dinacen-border: #e2e8f0;
+    --dinacen-border-soft: #edf1f5;
+    --dinacen-bg: #f8fafc;
+    --dinacen-text: #172033;
+    --dinacen-muted: #64748b;
+    --dinacen-success: #198754;
+    --dinacen-warning: #d97706;
+    --dinacen-danger: #dc3545;
+}
+
+
+/* =========================================================
+   CONTENEDOR
+   ========================================================= */
+
+.rendicion-wrapper {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 14px 36px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    background: #fff;
+    border: 1px solid var(--dinacen-border);
+    border-radius: 16px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 16px rgba(15,23,42,.05);
+}
+
+.page-header-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+    .page-header-content > div:last-child {
+        min-width: 0;
+    }
+
+.page-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--dinacen-primary-soft);
+    color: var(--dinacen-primary);
+    border-radius: 12px;
+    font-size: 22px;
+    flex: 0 0 48px;
+}
+
+.page-title {
+    margin: 0;
+    color: var(--dinacen-text);
+    font-size: clamp(21px, 2vw, 26px);
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.page-description {
+    margin: 5px 0 0;
+    color: var(--dinacen-muted);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+    .header-actions .btn {
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        font-size: 12.5px;
+        font-weight: 700;
+        border-radius: 9px;
+    }
+
+
+/* =========================================================
+   RESUMEN
+   ========================================================= */
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.summary-card {
+    background: #fff;
+    border: 1px solid var(--dinacen-border);
+    border-radius: 12px;
+    padding: 15px 16px;
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+    box-shadow: 0 2px 8px rgba(15,23,42,.03);
+}
+
+    .summary-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--dinacen-primary);
+    }
+
+    .summary-card.green::before {
+        background: var(--dinacen-success);
+    }
+
+    .summary-card.orange::before {
+        background: #f59e0b;
+    }
+
+    .summary-card.blue::before {
+        background: #0d6efd;
+    }
+
+.summary-label {
+    display: block;
+    color: var(--dinacen-muted);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .35px;
+    margin-bottom: 5px;
+}
+
+.summary-value {
+    color: var(--dinacen-text);
+    font-size: clamp(18px, 2vw, 22px);
+    font-weight: 800;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+.summary-card.green .summary-value {
+    color: var(--dinacen-success);
+}
+
+.summary-card.orange .summary-value {
+    color: var(--dinacen-warning);
+}
+
+.summary-card.blue .summary-value {
+    color: #0d6efd;
+}
+
+
+/* =========================================================
+   GRID PRINCIPAL
+   ========================================================= */
+
+.content-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 360px);
+    gap: 18px;
+    align-items: start;
+}
+
+.main-column,
+.side-column {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+}
+
+
+/* =========================================================
+   PANEL
+   ========================================================= */
+
+.panel {
+    background: #fff;
+    border: 1px solid var(--dinacen-border);
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(15,23,42,.04);
+    overflow: hidden;
+    min-width: 0;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 15px 18px;
+    border-bottom: 1px solid #e8edf3;
+    color: var(--dinacen-text);
+    font-size: 13.5px;
+    font-weight: 800;
+}
+
+.panel-body {
+    padding: 18px;
+    min-width: 0;
+}
+
+
+/* =========================================================
+   TABLA
+   ========================================================= */
+
+.table-wrapper,
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-gastos {
+    min-width: 980px;
+    margin: 0;
+}
+
+    .table-gastos thead th {
+        background: var(--dinacen-bg);
+        color: var(--dinacen-muted);
+        border-bottom: 1px solid #dbe2ea;
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        white-space: nowrap;
+        padding: 12px 11px;
+        vertical-align: middle;
+    }
+
+    .table-gastos tbody td {
+        padding: 12px 11px;
+        color: #334155;
+        font-size: 12.5px;
+        border-color: var(--dinacen-border-soft);
+        vertical-align: middle;
+    }
+
+    .table-gastos tbody tr:hover {
+        background: #fbfdff;
+    }
+
+.badge-gasto {
+    display: inline-block;
+    background: #edf7ef;
+    color: #166534;
+    border: 1px solid #ccebd3;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   HOSPEDAJE EN TABLA
+   ========================================================= */
+
+.hospedaje-periodo-tabla {
+    margin-top: 7px;
+    padding: 7px 8px;
+    background: #eaf2fb;
+    border-left: 3px solid var(--dinacen-primary);
+    border-radius: 6px;
+    color: var(--dinacen-primary);
+    font-size: 10px;
+    line-height: 1.35;
+}
+
+    .hospedaje-periodo-tabla span {
+        display: block;
+        font-weight: 800;
+        margin-bottom: 2px;
+    }
+
+    .hospedaje-periodo-tabla small {
+        color: #475569;
+        font-size: 9.5px;
+    }
+
+
+/* =========================================================
+   FOOTER TABLA
+   ========================================================= */
+
+.table-footer {
+    padding: 11px 16px;
+    border-top: 1px solid #e8edf3;
+    color: var(--dinacen-muted);
+    font-size: 11.5px;
+    background: #fcfdff;
+}
+
+.mobile-hint {
+    display: none;
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   FORMULARIO
+   ========================================================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+    align-items: start;
+}
+
+.form-col-3 {
+    grid-column: span 3;
+    min-width: 0;
+    width: 100%;
+}
+
+.form-col-4 {
+    grid-column: span 4;
+    min-width: 0;
+    width: 100%;
+}
+
+.form-col-6 {
+    grid-column: span 6;
+    min-width: 0;
+    width: 100%;
+}
+
+.form-col-8 {
+    grid-column: span 8;
+    min-width: 0;
+    width: 100%;
+}
+
+.form-col-12 {
+    grid-column: span 12;
+    min-width: 0;
+    width: 100%;
+}
+
+.form-grid .form-control,
+.form-grid .form-select,
+.form-grid .input-group,
+.form-grid .tax-summary {
+    width: 100%;
+    max-width: none;
+}
+
+
+/* =========================================================
+   FORMULARIO HOSPEDAJE
+   ========================================================= */
+
+#periodoHospedaje {
+    width: 100%;
+}
+
+    #periodoHospedaje .alert {
+        border-radius: 10px;
+        border: 1px solid #b6d4fe;
+        margin: 0;
+    }
+
+    #periodoHospedaje .form-control[readonly] {
+        background: #f8fafc;
+        font-weight: 700;
+    }
+
+#mensajeHospedaje {
+    font-weight: 600;
+}
+
+.hospedaje-valido {
+    color: var(--dinacen-success);
+}
+
+.hospedaje-invalido {
+    color: var(--dinacen-danger);
+}
+
+.hospedaje-info {
+    color: var(--dinacen-muted);
+}
+
+
+/* =========================================================
+   LABELS / INPUTS
+   ========================================================= */
+
+.form-label {
+    display: block;
+    color: #334155;
+    font-size: 11.5px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.form-control,
+.form-select {
+    min-height: 42px;
+    border-color: #d7dee8;
+    border-radius: 8px;
+    font-size: 12.5px;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 .15rem rgba(13,110,253,.1);
+    }
+
+    .form-control[readonly] {
+        background: #f8fafc;
+    }
+
+.form-text {
+    color: #94a3b8;
+    font-size: 10.5px;
+    line-height: 1.35;
+    margin-top: 5px;
+}
+
+.input-group {
+    width: 100%;
+}
+
+    .input-group > .form-control,
+    .input-group > .form-select {
+        min-width: 0;
+    }
+
+    .input-group .btn {
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+
+/* =========================================================
+   RESUMEN IMPUESTOS
+   ========================================================= */
+
+.tax-summary {
+    height: 100%;
+    background: var(--dinacen-bg);
+    border: 1px solid var(--dinacen-border);
+    border-radius: 10px;
+    padding: 14px;
+}
+
+.tax-item {
+    text-align: center;
+}
+
+    .tax-item small {
+        display: block;
+        color: var(--dinacen-muted);
+        font-size: 10.5px;
+        margin-bottom: 3px;
+    }
+
+    .tax-item strong {
+        color: var(--dinacen-text);
+        font-size: 16px;
+    }
+
+    .tax-item.total strong {
+        color: #0d6efd;
+    }
+
+
+/* =========================================================
+   BOTÓN PRINCIPAL
+   ========================================================= */
+
+.btn-primary-custom {
+    background: var(--dinacen-primary);
+    border-color: var(--dinacen-primary);
+    color: #fff;
+    font-weight: 700;
+    min-height: 42px;
+    border-radius: 9px;
+}
+
+    .btn-primary-custom:hover {
+        background: var(--dinacen-primary-dark);
+        border-color: var(--dinacen-primary-dark);
+        color: #fff;
+    }
+
+
+/* =========================================================
+   INFORMACIÓN
+   ========================================================= */
+
+.info-table {
+    margin: 0;
+}
+
+    .info-table th,
+    .info-table td {
+        padding: 10px 11px;
+        border-color: #e5eaf0;
+        vertical-align: middle;
+    }
+
+    .info-table th {
+        width: 42%;
+        background: var(--dinacen-bg);
+        color: var(--dinacen-muted);
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .info-table td {
+        color: #334155;
+        font-size: 12.5px;
+        overflow-wrap: anywhere;
+    }
+
+
+/* =========================================================
+   ESTADOS
+   ========================================================= */
+
+.estado {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 10.5px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.estado-proceso {
+    background: #eaf2ff;
+    color: #0d6efd;
+}
+
+.estado-pendiente {
+    background: #fff4d6;
+    color: #9a6700;
+}
+
+.estado-aprobada {
+    background: #e8f7ef;
+    color: #198754;
+}
+
+.estado-rechazada {
+    background: #fdecec;
+    color: #dc3545;
+}
+
+.estado-desconocido {
+    background: #eef1f4;
+    color: #64748b;
+}
+
+
+/* =========================================================
+   DEVOLUCIÓN
+   ========================================================= */
+
+.devolucion-box {
+    border-left: 4px solid #ffc107;
+}
+
+    .devolucion-box.ok {
+        border-left-color: var(--dinacen-success);
+    }
+
+.alert-custom {
+    border-radius: 9px;
+    font-size: 12.5px;
+}
+
+
+/* =========================================================
+   ACCIONES
+   ========================================================= */
+
+.action-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+    .action-stack .btn {
+        min-height: 41px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12.5px;
+        font-weight: 700;
+        border-radius: 9px;
+    }
+
+.action-note {
+    margin: 0;
+    color: var(--dinacen-danger);
+    font-size: 10.5px;
+}
+
+
+/* =========================================================
+   ESTADO VACÍO
+   ========================================================= */
+
+.empty-state {
+    text-align: center;
+    padding: 38px 18px;
+    color: #94a3b8;
+}
+
+    .empty-state i {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 30px;
+    }
+
+.voucher-link {
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   RESPONSIVE 1199
+   ========================================================= */
+
+@media (max-width: 1199px) {
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .side-column {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0,1fr));
+        align-items: start;
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE 991
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .form-col-3,
+    .form-col-4,
+    .form-col-6 {
+        grid-column: span 6;
+    }
+
+    .form-col-8,
+    .form-col-12 {
+        grid-column: span 12;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE 767
+   ========================================================= */
+
+@media (max-width: 767px) {
+
+    .rendicion-wrapper {
+        padding: 0 10px 24px;
+    }
+
+    .page-header {
+        padding: 16px;
+        gap: 14px;
+    }
+
+    .page-header-content {
+        align-items: flex-start;
+    }
+
+    .page-icon {
+        width: 42px;
+        height: 42px;
+        flex-basis: 42px;
+        font-size: 19px;
+    }
+
+    .page-description {
+        font-size: 11.5px;
+    }
+
+    .header-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+        .header-actions .btn {
+            width: 100%;
+        }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+        gap: 9px;
+    }
+
+    .summary-card {
+        padding: 12px;
+    }
+
+    .summary-label {
+        font-size: 8.5px;
+    }
+
+    .summary-value {
+        font-size: 16px;
+    }
+
+    .side-column {
+        display: flex;
+    }
+
+    .panel-header {
+        align-items: flex-start;
+        padding: 13px 14px;
+    }
+
+    .panel-body {
+        padding: 14px;
+    }
+
+    .mobile-hint {
+        display: block;
+        text-align: right;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 13px;
+    }
+
+    .form-col-3,
+    .form-col-4,
+    .form-col-6,
+    .form-col-8,
+    .form-col-12 {
+        grid-column: span 1;
+    }
+
+    #btnConsultarRuc {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .table-gastos {
+        min-width: 880px;
+    }
+
+        .table-gastos thead th,
+        .table-gastos tbody td {
+            padding: 10px 9px;
+            font-size: 11px;
+        }
+
+    .tax-summary {
+        padding: 12px;
+    }
+
+    .action-stack .btn {
+        width: 100%;
+    }
+
+    #periodoHospedaje .row {
+        --bs-gutter-y: .75rem;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE 480
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-title {
+        font-size: 20px;
+    }
+
+    .form-grid .input-group {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+        .form-grid .input-group .form-control {
+            flex: 1 1 100%;
+            border-radius: 8px !important;
+        }
+
+        .form-grid .input-group .btn {
+            width: 100%;
+            border-radius: 8px !important;
+        }
+
+    #periodoHospedaje .d-flex {
+        align-items: flex-start;
+    }
+
+    #periodoHospedaje .fs-4 {
+        font-size: 1.2rem !important;
+    }
+}

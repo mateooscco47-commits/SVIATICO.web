@@ -47,698 +47,15 @@
     };
 }
 
-<style>
-    :root {
-        --dinacen-primary: #0c4a8a;
-        --dinacen-primary-dark: #083b70;
-        --dinacen-primary-soft: #eaf2fb;
-        --dinacen-border: #e2e8f0;
-        --dinacen-border-soft: #edf1f5;
-        --dinacen-bg: #f8fafc;
-        --dinacen-text: #172033;
-        --dinacen-muted: #64748b;
-        --dinacen-success: #198754;
-        --dinacen-warning: #d97706;
-        --dinacen-danger: #dc3545;
-    }
+<link rel="stylesheet"
+      href="~/css/IndexGasto.css"
+      asp-append-version="true" />
 
-    .rendicion-wrapper {
-        width: 100%;
-        max-width: 1500px;
-        margin: 0 auto;
-        padding: 0 14px 36px;
-    }
-
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 18px;
-        background: #fff;
-        border: 1px solid var(--dinacen-border);
-        border-radius: 16px;
-        padding: 20px 22px;
-        margin-bottom: 18px;
-        box-shadow: 0 4px 16px rgba(15,23,42,.05);
-    }
-
-    .page-header-content {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        min-width: 0;
-        flex: 1 1 auto;
-    }
-
-        .page-header-content > div:last-child {
-            min-width: 0;
-        }
-
-    .page-icon {
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--dinacen-primary-soft);
-        color: var(--dinacen-primary);
-        border-radius: 12px;
-        font-size: 22px;
-        flex: 0 0 48px;
-    }
-
-    .page-title {
-        margin: 0;
-        color: var(--dinacen-text);
-        font-size: clamp(21px, 2vw, 26px);
-        font-weight: 800;
-        line-height: 1.15;
-    }
-
-    .page-description {
-        margin: 5px 0 0;
-        color: var(--dinacen-muted);
-        font-size: 13px;
-        line-height: 1.45;
-    }
-
-    .header-actions {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-        .header-actions .btn {
-            min-height: 40px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            white-space: nowrap;
-            font-size: 12.5px;
-            font-weight: 700;
-            border-radius: 9px;
-        }
-
-    .summary-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 12px;
-        margin-bottom: 18px;
-    }
-
-    .summary-card {
-        background: #fff;
-        border: 1px solid var(--dinacen-border);
-        border-radius: 12px;
-        padding: 15px 16px;
-        position: relative;
-        overflow: hidden;
-        min-width: 0;
-        box-shadow: 0 2px 8px rgba(15,23,42,.03);
-    }
-
-        .summary-card::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--dinacen-primary);
-        }
-
-        .summary-card.green::before {
-            background: var(--dinacen-success);
-        }
-
-        .summary-card.orange::before {
-            background: #f59e0b;
-        }
-
-        .summary-card.blue::before {
-            background: #0d6efd;
-        }
-
-    .summary-label {
-        display: block;
-        color: var(--dinacen-muted);
-        font-size: 10px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: .35px;
-        margin-bottom: 5px;
-    }
-
-    .summary-value {
-        color: var(--dinacen-text);
-        font-size: clamp(18px, 2vw, 22px);
-        font-weight: 800;
-        line-height: 1.2;
-        overflow-wrap: anywhere;
-    }
-
-    .summary-card.green .summary-value {
-        color: var(--dinacen-success);
-    }
-
-    .summary-card.orange .summary-value {
-        color: var(--dinacen-warning);
-    }
-
-    .summary-card.blue .summary-value {
-        color: #0d6efd;
-    }
-
-    .content-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(320px, 360px);
-        gap: 18px;
-        align-items: start;
-    }
-
-    .main-column,
-    .side-column {
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-        min-width: 0;
-    }
-
-    .panel {
-        background: #fff;
-        border: 1px solid var(--dinacen-border);
-        border-radius: 14px;
-        box-shadow: 0 3px 12px rgba(15,23,42,.04);
-        overflow: hidden;
-        min-width: 0;
-    }
-
-    .panel-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        padding: 15px 18px;
-        border-bottom: 1px solid #e8edf3;
-        color: var(--dinacen-text);
-        font-size: 13.5px;
-        font-weight: 800;
-    }
-
-    .panel-body {
-        padding: 18px;
-        min-width: 0;
-    }
-
-    .table-wrapper,
-    .table-responsive {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .table-gastos {
-        min-width: 980px;
-        margin: 0;
-    }
-
-        .table-gastos thead th {
-            background: var(--dinacen-bg);
-            color: var(--dinacen-muted);
-            border-bottom: 1px solid #dbe2ea;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            white-space: nowrap;
-            padding: 12px 11px;
-            vertical-align: middle;
-        }
-
-        .table-gastos tbody td {
-            padding: 12px 11px;
-            color: #334155;
-            font-size: 12.5px;
-            border-color: var(--dinacen-border-soft);
-            vertical-align: middle;
-        }
-
-        .table-gastos tbody tr:hover {
-            background: #fbfdff;
-        }
-
-    .badge-gasto {
-        display: inline-block;
-        background: #edf7ef;
-        color: #166534;
-        border: 1px solid #ccebd3;
-        padding: 5px 8px;
-        border-radius: 6px;
-        font-size: 10.5px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .table-footer {
-        padding: 11px 16px;
-        border-top: 1px solid #e8edf3;
-        color: var(--dinacen-muted);
-        font-size: 11.5px;
-        background: #fcfdff;
-    }
-
-    .mobile-hint {
-        display: none;
-        color: #94a3b8;
-        font-size: 10px;
-        font-weight: 600;
-    }
-
-    /* IMPORTANTE: nombres propios para no chocar con Bootstrap .col-* */
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(12, minmax(0, 1fr));
-        gap: 16px;
-        width: 100%;
-        align-items: start;
-    }
-
-    .form-col-3 {
-        grid-column: span 3;
-        min-width: 0;
-        width: 100%;
-    }
-
-    .form-col-4 {
-        grid-column: span 4;
-        min-width: 0;
-        width: 100%;
-    }
-
-    .form-col-6 {
-        grid-column: span 6;
-        min-width: 0;
-        width: 100%;
-    }
-
-    .form-col-8 {
-        grid-column: span 8;
-        min-width: 0;
-        width: 100%;
-    }
-
-    .form-col-12 {
-        grid-column: span 12;
-        min-width: 0;
-        width: 100%;
-    }
-
-    .form-grid .form-control,
-    .form-grid .form-select,
-    .form-grid .input-group,
-    .form-grid .tax-summary {
-        width: 100%;
-        max-width: none;
-    }
-
-    .form-label {
-        display: block;
-        color: #334155;
-        font-size: 11.5px;
-        font-weight: 700;
-        margin-bottom: 6px;
-    }
-
-    .form-control,
-    .form-select {
-        min-height: 42px;
-        border-color: #d7dee8;
-        border-radius: 8px;
-        font-size: 12.5px;
-    }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 .15rem rgba(13,110,253,.1);
-        }
-
-        .form-control[readonly] {
-            background: #f8fafc;
-        }
-
-    .form-text {
-        color: #94a3b8;
-        font-size: 10.5px;
-        line-height: 1.35;
-        margin-top: 5px;
-    }
-
-    .input-group {
-        width: 100%;
-    }
-
-        .input-group > .form-control,
-        .input-group > .form-select {
-            min-width: 0;
-        }
-
-        .input-group .btn {
-            font-size: 12px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-    .tax-summary {
-        height: 100%;
-        background: var(--dinacen-bg);
-        border: 1px solid var(--dinacen-border);
-        border-radius: 10px;
-        padding: 14px;
-    }
-
-    .tax-item {
-        text-align: center;
-    }
-
-        .tax-item small {
-            display: block;
-            color: var(--dinacen-muted);
-            font-size: 10.5px;
-            margin-bottom: 3px;
-        }
-
-        .tax-item strong {
-            color: var(--dinacen-text);
-            font-size: 16px;
-        }
-
-        .tax-item.total strong {
-            color: #0d6efd;
-        }
-
-    .btn-primary-custom {
-        background: var(--dinacen-primary);
-        border-color: var(--dinacen-primary);
-        color: #fff;
-        font-weight: 700;
-        min-height: 42px;
-        border-radius: 9px;
-    }
-
-        .btn-primary-custom:hover {
-            background: var(--dinacen-primary-dark);
-            border-color: var(--dinacen-primary-dark);
-            color: #fff;
-        }
-
-    .info-table {
-        margin: 0;
-    }
-
-        .info-table th,
-        .info-table td {
-            padding: 10px 11px;
-            border-color: #e5eaf0;
-            vertical-align: middle;
-        }
-
-        .info-table th {
-            width: 42%;
-            background: var(--dinacen-bg);
-            color: var(--dinacen-muted);
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .info-table td {
-            color: #334155;
-            font-size: 12.5px;
-            overflow-wrap: anywhere;
-        }
-
-    .estado {
-        display: inline-flex;
-        align-items: center;
-        padding: 5px 9px;
-        border-radius: 20px;
-        font-size: 10.5px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .estado-proceso {
-        background: #eaf2ff;
-        color: #0d6efd;
-    }
-
-    .estado-pendiente {
-        background: #fff4d6;
-        color: #9a6700;
-    }
-
-    .estado-aprobada {
-        background: #e8f7ef;
-        color: #198754;
-    }
-
-    .estado-rechazada {
-        background: #fdecec;
-        color: #dc3545;
-    }
-
-    .estado-desconocido {
-        background: #eef1f4;
-        color: #64748b;
-    }
-
-    .devolucion-box {
-        border-left: 4px solid #ffc107;
-    }
-
-        .devolucion-box.ok {
-            border-left-color: var(--dinacen-success);
-        }
-
-    .alert-custom {
-        border-radius: 9px;
-        font-size: 12.5px;
-    }
-
-    .action-stack {
-        display: flex;
-        flex-direction: column;
-        gap: 9px;
-    }
-
-        .action-stack .btn {
-            min-height: 41px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12.5px;
-            font-weight: 700;
-            border-radius: 9px;
-        }
-
-    .action-note {
-        margin: 0;
-        color: var(--dinacen-danger);
-        font-size: 10.5px;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 38px 18px;
-        color: #94a3b8;
-    }
-
-        .empty-state i {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 30px;
-        }
-
-    .voucher-link {
-        font-size: 11px;
-    }
-
-    @@media (max-width: 1199px) {
-        .content-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .side-column {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0,1fr));
-            align-items: start;
-        }
-
-        .summary-grid {
-            grid-template-columns: repeat(2, minmax(0,1fr));
-        }
-    }
-
-    @@media (max-width: 991px) {
-        .page-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .header-actions {
-            width: 100%;
-            justify-content: flex-start;
-        }
-
-        .form-col-3,
-        .form-col-4,
-        .form-col-6 {
-            grid-column: span 6;
-        }
-
-        .form-col-8,
-        .form-col-12 {
-            grid-column: span 12;
-        }
-    }
-
-    @@media (max-width: 767px) {
-        .rendicion-wrapper {
-            padding: 0 10px 24px;
-        }
-
-        .page-header {
-            padding: 16px;
-            gap: 14px;
-        }
-
-        .page-header-content {
-            align-items: flex-start;
-        }
-
-        .page-icon {
-            width: 42px;
-            height: 42px;
-            flex-basis: 42px;
-            font-size: 19px;
-        }
-
-        .page-description {
-            font-size: 11.5px;
-        }
-
-        .header-actions {
-            display: grid;
-            grid-template-columns: 1fr;
-        }
-
-            .header-actions .btn {
-                width: 100%;
-            }
-
-        .summary-grid {
-            grid-template-columns: repeat(2, minmax(0,1fr));
-            gap: 9px;
-        }
-
-        .summary-card {
-            padding: 12px;
-        }
-
-        .summary-label {
-            font-size: 8.5px;
-        }
-
-        .summary-value {
-            font-size: 16px;
-        }
-
-        .side-column {
-            display: flex;
-        }
-
-        .panel-header {
-            align-items: flex-start;
-            padding: 13px 14px;
-        }
-
-        .panel-body {
-            padding: 14px;
-        }
-
-        .mobile-hint {
-            display: block;
-            text-align: right;
-        }
-
-        .form-grid {
-            grid-template-columns: 1fr;
-            gap: 13px;
-        }
-
-        .form-col-3,
-        .form-col-4,
-        .form-col-6,
-        .form-col-8,
-        .form-col-12 {
-            grid-column: span 1;
-        }
-
-        #btnConsultarRuc {
-            padding-left: 14px;
-            padding-right: 14px;
-        }
-
-        .table-gastos {
-            min-width: 880px;
-        }
-
-            .table-gastos thead th,
-            .table-gastos tbody td {
-                padding: 10px 9px;
-                font-size: 11px;
-            }
-
-        .tax-summary {
-            padding: 12px;
-        }
-
-        .action-stack .btn {
-            width: 100%;
-        }
-    }
-
-    @@media (max-width: 480px) {
-        .summary-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .page-title {
-            font-size: 20px;
-        }
-
-        .form-grid .input-group {
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-            .form-grid .input-group .form-control {
-                flex: 1 1 100%;
-                border-radius: 8px !important;
-            }
-
-            .form-grid .input-group .btn {
-                width: 100%;
-                border-radius: 8px !important;
-            }
-    }
-</style>
 
 <div class="rendicion-wrapper">
 
     <div class="page-header">
+
         <div class="page-header-content">
 
             <div class="page-icon">
@@ -746,14 +63,19 @@
             </div>
 
             <div>
-                <h1 class="page-title">Rendición de gastos</h1>
+
+                <h1 class="page-title">
+                    Rendición de gastos
+                </h1>
 
                 <p class="page-description">
                     Registre sus gastos y complete la rendición correspondiente a su comisión.
                 </p>
+
             </div>
 
         </div>
+
 
         <div class="header-actions">
 
@@ -770,6 +92,7 @@
                 </a>
             }
 
+
             <a asp-controller="Rendicion"
                asp-action="Index"
                class="btn btn-outline-secondary">
@@ -780,6 +103,7 @@
             </a>
 
         </div>
+
     </div>
 
 
@@ -931,10 +255,52 @@
                                 foreach (var item in Model)
                                 {
 
-                                    <tr>
+                                    var esHospedaje =
+                                        item.TipoGasto?.Nombre?
+                                            .Contains(
+                                                "Hospedaje",
+                                                StringComparison.OrdinalIgnoreCase)
+                                        == true;
+
+                                    <tr data-inicio-hospedaje="@(item.FechaInicioHospedaje?.ToString("yyyy-MM-dd") ?? "")"
+                                        data-fin-hospedaje="@(item.FechaFinHospedaje?.ToString("yyyy-MM-dd") ?? "")"
+                                        data-dias-hospedaje="@(item.DiasHospedaje?.ToString() ?? "")">
 
                                         <td>
-                                            @item.Fecha.ToString("dd/MM/yyyy")
+
+                                            <div>
+                                                @item.Fecha.ToString("dd/MM/yyyy")
+                                            </div>
+
+
+                                            @if (esHospedaje &&
+                                                item.FechaInicioHospedaje.HasValue &&
+                                                item.FechaFinHospedaje.HasValue)
+                                            {
+
+                                                <div class="hospedaje-periodo-tabla">
+
+                                                    <span>
+                                                        <i class="bi bi-building me-1"></i>
+                                                        Hospedaje
+                                                    </span>
+
+                                                    <small>
+
+                                                        @item.FechaInicioHospedaje.Value.ToString("dd/MM/yyyy")
+                                                        -
+                                                        @item.FechaFinHospedaje.Value.ToString("dd/MM/yyyy")
+
+                                                        <br />
+
+                                                        @(item.DiasHospedaje ?? 0) día(s)
+
+                                                    </small>
+
+                                                </div>
+
+                                            }
+
                                         </td>
 
 
@@ -952,7 +318,7 @@
                                             @(item.TipoComprobante?.Nombre ?? "Sin comprobante")
 
                                             @if (!string.IsNullOrWhiteSpace(item.Serie) ||
-                                           !string.IsNullOrWhiteSpace(item.Numero))
+                                                 !string.IsNullOrWhiteSpace(item.Numero))
                                             {
 
                                                 <div class="text-muted mt-1">
@@ -1193,7 +559,10 @@
                               asp-action="Create"
                               method="post"
                               enctype="multipart/form-data"
-                              id="formGasto">
+                              id="formGasto"
+                              data-consultar-ruc-url="@Url.Action("ConsultarRuc", "Gasto")"
+                              data-fecha-inicio="@rendicion.FechaInicio.ToString("yyyy-MM-dd")"
+                              data-fecha-fin="@rendicion.FechaFin.ToString("yyyy-MM-dd")">
 
 
                             <input type="hidden"
@@ -1296,6 +665,130 @@
                                                class="form-control"
                                                maxlength="300"
                                                placeholder="Ej. Almuerzo" />
+
+                                    </div>
+
+
+                                    <!-- ================================================= -->
+                                    <!-- PERÍODO DE HOSPEDAJE -->
+                                    <!-- ================================================= -->
+
+                                    <div class="form-col-12"
+                                         id="periodoHospedaje"
+                                         style="display:none;">
+
+                                        <div class="alert alert-info py-3 mb-0">
+
+                                            <div class="d-flex align-items-start">
+
+                                                <i class="bi bi-building fs-4 me-2"></i>
+
+                                                <div class="w-100">
+
+                                                    <strong>
+                                                        Período de hospedaje
+                                                    </strong>
+
+                                                    <div class="small mt-1 mb-3">
+
+                                                        Puede registrar una sola factura
+                                                        de hospedaje que cubra varios días.
+
+                                                        El límite es de
+                                                        <strong>S/ 50.00 por día</strong>.
+
+                                                    </div>
+
+
+                                                    <div class="row g-3">
+
+                                                        <!-- FECHA INICIO -->
+
+                                                        <div class="col-md-4">
+
+                                                            <label class="form-label">
+                                                                Fecha de inicio
+                                                            </label>
+
+                                                            <input type="date"
+                                                                   id="fechaInicioHospedaje"
+                                                                   name="FechaInicioHospedaje"
+                                                                   class="form-control"
+                                                                   min="@rendicion.FechaInicio.ToString("yyyy-MM-dd")"
+                                                                   max="@rendicion.FechaFin.ToString("yyyy-MM-dd")" />
+
+                                                        </div>
+
+
+                                                        <!-- FECHA FIN -->
+
+                                                        <div class="col-md-4">
+
+                                                            <label class="form-label">
+                                                                Fecha de fin
+                                                            </label>
+
+                                                            <input type="date"
+                                                                   id="fechaFinHospedaje"
+                                                                   name="FechaFinHospedaje"
+                                                                   class="form-control"
+                                                                   min="@rendicion.FechaInicio.ToString("yyyy-MM-dd")"
+                                                                   max="@rendicion.FechaFin.ToString("yyyy-MM-dd")" />
+
+                                                        </div>
+
+
+                                                        <!-- DÍAS EDITABLE -->
+
+                                                        <div class="col-md-2">
+
+                                                            <label class="form-label">
+                                                                Días
+                                                            </label>
+
+                                                            <input type="number"
+                                                                   id="diasHospedaje"
+                                                                   name="DiasHospedaje"
+                                                                   class="form-control"
+                                                                   min="1"
+                                                                   step="1"
+                                                                   placeholder="Días" />
+
+                                                            <div class="form-text">
+                                                                Editable
+                                                            </div>
+
+                                                        </div>
+
+
+                                                        <!-- MÁXIMO -->
+
+                                                        <div class="col-md-2">
+
+                                                            <label class="form-label">
+                                                                Máximo
+                                                            </label>
+
+                                                            <input type="text"
+                                                                   id="maximoHospedaje"
+                                                                   class="form-control"
+                                                                   value="S/ 0.00"
+                                                                   readonly />
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <div id="mensajeHospedaje"
+                                                         class="small mt-3">
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
 
                                     </div>
 
@@ -1418,8 +911,6 @@
 
                                 </h6>
 
-
-                                <!-- MENSAJE MOVILIDAD -->
 
                                 <div id="mensajeMovilidad"
                                      class="alert alert-info py-2 mb-3"
@@ -1825,7 +1316,6 @@
 
                         <table class="table table-bordered info-table">
 
-
                             <tr>
 
                                 <th>
@@ -1932,7 +1422,6 @@
 
                             </tr>
 
-
                         </table>
 
                     </div>
@@ -1947,12 +1436,11 @@
             <!-- ========================================================= -->
 
             @if (rendicion != null &&
-            rendicion.IdEstadoRendicion == 1 &&
-            rendicion.Saldo > 0)
+                 rendicion.IdEstadoRendicion == 1 &&
+                 rendicion.Saldo > 0)
             {
 
                 <div class="panel devolucion-box @(devolucion != null ? "ok" : "")">
-
 
                     <div class="panel-header">
 
@@ -1968,7 +1456,6 @@
 
 
                     <div class="panel-body">
-
 
                         @if (devolucion == null)
                         {
@@ -1990,7 +1477,6 @@
                                   asp-action="Registrar"
                                   method="post"
                                   enctype="multipart/form-data">
-
 
                                 <input type="hidden"
                                        name="IdRendicion"
@@ -2097,7 +1583,6 @@
 
                                 </button>
 
-
                             </form>
 
                         }
@@ -2116,7 +1601,6 @@
                             <div class="table-responsive">
 
                                 <table class="table table-bordered info-table">
-
 
                                     <tr>
 
@@ -2223,7 +1707,6 @@
 
                                     </tr>
 
-
                                 </table>
 
                             </div>
@@ -2234,16 +1717,13 @@
                                   method="post"
                                   class="mt-3">
 
-
                                 <input type="hidden"
                                        name="id"
                                        value="@devolucion.IdDevolucionSaldo" />
 
-
                                 <input type="hidden"
                                        name="idRendicion"
                                        value="@rendicion.IdRendicion" />
-
 
                                 <button type="submit"
                                         class="btn btn-outline-danger w-100"
@@ -2254,7 +1734,6 @@
                                     Eliminar devolución
 
                                 </button>
-
 
                             </form>
 
@@ -2295,19 +1774,17 @@
                         {
 
                             var puedeEnviar =
-                            rendicion.Total > 0 &&
-                            (rendicion.Saldo <= 0 || devolucion != null);
+                                rendicion.Total > 0 &&
+                                (rendicion.Saldo <= 0 || devolucion != null);
 
 
                             <form asp-controller="Gasto"
                                   asp-action="EnviarRendicion"
                                   method="post">
 
-
                                 <input type="hidden"
                                        name="idRendicion"
                                        value="@rendicion.IdRendicion" />
-
 
                                 <button type="submit"
                                         class="btn btn-success w-100"
@@ -2319,7 +1796,6 @@
                                     Finalizar y enviar
 
                                 </button>
-
 
                             </form>
 
@@ -2390,7 +1866,6 @@
 
                         </a>
 
-
                     </div>
 
                 </div>
@@ -2404,1502 +1879,9 @@
 </div>
 
 
-<!-- ============================================================= -->
-<!-- JAVASCRIPT -->
-<!-- ============================================================= -->
+@section Scripts {
 
-<script>
+    <script src="~/js/IndexGasto.js"
+            asp-append-version="true"></script>
 
-document.addEventListener("DOMContentLoaded", function () {
-
-
-    // =========================================================
-    // ELEMENTOS
-    // =========================================================
-
-    const formGasto =
-        document.getElementById("formGasto");
-
-
-    const ruc =
-        document.getElementById("ruc");
-
-
-    const btnRuc =
-        document.getElementById("btnConsultarRuc");
-
-
-    const razonSocial =
-        document.getElementById("razonSocial");
-
-
-    const domicilio =
-        document.getElementById("domicilioFiscal");
-
-
-    const mensajeRuc =
-        document.getElementById("mensajeRuc");
-
-
-    const tipoGasto =
-        document.getElementById("tipoGasto");
-
-
-    const mensajeTipoGasto =
-        document.getElementById("mensajeTipoGasto");
-
-
-    const tipoComprobante =
-        document.getElementById("tipoComprobante");
-
-
-    const mensajeComprobante =
-        document.getElementById("mensajeComprobante");
-
-
-    const mensajeMovilidad =
-        document.getElementById("mensajeMovilidad");
-
-
-    const archivo =
-        document.getElementById("archivo");
-
-
-    const mensajeArchivo =
-        document.getElementById("mensajeArchivo");
-
-
-    const serie =
-        document.getElementById("serie");
-
-
-    const numero =
-        document.getElementById("numero");
-
-
-    const fechaGasto =
-        document.querySelector('input[name="Fecha"]');
-
-
-    const montoTotal =
-        document.getElementById("montoTotal");
-
-
-    const exoneracion =
-        document.getElementById("exoneracionIGV");
-
-
-    const valorVenta =
-        document.getElementById("valorVenta");
-
-
-    const igv =
-        document.getElementById("igvCalculado");
-
-
-    const resumenBase =
-        document.getElementById("resumenValorVenta");
-
-
-    const resumenIgv =
-        document.getElementById("resumenIgv");
-
-
-    const resumenTotal =
-        document.getElementById("resumenTotal");
-
-
-    const mensajeLimiteMonto =
-        document.getElementById("mensajeLimiteMonto");
-
-
-    let ultimaConsulta = "";
-
-
-    // =========================================================
-    // LÍMITES
-    // =========================================================
-
-    const LIMITE_ALIMENTACION = 40.00;
-
-    const LIMITE_HOSPEDAJE = 50.00;
-
-
-    // =========================================================
-    // NORMALIZAR TEXTO
-    // =========================================================
-
-    function normalizarTexto(texto) {
-
-        return (texto || "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase()
-            .trim();
-
-    }
-
-
-    // =========================================================
-    // OBTENER NOMBRE TIPO GASTO
-    // =========================================================
-
-    function obtenerNombreTipo() {
-
-        if (!tipoGasto)
-            return "";
-
-        return tipoGasto.options[
-            tipoGasto.selectedIndex
-        ]?.text || "";
-
-    }
-
-
-    // =========================================================
-    // SABER SI ES MOVILIDAD
-    // =========================================================
-
-    function esMovilidad() {
-
-        const tipo =
-            normalizarTexto(
-                obtenerNombreTipo()
-            );
-
-        return tipo.includes("movilidad");
-
-    }
-
-
-    // =========================================================
-    // ACTUALIZAR REQUISITOS SEGÚN TIPO
-    // =========================================================
-
-    function actualizarRequisitos() {
-
-        const movilidad =
-            esMovilidad();
-
-
-        // =====================================================
-        // MOVILIDAD
-        // =====================================================
-
-        if (movilidad) {
-
-            // ---------------------------------------------
-            // RUC
-            // ---------------------------------------------
-
-            ruc?.removeAttribute("required");
-
-
-            // ---------------------------------------------
-            // RAZÓN SOCIAL
-            // ---------------------------------------------
-
-            razonSocial?.removeAttribute("required");
-
-
-            // ---------------------------------------------
-            // DOMICILIO
-            // ---------------------------------------------
-
-            domicilio?.removeAttribute("required");
-
-
-            // ---------------------------------------------
-            // COMPROBANTE
-            // ---------------------------------------------
-
-            tipoComprobante?.removeAttribute("required");
-
-
-            // ---------------------------------------------
-            // ARCHIVO
-            // ---------------------------------------------
-
-            archivo?.removeAttribute("required");
-
-
-            // ---------------------------------------------
-            // SERIE
-            // ---------------------------------------------
-
-            serie?.removeAttribute("required");
-
-
-            // ---------------------------------------------
-            // NÚMERO
-            // ---------------------------------------------
-
-            numero?.removeAttribute("required");
-
-
-            // ---------------------------------------------
-            // MENSAJE
-            // ---------------------------------------------
-
-            if (mensajeMovilidad) {
-
-                mensajeMovilidad.style.display =
-                    "block";
-
-            }
-
-
-            if (mensajeArchivo) {
-
-                mensajeArchivo.innerHTML =
-                    "PDF, JPG, JPEG o PNG. " +
-                    "<strong>Opcional para Movilidad.</strong>";
-
-            }
-
-
-            if (mensajeTipoGasto) {
-
-                mensajeTipoGasto.textContent =
-                    "Movilidad: RUC, comprobante y voucher son opcionales.";
-
-                mensajeTipoGasto.className =
-                    "form-text text-success";
-
-            }
-
-
-            // ---------------------------------------------
-            // LIMPIAR VALIDACIONES VISUALES
-            // ---------------------------------------------
-
-            ruc?.classList.remove("is-invalid");
-
-            tipoComprobante?.classList.remove("is-invalid");
-
-            archivo?.classList.remove("is-invalid");
-
-
-        }
-
-        // =====================================================
-        // OTROS TIPOS
-        // =====================================================
-
-        else {
-
-            // ---------------------------------------------
-            // RUC OBLIGATORIO
-            // ---------------------------------------------
-
-            ruc?.setAttribute(
-                "required",
-                "required"
-            );
-
-
-            // ---------------------------------------------
-            // RAZÓN SOCIAL
-            // ---------------------------------------------
-
-            razonSocial?.setAttribute(
-                "required",
-                "required"
-            );
-
-
-            // ---------------------------------------------
-            // DOMICILIO
-            // ---------------------------------------------
-
-            domicilio?.setAttribute(
-                "required",
-                "required"
-            );
-
-
-            // ---------------------------------------------
-            // COMPROBANTE
-            // ---------------------------------------------
-
-            tipoComprobante?.setAttribute(
-                "required",
-                "required"
-            );
-
-
-            // ---------------------------------------------
-            // ARCHIVO
-            // ---------------------------------------------
-
-            archivo?.setAttribute(
-                "required",
-                "required"
-            );
-
-
-            // ---------------------------------------------
-            // SERIE
-            // ---------------------------------------------
-
-            serie?.removeAttribute("required");
-
-
-            // ---------------------------------------------
-            // NÚMERO
-            // ---------------------------------------------
-
-            numero?.removeAttribute("required");
-
-
-            // ---------------------------------------------
-            // MENSAJE
-            // ---------------------------------------------
-
-            if (mensajeMovilidad) {
-
-                mensajeMovilidad.style.display =
-                    "none";
-
-            }
-
-
-            if (mensajeArchivo) {
-
-                mensajeArchivo.innerHTML =
-                    "PDF, JPG, JPEG o PNG. " +
-                    "<strong>Obligatorio excepto para Movilidad.</strong>";
-
-            }
-
-
-            if (mensajeTipoGasto) {
-
-                mensajeTipoGasto.textContent =
-                    "";
-
-                mensajeTipoGasto.className =
-                    "form-text";
-
-            }
-
-        }
-
-    }
-
-
-    // =========================================================
-    // CONSULTAR RUC
-    // =========================================================
-
-    async function consultarRuc() {
-
-        // -----------------------------------------------------
-        // MOVILIDAD NO NECESITA RUC
-        // -----------------------------------------------------
-
-        if (esMovilidad()) {
-
-            return;
-
-        }
-
-
-        const numeroRuc =
-            ruc.value.trim();
-
-
-        if (numeroRuc === ultimaConsulta)
-            return;
-
-
-        razonSocial.value = "";
-
-        domicilio.value = "";
-
-        mensajeRuc.textContent = "";
-
-
-        if (!/^\d{11}$/.test(numeroRuc)) {
-
-            mensajeRuc.textContent =
-                "Ingrese un RUC válido de 11 dígitos.";
-
-            mensajeRuc.className =
-                "form-text text-danger";
-
-            return;
-
-        }
-
-
-        btnRuc.disabled = true;
-
-
-        btnRuc.innerHTML =
-            '<span class="spinner-border spinner-border-sm me-1"></span>Buscando...';
-
-
-        try {
-
-            const url =
-                '@Url.Action("ConsultarRuc", "Gasto")' +
-                '?ruc=' +
-                encodeURIComponent(numeroRuc);
-
-
-            const response =
-                await fetch(
-                    url,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Accept": "application/json"
-                        }
-                    }
-                );
-
-
-            let data;
-
-
-            try {
-
-                data =
-                    await response.json();
-
-            }
-            catch {
-
-                throw new Error(
-                    "La respuesta del servidor no es válida."
-                );
-
-            }
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data?.mensaje ||
-                    "No se encontró el RUC."
-                );
-
-            }
-
-
-            razonSocial.value =
-                data?.razonSocial ?? "";
-
-
-            domicilio.value =
-                data?.domicilioFiscal ?? "";
-
-
-            mensajeRuc.textContent =
-                `Estado: ${data?.estado ?? "-"} | Condición: ${data?.condicion ?? "-"}`;
-
-
-            mensajeRuc.className =
-                "form-text text-success";
-
-
-            ultimaConsulta =
-                numeroRuc;
-
-
-            validarComprobantePorRuc();
-
-        }
-        catch (error) {
-
-            ultimaConsulta = "";
-
-            mensajeRuc.textContent =
-                error.message ||
-                "No se pudo consultar el RUC.";
-
-            mensajeRuc.className =
-                "form-text text-danger";
-
-        }
-        finally {
-
-            btnRuc.disabled = false;
-
-            btnRuc.innerHTML =
-                '<i class="bi bi-search me-1"></i>Buscar';
-
-        }
-
-    }
-
-
-    // =========================================================
-    // VALIDAR COMPROBANTE SEGÚN RUC
-    // =========================================================
-
-    function validarComprobantePorRuc() {
-
-        // =====================================================
-        // MOVILIDAD
-        // =====================================================
-
-        if (esMovilidad()) {
-
-            mensajeComprobante.textContent =
-                "Para Movilidad el comprobante es opcional.";
-
-            mensajeComprobante.className =
-                "form-text text-success";
-
-            tipoComprobante?.classList.remove(
-                "is-invalid"
-            );
-
-            return true;
-
-        }
-
-
-        if (!ruc || !tipoComprobante)
-            return true;
-
-
-        const numeroRuc =
-            ruc.value.trim();
-
-
-        const opcionSeleccionada =
-            tipoComprobante.options[
-                tipoComprobante.selectedIndex
-            ];
-
-
-        const nombreComprobante =
-            opcionSeleccionada?.text || "";
-
-
-        // =====================================================
-        // RUC 20
-        // =====================================================
-
-        if (numeroRuc.startsWith("20")) {
-
-            if (!normalizarTexto(nombreComprobante)
-                .includes("factura")) {
-
-
-                mensajeComprobante.textContent =
-                    "Para un RUC que empieza con 20, únicamente se permite registrar una FACTURA.";
-
-
-                mensajeComprobante.className =
-                    "form-text text-danger";
-
-
-                tipoComprobante.classList.add(
-                    "is-invalid"
-                );
-
-
-                return false;
-
-            }
-
-
-            mensajeComprobante.textContent =
-                "RUC iniciado en 20: comprobante válido.";
-
-
-            mensajeComprobante.className =
-                "form-text text-success";
-
-
-            tipoComprobante.classList.remove(
-                "is-invalid"
-            );
-
-
-            return true;
-
-        }
-
-
-        mensajeComprobante.textContent =
-            "";
-
-
-        tipoComprobante.classList.remove(
-            "is-invalid"
-        );
-
-
-        return true;
-
-    }
-
-
-    // =========================================================
-    // EVENTOS RUC
-    // =========================================================
-
-    if (ruc && btnRuc) {
-
-        btnRuc.addEventListener(
-            "click",
-            consultarRuc
-        );
-
-
-        ruc.addEventListener(
-            "blur",
-            function () {
-
-                if (
-                    !esMovilidad() &&
-                    /^\d{11}$/.test(
-                        ruc.value.trim()
-                    )
-                ) {
-
-                    consultarRuc();
-
-                }
-
-            }
-        );
-
-
-        ruc.addEventListener(
-            "input",
-            function () {
-
-                ruc.value =
-                    ruc.value
-                        .replace(/\D/g, "")
-                        .slice(0, 11);
-
-
-                if (
-                    ruc.value !==
-                    ultimaConsulta
-                ) {
-
-                    ultimaConsulta = "";
-
-                    razonSocial.value = "";
-
-                    domicilio.value = "";
-
-                    mensajeRuc.textContent = "";
-
-                    mensajeComprobante.textContent = "";
-
-                    tipoComprobante?.classList.remove(
-                        "is-invalid"
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
-
-    // =========================================================
-    // CAMBIO TIPO COMPROBANTE
-    // =========================================================
-
-    tipoComprobante?.addEventListener(
-        "change",
-        function () {
-
-            validarComprobantePorRuc();
-
-        }
-    );
-
-
-    // =========================================================
-    // CAMBIO TIPO DE GASTO
-    // =========================================================
-
-    tipoGasto?.addEventListener(
-        "change",
-        function () {
-
-            actualizarRequisitos();
-
-            validarComprobantePorRuc();
-
-            validarLimiteDiario(true);
-
-            calcularIgv();
-
-        }
-    );
-
-
-    // =========================================================
-    // LÍMITES SEGÚN TIPO
-    // =========================================================
-
-    function obtenerLimiteTipo() {
-
-        if (!tipoGasto)
-            return null;
-
-
-        const texto =
-            tipoGasto.options[
-                tipoGasto.selectedIndex
-            ]?.text || "";
-
-
-        const tipo =
-            normalizarTexto(texto);
-
-
-        if (tipo.includes("alimentacion"))
-            return LIMITE_ALIMENTACION;
-
-
-        if (tipo.includes("hospedaje"))
-            return LIMITE_HOSPEDAJE;
-
-
-        return null;
-
-    }
-
-
-    // =========================================================
-    // OBTENER TOTAL EXISTENTE
-    // =========================================================
-
-    function obtenerTotalExistentePorDia(
-        fecha,
-        tipo
-    ) {
-
-        if (!fecha || !tipo)
-            return 0;
-
-
-        const tipoBuscado =
-            normalizarTexto(tipo);
-
-
-        let totalExistente = 0;
-
-
-        const filas =
-            document.querySelectorAll(
-                ".table-gastos tbody tr"
-            );
-
-
-        filas.forEach(
-            function (fila) {
-
-                const celdas =
-                    fila.querySelectorAll("td");
-
-
-                if (celdas.length < 7)
-                    return;
-
-
-                const fechaTexto =
-                    celdas[0]
-                        .textContent
-                        .trim();
-
-
-                const partes =
-                    fechaTexto.split("/");
-
-
-                if (partes.length !== 3)
-                    return;
-
-
-                const fechaFila =
-                    `${partes[2]}-${partes[1].padStart(2, "0")}-${partes[0].padStart(2, "0")}`;
-
-
-                if (fechaFila !== fecha)
-                    return;
-
-
-                const tipoFila =
-                    normalizarTexto(
-                        celdas[1].textContent
-                    );
-
-
-                if (!tipoFila.includes(tipoBuscado))
-                    return;
-
-
-                const totalTexto =
-                    celdas[6]
-                        .textContent
-                        .replace("S/", "")
-                        .replace(/,/g, "")
-                        .trim();
-
-
-                const total =
-                    parseFloat(totalTexto) || 0;
-
-
-                totalExistente += total;
-
-            }
-        );
-
-
-        return totalExistente;
-
-    }
-
-
-    // =========================================================
-    // VALIDAR LÍMITE DIARIO
-    // =========================================================
-
-    function validarLimiteDiario(
-        mostrarMensaje = true
-    ) {
-
-        if (
-            !fechaGasto ||
-            !tipoGasto ||
-            !montoTotal
-        ) {
-
-            return true;
-
-        }
-
-
-        const fecha =
-            fechaGasto.value;
-
-
-        const tipo =
-            obtenerNombreTipo();
-
-
-        const limite =
-            obtenerLimiteTipo();
-
-
-        const monto =
-            parseFloat(
-                montoTotal.value
-            ) || 0;
-
-
-        // -----------------------------------------------------
-        // No es alimentación ni hospedaje
-        // -----------------------------------------------------
-
-        if (!limite) {
-
-            if (mensajeLimiteMonto) {
-
-                mensajeLimiteMonto.textContent =
-                    "";
-
-                mensajeLimiteMonto.className =
-                    "form-text";
-
-            }
-
-
-            montoTotal.removeAttribute("max");
-
-
-            return true;
-
-        }
-
-
-        // -----------------------------------------------------
-        // Fecha
-        // -----------------------------------------------------
-
-        if (!fecha) {
-
-            if (mostrarMensaje) {
-
-                mensajeLimiteMonto.textContent =
-                    "Seleccione la fecha del gasto.";
-
-                mensajeLimiteMonto.className =
-                    "form-text text-danger";
-
-            }
-
-
-            return false;
-
-        }
-
-
-        const totalExistente =
-            obtenerTotalExistentePorDia(
-                fecha,
-                tipo
-            );
-
-
-        const disponible =
-            Math.max(
-                0,
-                limite - totalExistente
-            );
-
-
-        montoTotal.max =
-            disponible.toFixed(2);
-
-
-        // -----------------------------------------------------
-        // LÍMITE ALCANZADO
-        // -----------------------------------------------------
-
-        if (totalExistente >= limite) {
-
-            if (mostrarMensaje) {
-
-                mensajeLimiteMonto.textContent =
-                    `${tipo}: ya alcanzó el límite diario de S/ ${limite.toFixed(2)}.`;
-
-                mensajeLimiteMonto.className =
-                    "form-text text-danger";
-
-            }
-
-
-            return false;
-
-        }
-
-
-        // -----------------------------------------------------
-        // EXCEDE DISPONIBLE
-        // -----------------------------------------------------
-
-        if (monto > disponible) {
-
-            if (mostrarMensaje) {
-
-                mensajeLimiteMonto.textContent =
-                    `El máximo permitido para ${tipo.toLowerCase()} en esta fecha es S/ ${disponible.toFixed(2)}. El límite diario es S/ ${limite.toFixed(2)}.`;
-
-                mensajeLimiteMonto.className =
-                    "form-text text-danger";
-
-            }
-
-
-            return false;
-
-        }
-
-
-        // -----------------------------------------------------
-        // INFORMACIÓN
-        // -----------------------------------------------------
-
-        if (mostrarMensaje) {
-
-            mensajeLimiteMonto.textContent =
-                `Límite diario: S/ ${limite.toFixed(2)} | ` +
-                `Registrado: S/ ${totalExistente.toFixed(2)} | ` +
-                `Disponible: S/ ${disponible.toFixed(2)}`;
-
-            mensajeLimiteMonto.className =
-                "form-text text-muted";
-
-        }
-
-
-        return true;
-
-    }
-
-
-    // =========================================================
-    // CALCULAR IGV
-    // =========================================================
-
-    function calcularIgv() {
-
-        if (
-            !montoTotal ||
-            !valorVenta ||
-            !igv
-        ) {
-
-            return;
-
-        }
-
-
-        const total =
-            parseFloat(
-                montoTotal.value
-            ) || 0;
-
-
-        let base = 0;
-
-        let impuesto = 0;
-
-
-        if (total > 0) {
-
-            if (exoneracion?.checked) {
-
-                base = total;
-
-            }
-            else {
-
-                base =
-                    Math.round(
-                        (total / 1.18) * 100
-                    ) / 100;
-
-
-                impuesto =
-                    Math.round(
-                        (total - base) * 100
-                    ) / 100;
-
-            }
-
-        }
-
-
-        valorVenta.value =
-            base.toFixed(2);
-
-
-        igv.value =
-            impuesto.toFixed(2);
-
-
-        if (resumenBase) {
-
-            resumenBase.textContent =
-                `S/ ${base.toFixed(2)}`;
-
-        }
-
-
-        if (resumenIgv) {
-
-            resumenIgv.textContent =
-                `S/ ${impuesto.toFixed(2)}`;
-
-        }
-
-
-        if (resumenTotal) {
-
-            resumenTotal.textContent =
-                `S/ ${total.toFixed(2)}`;
-
-        }
-
-    }
-
-
-    // =========================================================
-    // EVENTOS FECHA
-    // =========================================================
-
-    fechaGasto?.addEventListener(
-        "change",
-        function () {
-
-            validarLimiteDiario(true);
-
-            calcularIgv();
-
-        }
-    );
-
-
-    // =========================================================
-    // EVENTO MONTO
-    // =========================================================
-
-    montoTotal?.addEventListener(
-        "input",
-        function () {
-
-            validarLimiteDiario(true);
-
-            calcularIgv();
-
-        }
-    );
-
-
-    // =========================================================
-    // EVENTO EXONERACIÓN
-    // =========================================================
-
-    exoneracion?.addEventListener(
-        "change",
-        calcularIgv
-    );
-
-
-    // =========================================================
-    // VALIDACIÓN FINAL
-    // =========================================================
-
-    formGasto?.addEventListener(
-        "submit",
-        function (event) {
-
-
-            // =====================================================
-            // IDENTIFICAR MOVILIDAD
-            // =====================================================
-
-            const movilidad =
-                esMovilidad();
-
-
-            // =====================================================
-            // MOVILIDAD
-            // =====================================================
-
-            if (movilidad) {
-
-                /*
-                 * IMPORTANTE:
-                 *
-                 * Para movilidad NO se valida:
-                 *
-                 * - RUC
-                 * - Razón social
-                 * - Domicilio
-                 * - Tipo comprobante
-                 * - Serie
-                 * - Número
-                 * - Archivo/voucher
-                 *
-                 * Por eso aquí NO se bloquea el formulario.
-                 */
-
-            }
-
-            // =====================================================
-            // OTROS TIPOS
-            // =====================================================
-
-            else {
-
-                // -------------------------------------------------
-                // 1. RUC
-                // -------------------------------------------------
-
-                const numeroRuc =
-                    ruc?.value.trim() || "";
-
-
-                if (!/^\d{11}$/.test(numeroRuc)) {
-
-                    event.preventDefault();
-
-
-                    mostrarAlerta(
-                        "RUC obligatorio",
-                        "Para este tipo de gasto debe ingresar un RUC válido de 11 dígitos.",
-                        "error"
-                    );
-
-
-                    ruc?.focus();
-
-
-                    return;
-
-                }
-
-
-                // -------------------------------------------------
-                // 2. RUC 20 → FACTURA
-                // -------------------------------------------------
-
-                if (
-                    numeroRuc.startsWith("20")
-                ) {
-
-                    const opcion =
-                        tipoComprobante?.options[
-                            tipoComprobante.selectedIndex
-                        ];
-
-
-                    const comprobante =
-                        normalizarTexto(
-                            opcion?.text || ""
-                        );
-
-
-                    if (
-                        !comprobante.includes(
-                            "factura"
-                        )
-                    ) {
-
-                        event.preventDefault();
-
-
-                        mostrarAlerta(
-                            "Comprobante no permitido",
-                            "El RUC ingresado empieza con 20. Para este tipo de RUC únicamente se permite registrar una FACTURA.",
-                            "warning"
-                        );
-
-
-                        tipoComprobante?.focus();
-
-
-                        return;
-
-                    }
-
-                }
-
-
-                // -------------------------------------------------
-                // 3. COMPROBANTE
-                // -------------------------------------------------
-
-                if (
-                    !tipoComprobante ||
-                    !tipoComprobante.value
-                ) {
-
-                    event.preventDefault();
-
-
-                    mostrarAlerta(
-                        "Comprobante obligatorio",
-                        "Debe seleccionar el tipo de comprobante para este tipo de gasto.",
-                        "warning"
-                    );
-
-
-                    tipoComprobante?.focus();
-
-
-                    return;
-
-                }
-
-
-                // -------------------------------------------------
-                // 4. ARCHIVO
-                // -------------------------------------------------
-
-                if (
-                    !archivo ||
-                    archivo.files.length === 0
-                ) {
-
-                    event.preventDefault();
-
-
-                    mostrarAlerta(
-                        "Voucher obligatorio",
-                        "Debe adjuntar el comprobante o voucher del gasto.",
-                        "warning"
-                    );
-
-
-                    archivo?.focus();
-
-
-                    return;
-
-                }
-
-            }
-
-
-            // =====================================================
-            // 5. LÍMITE DIARIO
-            // =====================================================
-
-            if (
-                !validarLimiteDiario(true)
-            ) {
-
-                event.preventDefault();
-
-
-                const fecha =
-                    fechaGasto?.value || "";
-
-
-                const tipo =
-                    obtenerNombreTipo();
-
-
-                const limite =
-                    obtenerLimiteTipo();
-
-
-                const monto =
-                    parseFloat(
-                        montoTotal?.value
-                    ) || 0;
-
-
-                const existente =
-                    obtenerTotalExistentePorDia(
-                        fecha,
-                        tipo
-                    );
-
-
-                const disponible =
-                    limite !== null
-                        ? Math.max(
-                            0,
-                            limite - existente
-                        )
-                        : 0;
-
-
-                if (
-                    limite !== null &&
-                    existente >= limite
-                ) {
-
-                    mostrarAlerta(
-                        "Límite diario alcanzado",
-                        `Ya registró S/ ${existente.toFixed(2)} en ${tipo.toLowerCase()} para el día seleccionado.<br><br>` +
-                        `<strong>Límite permitido: S/ ${limite.toFixed(2)}</strong><br>` +
-                        `No puede registrar otro gasto de este tipo en esta fecha.`,
-                        "warning"
-                    );
-
-                }
-                else if (
-                    limite !== null &&
-                    monto > disponible
-                ) {
-
-                    mostrarAlerta(
-                        "Monto excede el límite",
-                        `El gasto ingresado es de <strong>S/ ${monto.toFixed(2)}</strong>.<br><br>` +
-                        `Ya tiene registrado: <strong>S/ ${existente.toFixed(2)}</strong>.<br>` +
-                        `Disponible: <strong>S/ ${disponible.toFixed(2)}</strong>.<br><br>` +
-                        `Límite diario de ${tipo.toLowerCase()}: <strong>S/ ${limite.toFixed(2)}</strong>.`,
-                        "warning"
-                    );
-
-                }
-                else {
-
-                    mostrarAlerta(
-                        "No se puede registrar",
-                        "El gasto no cumple con las restricciones establecidas.",
-                        "warning"
-                    );
-
-                }
-
-
-                montoTotal?.focus();
-
-
-                return;
-
-            }
-
-        }
-    );
-
-
-    // =========================================================
-    // ALERTAS
-    // =========================================================
-
-    function mostrarAlerta(
-        titulo,
-        mensaje,
-        tipo
-    ) {
-
-        if (
-            typeof Swal !==
-            "undefined"
-        ) {
-
-            Swal.fire({
-
-                icon: tipo,
-
-                title: titulo,
-
-                html: mensaje,
-
-                confirmButtonText:
-                    "Entendido",
-
-                confirmButtonColor:
-                    "#0C4A8A"
-
-            });
-
-
-            return;
-
-        }
-
-
-        const mensajePlano =
-            mensaje.replace(
-                /<[^>]*>/g,
-                ""
-            );
-
-
-        alert(
-            titulo +
-            "\n\n" +
-            mensajePlano
-        );
-
-    }
-
-
-    // =========================================================
-    // INICIALIZAR
-    // =========================================================
-
-    actualizarRequisitos();
-
-    calcularIgv();
-
-    validarLimiteDiario(false);
-
-});
-
-</script>
+}

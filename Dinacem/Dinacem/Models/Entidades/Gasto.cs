@@ -69,5 +69,14 @@ namespace Dinacem.Models
 
         // true: comprobante exonerado; false: comprobante gravado.
         public bool ExoneracionIGV { get; set; }
+        // =========================================================
+        // PERÍODO DE HOSPEDAJE
+        // =========================================================
+
+        public DateTime? FechaInicioHospedaje { get; set; }
+
+        public DateTime? FechaFinHospedaje { get; set; }
+
+        public int? DiasHospedaje { get; set; }
     }
 }

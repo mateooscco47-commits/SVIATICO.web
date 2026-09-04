@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dinacen.Models.Entidades;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dinacem.Models
 {
@@ -44,6 +45,7 @@ namespace Dinacem.Models
         public DbSet<BitacoraVehiculo> BitacorasVehiculo { get; set; }
 
         public DbSet<ConfiguracionSistema> ConfiguracionesSistema { get; set; }
+        public DbSet<Ruta> Rutas { get; set; }
 
 
         protected override void OnModelCreating(
@@ -402,7 +404,34 @@ namespace Dinacem.Models
             modelBuilder.Entity<Reembolso>()
                 .Property(x => x.Monto)
                 .HasPrecision(18, 2);
+            // =========================================
+            // RUTA
+            // =========================================
 
+            modelBuilder.Entity<Ruta>()
+                .ToTable("Rutas");
+
+            modelBuilder.Entity<Ruta>()
+                .HasKey(x => x.IdRuta);
+
+            modelBuilder.Entity<Ruta>()
+                .Property(x => x.Origen)
+                .HasMaxLength(200)
+                .IsRequired();
+
+            modelBuilder.Entity<Ruta>()
+                .Property(x => x.Destino)
+                .HasMaxLength(200)
+                .IsRequired();
+
+            modelBuilder.Entity<Ruta>()
+                .Property(x => x.Kilometros)
+                .HasPrecision(18, 2)
+                .IsRequired();
+
+            modelBuilder.Entity<Ruta>()
+                .Property(x => x.Estado)
+                .IsRequired();
 
             // =========================================
             // BITÁCORA VEHÍCULO
