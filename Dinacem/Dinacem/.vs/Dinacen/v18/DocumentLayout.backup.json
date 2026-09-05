@@ -3,6 +3,30 @@
   "WorkspaceRootPath": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\models\\servicios\\correoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\servicios\\correoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\views\\shared\\_layoutadministrador.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:views\\shared\\_layoutadministrador.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\views\\shared\\_layoutempleado.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:views\\shared\\_layoutempleado.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\models\\entidades\\bitacoravehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\entidades\\bitacoravehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\models\\entidades\\ruta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\entidades\\ruta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\controllers\\gastocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:controllers\\gastocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -19,10 +43,6 @@
       "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:wwwroot\\js\\indexgasto.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Migrations\\20260904035202_DinacenDB.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Migrations\\20260904035202_DinacenDB.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\views\\gasto\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:views\\gasto\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -35,18 +55,6 @@
       "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:wwwroot\\css\\indexgasto.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\views\\shared\\_layoutadministrador.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:views\\shared\\_layoutadministrador.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\views\\shared\\_layoutempleado.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:views\\shared\\_layoutempleado.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\controllers\\bitacoravehiculocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:controllers\\bitacoravehiculocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -55,12 +63,8 @@
       "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\data\\aplicaciondbcontexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\models\\entidades\\ruta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\entidades\\ruta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\models\\entidades\\bitacoravehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:models\\entidades\\bitacoravehiculo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|c:\\users\\hp\\documents\\sistema de viaticos\\sviatico.web\\dinacem\\dinacem\\migrations\\20260904035202_dinacendb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{63C5E7B0-BC90-4116-BF14-AB1DCF4D57B1}|Dinacen.csproj|solutionrelative:migrations\\20260904035202_dinacendb.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -70,7 +74,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -102,7 +106,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
+              "Title": "CorreoService.cs",
+              "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Servicios\\CorreoService.cs",
+              "RelativeDocumentMoniker": "Models\\Servicios\\CorreoService.cs",
+              "ToolTip": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Servicios\\CorreoService.cs",
+              "RelativeToolTip": "Models\\Servicios\\CorreoService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAALkBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-04T05:21:01.086Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "BitacoraVehiculo.css",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\BitacoraVehiculo.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\BitacoraVehiculo.css",
@@ -110,25 +127,23 @@
               "RelativeToolTip": "wwwroot\\css\\BitacoraVehiculo.css",
               "ViewState": "AgIAAPEDAAAAAAAAAAAuwAwEAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-09-04T04:27:08.522Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T04:27:08.522Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 6,
               "Title": "GastoController.cs",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\GastoController.cs",
               "RelativeDocumentMoniker": "Controllers\\GastoController.cs",
               "ToolTip": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\GastoController.cs",
               "RelativeToolTip": "Controllers\\GastoController.cs",
-              "ViewState": "AgIAAEcLAAAAAAAAAAAUwFQLAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-04T03:38:49.653Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T03:38:49.653Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 15,
               "Title": "20260904035202_DinacenDB.cs",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Migrations\\20260904035202_DinacenDB.cs",
               "RelativeDocumentMoniker": "Migrations\\20260904035202_DinacenDB.cs",
@@ -136,12 +151,11 @@
               "RelativeToolTip": "Migrations\\20260904035202_DinacenDB.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-04T03:52:02.379Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T03:52:02.379Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 10,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Gasto\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\Gasto\\Index.cshtml",
@@ -149,12 +163,11 @@
               "RelativeToolTip": "Views\\Gasto\\Index.cshtml",
               "ViewState": "AgIAAEMHAAAAAAAAAAAuwF4HAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-04T03:17:00.988Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T03:17:00.988Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 9,
               "Title": "IndexGasto.js",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\js\\IndexGasto.js",
               "RelativeDocumentMoniker": "wwwroot\\js\\IndexGasto.js",
@@ -162,12 +175,11 @@
               "RelativeToolTip": "wwwroot\\js\\IndexGasto.js",
               "ViewState": "AgIAABELAAAAAAAAAAAuwC8LAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2026-09-04T03:23:41.918Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T03:23:41.918Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 12,
               "Title": "IndexGasto.css",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\IndexGasto.css",
               "RelativeDocumentMoniker": "wwwroot\\css\\IndexGasto.css",
@@ -175,12 +187,11 @@
               "RelativeToolTip": "wwwroot\\css\\IndexGasto.css",
               "ViewState": "AgIAAEQDAAAAAAAAAAAuwF8DAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-09-04T03:23:25.529Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T03:23:25.529Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 11,
               "Title": "Gasto.cs",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\Gasto.cs",
               "RelativeDocumentMoniker": "Models\\Entidades\\Gasto.cs",
@@ -188,51 +199,48 @@
               "RelativeToolTip": "Models\\Entidades\\Gasto.cs",
               "ViewState": "AgIAAEEAAAAAAAAAAAAUwE4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-04T03:15:40.208Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T03:15:40.208Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 5,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
               "ToolTip": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\appsettings.json",
               "RelativeToolTip": "appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAuAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAB+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-09-04T02:48:34.209Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T02:48:34.209Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 1,
               "Title": "_LayoutAdministrador.cshtml",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Shared\\_LayoutAdministrador.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_LayoutAdministrador.cshtml",
               "ToolTip": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Shared\\_LayoutAdministrador.cshtml",
               "RelativeToolTip": "Views\\Shared\\_LayoutAdministrador.cshtml",
-              "ViewState": "AgIAANQCAAAAAAAAAAAuwNYCAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC4EAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-09-04T02:19:54.437Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 2,
               "Title": "_LayoutEmpleado.cshtml",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Shared\\_LayoutEmpleado.cshtml",
               "RelativeDocumentMoniker": "Views\\Shared\\_LayoutEmpleado.cshtml",
               "ToolTip": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\Shared\\_LayoutEmpleado.cshtml",
               "RelativeToolTip": "Views\\Shared\\_LayoutEmpleado.cshtml",
-              "ViewState": "AgIAAEACAAAAAAAAAAAYwKkCAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-04T02:17:42.549Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T02:17:42.549Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 8,
               "Title": "Index.cshtml",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Views\\BitacoraVehiculo\\Index.cshtml",
               "RelativeDocumentMoniker": "Views\\BitacoraVehiculo\\Index.cshtml",
@@ -240,12 +248,11 @@
               "RelativeToolTip": "Views\\BitacoraVehiculo\\Index.cshtml",
               "ViewState": "AgIAADAHAAAAAAAAAAAAAEcHAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-09-04T02:09:04.472Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T02:09:04.472Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "BitacoraVehiculoController.cs",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Controllers\\BitacoraVehiculoController.cs",
               "RelativeDocumentMoniker": "Controllers\\BitacoraVehiculoController.cs",
@@ -253,12 +260,11 @@
               "RelativeToolTip": "Controllers\\BitacoraVehiculoController.cs",
               "ViewState": "AgIAALwDAAAAAAAAAAAAAMkDAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-04T02:00:50.624Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T02:00:50.624Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "AplicacionDbContexto.cs",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Data\\AplicacionDbContexto.cs",
               "RelativeDocumentMoniker": "Models\\Data\\AplicacionDbContexto.cs",
@@ -266,34 +272,31 @@
               "RelativeToolTip": "Models\\Data\\AplicacionDbContexto.cs",
               "ViewState": "AgIAAIoBAAAAAAAAAAAUwLEBAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-04T01:59:30.863Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T01:59:30.863Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 4,
               "Title": "Ruta.cs",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\Ruta.cs",
               "RelativeDocumentMoniker": "Models\\Entidades\\Ruta.cs",
               "ToolTip": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\Ruta.cs",
               "RelativeToolTip": "Models\\Entidades\\Ruta.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAxwBkAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAwAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-04T01:58:50.568Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T01:58:50.568Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 3,
               "Title": "BitacoraVehiculo.cs",
               "DocumentMoniker": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\BitacoraVehiculo.cs",
               "RelativeDocumentMoniker": "Models\\Entidades\\BitacoraVehiculo.cs",
               "ToolTip": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\Models\\Entidades\\BitacoraVehiculo.cs",
               "RelativeToolTip": "Models\\Entidades\\BitacoraVehiculo.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAACwAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAABcAAAAAAAAAAAAwwCwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-04T01:48:21.963Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-04T01:48:21.963Z"
             }
           ]
         },

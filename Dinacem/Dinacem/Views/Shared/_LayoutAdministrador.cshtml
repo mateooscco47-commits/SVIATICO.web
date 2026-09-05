@@ -3,35 +3,70 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - DINACEN</title>
 
+    <!-- =========================================================
+         FUENTES
+         ========================================================= -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
 
+
+    <!-- =========================================================
+         BOOTSTRAP
+         ========================================================= -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+          rel="stylesheet" />
+
+
+    <!-- =========================================================
+         ESTILOS
+         ========================================================= -->
     <style>
+
         :root {
             --sidebar-width: 270px;
             --topbar-height: 75px;
+
             --dinacen-blue: #0C4A8A;
             --dinacen-blue-dark: #083663;
             --dinacen-blue-light: #EBF3FA;
+
             --bg-main: #F8FAFC;
             --white: #FFFFFF;
+
             --text-primary: #0F172A;
             --text-secondary: #334155;
             --text-light: #64748B;
+
             --border-light: #E2E8F0;
             --border: #CBD5E1;
+
             --danger: #DC2626;
             --danger-dark: #B91C1C;
-            --shadow-sidebar: 2px 0 16px rgba(15, 23, 42, 0.04);
-            --shadow-topbar: 0 2px 8px rgba(15, 23, 42, 0.04);
-            --shadow-card: 0 4px 12px rgba(12, 74, 138, 0.08), 0 1px 3px rgba(0, 0, 0, 0.03);
+
+            --shadow-sidebar:
+                2px 0 16px rgba(15, 23, 42, 0.04);
+
+            --shadow-topbar:
+                0 2px 8px rgba(15, 23, 42, 0.04);
+
+            --shadow-card:
+                0 4px 12px rgba(12, 74, 138, 0.08),
+                0 1px 3px rgba(0, 0, 0, 0.03);
         }
+
+
+        /* =====================================================
+           RESET
+           ===================================================== */
 
         * {
             box-sizing: border-box;
@@ -39,15 +74,34 @@
             padding: 0;
         }
 
+
+        /* =====================================================
+           BODY
+           ===================================================== */
+
         body {
-            font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family:
+                'Plus Jakarta Sans',
+                'Inter',
+                -apple-system,
+                BlinkMacSystemFont,
+                sans-serif;
+
             background-color: var(--bg-main);
             color: var(--text-primary);
+
             overflow-x: hidden;
+
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+
             position: relative;
         }
+
+
+        /* =====================================================
+           LAYOUT
+           ===================================================== */
 
         .layout-wrapper {
             display: flex;
@@ -55,222 +109,350 @@
             width: 100%;
         }
 
-        /* SIDEBAR */
+
+        /* =====================================================
+           SIDEBAR
+           ===================================================== */
+
         .sidebar {
             width: var(--sidebar-width);
+
             background-color: var(--white);
+
             display: flex;
             flex-direction: column;
+
             position: fixed;
+
             top: 0;
             bottom: 0;
             left: 0;
+
             z-index: 1040;
+
             border-right: 1px solid var(--border-light);
+
             box-shadow: var(--shadow-sidebar);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+
+            transform: translateX(0);
+
+            visibility: visible;
+
+            transition:
+                transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0.3s ease;
         }
+
+
+        /* =====================================================
+           HEADER DEL SIDEBAR
+           ===================================================== */
 
         .sidebar-header {
             width: 100%;
             min-height: 140px;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             padding: 1rem 1.25rem;
+
             background-color: var(--white);
+
             border-bottom: 1px solid var(--border-light);
         }
 
+
+        /* =====================================================
+           LOGO
+           ===================================================== */
+
         .sidebar-logo {
             width: 100%;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             position: relative;
+
             padding: 0.35rem 0 0.9rem;
         }
 
-            .sidebar-logo::after {
-                content: "";
-                position: absolute;
-                bottom: 0;
-                left: 50%;
-                width: 48px;
-                height: 3px;
-                transform: translateX(-50%);
-                background-color: var(--dinacen-blue);
-                border-radius: 10px;
-            }
+        .sidebar-logo::after {
+            content: "";
 
-            .sidebar-logo a {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                text-decoration: none;
-            }
+            position: absolute;
 
-            .sidebar-logo img {
-                display: block;
-                width: 195px;
-                height: 105px;
-                object-fit: contain;
-                transition: transform 0.25s ease;
-            }
+            bottom: 0;
+            left: 50%;
 
-                .sidebar-logo img:hover {
-                    transform: scale(1.02);
-                }
+            width: 48px;
+            height: 3px;
 
-        /* MENÚ */
+            transform: translateX(-50%);
+
+            background-color: var(--dinacen-blue);
+
+            border-radius: 10px;
+        }
+
+        .sidebar-logo a {
+            width: 100%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-decoration: none;
+        }
+
+        .sidebar-logo img {
+            display: block;
+
+            width: 195px;
+            height: 105px;
+
+            object-fit: contain;
+
+            transition: transform 0.25s ease;
+        }
+
+        .sidebar-logo img:hover {
+            transform: scale(1.02);
+        }
+
+
+        /* =====================================================
+           MENÚ
+           ===================================================== */
+
         .sidebar-menu {
             flex: 1;
+
             padding: 1.25rem 0.85rem;
+
             overflow-y: auto;
             overflow-x: hidden;
+
             scrollbar-width: thin;
             scrollbar-color: #CBD5E1 transparent;
         }
 
-            .sidebar-menu::-webkit-scrollbar {
-                width: 5px;
-            }
+        .sidebar-menu::-webkit-scrollbar {
+            width: 5px;
+        }
 
-            .sidebar-menu::-webkit-scrollbar-thumb {
-                background-color: #CBD5E1;
-                border-radius: 10px;
-            }
+        .sidebar-menu::-webkit-scrollbar-thumb {
+            background-color: #CBD5E1;
+            border-radius: 10px;
+        }
 
-            .sidebar-menu ul {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-            }
+        .sidebar-menu ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-            .sidebar-menu li {
-                margin-bottom: 0.35rem;
-            }
+        .sidebar-menu li {
+            margin-bottom: 0.35rem;
+        }
 
-            .sidebar-menu a {
-                min-height: 44px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 0.65rem 0.85rem;
-                position: relative;
-                color: var(--text-secondary);
-                text-decoration: none;
-                font-weight: 600;
-                font-size: 0.92rem;
-                border-radius: 8px;
-                transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-            }
+        .sidebar-menu a {
+            min-height: 44px;
 
-                .sidebar-menu a i {
-                    width: 20px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 1.15rem;
-                    color: var(--text-light);
-                    transition: color 0.2s ease, transform 0.2s ease;
-                }
+            display: flex;
+            align-items: center;
 
-                .sidebar-menu a:hover {
-                    color: var(--dinacen-blue-dark);
-                    background-color: var(--dinacen-blue-light);
-                }
+            gap: 12px;
 
-                    .sidebar-menu a:hover i {
-                        color: var(--dinacen-blue);
-                        transform: scale(1.1);
-                    }
+            padding: 0.65rem 0.85rem;
 
-                .sidebar-menu a.active {
-                    color: var(--dinacen-blue-dark);
-                    background-color: var(--dinacen-blue-light);
-                    font-weight: 700;
-                    box-shadow: var(--shadow-card);
-                }
+            position: relative;
 
-                    .sidebar-menu a.active i {
-                        color: var(--dinacen-blue);
-                    }
+            color: var(--text-secondary);
 
-                    .sidebar-menu a.active::before {
-                        content: "";
-                        position: absolute;
-                        left: -0.85rem;
-                        top: 8px;
-                        bottom: 8px;
-                        width: 4px;
-                        background-color: var(--dinacen-blue);
-                        border-radius: 0 4px 4px 0;
-                    }
+            text-decoration: none;
 
-        /* FOOTER */
+            font-weight: 600;
+            font-size: 0.92rem;
+
+            border-radius: 8px;
+
+            transition:
+                all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sidebar-menu a i {
+            width: 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 1.15rem;
+
+            color: var(--text-light);
+
+            transition:
+                color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .sidebar-menu a:hover {
+            color: var(--dinacen-blue-dark);
+            background-color: var(--dinacen-blue-light);
+        }
+
+        .sidebar-menu a:hover i {
+            color: var(--dinacen-blue);
+            transform: scale(1.1);
+        }
+
+        .sidebar-menu a.active {
+            color: var(--dinacen-blue-dark);
+
+            background-color: var(--dinacen-blue-light);
+
+            font-weight: 700;
+
+            box-shadow: var(--shadow-card);
+        }
+
+        .sidebar-menu a.active i {
+            color: var(--dinacen-blue);
+        }
+
+        .sidebar-menu a.active::before {
+            content: "";
+
+            position: absolute;
+
+            left: -0.85rem;
+
+            top: 8px;
+            bottom: 8px;
+
+            width: 4px;
+
+            background-color: var(--dinacen-blue);
+
+            border-radius: 0 4px 4px 0;
+        }
+
+
+        /* =====================================================
+           FOOTER SIDEBAR
+           ===================================================== */
+
         .sidebar-footer {
             padding: 1rem;
+
             border-top: 1px solid var(--border-light);
+
             background-color: var(--white);
         }
+
+
+        /* =====================================================
+           BOTÓN CERRAR SESIÓN
+           ===================================================== */
 
         .btn-logout {
             width: 100%;
             min-height: 44px;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             gap: 9px;
+
             padding: 0.65rem 1rem;
+
             background-color: var(--danger);
+
             border: 1px solid var(--danger);
+
             color: var(--white);
+
             border-radius: 8px;
+
             font-family: inherit;
+
             font-size: 0.9rem;
             font-weight: 600;
+
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.2);
+
+            box-shadow:
+                0 2px 6px rgba(220, 38, 38, 0.2);
+
             transition: all 0.2s ease;
         }
 
-            .btn-logout i {
-                font-size: 1.1rem;
-                color: var(--white);
-            }
-
-            .btn-logout:hover {
-                background-color: var(--danger-dark);
-                border-color: var(--danger-dark);
-                box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3);
-                transform: translateY(-1px);
-            }
-
-        /* CONTENIDO PRINCIPAL */
-        .main-wrapper {
-            flex: 1;
-            margin-left: var(--sidebar-width);
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            background-color: var(--bg-main);
-            transition: margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        .btn-logout i {
+            font-size: 1.1rem;
+            color: var(--white);
         }
 
-        /* TOPBAR */
+        .btn-logout:hover {
+            background-color: var(--danger-dark);
+
+            border-color: var(--danger-dark);
+
+            box-shadow:
+                0 4px 12px rgba(185, 28, 28, 0.3);
+
+            transform: translateY(-1px);
+        }
+
+
+        /* =====================================================
+           CONTENIDO PRINCIPAL
+           ===================================================== */
+
+        .main-wrapper {
+            flex: 1;
+
+            margin-left: var(--sidebar-width);
+
+            display: flex;
+            flex-direction: column;
+
+            min-width: 0;
+
+            background-color: var(--bg-main);
+
+            transition:
+                margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+
+        /* =====================================================
+           TOPBAR
+           ===================================================== */
+
         .topbar {
             height: var(--topbar-height);
+
             background-color: var(--white);
+
             border-bottom: 1px solid var(--border-light);
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             padding: 0 1.75rem;
+
             position: sticky;
+
             top: 0;
+
             z-index: 1030;
+
             box-shadow: var(--shadow-topbar);
         }
 
@@ -280,454 +462,608 @@
             gap: 1rem;
         }
 
+
+        /* =====================================================
+           BOTÓN MENÚ MÓVIL
+           ===================================================== */
+
         .sidebar-toggler {
             display: none;
-            background: none;
+
+            align-items: center;
+            justify-content: center;
+
+            width: 44px;
+            height: 44px;
+
+            padding: 0;
+            margin: 0;
+
+            background-color: transparent;
+
             border: none;
-            font-size: 1.4rem;
+
             color: var(--text-primary);
+
+            font-size: 1.5rem;
+
             cursor: pointer;
-            padding: 0.4rem;
+
             border-radius: 8px;
-            transition: background-color 0.2s ease;
+
+            transition:
+                background-color 0.2s ease,
+                color 0.2s ease;
+
+            position: relative;
+
+            z-index: 1050;
         }
 
-            .sidebar-toggler:hover {
-                background-color: var(--dinacen-blue-light);
-                color: var(--dinacen-blue);
-            }
+        .sidebar-toggler:hover,
+        .sidebar-toggler:focus {
+            background-color: var(--dinacen-blue-light);
+
+            color: var(--dinacen-blue);
+
+            outline: none;
+        }
+
+
+        /* =====================================================
+           TOPBAR DERECHO
+           ===================================================== */
 
         .topbar-right {
             display: flex;
             align-items: center;
+
             gap: 1rem;
         }
 
-        /* PERFIL */
+
+        /* =====================================================
+           PERFIL
+           ===================================================== */
+
         .user-profile {
             min-height: 42px;
+
             display: flex;
             align-items: center;
+
             gap: 10px;
+
             padding: 0.35rem 0.85rem;
+
             background-color: var(--white);
+
             border: 1px solid var(--border-light);
+
             border-radius: 8px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
-            transition: border-color 0.2s ease;
+
+            box-shadow:
+                0 1px 2px rgba(0, 0, 0, 0.02);
+
+            transition:
+                border-color 0.2s ease;
         }
 
-            .user-profile:hover {
-                border-color: var(--dinacen-blue);
-            }
+        .user-profile:hover {
+            border-color: var(--dinacen-blue);
+        }
 
         .user-avatar {
             font-size: 1.65rem;
+
             color: var(--dinacen-blue);
+
             line-height: 1;
         }
 
         .user-details {
             min-width: 90px;
+
             display: flex;
             flex-direction: column;
+
             justify-content: center;
+
             line-height: 1.25;
         }
 
         .user-name {
             color: var(--text-primary);
+
             font-size: 0.85rem;
+
             font-weight: 700;
+
             white-space: nowrap;
+
             overflow: hidden;
+
             text-overflow: ellipsis;
+
             max-width: 190px;
         }
 
         .user-role {
             color: var(--text-light);
+
             font-size: 0.75rem;
+
             font-weight: 600;
         }
 
-        /* CONTENIDO */
+
+        /* =====================================================
+           CONTENIDO
+           ===================================================== */
+
         .content {
             padding: 1.75rem;
+
             flex: 1;
+
             background-color: var(--bg-main);
         }
 
-        /* OVERLAY */
+
+        /* =====================================================
+           OVERLAY MÓVIL
+           ===================================================== */
+
         .sidebar-overlay {
             display: none;
+
             position: fixed;
+
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(15, 23, 42, 0.4);
+
+            background-color:
+                rgba(15, 23, 42, 0.4);
+
             z-index: 1035;
+
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
+
             opacity: 0;
-            transition: opacity 0.3s ease;
+
+            transition:
+                opacity 0.3s ease;
         }
 
-            .sidebar-overlay.show {
-                display: block;
-                opacity: 1;
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+
+        /* =====================================================
+           TABLETS Y CELULARES
+           ===================================================== */
+
+        @@media (max-width: 991.98px) {
+
+            .sidebar {
+                width: var(--sidebar-width);
+
+                transform: translateX(-100%);
+
+                visibility: hidden;
             }
 
-        /* =========================================
-   RESPONSIVE - TABLETS Y CELULARES
-   ========================================= */
+            .sidebar.show {
+                transform: translateX(0);
 
-@@media (max-width: 991.98px) {
+                visibility: visible;
+            }
 
-    .sidebar {
-        width: var(--sidebar-width);
-        transform: translateX(-100%);
-        visibility: hidden;
-    }
+            .main-wrapper {
+                margin-left: 0 !important;
 
-    .sidebar.show {
-        transform: translateX(0);
-        visibility: visible;
-    }
+                width: 100%;
+            }
 
-    .main-wrapper {
-        margin-left: 0 !important;
-        width: 100%;
-    }
+            .sidebar-toggler {
+                display: flex !important;
+            }
 
-    .sidebar-toggler {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        width: 44px;
-        height: 44px;
-        padding: 0;
-        margin: 0;
-        background-color: transparent;
-        border: none;
-        color: var(--text-primary);
-        font-size: 1.5rem;
-        cursor: pointer;
-        border-radius: 8px;
-        z-index: 1050;
-    }
+            .topbar {
+                padding: 0 1.15rem;
+            }
 
-    .sidebar-toggler:hover,
-    .sidebar-toggler:focus {
-        background-color: var(--dinacen-blue-light);
-        color: var(--dinacen-blue);
-        outline: none;
-    }
-
-    .topbar {
-        padding: 0 1.15rem;
-    }
-
-    .content {
-        padding: 1.25rem;
-    }
-}
+            .content {
+                padding: 1.25rem;
+            }
+        }
 
 
-/* =========================================
-   CELULARES
-   ========================================= */
+        /* =====================================================
+           CELULARES
+           ===================================================== */
 
-@@media (max-width: 575.98px) {
+        @@media (max-width: 575.98px) {
 
-    .topbar {
-        padding: 0 0.85rem;
-        height: 64px;
-    }
+            .topbar {
+                padding: 0 0.85rem;
 
-    .content {
-        padding: 1rem 0.85rem;
-    }
+                height: 64px;
+            }
 
-    .user-details {
-        display: none !important;
-    }
+            .content {
+                padding: 1rem 0.85rem;
+            }
 
-    .user-profile {
-        padding: 0.3rem;
-        border: none;
-        background: transparent;
-        box-shadow: none;
-    }
+            .user-details {
+                display: none !important;
+            }
 
-    .user-avatar {
-        font-size: 1.85rem;
-    }
+            .user-profile {
+                padding: 0.3rem;
 
-    .sidebar-toggler {
-        display: flex !important;
-    }
-}
+                border: none;
 
+                background: transparent;
 
-/* =========================================
-   PANTALLAS GRANDES
-   ========================================= */
+                box-shadow: none;
+            }
 
-@@media (min-width: 992px) {
+            .user-avatar {
+                font-size: 1.85rem;
+            }
 
-    .sidebar {
-        transform: translateX(0);
-        visibility: visible;
-    }
-
-    .sidebar-toggler {
-        display: none !important;
-    }
-
-}
+            .sidebar-toggler {
+                display: flex !important;
+            }
+        }
 
 
-/* =========================================
-   MONITORES GRANDES
-   ========================================= */
+        /* =====================================================
+           ESCRITORIO
+           ===================================================== */
 
-@@media (min-width: 1400px) {
+        @@media (min-width: 992px) {
 
-    .content {
-        padding: 2rem 2.25rem;
-    }
+            .sidebar {
+                transform: translateX(0);
 
-}
+                visibility: visible;
+            }
+
+            .sidebar-toggler {
+                display: none !important;
+            }
+
+        }
+
+
+        /* =====================================================
+           MONITORES GRANDES
+           ===================================================== */
+
+        @@media (min-width: 1400px) {
+
+            .content {
+                padding: 2rem 2.25rem;
+            }
+
+        }
+
     </style>
 </head>
 
+
 <body>
 
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <!-- =========================================================
+         OVERLAY
+         ========================================================= -->
+
+    <div class="sidebar-overlay"
+         id="sidebarOverlay">
+    </div>
+
+
+    <!-- =========================================================
+         LAYOUT
+         ========================================================= -->
 
     <div class="layout-wrapper">
 
-        <aside class="sidebar" id="sidebar">
+
+        <!-- =====================================================
+             SIDEBAR
+             ===================================================== -->
+
+        <aside class="sidebar"
+               id="sidebar">
+
+
+            <!-- =================================================
+                 LOGO
+                 ================================================= -->
 
             <div class="sidebar-header">
+
                 <div class="sidebar-logo">
+
                     <a asp-controller="Principal"
                        asp-action="Index"
                        aria-label="Ir al inicio">
+
                         <img src="~/images/logo-dinacen.png"
                              alt="DINACEN Logo" />
+
                     </a>
+
                 </div>
+
             </div>
 
-            <nav class="sidebar-menu" aria-label="Menú principal">
+
+            <!-- =================================================
+                 MENÚ
+                 ================================================= -->
+
+            <nav class="sidebar-menu"
+                 aria-label="Menú principal">
+
                 <ul>
 
+
+                    <!-- INICIO -->
+
                     <li>
+
                         <a asp-controller="Principal"
                            asp-action="Index"
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Principal" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+
                             <i class="bi bi-house-door-fill"></i>
-                            <span>Inicio</span>
+
+                            <span>
+                                Inicio
+                            </span>
+
                         </a>
+
                     </li>
 
+
+                    <!-- USUARIOS -->
+
                     <li>
+
                         <a asp-controller="Usuario"
                            asp-action="Index"
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Usuario" ? "active" : "")">
+
                             <i class="bi bi-people-fill"></i>
-                            <span>Usuarios</span>
+
+                            <span>
+                                Usuarios
+                            </span>
+
                         </a>
+
                     </li>
 
+
+                    <!-- SOLICITUDES -->
+
                     <li>
+
                         <a asp-controller="Solicitud"
                            asp-action="Index"
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Solicitud" ? "active" : "")">
+
                             <i class="bi bi-file-earmark-text-fill"></i>
-                            <span>Solicitudes</span>
+
+                            <span>
+                                Solicitudes
+                            </span>
+
                         </a>
+
                     </li>
 
+
+                    <!-- LIQUIDACIONES -->
+
                     <li>
+
                         <a asp-controller="Rendicion"
                            asp-action="IndexAdmin"
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Rendicion" ? "active" : "")">
+
                             <i class="bi bi-wallet2"></i>
-                            <span>Liquidaciones</span>
+
+                            <span>
+                                Liquidaciones
+                            </span>
+
                         </a>
+
                     </li>
 
+
+                    <!-- REPORTES -->
+
                     <li>
+
                         <a asp-controller="Reporte"
                            asp-action="Index"
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Reporte" ? "active" : "")">
+
                             <i class="bi bi-bar-chart-line-fill"></i>
-                            <span>Reportes</span>
+
+                            <span>
+                                Reportes
+                            </span>
+
                         </a>
+
                     </li>
 
+
+                    <!-- CONFIGURACIÓN -->
+
                     <li>
+
                         <a asp-controller="Configuracion"
                            asp-action="Index"
                            class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Configuracion" ? "active" : "")">
+
                             <i class="bi bi-gear-fill"></i>
-                            <span>Configuración</span>
+
+                            <span>
+                                Configuración
+                            </span>
+
                         </a>
+
                     </li>
 
                 </ul>
+
             </nav>
 
+
+            <!-- =================================================
+                 CERRAR SESIÓN
+                 ================================================= -->
+
             <div class="sidebar-footer">
+
                 <form asp-controller="Home"
                       asp-action="Logout"
                       method="get">
-                    <button type="submit" class="btn-logout">
+
+                    <button type="submit"
+                            class="btn-logout">
+
                         <i class="bi bi-box-arrow-right"></i>
-                        <span>Cerrar sesión</span>
+
+                        <span>
+                            Cerrar sesión
+                        </span>
+
                     </button>
+
                 </form>
+
             </div>
 
         </aside>
 
-        <div class="main-wrapper" id="mainWrapper">
+
+        <!-- =====================================================
+             CONTENIDO PRINCIPAL
+             ===================================================== -->
+
+        <div class="main-wrapper"
+             id="mainWrapper">
+
+
+            <!-- =================================================
+                 TOPBAR
+                 ================================================= -->
 
             <header class="topbar">
 
+
                 <div class="topbar-left">
-                    <button class="sidebar-toggler"
+
+                    <!-- BOTÓN ☰ -->
+
+                    <button type="button"
+                            class="sidebar-toggler"
                             id="sidebarToggler"
-                            aria-label="Alternar menú lateral">
+                            aria-label="Alternar menú lateral"
+                            aria-controls="sidebar"
+                            aria-expanded="false">
+
                         <i class="bi bi-list"></i>
+
                     </button>
+
                 </div>
+
+
+                <!-- =================================================
+                     USUARIO
+                     ================================================= -->
 
                 <div class="topbar-right">
 
                     <div class="user-profile">
+
                         <i class="bi bi-person-circle user-avatar"></i>
 
                         <div class="user-details">
 
                             <span class="user-name">
-                                @(Context.Session.GetString("NombreUsuario") ?? "Administrador")
+
+                                @(Context.Session.GetString("NombreUsuario")
+                                    ?? "Administrador")
+
                             </span>
 
                             <small class="user-role">
-                                @(Context.Session.GetString("RolUsuario") ?? "Administrador")
+
+                                @(Context.Session.GetString("RolUsuario")
+                                    ?? "Administrador")
+
                             </small>
 
                         </div>
+
                     </div>
 
                 </div>
 
             </header>
 
+
+            <!-- =================================================
+                 CONTENIDO
+                 ================================================= -->
+
             <main class="content">
+
                 @RenderBody()
+
             </main>
+
 
         </div>
 
     </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
 
-        const sidebar = document.getElementById('sidebar');
-        const sidebarToggler = document.getElementById('sidebarToggler');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-        // =========================================
-        // VERIFICAR ELEMENTOS
-        // =========================================
-        if (!sidebar || !sidebarToggler || !sidebarOverlay) {
-            console.error('No se encontraron los elementos del menú lateral.');
-            return;
-        }
-
-        // =========================================
-        // ABRIR / CERRAR MENÚ
-        // =========================================
-        function toggleSidebar() {
-
-            const abierto = sidebar.classList.toggle('show');
-
-            sidebarOverlay.classList.toggle('show', abierto);
-
-            document.body.style.overflow = abierto
-                ? 'hidden'
-                : '';
-        }
-
-        // =========================================
-        // BOTÓN ☰
-        // =========================================
-        sidebarToggler.addEventListener('click', function (e) {
-
-            e.preventDefault();
-            e.stopPropagation();
-
-            toggleSidebar();
-        });
-
-        // =========================================
-        // CERRAR TOCANDO EL FONDO OSCURO
-        // =========================================
-        sidebarOverlay.addEventListener('click', function () {
-
-            sidebar.classList.remove('show');
-            sidebarOverlay.classList.remove('show');
-            document.body.style.overflow = '';
-        });
-
-        // =========================================
-        // CERRAR AL SELECCIONAR UNA OPCIÓN
-        // =========================================
-        const menuLinks = sidebar.querySelectorAll('.sidebar-menu a');
-
-        menuLinks.forEach(function (link) {
-
-            link.addEventListener('click', function () {
-
-                if (window.innerWidth <= 991.98) {
-
-                    sidebar.classList.remove('show');
-                    sidebarOverlay.classList.remove('show');
-
-                    document.body.style.overflow = '';
-                }
-
-            });
-
-        });
-
-        // =========================================
-        // CONTROLAR CAMBIO DE TAMAÑO
-        // =========================================
-        window.addEventListener('resize', function () {
-
-            if (window.innerWidth >= 992) {
-
-                sidebar.classList.remove('show');
-                sidebarOverlay.classList.remove('show');
-
-                document.body.style.overflow = '';
-            }
-
-        });
-
-    });
-</script>
+    <!-- =========================================================
+         BOOTSTRAP
+         ========================================================= -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/Layout.js" asp-append-version="true"></script>
+
+
+    <!-- =========================================================
+         JAVASCRIPT GLOBAL DEL LAYOUT
+         
+         IMPORTANTE:
+         AQUÍ NO DEBE HABER OTRO SCRIPT DEL SIDEBAR.
+         ========================================================= -->
+
+    <script src="~/js/Layout.js"
+            asp-append-version="true"></script>
+
 
     @await RenderSectionAsync("Scripts", required: false)
 

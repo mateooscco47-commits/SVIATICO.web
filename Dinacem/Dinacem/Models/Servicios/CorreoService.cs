@@ -10,6 +10,11 @@ public class CorreoService
     private readonly CorreoConfiguracion _configuracion;
     private readonly ILogger<CorreoService> _logger;
 
+
+    // =========================================================
+    // CONSTRUCTOR
+    // =========================================================
+
     public CorreoService(
         IOptions<CorreoConfiguracion> configuracion,
         ILogger<CorreoService> logger)
@@ -33,21 +38,30 @@ public class CorreoService
         var adjuntos =
             new List<(string Ruta, string Nombre)>();
 
+
         if (!string.IsNullOrWhiteSpace(rutaAdjunto))
         {
+            var nombreArchivo =
+                !string.IsNullOrWhiteSpace(nombreAdjunto)
+                    ? nombreAdjunto.Trim()
+                    : Path.GetFileName(rutaAdjunto);
+
+
             adjuntos.Add(
                 (
                     rutaAdjunto,
-                    nombreAdjunto
-                    ?? Path.GetFileName(rutaAdjunto)
-                ));
+                    nombreArchivo
+                )
+            );
         }
+
 
         return await EnviarInternoAsync(
             destinatarios,
             asunto,
             contenidoHtml,
-            adjuntos);
+            adjuntos
+        );
     }
 
 
@@ -65,7 +79,8 @@ public class CorreoService
             destinatarios,
             asunto,
             contenidoHtml,
-            adjuntos);
+            adjuntos
+        );
     }
 
 
@@ -80,7 +95,7 @@ public class CorreoService
         IEnumerable<(string Ruta, string Nombre)> adjuntos)
     {
         // =====================================================
-        // VALIDAR CONFIGURACIÓN
+        // VALIDAR CONFIGURACIÓN SMTP
         // =====================================================
 
         if (string.IsNullOrWhiteSpace(
@@ -127,13 +142,12 @@ public class CorreoService
             return false;
         }
 
-
         // =====================================================
         // LIMPIAR DESTINATARIOS
         // =====================================================
 
         var correos =
-            destinatarios
+            (destinatarios ?? Enumerable.Empty<string>())
                 .Where(c =>
                     !string.IsNullOrWhiteSpace(c))
                 .Select(c =>
@@ -142,7 +156,6 @@ public class CorreoService
                     StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
-
         if (correos.Count == 0)
         {
             _logger.LogWarning(
@@ -150,7 +163,6 @@ public class CorreoService
 
             return false;
         }
-
 
         try
         {
@@ -161,16 +173,25 @@ public class CorreoService
             var mensaje =
                 new MimeMessage();
 
-
             // =================================================
             // REMITENTE
             // =================================================
 
+            var remitente =
+                _configuracion.Remitente.Trim();
+
+            var nombreRemitente =
+                string.IsNullOrWhiteSpace(
+                    _configuracion.NombreRemitente)
+                    ? "DINACEN"
+                    : _configuracion.NombreRemitente.Trim();
+
             mensaje.From.Add(
                 new MailboxAddress(
-                    _configuracion.NombreRemitente,
-                    _configuracion.Remitente.Trim()));
-
+                    nombreRemitente,
+                    remitente
+                )
+            );
 
             // =================================================
             // DESTINATARIOS
@@ -182,102 +203,92 @@ public class CorreoService
                 {
                     mensaje.To.Add(
                         MailboxAddress.Parse(
-                            correo));
+                            correo
+                        )
+                    );
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(
                         ex,
                         "Correo destinatario inválido: {Correo}",
-                        correo);
+                        correo
+                    );
 
                     return false;
                 }
             }
-
 
             // =================================================
             // ASUNTO
             // =================================================
 
             mensaje.Subject =
-                asunto ?? string.Empty;
-
+                asunto?.Trim() ?? string.Empty;
 
             // =================================================
-            // CUERPO
+            // BODY BUILDER
             // =================================================
 
             var bodyBuilder =
                 new BodyBuilder();
 
-
-            // =================================================
-            // LOGO
-            // =================================================
-
-            var rutaLogo =
-                Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    "images",
-                    "logo-dinacen.png");
-
-
-            if (System.IO.File.Exists(
-                    rutaLogo))
-            {
-                var logo =
-                    bodyBuilder.LinkedResources
-                        .Add(rutaLogo);
-
-                logo.ContentId =
-                    "logoDinacen";
-
-                logo.ContentDisposition =
-                    new ContentDisposition(
-                        ContentDisposition.Inline);
-
-                logo.ContentType.MediaType =
-                    "image";
-
-                logo.ContentType.MediaSubtype =
-                    "png";
-
-
-                _logger.LogInformation(
-                    "Logo DINACEN cargado correctamente.");
-            }
-            else
-            {
-                _logger.LogWarning(
-                    "No se encontró el logo en {Ruta}",
-                    rutaLogo);
-            }
-
-
-            // =================================================
-            // HTML
-            // =================================================
-
-            bodyBuilder.HtmlBody =
+            var contenidoOriginal =
                 contenidoHtml ?? string.Empty;
 
+            // =================================================
+            // HTML FINAL (SIN DUPLICAR CABECERA DE LOGO)
+            // =================================================
+
+            string htmlFinal = $@"
+<!DOCTYPE html>
+<html lang=""es"">
+
+<head>
+    <meta charset=""UTF-8"">
+    <meta
+        name=""viewport""
+        content=""width=device-width, initial-scale=1.0""
+    >
+    <title>DINACEN</title>
+</head>
+
+<body style=""
+    margin:0;
+    padding:0;
+    background-color:#ffffff;
+    font-family:Arial, Helvetica, sans-serif;
+    color:#333333;
+"">
+
+    <div style=""
+        width:100%;
+        max-width:700px;
+        margin:0 auto;
+        padding:20px;
+        box-sizing:border-box;
+    "">
+
+        {contenidoOriginal}
+
+    </div>
+
+</body>
+</html>";
+
+            bodyBuilder.HtmlBody = htmlFinal;
 
             // =================================================
-            // ADJUNTOS
+            // PROCESAR ADJUNTOS
             // =================================================
 
             var listaAdjuntos =
-                adjuntos?
-                    .Where(a =>
-                        !string.IsNullOrWhiteSpace(
-                            a.Ruta))
-                    .ToList()
-                ??
-                new List<
-                    (string Ruta, string Nombre)>();
-
+                (adjuntos ??
+                    Enumerable.Empty<
+                        (string Ruta, string Nombre)>())
+                .Where(a =>
+                    !string.IsNullOrWhiteSpace(a.Ruta))
+                .ToList();
 
             foreach (var adjunto in listaAdjuntos)
             {
@@ -286,193 +297,144 @@ public class CorreoService
                 {
                     _logger.LogWarning(
                         "Adjunto no encontrado: {Ruta}",
-                        adjunto.Ruta);
+                        adjunto.Ruta
+                    );
 
                     continue;
                 }
 
-
                 var nombreArchivo =
                     !string.IsNullOrWhiteSpace(
                         adjunto.Nombre)
-                        ? adjunto.Nombre
+                        ? adjunto.Nombre.Trim()
                         : Path.GetFileName(
                             adjunto.Ruta);
 
-
                 var bytes =
-                    await System.IO.File
-                        .ReadAllBytesAsync(
-                            adjunto.Ruta);
-
+                    await System.IO.File.ReadAllBytesAsync(
+                        adjunto.Ruta
+                    );
 
                 bodyBuilder.Attachments.Add(
                     nombreArchivo,
-                    bytes);
-
+                    bytes
+                );
 
                 _logger.LogInformation(
                     "Adjunto agregado: {Nombre}",
-                    nombreArchivo);
+                    nombreArchivo
+                );
             }
-
 
             mensaje.Body =
                 bodyBuilder.ToMessageBody();
 
-
-            // =================================================
-            // IMPORTANTE:
-            // ELIMINAR ESPACIOS DE CONTRASEÑA DE APLICACIÓN
-            // =================================================
+            var usuario =
+                _configuracion.Usuario.Trim();
 
             var password =
                 _configuracion.Contrasenia
-                    .Replace(" ", "")
-                    .Trim();
-
-
-            var usuario =
-                _configuracion.Usuario
-                    .Trim();
-
-
-            // =================================================
-            // LOG ANTES DE CONECTAR
-            // NO MOSTRAMOS LA CONTRASEÑA
-            // =================================================
+                    .Trim()
+                    .Replace(" ", "");
 
             _logger.LogInformation(
                 "Conectando SMTP. Servidor: {Servidor}, Puerto: {Puerto}, Usuario: {Usuario}",
                 _configuracion.Servidor,
                 _configuracion.Puerto,
-                usuario);
-
-
-            // =================================================
-            // SMTP
-            // =================================================
+                usuario
+            );
 
             using var cliente =
                 new SmtpClient();
 
-
-            // =================================================
-            // CONECTAR
-            // Gmail puerto 587 = STARTTLS
-            // =================================================
-
             await cliente.ConnectAsync(
                 _configuracion.Servidor.Trim(),
                 _configuracion.Puerto,
-                SecureSocketOptions.StartTls);
-
+                SecureSocketOptions.StartTls
+            );
 
             _logger.LogInformation(
-                "Conexión SMTP establecida correctamente.");
-
-
-            // =================================================
-            // AUTENTICAR
-            // =================================================
+                "Conexión SMTP establecida correctamente."
+            );
 
             await cliente.AuthenticateAsync(
                 usuario,
-                password);
-
+                password
+            );
 
             _logger.LogInformation(
-                "Autenticación SMTP realizada correctamente.");
-
-
-            // =================================================
-            // ENVIAR
-            // =================================================
+                "Autenticación SMTP realizada correctamente."
+            );
 
             var respuesta =
                 await cliente.SendAsync(
-                    mensaje);
-
+                    mensaje
+                );
 
             _logger.LogInformation(
                 "Respuesta SMTP: {Respuesta}",
-                respuesta);
-
-
-            // =================================================
-            // DESCONECTAR
-            // =================================================
+                respuesta
+            );
 
             await cliente.DisconnectAsync(
-                true);
-
+                true
+            );
 
             _logger.LogInformation(
                 "Correo enviado correctamente a: {Destinatarios}",
                 string.Join(
                     ", ",
-                    correos));
-
+                    correos)
+            );
 
             return true;
         }
-
-
-        // =====================================================
-        // ERROR DE AUTENTICACIÓN
-        // =====================================================
-
         catch (MailKit.Security.AuthenticationException ex)
         {
             _logger.LogError(
                 ex,
-                "Gmail rechazó la autenticación SMTP. Revise la contraseña de aplicación.");
+                "El servidor SMTP rechazó la autenticación. Revise el usuario y la contraseña de aplicación."
+            );
 
             return false;
         }
-
-
-        // =====================================================
-        // ERROR SMTP
-        // =====================================================
-
         catch (SmtpCommandException ex)
         {
             _logger.LogError(
                 ex,
                 "Error SMTP. Código: {StatusCode}. Mensaje: {Mensaje}",
                 ex.StatusCode,
-                ex.Message);
+                ex.Message
+            );
 
             return false;
         }
-
-
-        // =====================================================
-        // ERROR DE PROTOCOLO
-        // =====================================================
-
         catch (SmtpProtocolException ex)
         {
             _logger.LogError(
                 ex,
                 "Error de protocolo SMTP: {Mensaje}",
-                ex.Message);
+                ex.Message
+            );
 
             return false;
         }
+        catch (MailKit.ServiceNotConnectedException ex)
+        {
+            _logger.LogError(
+                ex,
+                "No fue posible establecer conexión con el servidor SMTP."
+            );
 
-
-        // =====================================================
-        // OTROS ERRORES
-        // =====================================================
-
+            return false;
+        }
         catch (Exception ex)
         {
             _logger.LogError(
                 ex,
                 "Error inesperado enviando correo: {Mensaje}",
-                ex.Message);
+                ex.Message
+            );
 
             return false;
         }
