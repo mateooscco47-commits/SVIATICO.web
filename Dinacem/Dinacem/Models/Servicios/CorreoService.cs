@@ -1,4 +1,5 @@
 ﻿using Dinacem.Models;
+using System.Net;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;
@@ -9,6 +10,7 @@ public class CorreoService
 {
     private readonly CorreoConfiguracion _configuracion;
     private readonly ILogger<CorreoService> _logger;
+    private readonly IWebHostEnvironment _environment;
 
 
     // =========================================================
@@ -17,10 +19,12 @@ public class CorreoService
 
     public CorreoService(
         IOptions<CorreoConfiguracion> configuracion,
-        ILogger<CorreoService> logger)
+        ILogger<CorreoService> logger,
+        IWebHostEnvironment environment)
     {
         _configuracion = configuracion.Value;
         _logger = logger;
+        _environment = environment;
     }
 
 
@@ -38,14 +42,12 @@ public class CorreoService
         var adjuntos =
             new List<(string Ruta, string Nombre)>();
 
-
         if (!string.IsNullOrWhiteSpace(rutaAdjunto))
         {
             var nombreArchivo =
                 !string.IsNullOrWhiteSpace(nombreAdjunto)
                     ? nombreAdjunto.Trim()
                     : Path.GetFileName(rutaAdjunto);
-
 
             adjuntos.Add(
                 (
@@ -54,7 +56,6 @@ public class CorreoService
                 )
             );
         }
-
 
         return await EnviarInternoAsync(
             destinatarios,
@@ -142,6 +143,7 @@ public class CorreoService
             return false;
         }
 
+
         // =====================================================
         // LIMPIAR DESTINATARIOS
         // =====================================================
@@ -164,6 +166,7 @@ public class CorreoService
             return false;
         }
 
+
         try
         {
             // =================================================
@@ -172,6 +175,7 @@ public class CorreoService
 
             var mensaje =
                 new MimeMessage();
+
 
             // =================================================
             // REMITENTE
@@ -192,6 +196,7 @@ public class CorreoService
                     remitente
                 )
             );
+
 
             // =================================================
             // DESTINATARIOS
@@ -219,12 +224,14 @@ public class CorreoService
                 }
             }
 
+
             // =================================================
             // ASUNTO
             // =================================================
 
             mensaje.Subject =
                 asunto?.Trim() ?? string.Empty;
+
 
             // =================================================
             // BODY BUILDER
@@ -233,50 +240,77 @@ public class CorreoService
             var bodyBuilder =
                 new BodyBuilder();
 
-            var contenidoOriginal =
+            bodyBuilder.HtmlBody =
                 contenidoHtml ?? string.Empty;
 
+
             // =================================================
-            // HTML FINAL (SIN DUPLICAR CABECERA DE LOGO)
+            // LOGO DINACEN EMBEBIDO
+            // =================================================
+            //
+            // El HTML debe utilizar:
+            //
+            // <img src="cid:logoDinacen">
+            //
             // =================================================
 
-            string htmlFinal = $@"
-<!DOCTYPE html>
-<html lang=""es"">
+            var rutaLogo =
+                Path.Combine(
+                    _environment.WebRootPath,
+                    "images",
+                    "logo-dinacen.png"
+                );
 
-<head>
-    <meta charset=""UTF-8"">
-    <meta
-        name=""viewport""
-        content=""width=device-width, initial-scale=1.0""
-    >
-    <title>DINACEN</title>
-</head>
 
-<body style=""
-    margin:0;
-    padding:0;
-    background-color:#ffffff;
-    font-family:Arial, Helvetica, sans-serif;
-    color:#333333;
-"">
+            if (System.IO.File.Exists(rutaLogo))
+            {
+                try
+                {
+                    var logo =
+                        bodyBuilder.LinkedResources.Add(
+                            rutaLogo
+                        );
 
-    <div style=""
-        width:100%;
-        max-width:700px;
-        margin:0 auto;
-        padding:20px;
-        box-sizing:border-box;
-    "">
+                    // =========================================
+                    // CONTENT-ID
+                    // =========================================
 
-        {contenidoOriginal}
+                    logo.ContentId =
+                        "logoDinacen";
 
-    </div>
 
-</body>
-</html>";
+                    // =========================================
+                    // TIPO MIME
+                    // =========================================
 
-            bodyBuilder.HtmlBody = htmlFinal;
+                    logo.ContentType.MediaType =
+                        "image";
+
+                    logo.ContentType.MediaSubtype =
+                        "png";
+
+
+                    _logger.LogInformation(
+                        "Logo DINACEN agregado correctamente. Ruta: {RutaLogo}",
+                        rutaLogo
+                    );
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(
+                        ex,
+                        "Error al agregar el logo DINACEN al correo."
+                    );
+                }
+            }
+            else
+            {
+                _logger.LogWarning(
+                    "No se encontró el logo DINACEN. Ruta: {RutaLogo}",
+                    rutaLogo
+                );
+            }
+
 
             // =================================================
             // PROCESAR ADJUNTOS
@@ -290,8 +324,13 @@ public class CorreoService
                     !string.IsNullOrWhiteSpace(a.Ruta))
                 .ToList();
 
+
             foreach (var adjunto in listaAdjuntos)
             {
+                // =============================================
+                // VALIDAR EXISTENCIA
+                // =============================================
+
                 if (!System.IO.File.Exists(
                         adjunto.Ruta))
                 {
@@ -303,6 +342,11 @@ public class CorreoService
                     continue;
                 }
 
+
+                // =============================================
+                // NOMBRE DEL ARCHIVO
+                // =============================================
+
                 var nombreArchivo =
                     !string.IsNullOrWhiteSpace(
                         adjunto.Nombre)
@@ -310,24 +354,63 @@ public class CorreoService
                         : Path.GetFileName(
                             adjunto.Ruta);
 
-                var bytes =
-                    await System.IO.File.ReadAllBytesAsync(
+
+                // =============================================
+                // LEER ARCHIVO
+                // =============================================
+
+                byte[] bytes;
+
+                try
+                {
+                    bytes =
+                        await System.IO.File.ReadAllBytesAsync(
+                            adjunto.Ruta
+                        );
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(
+                        ex,
+                        "No se pudo leer el archivo adjunto: {Ruta}",
                         adjunto.Ruta
                     );
+
+                    continue;
+                }
+
+
+                // =============================================
+                // AGREGAR ADJUNTO
+                // =============================================
 
                 bodyBuilder.Attachments.Add(
                     nombreArchivo,
                     bytes
                 );
 
+
                 _logger.LogInformation(
-                    "Adjunto agregado: {Nombre}",
+                    "Adjunto agregado al correo: {Nombre}",
                     nombreArchivo
                 );
             }
 
+
+            // =================================================
+            // CONSTRUIR BODY FINAL
+            // =================================================
+
             mensaje.Body =
                 bodyBuilder.ToMessageBody();
+
+
+            // =================================================
+            // DATOS SMTP
+            // =================================================
+
+            var servidor =
+                _configuracion.Servidor.Trim();
 
             var usuario =
                 _configuracion.Usuario.Trim();
@@ -337,48 +420,116 @@ public class CorreoService
                     .Trim()
                     .Replace(" ", "");
 
+
             _logger.LogInformation(
                 "Conectando SMTP. Servidor: {Servidor}, Puerto: {Puerto}, Usuario: {Usuario}",
-                _configuracion.Servidor,
+                servidor,
                 _configuracion.Puerto,
                 usuario
             );
 
+
+            // =================================================
+            // CLIENTE SMTP
+            // =================================================
+
             using var cliente =
                 new SmtpClient();
 
-            await cliente.ConnectAsync(
-                _configuracion.Servidor.Trim(),
-                _configuracion.Puerto,
-                SecureSocketOptions.StartTls
+
+            // =================================================
+            // TIMEOUT
+            // =================================================
+            //
+            // Evita que la aplicación quede esperando
+            // indefinidamente al servidor SMTP.
+            //
+            // 30 segundos.
+            // =================================================
+
+            cliente.Timeout =
+                30000;
+
+
+            // =================================================
+            // SEGURIDAD SMTP
+            // =================================================
+            //
+            // Puerto 465:
+            // SSL desde el inicio.
+            //
+            // Puerto 587:
+            // STARTTLS.
+            //
+            // =================================================
+
+            var seguridad =
+                _configuracion.Puerto == 465
+                    ? SecureSocketOptions.SslOnConnect
+                    : SecureSocketOptions.StartTls;
+
+
+            _logger.LogInformation(
+                "Seguridad SMTP seleccionada: {Seguridad}",
+                seguridad
             );
+
+
+            // =================================================
+            // CONEXIÓN SMTP
+            // =================================================
+
+            await cliente.ConnectAsync(
+                servidor,
+                _configuracion.Puerto,
+                seguridad
+            );
+
 
             _logger.LogInformation(
                 "Conexión SMTP establecida correctamente."
             );
+
+
+            // =================================================
+            // AUTENTICACIÓN
+            // =================================================
 
             await cliente.AuthenticateAsync(
                 usuario,
                 password
             );
 
+
             _logger.LogInformation(
                 "Autenticación SMTP realizada correctamente."
             );
+
+
+            // =================================================
+            // ENVIAR CORREO
+            // =================================================
 
             var respuesta =
                 await cliente.SendAsync(
                     mensaje
                 );
 
+
             _logger.LogInformation(
                 "Respuesta SMTP: {Respuesta}",
                 respuesta
             );
 
+
+            // =================================================
+            // DESCONECTAR
+            // =================================================
+
             await cliente.DisconnectAsync(
                 true
             );
+
 
             _logger.LogInformation(
                 "Correo enviado correctamente a: {Destinatarios}",
@@ -387,18 +538,32 @@ public class CorreoService
                     correos)
             );
 
+
             return true;
         }
+
+
+        // =====================================================
+        // ERROR DE AUTENTICACIÓN
+        // =====================================================
+
         catch (MailKit.Security.AuthenticationException ex)
         {
             _logger.LogError(
                 ex,
-                "El servidor SMTP rechazó la autenticación. Revise el usuario y la contraseña de aplicación."
+                "El servidor SMTP rechazó la autenticación. " +
+                "Revise el usuario y la contraseña de aplicación."
             );
 
             return false;
         }
-        catch (SmtpCommandException ex)
+
+
+        // =====================================================
+        // ERROR DE COMANDO SMTP
+        // =====================================================
+
+        catch (MailKit.Net.Smtp.SmtpCommandException ex)
         {
             _logger.LogError(
                 ex,
@@ -409,7 +574,13 @@ public class CorreoService
 
             return false;
         }
-        catch (SmtpProtocolException ex)
+
+
+        // =====================================================
+        // ERROR DE PROTOCOLO SMTP
+        // =====================================================
+
+        catch (MailKit.Net.Smtp.SmtpProtocolException ex)
         {
             _logger.LogError(
                 ex,
@@ -419,6 +590,12 @@ public class CorreoService
 
             return false;
         }
+
+
+        // =====================================================
+        // ERROR DE CONEXIÓN
+        // =====================================================
+
         catch (MailKit.ServiceNotConnectedException ex)
         {
             _logger.LogError(
@@ -428,6 +605,27 @@ public class CorreoService
 
             return false;
         }
+
+
+        // =====================================================
+        // TIMEOUT
+        // =====================================================
+
+        catch (TimeoutException ex)
+        {
+            _logger.LogError(
+                ex,
+                "Tiempo de espera agotado al comunicarse con el servidor SMTP."
+            );
+
+            return false;
+        }
+
+
+        // =====================================================
+        // ERROR GENERAL
+        // =====================================================
+
         catch (Exception ex)
         {
             _logger.LogError(

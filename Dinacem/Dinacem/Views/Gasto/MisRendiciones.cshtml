@@ -379,85 +379,47 @@
 </style>
 
 <div class="rendiciones-page">
-
     <div class="rendiciones-header">
-
         <div class="rendiciones-header-content">
-
             <h1 class="rendiciones-title">
                 <i class="bi bi-receipt-cutoff me-2"></i>
                 Mis rendiciones
             </h1>
-
             <p class="rendiciones-description">
                 Consulte el estado y detalle de las rendiciones registradas.
             </p>
-
         </div>
-
         <a asp-controller="Empleado"
            asp-action="Index"
            class="btn-volver-rendiciones">
-
             <i class="bi bi-arrow-left"></i>
             Volver al panel
-
         </a>
-
     </div>
 
-    @if(TempData["mensaje"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show rendiciones-alert">
-
-            <i class="bi bi-check-circle me-2"></i>
-            @TempData["mensaje"]
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert">
-            </button>
-
-        </div>
-    }
-
     <div class="rendiciones-card">
-
         <div class="rendiciones-card-header">
-
             <i class="bi bi-list-ul me-2"></i>
             Historial de rendiciones
-
         </div>
 
         <div class="rendiciones-card-body">
-
             <div class="rendiciones-search">
-
                 <div class="input-group">
-
                     <span class="input-group-text">
                         <i class="bi bi-search"></i>
                     </span>
-
                     <input type="text"
                            id="buscadorRendiciones"
                            class="form-control"
                            placeholder="Buscar por número, solicitud o estado..." />
-
                 </div>
-
             </div>
 
             <div class="tabla-contenedor">
-
-                <table class="tabla-rendiciones"
-                       id="tablaRendiciones">
-
+                <table class="tabla-rendiciones" id="tablaRendiciones">
                     <thead>
-
                         <tr>
-
                             <th>#</th>
                             <th>Solicitud</th>
                             <th>Fecha</th>
@@ -465,86 +427,69 @@
                             <th>Saldo</th>
                             <th>Estado</th>
                             <th>Acciones</th>
-
                         </tr>
-
                     </thead>
-
                     <tbody>
-
-                        @if(Model != null && Model.Any())
+                        @if (Model != null && Model.Any())
                         {
-                            foreach(var item in Model)
+                            foreach (var item in Model)
                             {
                                 <tr>
-
                                     <td class="rendicion-id">
                                         #@item.IdRendicion
                                     </td>
-
                                     <td>
                                         #@item.IdSolicitud
                                     </td>
-
                                     <td>
                                         @item.Fecha.ToString("dd/MM/yyyy")
                                     </td>
-
                                     <td class="monto">
                                         S/ @item.Total.ToString("N2")
                                     </td>
-
                                     <td class="saldo">
                                         S/ @item.Saldo.ToString("N2")
                                     </td>
-
                                     <td>
-
-                                        @if(item.IdEstadoRendicion == 1)
+                                        @if (item.IdEstadoRendicion == 1)
                                         {
                                             <span class="estado estado-proceso">
                                                 <i class="bi bi-pencil-square me-1"></i>
                                                 En proceso
                                             </span>
                                         }
-                                        else if(item.IdEstadoRendicion == 2)
+                                        else if (item.IdEstadoRendicion == 2)
                                         {
                                             <span class="estado estado-pendiente">
                                                 <i class="bi bi-clock me-1"></i>
                                                 Pendiente revisión
                                             </span>
                                         }
-                                        else if(item.IdEstadoRendicion == 3)
+                                        else if (item.IdEstadoRendicion == 3)
                                         {
                                             <span class="estado estado-aprobada">
                                                 <i class="bi bi-check-circle me-1"></i>
                                                 Aprobada
                                             </span>
                                         }
-                                        else if(item.IdEstadoRendicion == 4)
+                                        else if (item.IdEstadoRendicion == 4)
                                         {
                                             <span class="estado estado-rechazada">
                                                 <i class="bi bi-x-circle me-1"></i>
                                                 Rechazada
                                             </span>
                                         }
-
                                     </td>
-
                                     <td>
-
                                         <div class="acciones">
-
-                                            @if(item.IdEstadoRendicion == 1)
+                                            @if (item.IdEstadoRendicion == 1)
                                             {
                                                 <a asp-controller="Gasto"
                                                    asp-action="Index"
                                                    asp-route-idRendicion="@item.IdRendicion"
                                                    class="btn-rendicion btn-continuar">
-
                                                     <i class="bi bi-arrow-right-circle"></i>
                                                     Continuar
-
                                                 </a>
                                             }
 
@@ -552,91 +497,69 @@
                                                asp-action="Detalle"
                                                asp-route-id="@item.IdRendicion"
                                                class="btn-rendicion btn-detalle">
-
                                                 <i class="bi bi-eye"></i>
                                                 Detalle
-
                                             </a>
-
                                         </div>
-
                                     </td>
-
                                 </tr>
                             }
                         }
                         else
                         {
                             <tr>
-
-                                <td colspan="7"
-                                    class="sin-registros">
-
+                                <td colspan="7" class="sin-registros">
                                     <i class="bi bi-receipt"></i>
-
                                     <strong>
                                         No tiene rendiciones registradas
                                     </strong>
-
                                     <span>
                                         Las rendiciones que registre aparecerán en este listado.
                                     </span>
-
                                 </td>
-
                             </tr>
                         }
-
                     </tbody>
-
                 </table>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
 @section Scripts {
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            @if (TempData["Success"] is string successMessage)
+            {
+                <text>
+                Swal.fire({
+                    icon: "success",
+                    title: "¡Rendición enviada!",
+                    text: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(successMessage)),
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#0C4A8A",
+                    timer: 5000,
+                    timerProgressBar: true
+                });
+                </text>
+            }
 
-            const buscador =
-                document.getElementById("buscadorRendiciones");
-
-            const tabla =
-                document.getElementById("tablaRendiciones");
+            const buscador = document.getElementById("buscadorRendiciones");
+            const tabla = document.getElementById("tablaRendiciones");
 
             if (!buscador || !tabla) {
                 return;
             }
 
             buscador.addEventListener("input", function () {
-
-                const texto =
-                    this.value.toLowerCase().trim();
-
-                const filas =
-                    tabla.querySelectorAll("tbody tr");
+                const texto = this.value.toLowerCase().trim();
+                const filas = tabla.querySelectorAll("tbody tr");
 
                 filas.forEach(function (fila) {
-
-                    const contenido =
-                        fila.textContent.toLowerCase();
-
-                    if (contenido.includes(texto)) {
-                        fila.style.display = "";
-                    } else {
-                        fila.style.display = "none";
-                    }
-
+                    const contenido = fila.textContent.toLowerCase();
+                    fila.style.display = contenido.includes(texto) ? "" : "none";
                 });
-
             });
-
         });
     </script>
 }

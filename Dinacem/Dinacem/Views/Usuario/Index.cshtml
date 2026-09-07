@@ -750,60 +750,109 @@
         </div>
     </div>
 
+
+    <!-- ========================================================= -->
+    <!-- INDICADORES -->
+    <!-- ========================================================= -->
+
     <div class="row g-3 mb-4">
+
         <div class="col-md-4">
             <div class="usuarios-kpi">
+
                 <div class="d-flex justify-content-between align-items-center">
+
                     <div>
-                        <span class="usuarios-kpi-label">Total de usuarios</span>
-                        <h3 class="usuarios-kpi-value">@totalUsuarios</h3>
+                        <span class="usuarios-kpi-label">
+                            Total de usuarios
+                        </span>
+
+                        <h3 class="usuarios-kpi-value">
+                            @totalUsuarios
+                        </h3>
                     </div>
+
                     <div class="usuarios-kpi-icon kpi-blue">
                         <i class="bi bi-people"></i>
                     </div>
+
                 </div>
+
             </div>
         </div>
 
+
         <div class="col-md-4">
             <div class="usuarios-kpi">
+
                 <div class="d-flex justify-content-between align-items-center">
+
                     <div>
-                        <span class="usuarios-kpi-label">Usuarios activos</span>
-                        <h3 class="usuarios-kpi-value">@usuariosActivos</h3>
+                        <span class="usuarios-kpi-label">
+                            Usuarios activos
+                        </span>
+
+                        <h3 class="usuarios-kpi-value">
+                            @usuariosActivos
+                        </h3>
                     </div>
+
                     <div class="usuarios-kpi-icon kpi-green">
                         <i class="bi bi-person-check"></i>
                     </div>
+
                 </div>
+
             </div>
         </div>
 
+
         <div class="col-md-4">
             <div class="usuarios-kpi">
+
                 <div class="d-flex justify-content-between align-items-center">
+
                     <div>
-                        <span class="usuarios-kpi-label">Usuarios inactivos</span>
-                        <h3 class="usuarios-kpi-value">@usuariosInactivos</h3>
+                        <span class="usuarios-kpi-label">
+                            Usuarios inactivos
+                        </span>
+
+                        <h3 class="usuarios-kpi-value">
+                            @usuariosInactivos
+                        </h3>
                     </div>
+
                     <div class="usuarios-kpi-icon kpi-red">
                         <i class="bi bi-person-x"></i>
                     </div>
+
                 </div>
+
             </div>
         </div>
+
     </div>
+
+
+    <!-- ========================================================= -->
+    <!-- FORMULARIO REGISTRO -->
+    <!-- ========================================================= -->
 
     <div class="usuario-create-card"
          id="formularioRegistro"
          style="display:none;">
 
         <div class="usuario-card-header">
+
             <i class="bi bi-person-plus-fill me-2"></i>
+
             Registrar nuevo usuario
+
         </div>
 
+
         <div class="usuario-create-body">
+
             <form asp-controller="Usuario"
                   asp-action="Create"
                   method="post"
@@ -811,18 +860,33 @@
 
                 @Html.AntiForgeryToken()
 
+
                 <div class="row g-4">
 
+
+                    <!-- ================================================= -->
+                    <!-- ZONA -->
+                    <!-- ================================================= -->
+
                     <div class="col-md-6">
-                        <label for="IdZona" class="form-label">
+
+                        <label for="IdZona"
+                               class="form-label">
+
                             Zona
+
                         </label>
+
 
                         <select id="IdZona"
                                 name="IdZona"
                                 class="form-select"
                                 required>
-                            <option value="">Seleccione una zona</option>
+
+                            <option value="">
+                                Seleccione una zona
+                            </option>
+
 
                             @if (ViewBag.Zonas != null)
                             {
@@ -833,48 +897,86 @@
                                     </option>
                                 }
                             }
+
                         </select>
 
+
                         <small class="text-muted">
+
                             Seleccione la zona asignada al usuario.
+
                         </small>
+
                     </div>
 
+
+                    <!-- ================================================= -->
+                    <!-- USUARIO DE ACCESO - INGRESO MANUAL -->
+                    <!-- ================================================= -->
+
                     <div class="col-md-6">
-                        <label for="SiguienteUsuarioAcceso"
+
+                        <label for="UsuarioAcceso"
                                class="form-label">
+
                             Usuario de acceso
+
                         </label>
+
 
                         <div class="input-group">
+
                             <span class="input-group-text">
+
                                 <i class="bi bi-person-badge-fill"></i>
+
                             </span>
 
-                            <input id="SiguienteUsuarioAcceso"
+
+                            <input id="UsuarioAcceso"
+                                   name="UsuarioAcceso"
                                    type="text"
-                                   class="form-control fw-bold"
-                                   value="@ViewBag.SiguienteUsuarioAcceso"
-                                   readonly
-                                   aria-readonly="true" />
+                                   class="form-control"
+                                   placeholder="Ingrese el usuario de acceso"
+                                   autocomplete="username"
+                                   maxlength="50"
+                                   required />
+
                         </div>
 
+
                         <small class="text-muted">
-                            Este código se asignará automáticamente al guardar.
+
+                            Ingrese manualmente el usuario que utilizará para acceder al sistema.
+
                         </small>
+
                     </div>
 
+
+                    <!-- ================================================= -->
+                    <!-- ROL -->
+                    <!-- ================================================= -->
+
                     <div class="col-md-6">
-                        <label for="IdRol" class="form-label">
+
+                        <label for="IdRol"
+                               class="form-label">
+
                             Rol
+
                         </label>
+
 
                         <select id="IdRol"
                                 name="IdRol"
                                 class="form-select"
                                 required>
 
-                            <option value="">Seleccione un rol</option>
+                            <option value="">
+                                Seleccione un rol
+                            </option>
+
 
                             @if (ViewBag.Roles != null)
                             {
@@ -888,15 +990,29 @@
 
                         </select>
 
+
                         <small class="text-muted">
+
                             Seleccione el rol que tendrá el usuario dentro del sistema.
+
                         </small>
+
                     </div>
 
+
+                    <!-- ================================================= -->
+                    <!-- NOMBRES -->
+                    <!-- ================================================= -->
+
                     <div class="col-md-6">
-                        <label for="Nombres" class="form-label">
+
+                        <label for="Nombres"
+                               class="form-label">
+
                             Nombres
+
                         </label>
+
 
                         <input id="Nombres"
                                name="Nombres"
@@ -904,12 +1020,23 @@
                                class="form-control"
                                placeholder="Ingrese los nombres"
                                required />
+
                     </div>
 
+
+                    <!-- ================================================= -->
+                    <!-- APELLIDOS -->
+                    <!-- ================================================= -->
+
                     <div class="col-md-6">
-                        <label for="Apellidos" class="form-label">
+
+                        <label for="Apellidos"
+                               class="form-label">
+
                             Apellidos
+
                         </label>
+
 
                         <input id="Apellidos"
                                name="Apellidos"
@@ -917,12 +1044,23 @@
                                class="form-control"
                                placeholder="Ingrese los apellidos"
                                required />
+
                     </div>
 
+
+                    <!-- ================================================= -->
+                    <!-- CORREO -->
+                    <!-- ================================================= -->
+
                     <div class="col-md-6">
-                        <label for="Correo" class="form-label">
+
+                        <label for="Correo"
+                               class="form-label">
+
                             Correo electrónico
+
                         </label>
+
 
                         <input id="Correo"
                                name="Correo"
@@ -931,12 +1069,23 @@
                                placeholder="correo@ejemplo.com"
                                autocomplete="email"
                                required />
+
                     </div>
 
+
+                    <!-- ================================================= -->
+                    <!-- CELULAR -->
+                    <!-- ================================================= -->
+
                     <div class="col-md-6">
-                        <label for="Celular" class="form-label">
+
+                        <label for="Celular"
+                               class="form-label">
+
                             Celular
+
                         </label>
+
 
                         <input id="Celular"
                                name="Celular"
@@ -945,12 +1094,23 @@
                                placeholder="9 dígitos"
                                maxlength="9"
                                inputmode="numeric" />
+
                     </div>
 
+
+                    <!-- ================================================= -->
+                    <!-- CONTRASEÑA -->
+                    <!-- ================================================= -->
+
                     <div class="col-md-6">
-                        <label for="Contrasenia" class="form-label">
+
+                        <label for="Contrasenia"
+                               class="form-label">
+
                             Contraseña
+
                         </label>
+
 
                         <input id="Contrasenia"
                                name="Contrasenia"
@@ -959,49 +1119,93 @@
                                placeholder="Ingrese la contraseña"
                                autocomplete="new-password"
                                required />
+
                     </div>
 
                 </div>
+
+
+                <!-- ===================================================== -->
+                <!-- INFORMACIÓN -->
+                <!-- ===================================================== -->
 
                 <div class="mt-3">
+
                     <div class="alert alert-light border d-flex align-items-center mb-0">
+
                         <i class="bi bi-info-circle text-primary me-2"></i>
+
                         <small class="text-muted">
-                            La zona y el rol se cargan desde los registros activos del sistema.
-                            El usuario de acceso se genera automáticamente al guardar.
+
+                            La zona y el rol se cargan desde los registros activos
+                            del sistema. El usuario de acceso debe ser ingresado
+                            manualmente.
+
                         </small>
+
                     </div>
+
                 </div>
 
+
+                <!-- ===================================================== -->
+                <!-- BOTONES -->
+                <!-- ===================================================== -->
+
                 <div class="d-flex justify-content-end gap-2 mt-4">
+
                     <button type="button"
                             class="btn btn-outline-secondary"
                             id="btnCancelarRegistro">
+
                         <i class="bi bi-x-circle me-1"></i>
+
                         Cancelar
+
                     </button>
+
 
                     <button type="submit"
                             class="btn-registrar">
+
                         <i class="bi bi-check-circle me-1"></i>
+
                         Registrar usuario
+
                     </button>
+
                 </div>
 
             </form>
+
         </div>
+
     </div>
+
+
+    <!-- ========================================================= -->
+    <!-- LISTA DE USUARIOS -->
+    <!-- ========================================================= -->
 
     <div class="usuarios-list-card">
 
         <div class="usuarios-list-header">
+
             <h2 class="usuarios-list-title">
+
                 <i class="bi bi-list-ul me-2"></i>
+
                 Lista de usuarios
+
             </h2>
 
+
+            <!-- BUSCADOR -->
+
             <div class="usuarios-search">
+
                 <i class="bi bi-search usuarios-search-icon"></i>
+
 
                 <input type="search"
                        id="buscadorUsuarios"
@@ -1009,124 +1213,250 @@
                        placeholder="Buscar usuario, nombre, correo o zona..."
                        autocomplete="off" />
 
+
                 <button type="button"
                         id="limpiarBuscador"
                         class="usuarios-search-clear"
                         title="Limpiar búsqueda">
+
                     <i class="bi bi-x-lg"></i>
+
                 </button>
+
             </div>
+
         </div>
 
+
+        <!-- ========================================================= -->
+        <!-- TABLA -->
+        <!-- ========================================================= -->
+
         <div class="usuarios-table-wrapper">
-            <table class="usuarios-table" id="tablaUsuarios">
+
+            <table class="usuarios-table"
+                   id="tablaUsuarios">
+
                 <thead>
+
                     <tr>
-                        <th>Usuario</th>
-                        <th>Correo</th>
-                        <th>Celular</th>
-                        <th>Zona</th>
-                        <th>Rol</th>
-                        <th>Estado</th>
-                        <th class="text-center">Acciones</th>
+
+                        <th>
+                            Usuario
+                        </th>
+
+                        <th>
+                            Correo
+                        </th>
+
+                        <th>
+                            Celular
+                        </th>
+
+                        <th>
+                            Zona
+                        </th>
+
+                        <th>
+                            Rol
+                        </th>
+
+                        <th>
+                            Estado
+                        </th>
+
+                        <th class="text-center">
+                            Acciones
+                        </th>
+
                     </tr>
+
                 </thead>
 
+
                 <tbody>
+
                     @if (Model != null && Model.Any())
                     {
                         foreach (var item in Model)
                         {
                             <tr class="usuario-row">
 
+
+                                <!-- ================================================= -->
+                                <!-- USUARIO -->
+                                <!-- ================================================= -->
+
                                 <td>
+
                                     <div class="usuario-info">
+
                                         <div class="usuario-avatar">
+
                                             <i class="bi bi-person"></i>
+
                                         </div>
+
 
                                         <div>
+
                                             <div class="usuario-name">
+
                                                 @item.Nombres @item.Apellidos
+
                                             </div>
+
 
                                             <div class="usuario-access">
+
                                                 @item.UsuarioAcceso
+
                                             </div>
+
                                         </div>
+
                                     </div>
+
                                 </td>
 
-                                <td>
-                                    <span>@item.Correo</span>
-                                </td>
+
+                                <!-- ================================================= -->
+                                <!-- CORREO -->
+                                <!-- ================================================= -->
 
                                 <td>
+
+                                    <span>
+                                        @item.Correo
+                                    </span>
+
+                                </td>
+
+
+                                <!-- ================================================= -->
+                                <!-- CELULAR -->
+                                <!-- ================================================= -->
+
+                                <td>
+
                                     @(string.IsNullOrWhiteSpace(item.Celular)
                                         ? "-"
                                         : item.Celular)
+
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- ZONA -->
+                                <!-- ================================================= -->
+
                                 <td>
+
                                     @if (item.Zona != null)
                                     {
                                         <span class="zona-badge">
+
                                             <i class="bi bi-geo-alt-fill"></i>
+
                                             @item.Zona.CodigoZona
+
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="text-muted">
+
                                             Sin zona
+
                                         </span>
                                     }
+
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- ROL -->
+                                <!-- ================================================= -->
+
                                 <td>
+
                                     @if (item.Rol != null)
                                     {
                                         <span class="rol-text">
+
                                             @item.Rol.Nombre
+
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="text-muted">
+
                                             Sin rol
+
                                         </span>
                                     }
+
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- ESTADO -->
+                                <!-- ================================================= -->
+
                                 <td>
+
                                     @if (item.Estado)
                                     {
                                         <span class="estado-badge estado-activo">
+
                                             <i class="bi bi-check-circle-fill"></i>
+
                                             Activo
+
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="estado-badge estado-inactivo">
+
                                             <i class="bi bi-x-circle-fill"></i>
+
                                             Inactivo
+
                                         </span>
                                     }
+
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- ACCIONES -->
+                                <!-- ================================================= -->
+
                                 <td>
+
                                     <div class="usuario-actions">
+
+
+                                        <!-- EDITAR -->
 
                                         <a asp-controller="Usuario"
                                            asp-action="Edit"
                                            asp-route-id="@item.IdUsuario"
                                            class="btn-accion btn-editar"
                                            title="Editar usuario">
+
                                             <i class="bi bi-pencil-square"></i>
-                                            <span>Editar</span>
+
+                                            <span>
+                                                Editar
+                                            </span>
+
                                         </a>
 
+
+                                        <!-- DESACTIVAR / ACTIVAR -->
                                         @if (item.Estado)
                                         {
                                             <form asp-controller="Usuario"
@@ -1136,18 +1466,26 @@
 
                                                 @Html.AntiForgeryToken()
 
+
                                                 <input type="hidden"
                                                        name="id"
                                                        value="@item.IdUsuario" />
+
 
                                                 <button type="button"
                                                         class="btn-accion btn-desactivar btn-confirmar-estado"
                                                         data-accion="desactivar"
                                                         data-id="@item.IdUsuario"
                                                         title="Desactivar usuario">
+
                                                     <i class="bi bi-person-x"></i>
-                                                    <span>Desactivar</span>
+
+                                                    <span>
+                                                        Desactivar
+                                                    </span>
+
                                                 </button>
+
                                             </form>
                                         }
                                         else
@@ -1159,22 +1497,31 @@
 
                                                 @Html.AntiForgeryToken()
 
+
                                                 <input type="hidden"
                                                        name="id"
                                                        value="@item.IdUsuario" />
+
 
                                                 <button type="button"
                                                         class="btn-accion btn-activar btn-confirmar-estado"
                                                         data-accion="activar"
                                                         data-id="@item.IdUsuario"
                                                         title="Activar usuario">
+
                                                     <i class="bi bi-person-check"></i>
-                                                    <span>Activar</span>
+
+                                                    <span>
+                                                        Activar
+                                                    </span>
+
                                                 </button>
+
                                             </form>
                                         }
 
                                     </div>
+
                                 </td>
 
                             </tr>
@@ -1183,43 +1530,83 @@
                     else
                     {
                         <tr>
-                            <td colspan="7" class="usuarios-empty">
+
+                            <td colspan="7"
+                                class="usuarios-empty">
+
                                 <i class="bi bi-people"></i>
+
                                 No existen usuarios registrados.
+
                             </td>
+
                         </tr>
                     }
+
                 </tbody>
+
             </table>
+
         </div>
+
     </div>
+
 </div>
 
+
+<!-- ============================================================= -->
+<!-- MENSAJE DE ÉXITO -->
+<!-- ============================================================= -->
 @if (TempData["UsuarioMensaje"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-success alert-dismissible fade show"
+         role="alert">
+
         <i class="bi bi-check-circle-fill me-2"></i>
+
         @TempData["UsuarioMensaje"]
+
+
         <button type="button"
                 class="btn-close"
                 data-bs-dismiss="alert"
-                aria-label="Cerrar"></button>
+                aria-label="Cerrar">
+        </button>
+
     </div>
 }
 
+
+<!-- ============================================================= -->
+<!-- MENSAJE DE ERROR -->
+<!-- ============================================================= -->
 @if (TempData["UsuarioError"] != null)
 {
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div class="alert alert-danger alert-dismissible fade show"
+         role="alert">
+
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
         @TempData["UsuarioError"]
+
+
         <button type="button"
                 class="btn-close"
                 data-bs-dismiss="alert"
-                aria-label="Cerrar"></button>
+                aria-label="Cerrar">
+        </button>
+
     </div>
 }
 
+
+<!-- ============================================================= -->
+<!-- SCRIPTS -->
+<!-- ============================================================= -->
 @section Scripts {
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="~/js/IndexUsuario.js"></script>
+
 }
