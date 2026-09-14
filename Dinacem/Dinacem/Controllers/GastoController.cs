@@ -312,7 +312,9 @@ namespace Dinacem.Controllers
             {
                 ValidarDatosComprobante(gasto);
 
-                if (ModelState.IsValid)
+                // Solo consulta SUNAT si el usuario realmente ingresó RUC.
+                if (ModelState.IsValid &&
+                    !string.IsNullOrWhiteSpace(gasto.Ruc))
                 {
                     await ValidarRucAsync(gasto);
                 }
@@ -595,7 +597,8 @@ namespace Dinacem.Controllers
             {
                 ValidarDatosComprobante(modelo);
 
-                if (ModelState.IsValid)
+                if (ModelState.IsValid &&
+                    !string.IsNullOrWhiteSpace(modelo.Ruc))
                 {
                     await ValidarRucAsync(modelo);
                 }
@@ -1983,33 +1986,97 @@ namespace Dinacem.Controllers
         private void ValidarDatosComprobante(
             Gasto gasto)
         {
-            if (string.IsNullOrWhiteSpace(
-                gasto.Ruc))
+            // ---------------------------------------------------------
+            // EL TIPO DE COMPROBANTE SÍ ES OBLIGATORIO
+            // ---------------------------------------------------------
+
+            if (!gasto.IdTipoComprobante.HasValue ||
+                gasto.IdTipoComprobante.Value <= 0)
             {
                 ModelState.AddModelError(
-                    nameof(Gasto.Ruc),
-                    "Debe ingresar el RUC.");
-            }
-            else if (
-                gasto.Ruc.Length != 11 ||
-                !gasto.Ruc.All(char.IsDigit))
-            {
-                ModelState.AddModelError(
-                    nameof(Gasto.Ruc),
-                    "El RUC debe contener exactamente 11 dígitos.");
+                    nameof(Gasto.IdTipoComprobante),
+                    "Debe seleccionar el tipo de comprobante.");
+
+                return;
             }
 
-            var tipoComprobanteExiste =
-                _context.TipoComprobantes.Any(
-                    t =>
+            var tipoComprobante =
+                _context.TipoComprobantes
+                    .FirstOrDefault(t =>
                         t.IdTipoComprobante ==
-                        gasto.IdTipoComprobante);
+                        gasto.IdTipoComprobante.Value);
 
-            if (!tipoComprobanteExiste)
+            if (tipoComprobante == null)
             {
                 ModelState.AddModelError(
                     nameof(Gasto.IdTipoComprobante),
                     "El tipo de comprobante seleccionado no existe.");
+
+                return;
+            }
+
+            var nombreComprobante =
+                tipoComprobante.Nombre?
+                    .Trim()
+                    .ToLowerInvariant() ?? "";
+
+            // ---------------------------------------------------------
+            // FACTURA
+            // ---------------------------------------------------------
+            // Para factura sí exigimos RUC.
+            // ---------------------------------------------------------
+
+            bool esFactura =
+                nombreComprobante == "factura";
+
+            // ---------------------------------------------------------
+            // RUC
+            // ---------------------------------------------------------
+
+            if (!string.IsNullOrWhiteSpace(gasto.Ruc))
+            {
+                gasto.Ruc =
+                    gasto.Ruc.Trim();
+
+                if (gasto.Ruc.Length != 11 ||
+                    !gasto.Ruc.All(char.IsDigit))
+                {
+                    ModelState.AddModelError(
+                        nameof(Gasto.Ruc),
+                        "El RUC debe contener exactamente 11 dígitos.");
+                }
+            }
+            else if (esFactura)
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.Ruc),
+                    "Para una factura debe ingresar el RUC.");
+            }
+
+            // ---------------------------------------------------------
+            // FACTURA
+            // ---------------------------------------------------------
+            // Si es factura, también necesitamos los datos del proveedor.
+            // Para los demás comprobantes son opcionales.
+            // ---------------------------------------------------------
+
+            if (esFactura)
+            {
+                if (string.IsNullOrWhiteSpace(
+                    gasto.RazonSocial))
+                {
+                    ModelState.AddModelError(
+                        nameof(Gasto.RazonSocial),
+                        "Para una factura debe ingresar la razón social.");
+                }
+
+                if (string.IsNullOrWhiteSpace(
+                    gasto.DomicilioFiscal))
+                {
+                    ModelState.AddModelError(
+                        nameof(Gasto.DomicilioFiscal),
+                        "Para una factura debe ingresar el domicilio fiscal.");
+                }
             }
         }
 
@@ -2072,6 +2139,63 @@ namespace Dinacem.Controllers
         private void ValidarDatosProveedor(
             Gasto gasto)
         {
+            // ---------------------------------------------------------
+            // Si no hay tipo de comprobante, no validar proveedor
+            // ---------------------------------------------------------
+
+            if (!gasto.IdTipoComprobante.HasValue)
+            {
+                return;
+            }
+
+            var tipoComprobante =
+                _context.TipoComprobantes
+                    .FirstOrDefault(t =>
+                        t.IdTipoComprobante ==
+                        gasto.IdTipoComprobante.Value);
+
+            if (tipoComprobante == null)
+            {
+                return;
+            }
+
+            var nombreComprobante =
+                tipoComprobante.Nombre?
+                    .Trim()
+                    .ToLowerInvariant() ?? "";
+
+            // ---------------------------------------------------------
+            // SOLO FACTURA EXIGE DATOS COMPLETOS DEL PROVEEDOR
+            // ---------------------------------------------------------
+
+            if (nombreComprobante != "factura")
+            {
+                // Para Boleta, Ticket y Recibo por Honorarios
+                // los datos del proveedor son opcionales.
+
+                if (!string.IsNullOrWhiteSpace(gasto.RazonSocial) &&
+                    gasto.RazonSocial.Length > 250)
+                {
+                    ModelState.AddModelError(
+                        nameof(Gasto.RazonSocial),
+                        "La razón social no puede superar los 250 caracteres.");
+                }
+
+                if (!string.IsNullOrWhiteSpace(gasto.DomicilioFiscal) &&
+                    gasto.DomicilioFiscal.Length > 300)
+                {
+                    ModelState.AddModelError(
+                        nameof(Gasto.DomicilioFiscal),
+                        "El domicilio fiscal no puede superar los 300 caracteres.");
+                }
+
+                return;
+            }
+
+            // ---------------------------------------------------------
+            // FACTURA
+            // ---------------------------------------------------------
+
             if (string.IsNullOrWhiteSpace(
                 gasto.RazonSocial))
             {
@@ -2102,7 +2226,7 @@ namespace Dinacem.Controllers
                     "El domicilio fiscal no puede superar los 300 caracteres.");
             }
         }
-
+        
         // =========================================================
         // GUARDAR COMPROBANTE
         // =========================================================

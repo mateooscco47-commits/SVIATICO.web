@@ -115,21 +115,11 @@
 
 
     // =========================================================
-    // VARIABLES DE CONTROL
+    // VARIABLES
     // =========================================================
 
     let ultimaConsulta = "";
 
-    /*
-     * IMPORTANTE:
-     *
-     * Mientras sea false:
-     * - Los días pueden calcularse automáticamente desde las fechas.
-     *
-     * Cuando el usuario modifica DiasHospedaje:
-     * - pasa a true
-     * - las fechas YA NO sobrescriben los días.
-     */
     let diasHospedajeEditadosManualmente = false;
 
 
@@ -140,6 +130,9 @@
     const LIMITE_ALIMENTACION = 40.00;
 
     const LIMITE_HOSPEDAJE = 50.00;
+
+    const TAMANIO_MAXIMO_ARCHIVO =
+        5 * 1024 * 1024;
 
 
     // =========================================================
@@ -159,7 +152,7 @@
 
 
     // =========================================================
-    // OBTENER NOMBRE TIPO GASTO
+    // OBTENER NOMBRE DEL TIPO DE GASTO
     // =========================================================
 
     function obtenerNombreTipo() {
@@ -179,7 +172,27 @@
 
 
     // =========================================================
-    // MOVILIDAD
+    // OBTENER NOMBRE DEL COMPROBANTE
+    // =========================================================
+
+    function obtenerNombreComprobante() {
+
+        if (!tipoComprobante) {
+            return "";
+        }
+
+        const opcion =
+            tipoComprobante.options[
+                tipoComprobante.selectedIndex
+            ];
+
+        return opcion?.text || "";
+
+    }
+
+
+    // =========================================================
+    // ES MOVILIDAD
     // =========================================================
 
     function esMovilidad() {
@@ -195,7 +208,7 @@
 
 
     // =========================================================
-    // HOSPEDAJE
+    // ES HOSPEDAJE
     // =========================================================
 
     function esHospedaje() {
@@ -206,6 +219,46 @@
             );
 
         return tipo.includes("hospedaje");
+
+    }
+
+
+    // =========================================================
+    // ES FACTURA
+    // =========================================================
+
+    function esFactura() {
+
+        const comprobante =
+            normalizarTexto(
+                obtenerNombreComprobante()
+            );
+
+        return comprobante.includes("factura");
+
+    }
+
+
+    // =========================================================
+    // RUC OBLIGATORIO
+    // =========================================================
+    //
+    // Solamente FACTURA exige RUC.
+    //
+    // Boleta              -> RUC opcional
+    // Ticket              -> RUC opcional
+    // Recibo por Honorarios -> RUC opcional
+    // Movilidad           -> RUC opcional
+    //
+    // =========================================================
+
+    function rucEsObligatorio() {
+
+        if (esMovilidad()) {
+            return false;
+        }
+
+        return esFactura();
 
     }
 
@@ -224,7 +277,7 @@
 
 
         // =====================================================
-        // MOSTRAR / OCULTAR HOSPEDAJE
+        // HOSPEDAJE
         // =====================================================
 
         if (periodoHospedaje) {
@@ -244,59 +297,38 @@
         if (!hospedaje) {
 
             if (fechaInicioHospedaje) {
-
                 fechaInicioHospedaje.value = "";
-
                 fechaInicioHospedaje
                     .removeAttribute("required");
-
             }
-
 
             if (fechaFinHospedaje) {
-
                 fechaFinHospedaje.value = "";
-
                 fechaFinHospedaje
                     .removeAttribute("required");
-
             }
-
 
             if (diasHospedaje) {
-
                 diasHospedaje.value = "";
-
                 diasHospedaje
                     .removeAttribute("required");
-
+                diasHospedaje
+                    .removeAttribute("min");
             }
-
 
             if (maximoHospedaje) {
-
                 maximoHospedaje.value = "";
-
             }
-
 
             if (mensajeHospedaje) {
-
                 mensajeHospedaje.textContent = "";
-
                 mensajeHospedaje.className =
                     "small mt-3";
-
             }
-
 
             if (montoTotal) {
-
-                montoTotal
-                    .removeAttribute("max");
-
+                montoTotal.removeAttribute("max");
             }
-
 
             diasHospedajeEditadosManualmente =
                 false;
@@ -339,19 +371,21 @@
 
         if (movilidad) {
 
+            // RUC
             ruc?.removeAttribute("required");
 
+            // Proveedor
             razonSocial?.removeAttribute("required");
-
             domicilio?.removeAttribute("required");
 
+            // Comprobante
             tipoComprobante?.removeAttribute("required");
 
-            archivo?.removeAttribute("required");
-
             serie?.removeAttribute("required");
-
             numero?.removeAttribute("required");
+
+            // Archivo
+            archivo?.removeAttribute("required");
 
 
             if (mensajeMovilidad) {
@@ -386,6 +420,14 @@
                 "is-invalid"
             );
 
+            razonSocial?.classList.remove(
+                "is-invalid"
+            );
+
+            domicilio?.classList.remove(
+                "is-invalid"
+            );
+
             tipoComprobante?.classList.remove(
                 "is-invalid"
             );
@@ -394,19 +436,81 @@
                 "is-invalid"
             );
 
+
+            return;
         }
 
 
         // =====================================================
-        // OTROS TIPOS
+        // NO ES MOVILIDAD
         // =====================================================
 
-        else {
+        if (mensajeMovilidad) {
+
+            mensajeMovilidad.style.display =
+                "none";
+
+        }
+
+
+        // =====================================================
+        // TIPO DE COMPROBANTE
+        // =====================================================
+
+        tipoComprobante?.setAttribute(
+            "required",
+            "required"
+        );
+
+
+        // =====================================================
+        // VOUCHER
+        // =====================================================
+
+        archivo?.setAttribute(
+            "required",
+            "required"
+        );
+
+
+        // =====================================================
+        // RUC
+        // =====================================================
+        //
+        // IMPORTANTE:
+        //
+        // NO hacemos RUC obligatorio para todos.
+        //
+        // Solamente FACTURA.
+        //
+        // =====================================================
+
+        if (rucEsObligatorio()) {
 
             ruc?.setAttribute(
                 "required",
                 "required"
             );
+
+        }
+        else {
+
+            ruc?.removeAttribute(
+                "required"
+            );
+
+        }
+
+
+        // =====================================================
+        // PROVEEDOR
+        // =====================================================
+        //
+        // Solo FACTURA necesita proveedor.
+        //
+        // =====================================================
+
+        if (rucEsObligatorio()) {
 
             razonSocial?.setAttribute(
                 "required",
@@ -418,47 +522,72 @@
                 "required"
             );
 
-            tipoComprobante?.setAttribute(
-                "required",
+        }
+        else {
+
+            razonSocial?.removeAttribute(
                 "required"
             );
 
-            archivo?.setAttribute(
-                "required",
+            domicilio?.removeAttribute(
                 "required"
             );
 
-
-            serie?.removeAttribute(
-                "required"
-            );
-
-            numero?.removeAttribute(
-                "required"
-            );
+        }
 
 
-            if (mensajeMovilidad) {
+        // =====================================================
+        // SERIE Y NÚMERO
+        // =====================================================
 
-                mensajeMovilidad.style.display =
-                    "none";
+        serie?.removeAttribute("required");
 
-            }
-
-
-            if (mensajeArchivo) {
-
-                mensajeArchivo.innerHTML =
-                    "PDF, JPG, JPEG o PNG. " +
-                    "<strong>Obligatorio excepto para Movilidad.</strong>";
-
-            }
+        numero?.removeAttribute("required");
 
 
-            if (mensajeTipoGasto) {
+        // =====================================================
+        // MENSAJE ARCHIVO
+        // =====================================================
+
+        if (mensajeArchivo) {
+
+            mensajeArchivo.innerHTML =
+                "PDF, JPG, JPEG o PNG. " +
+                "<strong>Obligatorio excepto para Movilidad.</strong>";
+
+        }
+
+
+        // =====================================================
+        // MENSAJE TIPO GASTO
+        // =====================================================
+
+        if (mensajeTipoGasto) {
+
+            if (esFactura()) {
 
                 mensajeTipoGasto.textContent =
-                    "";
+                    "Factura: debe ingresar un RUC válido.";
+
+                mensajeTipoGasto.className =
+                    "form-text text-primary";
+
+            }
+            else if (
+                tipoComprobante &&
+                tipoComprobante.value
+            ) {
+
+                mensajeTipoGasto.textContent =
+                    "RUC opcional para este tipo de comprobante.";
+
+                mensajeTipoGasto.className =
+                    "form-text text-success";
+
+            }
+            else {
+
+                mensajeTipoGasto.textContent = "";
 
                 mensajeTipoGasto.className =
                     "form-text";
@@ -489,6 +618,7 @@
             numeroRuc === ultimaConsulta &&
             numeroRuc !== ""
         ) {
+
             return;
         }
 
@@ -689,14 +819,11 @@
 
             }
 
-
             tipoComprobante?.classList.remove(
                 "is-invalid"
             );
 
-
             return true;
-
         }
 
 
@@ -719,54 +846,28 @@
             opcionSeleccionada?.text || "";
 
 
+        const comprobante =
+            normalizarTexto(
+                nombreComprobante
+            );
+
+
         // =====================================================
-        // RUC 20 → FACTURA
+        // NO HAY COMPROBANTE
         // =====================================================
 
-        if (numeroRuc.startsWith("20")) {
-
-            if (
-                !normalizarTexto(
-                    nombreComprobante
-                ).includes("factura")
-            ) {
-
-                if (mensajeComprobante) {
-
-                    mensajeComprobante.textContent =
-                        "Para un RUC que empieza con 20, únicamente se permite registrar una FACTURA.";
-
-                    mensajeComprobante.className =
-                        "form-text text-danger";
-
-                }
-
-
-                tipoComprobante.classList.add(
-                    "is-invalid"
-                );
-
-
-                return false;
-
-            }
-
+        if (!tipoComprobante.value) {
 
             if (mensajeComprobante) {
 
                 mensajeComprobante.textContent =
-                    "RUC iniciado en 20: comprobante válido.";
-
-                mensajeComprobante.className =
-                    "form-text text-success";
+                    "";
 
             }
-
 
             tipoComprobante.classList.remove(
                 "is-invalid"
             );
-
 
             return true;
 
@@ -774,12 +875,103 @@
 
 
         // =====================================================
-        // OTROS RUC
+        // FACTURA
+        // =====================================================
+
+        if (comprobante.includes("factura")) {
+
+            if (!/^\d{11}$/.test(numeroRuc)) {
+
+                if (mensajeComprobante) {
+
+                    mensajeComprobante.textContent =
+                        "Para una FACTURA debe ingresar un RUC válido de 11 dígitos.";
+
+                    mensajeComprobante.className =
+                        "form-text text-danger";
+
+                }
+
+                return false;
+            }
+
+
+            // RUC 20 = factura válida
+            if (numeroRuc.startsWith("20")) {
+
+                if (mensajeComprobante) {
+
+                    mensajeComprobante.textContent =
+                        "RUC iniciado en 20: comprobante válido.";
+
+                    mensajeComprobante.className =
+                        "form-text text-success";
+
+                }
+
+                tipoComprobante.classList.remove(
+                    "is-invalid"
+                );
+
+                return true;
+            }
+
+
+            // RUC válido pero no empieza en 20
+            if (mensajeComprobante) {
+
+                mensajeComprobante.textContent =
+                    "Factura seleccionada con RUC válido.";
+
+                mensajeComprobante.className =
+                    "form-text text-success";
+
+            }
+
+            tipoComprobante.classList.remove(
+                "is-invalid"
+            );
+
+            return true;
+        }
+
+
+        // =====================================================
+        // BOLETA / TICKET / RECIBO POR HONORARIOS
+        // =====================================================
+        //
+        // RUC OPCIONAL.
+        //
         // =====================================================
 
         if (mensajeComprobante) {
 
-            mensajeComprobante.textContent = "";
+            if (numeroRuc) {
+
+                if (!/^\d{11}$/.test(numeroRuc)) {
+
+                    mensajeComprobante.textContent =
+                        "El RUC es opcional, pero si lo ingresa debe contener 11 dígitos.";
+
+                    mensajeComprobante.className =
+                        "form-text text-warning";
+
+                    return false;
+                }
+
+                mensajeComprobante.textContent =
+                    "RUC válido. El RUC es opcional para este comprobante.";
+
+            }
+            else {
+
+                mensajeComprobante.textContent =
+                    "El RUC es opcional para este tipo de comprobante.";
+
+            }
+
+            mensajeComprobante.className =
+                "form-text text-success";
 
         }
 
@@ -795,7 +987,7 @@
 
 
     // =========================================================
-    // OBTENER LÍMITE
+    // OBTENER LÍMITE TIPO GASTO
     // =========================================================
 
     function obtenerLimiteTipo() {
@@ -815,10 +1007,6 @@
             normalizarTexto(texto);
 
 
-        // =====================================================
-        // ALIMENTACIÓN
-        // =====================================================
-
         if (
             tipo.includes("alimentacion")
         ) {
@@ -827,16 +1015,6 @@
 
         }
 
-
-        /*
-         * HOSPEDAJE:
-         *
-         * NO devuelve S/50.
-         *
-         * El hospedaje se controla mediante:
-         *
-         * DiasHospedaje × S/50
-         */
 
         return null;
 
@@ -919,7 +1097,9 @@
                         tipoBuscado
                     )
                 ) {
+
                     return;
+
                 }
 
 
@@ -976,13 +1156,6 @@
     // =========================================================
     // VALIDAR LÍMITE DIARIO
     // =========================================================
-    //
-    // SOLAMENTE ALIMENTACIÓN.
-    //
-    // Hospedaje NO entra aquí.
-    // Movilidad NO entra aquí.
-    //
-    // =========================================================
 
     function validarLimiteDiario(
         mostrarMensaje = true
@@ -1015,11 +1188,9 @@
 
             }
 
-
             montoTotal.removeAttribute(
                 "max"
             );
-
 
             return true;
 
@@ -1042,11 +1213,9 @@
 
             }
 
-
             montoTotal.removeAttribute(
                 "max"
             );
-
 
             return true;
 
@@ -1087,11 +1256,9 @@
 
             }
 
-
             montoTotal.removeAttribute(
                 "max"
             );
-
 
             return true;
 
@@ -1110,7 +1277,6 @@
 
             }
 
-
             return false;
 
         }
@@ -1126,7 +1292,8 @@
         const disponible =
             Math.max(
                 0,
-                limite - totalExistente
+                limite -
+                totalExistente
             );
 
 
@@ -1146,7 +1313,6 @@
 
             }
 
-
             return false;
 
         }
@@ -1164,7 +1330,6 @@
                     "form-text text-danger";
 
             }
-
 
             return false;
 
@@ -1190,7 +1355,7 @@
 
 
     // =========================================================
-    // OBTENER DÍAS ENTRE FECHAS
+    // OBTENER DÍAS HOSPEDAJE
     // =========================================================
 
     function obtenerDiasHospedaje() {
@@ -1239,20 +1404,22 @@
 
 
         return Math.floor(
-            (fin - inicio) /
-            (1000 * 60 * 60 * 24)
+            (
+                fin - inicio
+            ) /
+            (
+                1000 *
+                60 *
+                60 *
+                24
+            )
         ) + 1;
 
     }
 
 
     // =========================================================
-    // ACTUALIZAR DÍAS DESDE LAS FECHAS
-    // =========================================================
-    //
-    // Esta función SOLO modifica DiasHospedaje si el usuario
-    // todavía NO lo ha editado manualmente.
-    //
+    // ACTUALIZAR DÍAS
     // =========================================================
 
     function actualizarDiasDesdeFechas() {
@@ -1286,7 +1453,7 @@
 
 
     // =========================================================
-    // DETECTAR CRUCE DE HOSPEDAJE
+    // DETECTAR CRUCE HOSPEDAJE
     // =========================================================
 
     function existeCruceHospedaje(
@@ -1396,14 +1563,6 @@
     // =========================================================
     // CALCULAR HOSPEDAJE
     // =========================================================
-    //
-    // REGLA:
-    //
-    // DiasHospedaje × S/50
-    //
-    // Los días pueden ser modificados manualmente.
-    //
-    // =========================================================
 
     function calcularHospedaje(
         mostrarMensaje = true
@@ -1447,7 +1606,6 @@
 
             }
 
-
             montoTotal.removeAttribute(
                 "max"
             );
@@ -1466,14 +1624,13 @@
 
             }
 
-
             return false;
 
         }
 
 
         // =====================================================
-        // VALIDAR FECHAS
+        // FECHAS VÁLIDAS
         // =====================================================
 
         const fechaInicio =
@@ -1512,7 +1669,6 @@
 
             }
 
-
             return false;
 
         }
@@ -1536,7 +1692,6 @@
                     "small mt-3 hospedaje-invalido";
 
             }
-
 
             return false;
 
@@ -1565,7 +1720,6 @@
 
             }
 
-
             return false;
 
         }
@@ -1589,7 +1743,6 @@
 
             }
 
-
             return false;
 
         }
@@ -1597,19 +1750,6 @@
 
         // =====================================================
         // DÍAS
-        // =====================================================
-        //
-        // IMPORTANTE:
-        //
-        // NO hacemos:
-        //
-        // diasHospedaje.value = diasCalculados
-        //
-        // cada vez que se llama esta función.
-        //
-        // Solo se calculan automáticamente si el campo
-        // está vacío y el usuario no lo ha editado.
-        //
         // =====================================================
 
         let dias =
@@ -1657,7 +1797,6 @@
 
             }
 
-
             montoTotal.removeAttribute(
                 "max"
             );
@@ -1676,14 +1815,13 @@
 
             }
 
-
             return false;
 
         }
 
 
         // =====================================================
-        // CALCULAR MÁXIMO
+        // MÁXIMO
         // =====================================================
 
         const maximo =
@@ -1704,7 +1842,7 @@
 
 
         // =====================================================
-        // CRUCE DE HOSPEDAJE
+        // CRUCE
         // =====================================================
 
         if (
@@ -1727,14 +1865,13 @@
 
             }
 
-
             return false;
 
         }
 
 
         // =====================================================
-        // VALIDAR MONTO
+        // MONTO
         // =====================================================
 
         const monto =
@@ -1761,14 +1898,13 @@
 
             }
 
-
             return false;
 
         }
 
 
         // =====================================================
-        // MENSAJE CORRECTO
+        // CORRECTO
         // =====================================================
 
         if (
@@ -1822,8 +1958,7 @@
 
             if (exoneracion?.checked) {
 
-                base =
-                    total;
+                base = total;
 
             }
             else {
@@ -1833,7 +1968,8 @@
                         (
                             total /
                             1.18
-                        ) * 100
+                        ) *
+                        100
                     ) / 100;
 
 
@@ -1842,7 +1978,8 @@
                         (
                             total -
                             base
-                        ) * 100
+                        ) *
+                        100
                     ) / 100;
 
             }
@@ -1979,6 +2116,8 @@
         "change",
         function () {
 
+            actualizarRequisitos();
+
             validarComprobantePorRuc();
 
         }
@@ -1993,10 +2132,6 @@
         "change",
         function () {
 
-            /*
-             * Al cambiar de tipo de gasto comenzamos nuevamente
-             * el control de edición manual de días.
-             */
             diasHospedajeEditadosManualmente =
                 false;
 
@@ -2034,15 +2169,11 @@
         "change",
         function () {
 
-            /*
-             * Hospedaje NO utiliza esta validación.
-             */
             if (!esHospedaje()) {
 
                 validarLimiteDiario(true);
 
             }
-
 
             calcularIgv();
 
@@ -2063,12 +2194,7 @@
             }
 
 
-            /*
-             * Solo recalcula los días si el usuario todavía
-             * no los modificó manualmente.
-             */
             actualizarDiasDesdeFechas();
-
 
             calcularHospedaje(true);
 
@@ -2089,12 +2215,7 @@
             }
 
 
-            /*
-             * Solo recalcula los días si el usuario todavía
-             * no los modificó manualmente.
-             */
             actualizarDiasDesdeFechas();
-
 
             calcularHospedaje(true);
 
@@ -2103,25 +2224,17 @@
 
 
     // =========================================================
-    // CAMBIO MANUAL DE DÍAS DE HOSPEDAJE
+    // CAMBIO MANUAL DÍAS HOSPEDAJE
     // =========================================================
 
     diasHospedaje?.addEventListener(
         "input",
         function () {
 
-            /*
-             * AQUÍ está la clave.
-             *
-             * Desde que el usuario escribe manualmente,
-             * las fechas ya no vuelven a sobrescribir
-             * DiasHospedaje.
-             */
             diasHospedajeEditadosManualmente =
                 true;
 
 
-            // Solo números enteros
             this.value =
                 this.value
                     .replace(/\D/g, "");
@@ -2274,7 +2387,6 @@
 
                 this.value = "";
 
-
                 if (mensajeArchivo) {
 
                     mensajeArchivo.textContent =
@@ -2285,21 +2397,17 @@
 
                 }
 
-
                 return;
 
             }
 
 
-            // Máximo 5 MB
-            const maximoBytes =
-                5 * 1024 * 1024;
-
-
-            if (file.size > maximoBytes) {
+            if (
+                file.size >
+                TAMANIO_MAXIMO_ARCHIVO
+            ) {
 
                 this.value = "";
-
 
                 if (mensajeArchivo) {
 
@@ -2310,7 +2418,6 @@
                         "form-text text-danger";
 
                 }
-
 
                 return;
 
@@ -2332,7 +2439,7 @@
 
 
     // =========================================================
-    // VALIDACIÓN FINAL
+    // VALIDACIÓN FINAL DEL FORMULARIO
     // =========================================================
 
     formGasto?.addEventListener(
@@ -2349,20 +2456,20 @@
             // =====================================================
             // MOVILIDAD
             // =====================================================
+            //
+            // NO se valida:
+            // - RUC
+            // - Razón social
+            // - Domicilio
+            // - Comprobante
+            // - Voucher
+            //
+            // Solo fecha, tipo, detalle y monto.
+            // =====================================================
 
             if (movilidad) {
 
-                /*
-                 * Para movilidad:
-                 *
-                 * RUC
-                 * Razón social
-                 * Domicilio
-                 * Comprobante
-                 * Voucher
-                 *
-                 * son opcionales.
-                 */
+                return;
 
             }
 
@@ -2371,7 +2478,7 @@
             // HOSPEDAJE
             // =====================================================
 
-            else if (hospedaje) {
+            if (hospedaje) {
 
                 // -------------------------------------------------
                 // VALIDAR HOSPEDAJE
@@ -2430,7 +2537,68 @@
 
 
                 // -------------------------------------------------
-                // RUC
+                // COMPROBANTE
+                // -------------------------------------------------
+
+                if (
+                    !tipoComprobante ||
+                    !tipoComprobante.value
+                ) {
+
+                    event.preventDefault();
+
+
+                    mostrarAlerta(
+                        "Comprobante obligatorio",
+                        "Debe seleccionar el tipo de comprobante para el hospedaje.",
+                        "warning"
+                    );
+
+
+                    tipoComprobante?.focus();
+
+                    return;
+
+                }
+
+
+                // -------------------------------------------------
+                // VALIDAR RUC SOLO SI ES FACTURA
+                // -------------------------------------------------
+
+                if (esFactura()) {
+
+                    const numeroRuc =
+                        ruc?.value.trim() || "";
+
+
+                    if (
+                        !/^\d{11}$/.test(
+                            numeroRuc
+                        )
+                    ) {
+
+                        event.preventDefault();
+
+
+                        mostrarAlerta(
+                            "RUC obligatorio",
+                            "Para una FACTURA debe ingresar un RUC válido de 11 dígitos.",
+                            "error"
+                        );
+
+
+                        ruc?.focus();
+
+                        return;
+
+                    }
+
+                }
+
+
+                // -------------------------------------------------
+                // SI HAY RUC, DEBE SER VÁLIDO
                 // -------------------------------------------------
 
                 const numeroRuc =
@@ -2438,6 +2606,7 @@
 
 
                 if (
+                    numeroRuc &&
                     !/^\d{11}$/.test(
                         numeroRuc
                     )
@@ -2447,9 +2616,9 @@
 
 
                     mostrarAlerta(
-                        "RUC obligatorio",
-                        "Para hospedaje debe ingresar un RUC válido de 11 dígitos.",
-                        "error"
+                        "RUC inválido",
+                        "Si ingresa un RUC, debe contener exactamente 11 dígitos.",
+                        "warning"
                     );
 
 
@@ -2472,31 +2641,9 @@
 
 
                     mostrarAlerta(
-                        "Comprobante no permitido",
+                        "Comprobante no válido",
                         mensajeComprobante?.textContent ||
-                        "Revise el tipo de comprobante.",
-                        "warning"
-                    );
-
-
-                    tipoComprobante?.focus();
-
-                    return;
-
-                }
-
-
-                if (
-                    !tipoComprobante ||
-                    !tipoComprobante.value
-                ) {
-
-                    event.preventDefault();
-
-
-                    mostrarAlerta(
-                        "Comprobante obligatorio",
-                        "Debe seleccionar el tipo de comprobante para el hospedaje.",
+                        "Revise el tipo de comprobante y el RUC.",
                         "warning"
                     );
 
@@ -2538,67 +2685,14 @@
 
 
             // =====================================================
-            // OTROS TIPOS
+            // OTROS TIPOS DE GASTO
             // =====================================================
 
             else {
 
-                const numeroRuc =
-                    ruc?.value.trim() || "";
-
-
                 // -------------------------------------------------
-                // RUC
+                // TIPO COMPROBANTE
                 // -------------------------------------------------
-
-                if (
-                    !/^\d{11}$/.test(
-                        numeroRuc
-                    )
-                ) {
-
-                    event.preventDefault();
-
-
-                    mostrarAlerta(
-                        "RUC obligatorio",
-                        "Para este tipo de gasto debe ingresar un RUC válido de 11 dígitos.",
-                        "error"
-                    );
-
-
-                    ruc?.focus();
-
-                    return;
-
-                }
-
-
-                // -------------------------------------------------
-                // COMPROBANTE
-                // -------------------------------------------------
-
-                if (
-                    !validarComprobantePorRuc()
-                ) {
-
-                    event.preventDefault();
-
-
-                    mostrarAlerta(
-                        "Comprobante no permitido",
-                        mensajeComprobante?.textContent ||
-                        "Revise el tipo de comprobante.",
-                        "warning"
-                    );
-
-
-                    tipoComprobante?.focus();
-
-                    return;
-
-                }
-
 
                 if (
                     !tipoComprobante ||
@@ -2611,6 +2705,106 @@
                     mostrarAlerta(
                         "Comprobante obligatorio",
                         "Debe seleccionar el tipo de comprobante para este tipo de gasto.",
+                        "warning"
+                    );
+
+
+                    tipoComprobante?.focus();
+
+                    return;
+
+                }
+
+
+                // -------------------------------------------------
+                // RUC
+                // -------------------------------------------------
+                //
+                // SOLAMENTE FACTURA LO EXIGE.
+                //
+                // -------------------------------------------------
+
+                const numeroRuc =
+                    ruc?.value.trim() || "";
+
+
+                if (esFactura()) {
+
+                    if (
+                        !/^\d{11}$/.test(
+                            numeroRuc
+                        )
+                    ) {
+
+                        event.preventDefault();
+
+
+                        mostrarAlerta(
+                            "RUC obligatorio",
+                            "Para una FACTURA debe ingresar un RUC válido de 11 dígitos.",
+                            "error"
+                        );
+
+
+                        ruc?.focus();
+
+                        return;
+
+                    }
+
+                }
+                else {
+
+                    // -------------------------------------------------
+                    // BOLETA / TICKET / RECIBO POR HONORARIOS
+                    // -------------------------------------------------
+                    //
+                    // RUC OPCIONAL.
+                    //
+                    // Pero si lo ingresó, debe ser válido.
+                    // -------------------------------------------------
+
+                    if (
+                        numeroRuc &&
+                        !/^\d{11}$/.test(
+                            numeroRuc
+                        )
+                    ) {
+
+                        event.preventDefault();
+
+
+                        mostrarAlerta(
+                            "RUC inválido",
+                            "El RUC es opcional para este comprobante, pero si lo ingresa debe contener 11 dígitos.",
+                            "warning"
+                        );
+
+
+                        ruc?.focus();
+
+                        return;
+
+                    }
+
+                }
+
+
+                // -------------------------------------------------
+                // VALIDAR COMPROBANTE
+                // -------------------------------------------------
+
+                if (
+                    !validarComprobantePorRuc()
+                ) {
+
+                    event.preventDefault();
+
+
+                    mostrarAlerta(
+                        "Comprobante no válido",
+                        mensajeComprobante?.textContent ||
+                        "Revise el tipo de comprobante y el RUC.",
                         "warning"
                     );
 
@@ -2653,10 +2847,6 @@
 
             // =====================================================
             // LÍMITE ALIMENTACIÓN
-            // =====================================================
-            //
-            // HOSPEDAJE NO ENTRA AQUÍ.
-            //
             // =====================================================
 
             if (
@@ -2789,7 +2979,6 @@
 
             });
 
-
             return;
 
         }
@@ -2818,19 +3007,10 @@
 
     actualizarRequisitos();
 
-
     calcularIgv();
 
 
     if (esHospedaje()) {
-
-        /*
-         * Si el campo DiasHospedaje ya tiene un valor
-         * proveniente del modelo, se conserva.
-         *
-         * Si está vacío, se calcula automáticamente
-         * utilizando las fechas.
-         */
 
         if (
             diasHospedaje &&
@@ -2858,6 +3038,17 @@
     else {
 
         validarLimiteDiario(false);
+
+    }
+
+
+    // =========================================================
+    // ACTUALIZAR MENSAJE INICIAL DEL COMPROBANTE
+    // =========================================================
+
+    if (tipoComprobante?.value) {
+
+        validarComprobantePorRuc();
 
     }
 
