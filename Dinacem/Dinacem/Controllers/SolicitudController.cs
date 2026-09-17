@@ -529,34 +529,127 @@ namespace Dinacem.Controllers
             }
 
 
-            // =========================================================
-            // LISTADO DE SOLICITUDES
-            // =========================================================
+        // =========================================================
+        // LISTADO Y BÚSQUEDA DE SOLICITUDES
+        // =========================================================
 
-            [HttpGet]
-            public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(
+            string? buscar,
+            int? idZona,
+            int? idEstado)
+        {
+            // =====================================================
+            // CONSULTA BASE
+            // =====================================================
+
+            var consulta =
+                _context.Solicitudes
+                    .AsNoTracking()
+                    .Include(x => x.Usuario)
+                        .ThenInclude(u => u.Zona)
+                    .Include(x => x.EstadoSolicitud)
+                    .AsQueryable();
+
+
+            // =====================================================
+            // BÚSQUEDA POR TEXTO
+            // =====================================================
+
+            if (!string.IsNullOrWhiteSpace(buscar))
             {
-                var lista =
-                    await _context.Solicitudes
-                        .AsNoTracking()
-                        .Include(x =>
-                            x.Usuario)
-                        .Include(x =>
-                            x.EstadoSolicitud)
-                        .OrderByDescending(x =>
-                            x.Fecha)
-                        .ToListAsync();
+                buscar = buscar.Trim();
 
+                consulta = consulta.Where(x =>
+                    x.Usuario != null &&
+                    (
+                        (x.Usuario.Nombres != null &&
+                         x.Usuario.Nombres.Contains(buscar))
 
-                return View(lista);
+                        ||
+
+                        (x.Usuario.Apellidos != null &&
+                         x.Usuario.Apellidos.Contains(buscar))
+
+                        ||
+
+                        (x.Destino != null &&
+                         x.Destino.Contains(buscar))
+
+                        ||
+
+                        (x.Motivo != null &&
+                         x.Motivo.Contains(buscar))
+                    )
+                );
             }
 
 
-            // =========================================================
-            // APROBAR SOLICITUD
-            // =========================================================
+            // =====================================================
+            // FILTRO POR ZONA
+            // =====================================================
 
-            [HttpPost]
+            if (idZona.HasValue)
+            {
+                consulta = consulta.Where(x =>
+                    x.Usuario != null &&
+                    x.Usuario.IdZona == idZona.Value);
+            }
+
+
+            // =====================================================
+            // FILTRO POR ESTADO
+            // =====================================================
+
+            if (idEstado.HasValue)
+            {
+                consulta = consulta.Where(x =>
+                    x.IdEstadoSolicitud == idEstado.Value);
+            }
+
+
+            // =====================================================
+            // ORDENAR
+            // =====================================================
+
+            var lista =
+                await consulta
+                    .OrderByDescending(x => x.Fecha)
+                    .ToListAsync();
+
+
+            // =====================================================
+            // LISTA DE ZONAS
+            // =====================================================
+
+            var zonas =
+                await _context.Zonas
+                    .AsNoTracking()
+                    .Where(z => z.Estado)
+                    .OrderBy(z => z.CodigoZona)
+                    .ToListAsync();
+
+
+            // =====================================================
+            // ENVIAR DATOS A LA VISTA
+            // =====================================================
+
+            ViewBag.Zonas = zonas;
+
+            ViewBag.Buscar = buscar;
+            ViewBag.IdZona = idZona;
+            ViewBag.IdEstado = idEstado;
+
+
+            return View(lista);
+        }
+
+
+        // =========================================================
+        // APROBAR SOLICITUD
+        // =========================================================
+
+        [HttpPost]
             [ValidateAntiForgeryToken]
             public async Task<IActionResult> Aprobar(
                 int id,
@@ -864,72 +957,938 @@ namespace Dinacem.Controllers
             }
 
 
-            // =========================================================
-            // RECHAZAR SOLICITUD
-            // =========================================================
+        // =========================================================
+        // RECHAZAR SOLICITUD
+        // =========================================================
 
-            [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Rechazar(
-                int id,
-                string observaciones)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Rechazar(
+            int id,
+            string observaciones,
+            IFormFile? imagenRechazo)
+        {
+            // =====================================================
+            // BUSCAR SOLICITUD
+            // =====================================================
+
+            var solicitud =
+                await _context.Solicitudes
+                    .FirstOrDefaultAsync(x =>
+                        x.IdSolicitud == id);
+
+            if (solicitud == null)
             {
-                var solicitud =
-                    await _context.Solicitudes
-                        .FirstOrDefaultAsync(x =>
-                            x.IdSolicitud == id);
-
-
-                if (solicitud == null)
-                {
-                    TempData["errorSolicitud"] =
-                        "Solicitud no encontrada.";
-
-                    return RedirectToAction(
-                        nameof(Index));
-                }
-
-
-                if (string.IsNullOrWhiteSpace(
-                    observaciones))
-                {
-                    TempData["errorSolicitud"] =
-                        "Debe ingresar las observaciones del rechazo.";
-
-                    return RedirectToAction(
-                        nameof(Index));
-                }
-
-
-                // =====================================================
-                // CAMBIAR ESTADO A RECHAZADA
-                // =====================================================
-
-                solicitud.IdEstadoSolicitud =
-                    3;
-
-
-                solicitud.Observaciones =
-                    observaciones.Trim();
-
-
-                await _context.SaveChangesAsync();
-
-
-                TempData["mensajeSolicitud"] =
-                    "La solicitud fue rechazada correctamente.";
-
+                TempData["errorSolicitud"] =
+                    "Solicitud no encontrada.";
 
                 return RedirectToAction(
                     nameof(Index));
             }
 
 
-            // =========================================================
-            // DETALLES DE SOLICITUD
-            // =========================================================
+            // =====================================================
+            // VALIDAR OBSERVACIONES
+            // =====================================================
 
-            [HttpGet]
+            if (string.IsNullOrWhiteSpace(observaciones))
+            {
+                TempData["errorSolicitud"] =
+                    "Debe ingresar las observaciones del rechazo.";
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
+
+
+            // =====================================================
+            // VALIDAR ARCHIVO DE SUSTENTO
+            // =====================================================
+
+            bool sustentoRegistrado = false;
+
+            string? rutaArchivoFisico = null;
+            string? nombreArchivoAdjunto = null;
+
+
+            if (imagenRechazo != null &&
+                imagenRechazo.Length > 0)
+            {
+                // =================================================
+                // TAMAÑO MÁXIMO: 5 MB
+                // =================================================
+
+                const long tamanioMaximo =
+                    5 * 1024 * 1024;
+
+                if (imagenRechazo.Length > tamanioMaximo)
+                {
+                    TempData["errorSolicitud"] =
+                        "El archivo de sustento no debe superar los 5 MB.";
+
+                    return RedirectToAction(
+                        nameof(Index));
+                }
+
+
+                // =================================================
+                // EXTENSIONES PERMITIDAS
+                // =================================================
+
+                var extensionesPermitidas =
+                    new[]
+                    {
+                ".jpg",
+                ".jpeg",
+                ".png",
+                ".pdf"
+                    };
+
+
+                var extension =
+                    Path.GetExtension(
+                        imagenRechazo.FileName)
+                    .ToLowerInvariant();
+
+
+                if (!extensionesPermitidas.Contains(extension))
+                {
+                    TempData["errorSolicitud"] =
+                        "Formato de archivo no permitido. Solo se permiten JPG, JPEG, PNG o PDF.";
+
+                    return RedirectToAction(
+                        nameof(Index));
+                }
+
+
+                // =================================================
+                // CARPETA DE DESTINO
+                // =================================================
+
+                string carpetaDestino =
+                    Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "uploads",
+                        "rechazos");
+
+
+                if (!Directory.Exists(carpetaDestino))
+                {
+                    Directory.CreateDirectory(
+                        carpetaDestino);
+                }
+
+
+                // =================================================
+                // GENERAR NOMBRE ÚNICO
+                // =================================================
+
+                string nombreArchivo =
+                    $"Rechazo_{solicitud.IdSolicitud}_{Guid.NewGuid():N}{extension}";
+
+
+                // =================================================
+                // RUTA FÍSICA COMPLETA
+                // =================================================
+
+                string rutaCompleta =
+                    Path.Combine(
+                        carpetaDestino,
+                        nombreArchivo);
+
+
+                // =================================================
+                // GUARDAR ARCHIVO EN EL SERVIDOR
+                // =================================================
+
+                try
+                {
+                    await using var stream =
+                        new FileStream(
+                            rutaCompleta,
+                            FileMode.Create,
+                            FileAccess.Write,
+                            FileShare.None);
+
+                    await imagenRechazo.CopyToAsync(stream);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        $"Error guardando archivo de rechazo: {ex.Message}");
+
+                    TempData["errorSolicitud"] =
+                        "No fue posible guardar el archivo de sustento.";
+
+                    return RedirectToAction(
+                        nameof(Index));
+                }
+
+
+                // =================================================
+                // GUARDAR RUTA RELATIVA EN LA BD
+                // =================================================
+
+                solicitud.RutaImagenRechazo =
+                    $"/uploads/rechazos/{nombreArchivo}";
+
+
+                // =================================================
+                // DATOS PARA EL ADJUNTO DEL CORREO
+                // =================================================
+
+                rutaArchivoFisico =
+                    rutaCompleta;
+
+                nombreArchivoAdjunto =
+                    nombreArchivo;
+
+                sustentoRegistrado = true;
+            }
+
+
+            // =====================================================
+            // CAMBIAR ESTADO A RECHAZADA
+            // =====================================================
+
+            solicitud.IdEstadoSolicitud = 3;
+
+
+            // =====================================================
+            // GUARDAR OBSERVACIÓN
+            // =====================================================
+
+            solicitud.Observaciones =
+                observaciones.Trim();
+
+
+            // =====================================================
+            // GUARDAR CAMBIOS EN BASE DE DATOS
+            // =====================================================
+
+            await _context.SaveChangesAsync();
+
+
+            // =====================================================
+            // BUSCAR SOLICITANTE
+            // =====================================================
+
+            var solicitante =
+                await _context.Usuarios
+                    .AsNoTracking()
+                    .Include(u => u.Zona)
+                    .FirstOrDefaultAsync(u =>
+                        u.IdUsuario ==
+                        solicitud.IdUsuario);
+
+
+            // =====================================================
+            // CONTROL DE ENVÍO DE CORREO
+            // =====================================================
+
+            bool correoEnviado = false;
+
+
+            // =====================================================
+            // ENVIAR CORREO AL SOLICITANTE
+            // =====================================================
+
+            if (solicitante != null &&
+                !string.IsNullOrWhiteSpace(
+                    solicitante.Correo))
+            {
+                string nombreSolicitante =
+                    $"{solicitante.Nombres} {solicitante.Apellidos}"
+                    .Trim();
+
+
+                string correoSolicitante =
+                    solicitante.Correo.Trim();
+
+
+                // =================================================
+                // URL REAL DEL SISTEMA
+                // =================================================
+
+                string urlSistema =
+                    "https://viaticos.dinacen.online/";
+
+
+                // =================================================
+                // ASUNTO
+                // =================================================
+
+                string asunto =
+                    $"Solicitud de viáticos #{solicitud.IdSolicitud} rechazada";
+
+
+                // =================================================
+                // GENERAR CONTENIDO HTML
+                // =================================================
+
+                string contenidoHtml =
+                    GenerarCorreoSolicitudRechazada(
+                        solicitud,
+                        nombreSolicitante,
+                        urlSistema,
+                        sustentoRegistrado);
+
+
+                // =================================================
+                // ENVIAR CORREO
+                // =================================================
+
+                try
+                {
+                    // =============================================
+                    // CON ADJUNTO
+                    // =============================================
+
+                    if (sustentoRegistrado &&
+                        !string.IsNullOrWhiteSpace(
+                            rutaArchivoFisico) &&
+                        System.IO.File.Exists(
+                            rutaArchivoFisico))
+                    {
+                        correoEnviado =
+                            await _correoService.EnviarAsync(
+                                new[]
+                                {
+                            correoSolicitante
+                                },
+                                asunto,
+                                contenidoHtml,
+                                rutaArchivoFisico,
+                                nombreArchivoAdjunto);
+                    }
+
+                    // =============================================
+                    // SIN ADJUNTO
+                    // =============================================
+
+                    else
+                    {
+                        correoEnviado =
+                            await _correoService.EnviarAsync(
+                                new[]
+                                {
+                            correoSolicitante
+                                },
+                                asunto,
+                                contenidoHtml);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        $"Error enviando correo de rechazo: {ex.Message}");
+
+                    correoEnviado = false;
+                }
+            }
+
+
+            // =====================================================
+            // MENSAJE FINAL
+            // =====================================================
+
+            if (sustentoRegistrado)
+            {
+                if (correoEnviado)
+                {
+                    TempData["mensajeSolicitud"] =
+                        "Solicitud rechazada, sustento registrado y notificación enviada al solicitante con el archivo adjunto.";
+                }
+                else
+                {
+                    TempData["mensajeSolicitud"] =
+                        "Solicitud rechazada y sustento registrado correctamente, pero no fue posible enviar la notificación al solicitante.";
+                }
+            }
+            else
+            {
+                if (correoEnviado)
+                {
+                    TempData["mensajeSolicitud"] =
+                        "Solicitud rechazada correctamente y notificación enviada al solicitante.";
+                }
+                else
+                {
+                    TempData["mensajeSolicitud"] =
+                        "Solicitud rechazada correctamente, pero no fue posible enviar la notificación al solicitante.";
+                }
+            }
+
+
+            // =====================================================
+            // REGRESAR AL LISTADO
+            // =====================================================
+
+            return RedirectToAction(
+                nameof(Index));
+        }
+
+
+        // =========================================================
+        // CORREO DE SOLICITUD RECHAZADA
+        // =========================================================
+
+        private string GenerarCorreoSolicitudRechazada(
+            Solicitud solicitud,
+            string nombreSolicitante,
+            string urlSistema,
+            bool sustentoRegistrado)
+        {
+            string mensajeSustento =
+                sustentoRegistrado
+
+                ? "Se ha registrado un archivo de sustento relacionado con el rechazo en el sistema."
+
+                : "No se registró un archivo de sustento para este rechazo.";
+
+
+            return $"""
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Solicitud de viáticos rechazada</title>
+
+</head>
+
+
+<body style="
+    margin:0;
+    padding:0;
+    background:#f1f4f7;
+    font-family:Arial,Helvetica,sans-serif;
+    color:#111111;
+">
+
+
+<table width="100%"
+       cellpadding="0"
+       cellspacing="0"
+       border="0"
+       style="
+           background:#f1f4f7;
+           padding:35px 15px;
+       ">
+
+
+<tr>
+
+<td align="center">
+
+
+<table width="650"
+       cellpadding="0"
+       cellspacing="0"
+       border="0"
+       style="
+           width:100%;
+           max-width:650px;
+           background:#ffffff;
+           border-radius:10px;
+           overflow:hidden;
+           border:1px solid #dfe3e7;
+       ">
+
+
+<!-- =====================================================
+     LOGO
+     ===================================================== -->
+
+<tr>
+
+<td style="
+    padding:24px;
+    text-align:center;
+    border-bottom:4px solid #C9A227;
+    background:#ffffff;
+">
+
+<img src="cid:logoDinacen"
+     alt="DINACEN"
+     width="170"
+     style="
+         width:170px;
+         display:block;
+         margin:0 auto;
+     ">
+
+</td>
+
+</tr>
+
+
+<!-- =====================================================
+     ENCABEZADO
+     ===================================================== -->
+
+<tr>
+
+<td style="
+    background:#123B5D;
+    padding:20px 25px;
+    text-align:center;
+">
+
+<div style="
+    color:#ffffff;
+    font-size:20px;
+    font-weight:bold;
+">
+
+Solicitud de viáticos rechazada
+
+</div>
+
+</td>
+
+</tr>
+
+
+<!-- =====================================================
+     CONTENIDO
+     ===================================================== -->
+
+<tr>
+
+<td style="
+    padding:30px 32px;
+">
+
+
+<p style="
+    margin:0 0 15px;
+    font-size:16px;
+    font-weight:bold;
+    color:#111111;
+">
+
+Estimado(a) {nombreSolicitante}:
+
+</p>
+
+
+<p style="
+    margin:0 0 22px;
+    font-size:15px;
+    line-height:1.6;
+    color:#222222;
+">
+
+Le informamos que su solicitud de viáticos
+
+<strong style="color:#123B5D;">
+#{solicitud.IdSolicitud}
+</strong>
+
+ha sido
+
+<strong style="color:#C62828;">
+RECHAZADA
+</strong>
+
+por el administrador responsable de la revisión.
+
+</p>
+
+
+<!-- =====================================================
+     ESTADO
+     ===================================================== -->
+
+<table width="100%"
+       cellpadding="0"
+       cellspacing="0"
+       border="0"
+       style="
+           margin-bottom:25px;
+       ">
+
+<tr>
+
+<td style="
+    background:#fdecec;
+    border-left:4px solid #C62828;
+    padding:14px 16px;
+    color:#222222;
+    font-size:14px;
+">
+
+<strong>Estado:</strong>
+
+Solicitud rechazada
+
+</td>
+
+</tr>
+
+</table>
+
+
+<!-- =====================================================
+     DETALLE
+     ===================================================== -->
+
+<div style="
+    font-size:18px;
+    font-weight:bold;
+    color:#111111;
+    margin-bottom:12px;
+">
+
+Detalle de la solicitud
+
+</div>
+
+
+<table width="100%"
+       cellpadding="0"
+       cellspacing="0"
+       border="0"
+       style="
+           border-collapse:collapse;
+           border:1px solid #d9dee3;
+       ">
+
+
+<!-- NÚMERO -->
+
+<tr>
+
+<td style="
+    width:40%;
+    padding:13px;
+    background:#f4f6f8;
+    border-bottom:1px solid #d9dee3;
+    font-size:14px;
+    font-weight:bold;
+    color:#111111;
+">
+
+N.º de solicitud
+
+</td>
+
+<td style="
+    padding:13px;
+    border-bottom:1px solid #d9dee3;
+    font-size:14px;
+    color:#111111;
+">
+
+#{solicitud.IdSolicitud}
+
+</td>
+
+</tr>
+
+
+<!-- DESTINO -->
+
+<tr>
+
+<td style="
+    padding:13px;
+    background:#f4f6f8;
+    border-bottom:1px solid #d9dee3;
+    font-size:14px;
+    font-weight:bold;
+    color:#111111;
+">
+
+Destino
+
+</td>
+
+<td style="
+    padding:13px;
+    border-bottom:1px solid #d9dee3;
+    font-size:14px;
+    color:#111111;
+">
+
+{solicitud.Destino}
+
+</td>
+
+</tr>
+
+
+<!-- MOTIVO -->
+
+<tr>
+
+<td style="
+    padding:13px;
+    background:#f4f6f8;
+    border-bottom:1px solid #d9dee3;
+    font-size:14px;
+    font-weight:bold;
+    color:#111111;
+">
+
+Motivo
+
+</td>
+
+<td style="
+    padding:13px;
+    background:#ffffff;
+    border-bottom:1px solid #d9dee3;
+    font-size:14px;
+    line-height:1.5;
+    color:#111111;
+">
+
+{solicitud.Motivo}
+
+</td>
+
+</tr>
+
+
+<!-- FECHA INICIO -->
+
+<tr>
+
+<td style="
+    padding:13px;
+    background:#f4f6f8;
+    border-bottom:1px solid #d9dee3;
+    font-size:14px;
+    font-weight:bold;
+    color:#111111;
+">
+
+Fecha de inicio
+
+</td>
+
+<td style="
+    padding:13px;
+    border-bottom:1px solid #d9dee3;
+    font-size:14px;
+    color:#111111;
+">
+
+{solicitud.FechaInicio:dd/MM/yyyy}
+
+</td>
+
+</tr>
+
+
+<!-- FECHA FIN -->
+
+<tr>
+
+<td style="
+    padding:13px;
+    background:#f4f6f8;
+    border-bottom:1px solid #d9dee3;
+    font-size:14px;
+    font-weight:bold;
+    color:#111111;
+">
+
+Fecha de fin
+
+</td>
+
+<td style="
+    padding:13px;
+    font-size:14px;
+    color:#111111;
+">
+
+{solicitud.FechaFin:dd/MM/yyyy}
+
+</td>
+
+</tr>
+
+
+<!-- MONTO -->
+
+<tr>
+
+<td style="
+    padding:14px;
+    background:#f4f6f8;
+    font-size:14px;
+    font-weight:bold;
+    color:#111111;
+">
+
+Monto solicitado
+
+</td>
+
+<td style="
+    padding:14px;
+    font-size:17px;
+    font-weight:bold;
+    color:#123B5D;
+">
+
+S/ {solicitud.Monto:N2}
+
+</td>
+
+</tr>
+
+
+<!-- OBSERVACIÓN DEL RECHAZO -->
+
+<tr>
+
+<td style="
+    padding:14px;
+    background:#f4f6f8;
+    font-size:14px;
+    font-weight:bold;
+    color:#111111;
+    vertical-align:top;
+">
+
+Motivo del rechazo
+
+</td>
+
+<td style="
+    padding:14px;
+    font-size:14px;
+    line-height:1.6;
+    color:#111111;
+    background:#ffffff;
+">
+
+{solicitud.Observaciones}
+
+</td>
+
+</tr>
+
+
+<!-- SUSTENTO -->
+
+<tr>
+
+<td style="
+    padding:14px;
+    background:#f4f6f8;
+    font-size:14px;
+    font-weight:bold;
+    color:#111111;
+">
+
+Sustento
+
+</td>
+
+<td style="
+    padding:14px;
+    font-size:14px;
+    line-height:1.5;
+    color:#111111;
+">
+
+{mensajeSustento}
+
+</td>
+
+</tr>
+
+
+</table>
+
+
+<!-- =====================================================
+     BOTÓN
+     ===================================================== -->
+
+<div style="
+    text-align:center;
+    margin-top:28px;
+">
+
+<a href="{urlSistema}"
+   style="
+       display:inline-block;
+       padding:12px 24px;
+       background:#0C4A8A;
+       color:#ffffff;
+       text-decoration:none;
+       border-radius:6px;
+       font-weight:bold;
+   ">
+
+Ingresar al sistema
+
+</a>
+
+</div>
+
+
+</td>
+
+</tr>
+
+
+<!-- =====================================================
+     PIE
+     ===================================================== -->
+
+<tr>
+
+<td style="
+    background:#f4f6f8;
+    border-top:1px solid #dfe3e7;
+    padding:16px;
+    text-align:center;
+    color:#555555;
+    font-size:12px;
+">
+
+Mensaje generado automáticamente por el Sistema de Gestión de Viáticos DINACEN.
+
+</td>
+
+</tr>
+
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+
+</body>
+
+</html>
+""";
+        }
+
+
+        // =========================================================
+        // DETALLES DE SOLICITUD
+        // =========================================================
+
+        [HttpGet]
             public async Task<IActionResult> Details(
                 int id)
             {

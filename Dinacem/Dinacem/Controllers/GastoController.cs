@@ -245,6 +245,10 @@ namespace Dinacem.Controllers
                     });
             }
 
+            // =====================================================
+            // LIMPIAR Y PREPARAR DATOS
+            // =====================================================
+
             LimpiarCampos(gasto);
 
             EliminarValidacionesCalculadas(
@@ -273,6 +277,10 @@ namespace Dinacem.Controllers
             bool esHospedaje =
                 EsHospedaje(tipoGasto);
 
+            // =====================================================
+            // VALIDACIONES GENERALES
+            // =====================================================
+
             ValidarFechaGasto(
                 gasto.Fecha,
                 rendicion,
@@ -283,15 +291,24 @@ namespace Dinacem.Controllers
 
             CalcularImpuestos(gasto);
 
+            // =====================================================
+            // HOSPEDAJE / MOVILIDAD
+            // =====================================================
+
             if (esMovilidad)
             {
-                LimpiarDatosComprobante(gasto);
+                // Movilidad no utiliza los campos específicos
+                // de hospedaje.
                 LimpiarDatosHospedaje(gasto);
             }
             else if (!esHospedaje)
             {
                 LimpiarDatosHospedaje(gasto);
             }
+
+            // =====================================================
+            // VALIDACIONES ESPECÍFICAS
+            // =====================================================
 
             if (esHospedaje)
             {
@@ -308,11 +325,55 @@ namespace Dinacem.Controllers
                     gasto.IdGasto);
             }
 
-            if (!esMovilidad)
+            // =====================================================
+            // VALIDACIÓN DE COMPROBANTE Y RUC
+            // =====================================================
+
+            if (esMovilidad)
             {
+                // =================================================
+                // MOVILIDAD
+                // =================================================
+                // La factura/comprobante es OPCIONAL.
+                //
+                // Si el usuario coloca RUC:
+                // - Se valida.
+                // - Se consulta.
+                // - Se obtiene Razón Social y Domicilio Fiscal.
+                //
+                // Si no coloca RUC:
+                // - No se genera ningún error.
+
+                if (!string.IsNullOrWhiteSpace(gasto.Ruc))
+                {
+                    gasto.Ruc =
+                        gasto.Ruc.Trim();
+
+                    if (gasto.Ruc.Length != 11 ||
+                        !gasto.Ruc.All(char.IsDigit))
+                    {
+                        ModelState.AddModelError(
+                            nameof(Gasto.Ruc),
+                            "El RUC debe contener exactamente 11 dígitos.");
+                    }
+                    else if (ModelState.IsValid)
+                    {
+                        await ValidarRucAsync(gasto);
+                    }
+                }
+
+                // Para Movilidad NO llamamos a
+                // ValidarDatosComprobante(), porque el comprobante
+                // es opcional.
+            }
+            else
+            {
+                // =================================================
+                // RESTO DE TIPOS DE GASTO
+                // =================================================
+
                 ValidarDatosComprobante(gasto);
 
-                // Solo consulta SUNAT si el usuario realmente ingresó RUC.
                 if (ModelState.IsValid &&
                     !string.IsNullOrWhiteSpace(gasto.Ruc))
                 {
@@ -322,13 +383,34 @@ namespace Dinacem.Controllers
                 ValidarDatosProveedor(gasto);
             }
 
+            // =====================================================
+            // VALIDAR MODELSTATE
+            // =====================================================
+
             if (!ModelState.IsValid)
             {
                 return await ProcesarErroresCreate(
                     gasto.IdRendicion);
             }
 
-            if (!esMovilidad)
+            // =====================================================
+            // GUARDAR COMPROBANTE SI EXISTE
+            // =====================================================
+            //
+            // IMPORTANTE:
+            // Movilidad también puede tener factura.
+            //
+            // Si se sube archivo:
+            //     -> se guarda.
+            //
+            // Si no se sube archivo:
+            //     -> queda NULL.
+            //
+            // No se obliga a subirlo para Movilidad.
+            // =====================================================
+
+            if (archivo != null &&
+                archivo.Length > 0)
             {
                 var resultadoArchivo =
                     await GuardarComprobanteAsync(
@@ -356,12 +438,24 @@ namespace Dinacem.Controllers
                 gasto.Comprobante = null;
             }
 
+            // =====================================================
+            // GUARDAR GASTO
+            // =====================================================
+
             _context.Gastos.Add(gasto);
 
             await _context.SaveChangesAsync();
 
+            // =====================================================
+            // ACTUALIZAR TOTALES
+            // =====================================================
+
             await ActualizarTotalesRendicion(
                 gasto.IdRendicion);
+
+            // =====================================================
+            // MENSAJE
+            // =====================================================
 
             TempData["mensaje"] =
                 gasto.ExoneracionIGV

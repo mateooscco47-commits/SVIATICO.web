@@ -48,6 +48,8 @@ namespace Dinacem.Models
         public Rendicion? Rendicion { get; set; }
         [StringLength(255)]
         public string? RutaComprobante { get; set; }
+        [StringLength(255)]
+        public string? RutaImagenRechazo { get; set; }
 
     }
 }

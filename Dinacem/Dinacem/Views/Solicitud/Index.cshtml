@@ -809,6 +809,8 @@
 
     <div class="filtros-card">
 
+        <!-- BUSCADOR GENERAL -->
+
         <div class="search-box">
 
             <i class="bi bi-search search-icon"></i>
@@ -831,6 +833,8 @@
         </div>
 
 
+        <!-- FECHA DESDE -->
+
         <div class="date-filter">
 
             <label for="fechaDesde"
@@ -847,6 +851,8 @@
         </div>
 
 
+        <!-- FECHA HASTA -->
+
         <div class="date-filter">
 
             <label for="fechaHasta"
@@ -862,6 +868,8 @@
 
         </div>
 
+
+        <!-- LIMPIAR -->
 
         <button type="button"
                 id="limpiarFiltros"
@@ -1458,7 +1466,8 @@
 
                     <form asp-controller="Solicitud"
                           asp-action="Rechazar"
-                          method="post">
+                          method="post"
+                          enctype="multipart/form-data">
 
                         @Html.AntiForgeryToken()
 
@@ -1532,7 +1541,6 @@
 
                                 </label>
 
-
                                 <textarea id="observaciones-@item.IdSolicitud"
                                           name="observaciones"
                                           class="form-control"
@@ -1540,7 +1548,6 @@
                                           maxlength="1000"
                                           placeholder="Explique claramente por qué se rechaza la solicitud..."
                                           required></textarea>
-
 
                                 <small class="text-muted">
 
@@ -1550,7 +1557,35 @@
 
                             </div>
 
-                        </div>
+
+                            <!-- IMAGEN DE SUSTENTO DEL RECHAZO -->
+
+                            <div class="mb-3">
+
+                                <label class="form-label">
+
+                                    <i class="bi bi-image me-1"></i>
+
+                                    Imagen de sustento
+
+                                    <span class="text-muted">
+                                        (opcional)
+                                    </span>
+
+                                </label>
+
+                                <input type="file"
+                                       name="imagenRechazo"
+                                       class="form-control"
+                                       accept=".jpg,.jpeg,.png,.PDF">
+
+                                <small class="text-muted">
+
+                                    JPG, JPEG o PNG · Máximo 5 MB.
+
+                                </small>
+
+                            </div>
 
 
                         <!-- PIE -->
