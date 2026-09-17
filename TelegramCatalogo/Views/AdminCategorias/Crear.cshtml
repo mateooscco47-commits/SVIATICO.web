@@ -1,0 +1,161 @@
+﻿@model TelegramCatalogo.Models.Categoria
+
+@{
+    ViewData["Title"] = "Nueva categoría";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <a asp-controller="AdminCategorias"
+               asp-action="Index"
+               class="text-decoration-none">
+
+                <i class="bi bi-arrow-left"></i>
+                Volver a categorías
+
+            </a>
+
+
+            <h1 class="fw-bold mt-3">
+                Nueva categoría
+            </h1>
+
+            <p class="text-muted mb-4">
+                Crea una nueva categoría para organizar
+                los canales.
+            </p>
+
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <form asp-controller="AdminCategorias"
+                          asp-action="Crear"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label asp-for="Nombre"
+                                   class="form-label fw-semibold">
+
+                                Nombre
+
+                            </label>
+
+                            <input asp-for="Nombre"
+                                   class="form-control"
+                                   placeholder="Ej: Criptomonedas" />
+
+                            <span asp-validation-for="Nombre"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label asp-for="Descripcion"
+                                   class="form-label fw-semibold">
+
+                                Descripción
+
+                            </label>
+
+                            <textarea asp-for="Descripcion"
+                                      class="form-control"
+                                      rows="4"
+                                      placeholder="Describe esta categoría...">
+                            </textarea>
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label asp-for="Icono"
+                                   class="form-label fw-semibold">
+
+                                Icono Bootstrap
+
+                            </label>
+
+                            <input asp-for="Icono"
+                                   class="form-control"
+                                   placeholder="bi-currency-bitcoin" />
+
+                            <div class="form-text">
+                                Ejemplo: bi-currency-bitcoin,
+                                bi-book, bi-controller.
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-check
+                                    form-switch
+                                    mb-4">
+
+                            <input asp-for="Estado"
+                                   class="form-check-input" />
+
+                            <label asp-for="Estado"
+                                   class="form-check-label">
+
+                                Categoría activa
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="d-flex
+                                    justify-content-end
+                                    gap-2">
+
+                            <a asp-controller="AdminCategorias"
+                               asp-action="Index"
+                               class="btn btn-light">
+
+                                Cancelar
+
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+
+                                <i class="bi bi-check-lg"></i>
+                                Crear categoría
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

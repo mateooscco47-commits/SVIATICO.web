@@ -1,0 +1,761 @@
+﻿@model TelegramCatalogo.Models.Canal
+
+@{
+    ViewData["Title"] =
+        $"{Model.Nombre} - Canal de Telegram | TelegramCatalogo";
+
+    ViewData["Description"] =
+        $"Descubre el canal de Telegram {Model.Nombre}. " +
+        $"{Model.Descripcion}";
+
+    ViewData["Canonical"] =
+        $"{Context.Request.Scheme}://{Context.Request.Host}/canal/{Model.Slug}";
+}
+
+
+<div class="container py-5">
+
+    <!-- ================================================= -->
+    <!-- VOLVER -->
+    <!-- ================================================= -->
+
+    <div class="mb-4">
+
+        <a asp-controller="Canales"
+           asp-action="Index"
+           class="text-decoration-none">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Volver al catálogo
+
+        </a>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- FICHA DEL CANAL -->
+    <!-- ================================================= -->
+
+    <div class="row justify-content-center">
+
+        <div class="col-xl-10 col-lg-11">
+
+            <div class="card
+                        canal-detalle-card
+                        border-0
+                        shadow-sm">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="row g-5">
+
+                        <!-- ================================= -->
+                        <!-- INFORMACIÓN PRINCIPAL -->
+                        <!-- ================================= -->
+
+                        <div class="col-lg-8">
+
+                            <!-- CABECERA -->
+
+                            <div class="d-flex
+                                        align-items-center
+                                        mb-4">
+
+                                <!-- ========================= -->
+                                <!-- LOGO / IMAGEN -->
+                                <!-- ========================= -->
+                                @if (!string.IsNullOrWhiteSpace(
+                                Model.Imagen))
+                                {
+                                    <img src="@Model.Imagen"
+                                         alt="Logo de @Model.Nombre"
+                                         class="canal-logo me-4" />
+                                }
+                                else
+                                {
+                                    <div class="canal-logo-placeholder
+                                                me-4">
+
+                                        <i class="bi bi-telegram"></i>
+
+                                    </div>
+                                }
+
+
+                                <!-- ========================= -->
+                                <!-- NOMBRE -->
+                                <!-- ========================= -->
+
+                                <div class="overflow-hidden">
+
+                                    <h1 class="fw-bold
+                                               mb-1
+                                               canal-titulo">
+
+                                        @Model.Nombre
+
+                                    </h1>
+
+
+                                    @if (!string.IsNullOrWhiteSpace(
+                                    Model.UsernameTelegram))
+                                    {
+                                        <div class="text-muted fs-5">
+
+                                            @("@" + Model.UsernameTelegram)
+
+                                        </div>
+                                    }
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ================================= -->
+                            <!-- BADGES -->
+                            <!-- ================================= -->
+
+                            <div class="d-flex
+                                        flex-wrap
+                                        gap-2
+                                        mb-4">
+
+                                @if (Model.Categoria != null)
+                                {
+                                    <a asp-controller="Canales"
+                                       asp-action="Categoria"
+                                       asp-route-slug="@Model.Categoria.Slug"
+                                       class="badge
+                                              categoria-badge
+                                              bg-light
+                                              text-dark
+                                              border
+                                              text-decoration-none">
+
+                                        @if (!string.IsNullOrWhiteSpace(
+                                       Model.Categoria.Icono))
+                                        {
+                                            <i class="bi
+                                                      @Model.Categoria.Icono
+                                                      me-1">
+                                            </i>
+                                        }
+
+                                        @Model.Categoria.Nombre
+
+                                    </a>
+                                }
+
+
+                                @if (Model.EsDestacado)
+                                {
+                                    <span class="badge
+                                                 bg-warning
+                                                 text-dark
+                                                 destacado-badge">
+
+                                        <i class="bi
+                                                  bi-star-fill
+                                                  me-1">
+                                        </i>
+
+                                        Canal destacado
+
+                                    </span>
+                                }
+
+                            </div>
+
+
+                            <!-- ================================= -->
+                            <!-- DESCRIPCIÓN -->
+                            <!-- ================================= -->
+
+                            <div class="mb-4">
+
+                                <h4 class="fw-bold mb-3">
+                                    Acerca de este canal
+                                </h4>
+
+
+                                @if (!string.IsNullOrWhiteSpace(
+                                Model.Descripcion))
+                                {
+                                    <p class="text-muted
+                                              fs-5
+                                              descripcion-canal">
+
+                                        @Model.Descripcion
+
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p class="text-muted fs-5">
+
+                                        Este canal todavía no tiene
+                                        una descripción disponible.
+
+                                    </p>
+                                }
+
+                            </div>
+
+
+                            <!-- ================================= -->
+                            <!-- INFORMACIÓN EXTRA -->
+                            <!-- ================================= -->
+
+                            <div class="row g-3 mt-2">
+
+                                <!-- MIEMBROS -->
+
+                                <div class="col-sm-6">
+
+                                    <div class="info-box">
+
+                                        <div class="info-icon">
+
+                                            <i class="bi bi-people"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <small class="text-muted">
+                                                Miembros
+                                            </small>
+
+                                            <div class="fw-bold">
+
+                                                @Model.CantidadMiembros
+                                                .ToString("N0")
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- IDIOMA -->
+
+                                <div class="col-sm-6">
+
+                                    <div class="info-box">
+
+                                        <div class="info-icon">
+
+                                            <i class="bi bi-translate"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <small class="text-muted">
+                                                Idioma
+                                            </small>
+
+                                            <div class="fw-bold">
+
+                                                @if (!string.IsNullOrWhiteSpace(
+                                                Model.Idioma))
+                                                {
+                                                    @Model.Idioma
+                                                }
+                                                else
+                                                {
+                                                    <span>
+                                                        No especificado
+                                                    </span>
+                                                }
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- PAÍS -->
+
+                                <div class="col-sm-6">
+
+                                    <div class="info-box">
+
+                                        <div class="info-icon">
+
+                                            <i class="bi bi-geo-alt"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <small class="text-muted">
+                                                País
+                                            </small>
+
+                                            <div class="fw-bold">
+
+                                                @if (!string.IsNullOrWhiteSpace(
+                                                Model.Pais))
+                                                {
+                                                    @Model.Pais
+                                                }
+                                                else
+                                                {
+                                                    <span>
+                                                        No especificado
+                                                    </span>
+                                                }
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- VISITAS -->
+
+                                <div class="col-sm-6">
+
+                                    <div class="info-box">
+
+                                        <div class="info-icon">
+
+                                            <i class="bi bi-eye"></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <small class="text-muted">
+                                                Visitas
+                                            </small>
+
+                                            <div class="fw-bold">
+
+                                                @Model.Visitas
+                                                .ToString("N0")
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ================================= -->
+                        <!-- PANEL LATERAL -->
+                        <!-- ================================= -->
+
+                        <div class="col-lg-4">
+
+                            <div class="panel-telegram">
+
+                                <div class="text-center mb-4">
+
+                                    <div class="telegram-icono
+                                                mx-auto
+                                                mb-3">
+
+                                        <i class="bi bi-telegram"></i>
+
+                                    </div>
+
+                                    <h4 class="fw-bold mb-2">
+                                        Abrir en Telegram
+                                    </h4>
+
+                                    <p class="text-muted small mb-0">
+                                        Visita este canal directamente
+                                        desde Telegram.
+                                    </p>
+
+                                </div>
+
+
+                                <!-- ========================= -->
+                                <!-- DATOS -->
+                                <!-- ========================= -->
+
+                                <div class="border-top
+                                            border-bottom
+                                            py-3
+                                            mb-4">
+
+                                    @if (Model.Categoria != null)
+                                    {
+                                        <div class="d-flex
+                                                    justify-content-between
+                                                    mb-3">
+
+                                            <span class="text-muted">
+                                                Categoría
+                                            </span>
+
+                                            <span class="fw-semibold
+                                                         text-end">
+
+                                                @Model.Categoria.Nombre
+
+                                            </span>
+
+                                        </div>
+                                    }
+
+
+                                    <div class="d-flex
+                                                justify-content-between
+                                                mb-3">
+
+                                        <span class="text-muted">
+                                            Miembros
+                                        </span>
+
+                                        <span class="fw-semibold">
+
+                                            @Model.CantidadMiembros
+                                            .ToString("N0")
+
+                                        </span>
+
+                                    </div>
+
+
+                                    @if (!string.IsNullOrWhiteSpace(
+                                    Model.Idioma))
+                                    {
+                                        <div class="d-flex
+                                                    justify-content-between
+                                                    mb-3">
+
+                                            <span class="text-muted">
+                                                Idioma
+                                            </span>
+
+                                            <span class="fw-semibold">
+                                                @Model.Idioma
+                                            </span>
+
+                                        </div>
+                                    }
+
+
+                                    @if (!string.IsNullOrWhiteSpace(
+                                    Model.Pais))
+                                    {
+                                        <div class="d-flex
+                                                    justify-content-between">
+
+                                            <span class="text-muted">
+                                                País
+                                            </span>
+
+                                            <span class="fw-semibold">
+                                                @Model.Pais
+                                            </span>
+
+                                        </div>
+                                    }
+
+                                </div>
+
+
+                                <!-- ========================= -->
+                                <!-- BOTÓN TELEGRAM -->
+                                <!-- ========================= -->
+
+                                <a asp-controller="Canales"
+                                   asp-action="IrTelegram"
+                                   asp-route-id="@Model.IdCanal"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="btn
+                                          btn-primary
+                                          btn-lg
+                                          w-100
+                                          mb-3">
+
+                                    <i class="bi
+                                              bi-telegram
+                                              me-1">
+                                    </i>
+
+                                    Unirse en Telegram
+
+                                </a>
+
+
+                                <div class="text-center
+                                            text-muted
+                                            small">
+
+                                    <i class="bi
+                                              bi-box-arrow-up-right
+                                              me-1">
+                                    </i>
+
+                                    Se abrirá Telegram en una
+                                    nueva pestaña
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ===================================== -->
+                    <!-- PIE -->
+                    <!-- ===================================== -->
+
+                    <hr class="my-5" />
+
+
+                    <div class="d-flex
+                                flex-wrap
+                                justify-content-between
+                                align-items-center
+                                gap-3">
+
+                        <div class="text-muted small">
+
+                            <i class="bi
+                                      bi-shield-check
+                                      me-1">
+                            </i>
+
+                            TelegramCatalogo no administra
+                            este canal.
+
+                        </div>
+
+
+                        <a asp-controller="Canales"
+                           asp-action="Index"
+                           class="btn btn-outline-secondary">
+
+                            <i class="bi
+                                      bi-arrow-left
+                                      me-1">
+                            </i>
+
+                            Explorar más canales
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- ESTILOS -->
+<!-- ================================================= -->
+
+<style>
+
+    /* ============================================= */
+    /* TARJETA PRINCIPAL */
+    /* ============================================= */
+
+    .canal-detalle-card {
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+
+    /* ============================================= */
+    /* LOGO */
+    /* ============================================= */
+
+    .canal-logo {
+        width: 100px;
+        height: 100px;
+        min-width: 100px;
+        object-fit: cover;
+        border-radius: 22px;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, .08);
+    }
+
+
+    /* ============================================= */
+    /* SIN LOGO */
+    /* ============================================= */
+
+    .canal-logo-placeholder {
+        width: 100px;
+        height: 100px;
+        min-width: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 22px;
+        background: linear-gradient( 135deg, #0d6efd, #3d8bfd );
+        color: white;
+        box-shadow: 0 4px 14px rgba(13, 110, 253, .20);
+    }
+
+        .canal-logo-placeholder i {
+            font-size: 48px;
+        }
+
+
+    /* ============================================= */
+    /* TÍTULO */
+    /* ============================================= */
+
+    .canal-titulo {
+        word-break: break-word;
+    }
+
+
+    /* ============================================= */
+    /* DESCRIPCIÓN */
+    /* ============================================= */
+
+    .descripcion-canal {
+        line-height: 1.7;
+        white-space: pre-line;
+    }
+
+
+    /* ============================================= */
+    /* BADGES */
+    /* ============================================= */
+
+    .categoria-badge,
+    .destacado-badge {
+        padding: 8px 12px;
+        font-size: .85rem;
+        border-radius: 20px;
+    }
+
+    .categoria-badge {
+        transition: background-color .2s ease;
+    }
+
+        .categoria-badge:hover {
+            background-color: #e9ecef !important;
+        }
+
+
+    /* ============================================= */
+    /* CAJAS DE INFORMACIÓN */
+    /* ============================================= */
+
+    .info-box {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px;
+        border: 1px solid #edf0f2;
+        border-radius: 14px;
+        background: #fff;
+    }
+
+    .info-icon {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background-color: rgba(13, 110, 253, .10);
+        color: #0d6efd;
+        font-size: 20px;
+    }
+
+
+    /* ============================================= */
+    /* PANEL TELEGRAM */
+    /* ============================================= */
+
+    .panel-telegram {
+        padding: 25px;
+        border-radius: 18px;
+        background-color: #f8f9fa;
+        position: sticky;
+        top: 25px;
+    }
+
+    .telegram-icono {
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: #0d6efd;
+        color: white;
+        font-size: 34px;
+        box-shadow: 0 5px 15px rgba(13, 110, 253, .20);
+    }
+
+
+    /* ============================================= */
+    /* TABLET / MÓVIL */
+    /* ============================================= */
+
+    @@media (max-width: 991px) {
+
+        .panel-telegram {
+            position: static;
+        }
+    }
+
+
+    @@media (max-width: 575px) {
+
+        .canal-logo,
+        .canal-logo-placeholder {
+            width: 75px;
+            height: 75px;
+            min-width: 75px;
+            border-radius: 17px;
+        }
+
+            .canal-logo-placeholder i {
+                font-size: 36px;
+            }
+
+        .canal-titulo {
+            font-size: 1.7rem;
+        }
+
+        .card-body {
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+        }
+    }
+
+</style>

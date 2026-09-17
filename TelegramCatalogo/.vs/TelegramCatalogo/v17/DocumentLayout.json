@@ -1,0 +1,631 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\admincanales\\editar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\admincanales\\editar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\controllers\\admincanalescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:controllers\\admincanalescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\services\\imagenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:services\\imagenservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\canales\\detalle.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\canales\\detalle.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\canales\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\canales\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\admincanales\\crear.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\admincanales\\crear.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\services\\slugservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:services\\slugservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\controllers\\adminsolicitudescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:controllers\\adminsolicitudescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\controllers\\admincategoriascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:controllers\\admincategoriascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\controllers\\solicitudescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:controllers\\solicitudescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\models\\solicitudcanal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:models\\solicitudcanal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\adminsolicitudes\\detalle.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\adminsolicitudes\\detalle.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\adminsolicitudes\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\adminsolicitudes\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\admin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\admin\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\solicitudes\\enviada.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\solicitudes\\enviada.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\solicitudes\\crear.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\solicitudes\\crear.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\data\\aplicaciondbcontexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:data\\aplicaciondbcontexto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\admincategorias\\editar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\admincategorias\\editar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\admincategorias\\crear.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\admincategorias\\crear.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\admincategorias\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\admincategorias\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\admincanales\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\admincanales\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\views\\admin\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:views\\admin\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\controllers\\sitemapcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:controllers\\sitemapcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\models\\canal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:models\\canal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\wwwroot\\robots.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:wwwroot\\robots.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\controllers\\canalescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:controllers\\canalescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\models\\categoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:models\\categoria.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|c:\\users\\lucas\\documents\\github\\sviatico.web\\telegramcatalogo\\telegramcatalogo.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{B35AC80E-46D1-44B7-A65D-140C8551F2BF}|TelegramCatalogo.csproj|solutionrelative:telegramcatalogo.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ImagenService.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Services\\ImagenService.cs",
+              "RelativeDocumentMoniker": "Services\\ImagenService.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Services\\ImagenService.cs",
+              "RelativeToolTip": "Services\\ImagenService.cs",
+              "ViewState": "AgIAAHEAAAAAAAAAAAAAAJcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-16T06:48:05.222Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AdminCanalesController.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\AdminCanalesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AdminCanalesController.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\AdminCanalesController.cs",
+              "RelativeToolTip": "Controllers\\AdminCanalesController.cs",
+              "ViewState": "AgIAAEkCAAAAAAAAAAAAAG8CAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-16T06:03:24.282Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Editar.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminCanales\\Editar.cshtml",
+              "RelativeDocumentMoniker": "Views\\AdminCanales\\Editar.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminCanales\\Editar.cshtml",
+              "RelativeToolTip": "Views\\AdminCanales\\Editar.cshtml",
+              "ViewState": "AgIAADkCAAAAAAAAAAAswGACAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-16T06:04:23.565Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Detalle.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Canales\\Detalle.cshtml",
+              "RelativeDocumentMoniker": "Views\\Canales\\Detalle.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Canales\\Detalle.cshtml",
+              "RelativeToolTip": "Views\\Canales\\Detalle.cshtml",
+              "ViewState": "AgIAANUCAAAAAAAAAAAswPgCAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-10T06:50:49.319Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAD4CAAAAAAAAAAAswGECAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-10T06:42:36.473Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Canales\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Canales\\Index.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Canales\\Index.cshtml",
+              "RelativeToolTip": "Views\\Canales\\Index.cshtml",
+              "ViewState": "AgIAAN8BAAAAAAAAAAAswP8BAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-10T06:47:09.291Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Crear.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminCanales\\Crear.cshtml",
+              "RelativeDocumentMoniker": "Views\\AdminCanales\\Crear.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminCanales\\Crear.cshtml",
+              "RelativeToolTip": "Views\\AdminCanales\\Crear.cshtml",
+              "ViewState": "AgIAANMAAAAAAAAAAAAIwPUAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-16T06:04:14.934Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "SlugService.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Services\\SlugService.cs",
+              "RelativeDocumentMoniker": "Services\\SlugService.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Services\\SlugService.cs",
+              "RelativeToolTip": "Services\\SlugService.cs",
+              "ViewState": "AgIAAEYAAAAAAAAAAAAAAGwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-16T06:39:44.708Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-10T06:41:46.275Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "AdminSolicitudesController.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\AdminSolicitudesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AdminSolicitudesController.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\AdminSolicitudesController.cs",
+              "RelativeToolTip": "Controllers\\AdminSolicitudesController.cs",
+              "ViewState": "AgIAAEUBAAAAAAAAAAAUwIIBAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-16T06:28:53.267Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "AdminCategoriasController.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\AdminCategoriasController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AdminCategoriasController.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\AdminCategoriasController.cs",
+              "RelativeToolTip": "Controllers\\AdminCategoriasController.cs",
+              "ViewState": "AgIAANEAAAAAAAAAAAAiwNwAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-16T06:13:25.899Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "SolicitudCanal.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Models\\SolicitudCanal.cs",
+              "RelativeDocumentMoniker": "Models\\SolicitudCanal.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Models\\SolicitudCanal.cs",
+              "RelativeToolTip": "Models\\SolicitudCanal.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAAACcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-10T06:33:18.526Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Detalle.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminSolicitudes\\Detalle.cshtml",
+              "RelativeDocumentMoniker": "Views\\AdminSolicitudes\\Detalle.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminSolicitudes\\Detalle.cshtml",
+              "RelativeToolTip": "Views\\AdminSolicitudes\\Detalle.cshtml",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAswCgAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-16T06:29:45.256Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "SolicitudesController.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\SolicitudesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\SolicitudesController.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\SolicitudesController.cs",
+              "RelativeToolTip": "Controllers\\SolicitudesController.cs",
+              "ViewState": "AgIAAK4AAAAAAAAAAAAhwMMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-16T06:23:31.249Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminSolicitudes\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\AdminSolicitudes\\Index.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminSolicitudes\\Index.cshtml",
+              "RelativeToolTip": "Views\\AdminSolicitudes\\Index.cshtml",
+              "ViewState": "AgIAAK8AAAAAAAAAAAAswNYAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-16T06:29:32.744Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAADUAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-10T06:42:52.241Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "Controllers\\AdminController.cs",
+              "ViewState": "AgIAAIwAAAAAAAAAAAAwwLAAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-16T05:56:54.959Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Admin\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Admin\\Index.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Admin\\Index.cshtml",
+              "RelativeToolTip": "Views\\Admin\\Index.cshtml",
+              "ViewState": "AgIAAEYBAAAAAAAAAAAswFQBAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-16T06:00:06.402Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Crear.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Solicitudes\\Crear.cshtml",
+              "RelativeDocumentMoniker": "Views\\Solicitudes\\Crear.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Solicitudes\\Crear.cshtml",
+              "RelativeToolTip": "Views\\Solicitudes\\Crear.cshtml",
+              "ViewState": "AgIAALgAAAAAAAAAAAAswN8AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-16T06:24:11.102Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Enviada.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Solicitudes\\Enviada.cshtml",
+              "RelativeDocumentMoniker": "Views\\Solicitudes\\Enviada.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Solicitudes\\Enviada.cshtml",
+              "RelativeToolTip": "Views\\Solicitudes\\Enviada.cshtml",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAswDYAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-16T06:24:21.882Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "AplicacionDbContexto.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Data\\AplicacionDbContexto.cs",
+              "RelativeDocumentMoniker": "Data\\AplicacionDbContexto.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Data\\AplicacionDbContexto.cs",
+              "RelativeToolTip": "Data\\AplicacionDbContexto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-10T06:37:29.161Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminCategorias\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\AdminCategorias\\Index.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminCategorias\\Index.cshtml",
+              "RelativeToolTip": "Views\\AdminCategorias\\Index.cshtml",
+              "ViewState": "AgIAALQAAAAAAAAAAAAswNsAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-16T06:14:02.45Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "Crear.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminCategorias\\Crear.cshtml",
+              "RelativeDocumentMoniker": "Views\\AdminCategorias\\Crear.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminCategorias\\Crear.cshtml",
+              "RelativeToolTip": "Views\\AdminCategorias\\Crear.cshtml",
+              "ViewState": "AgIAAHkAAAAAAAAAAAAswKAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-16T06:14:12.212Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Editar.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminCategorias\\Editar.cshtml",
+              "RelativeDocumentMoniker": "Views\\AdminCategorias\\Editar.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminCategorias\\Editar.cshtml",
+              "RelativeToolTip": "Views\\AdminCategorias\\Editar.cshtml",
+              "ViewState": "AgIAAH4AAAAAAAAAAAAAAI4AAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-16T06:14:20.189Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminCanales\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\AdminCanales\\Index.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\AdminCanales\\Index.cshtml",
+              "RelativeToolTip": "Views\\AdminCanales\\Index.cshtml",
+              "ViewState": "AgIAAAABAAAAAAAAAAAIwCYBAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-16T06:04:06.775Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Admin\\Login.cshtml",
+              "RelativeDocumentMoniker": "Views\\Admin\\Login.cshtml",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Views\\Admin\\Login.cshtml",
+              "RelativeToolTip": "Views\\Admin\\Login.cshtml",
+              "ViewState": "AgIAALEAAAAAAAAAAAAIwNcAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-09-16T06:00:14.236Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "SitemapController.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\SitemapController.cs",
+              "RelativeDocumentMoniker": "Controllers\\SitemapController.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\SitemapController.cs",
+              "RelativeToolTip": "Controllers\\SitemapController.cs",
+              "ViewState": "AgIAAEcAAAAAAAAAAAAIwF0AAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-16T05:50:13.994Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "robots.txt",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\wwwroot\\robots.txt",
+              "RelativeDocumentMoniker": "wwwroot\\robots.txt",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\wwwroot\\robots.txt",
+              "RelativeToolTip": "wwwroot\\robots.txt",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAcAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2026-09-16T05:49:19.371Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "Canal.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Models\\Canal.cs",
+              "RelativeDocumentMoniker": "Models\\Canal.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Models\\Canal.cs",
+              "RelativeToolTip": "Models\\Canal.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAA4wC4AAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-10T06:33:16.459Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "CanalesController.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\CanalesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CanalesController.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\CanalesController.cs",
+              "RelativeToolTip": "Controllers\\CanalesController.cs",
+              "ViewState": "AgIAAGwAAAAAAAAAAAAYwJIAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-10T06:46:42.93Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "Categoria.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Models\\Categoria.cs",
+              "RelativeDocumentMoniker": "Models\\Categoria.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Models\\Categoria.cs",
+              "RelativeToolTip": "Models\\Categoria.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-10T06:33:17.765Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAswAEAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-10T06:42:02.101Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAABxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-09-10T06:40:49.526Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "Usuario.cs",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Models\\Usuario.cs",
+              "RelativeDocumentMoniker": "Models\\Usuario.cs",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\Models\\Usuario.cs",
+              "RelativeToolTip": "Models\\Usuario.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-10T06:33:18.554Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "TelegramCatalogo.csproj",
+              "DocumentMoniker": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\TelegramCatalogo.csproj",
+              "RelativeDocumentMoniker": "TelegramCatalogo.csproj",
+              "ToolTip": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\TelegramCatalogo\\TelegramCatalogo.csproj",
+              "RelativeToolTip": "TelegramCatalogo.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-09-10T06:33:18.399Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

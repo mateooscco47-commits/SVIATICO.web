@@ -1,0 +1,215 @@
+﻿@model IEnumerable<TelegramCatalogo.Models.SolicitudCanal>
+
+@{
+    ViewData["Title"] = "Solicitudes de canales";
+}
+
+<div class="container py-5">
+
+    <a asp-controller="Admin"
+       asp-action="Index"
+       class="text-decoration-none">
+
+        <i class="bi bi-arrow-left"></i>
+        Panel de administración
+
+    </a>
+
+
+    <div class="d-flex
+                justify-content-between
+                align-items-end
+                mt-3
+                mb-4">
+
+        <div>
+
+            <h1 class="fw-bold mb-1">
+                Solicitudes
+            </h1>
+
+            <p class="text-muted mb-0">
+                Revisa los canales enviados
+                por los visitantes.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="mb-4">
+
+        <a href="/admin/solicitudes?estado=Pendiente"
+           class="btn btn-outline-warning">
+
+            Pendientes
+
+        </a>
+
+        <a href="/admin/solicitudes?estado=Aprobada"
+           class="btn btn-outline-success">
+
+            Aprobadas
+
+        </a>
+
+        <a href="/admin/solicitudes?estado=Rechazada"
+           class="btn btn-outline-danger">
+
+            Rechazadas
+
+        </a>
+
+        <a href="/admin/solicitudes?estado=Todas"
+           class="btn btn-outline-secondary">
+
+            Todas
+
+        </a>
+
+    </div>
+
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="table-responsive">
+
+            <table class="table
+                          table-hover
+                          align-middle
+                          mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th class="ps-4">
+                            Canal
+                        </th>
+
+                        <th>
+                            Categoría
+                        </th>
+
+                        <th>
+                            Fecha
+                        </th>
+
+                        <th>
+                            Estado
+                        </th>
+
+                        <th class="text-end pe-4">
+                            Acción
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+
+                            <td colspan="5"
+                                class="text-center
+                                       text-muted
+                                       py-5">
+
+                                No hay solicitudes.
+
+                            </td>
+
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var solicitud in Model)
+                        {
+                            <tr>
+
+                                <td class="ps-4">
+
+                                    <strong>
+                                        @solicitud.NombreCanal
+                                    </strong>
+
+                                    @if (!string.IsNullOrWhiteSpace(
+                                   solicitud.CorreoContacto))
+                                    {
+                                        <div>
+                                            <small class="text-muted">
+                                                @solicitud.CorreoContacto
+                                            </small>
+                                        </div>
+                                    }
+
+                                </td>
+
+
+                                <td>
+                                    @solicitud.Categoria?.Nombre
+                                </td>
+
+
+                                <td>
+                                    @solicitud.FechaSolicitud
+                                    .ToString("dd/MM/yyyy HH:mm")
+                                </td>
+
+
+                                <td>
+
+                                    @if (solicitud.Estado == "Pendiente")
+                                    {
+                                        <span class="badge bg-warning text-dark">
+                                            Pendiente
+                                        </span>
+                                    }
+                                    else if (solicitud.Estado == "Aprobada")
+                                    {
+                                        <span class="badge bg-success">
+                                            Aprobada
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            Rechazada
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <td class="text-end pe-4">
+
+                                    <a asp-controller="AdminSolicitudes"
+                                       asp-action="Detalle"
+                                       asp-route-id="@solicitud.IdSolicitud"
+                                       class="btn
+                                              btn-sm
+                                              btn-outline-primary">
+
+                                        Revisar
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

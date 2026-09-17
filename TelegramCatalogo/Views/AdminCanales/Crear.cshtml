@@ -1,0 +1,342 @@
+﻿@model TelegramCatalogo.Models.Canal
+
+@{
+    ViewData["Title"] = "Nuevo canal";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-xl-9">
+
+            <div class="mb-4">
+
+                <a asp-controller="AdminCanales"
+                   asp-action="Index"
+                   class="text-decoration-none">
+
+                    <i class="bi bi-arrow-left"></i>
+                    Volver a canales
+
+                </a>
+
+                <h1 class="fw-bold mt-3">
+                    Nuevo canal
+                </h1>
+
+                <p class="text-muted">
+                    Agrega un nuevo canal al catálogo.
+                </p>
+
+            </div>
+
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <form asp-controller="AdminCanales"
+                          asp-action="Crear"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        @Html.AntiForgeryToken()
+
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+
+                        <div class="row g-4">
+
+                            <!-- NOMBRE -->
+
+                            <div class="col-md-8">
+
+                                <label asp-for="Nombre"
+                                       class="form-label fw-semibold">
+
+                                    Nombre del canal
+
+                                </label>
+
+                                <input asp-for="Nombre"
+                                       class="form-control"
+                                       placeholder="Ej: Programación para principiantes" />
+
+                                <span asp-validation-for="Nombre"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+
+                            <!-- CATEGORÍA -->
+
+                            <div class="col-md-4">
+
+                                <label asp-for="IdCategoria"
+                                       class="form-label fw-semibold">
+
+                                    Categoría
+
+                                </label>
+
+                                <select asp-for="IdCategoria"
+                                        asp-items="ViewBag.Categorias"
+                                        class="form-select">
+
+                                    <option value="">
+                                        Selecciona...
+                                    </option>
+
+                                </select>
+
+                                <span asp-validation-for="IdCategoria"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+
+                            <!-- USERNAME -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="UsernameTelegram"
+                                       class="form-label fw-semibold">
+
+                                    Username de Telegram
+
+                                </label>
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+                                        @@
+                                    </span>
+
+                                    <input asp-for="UsernameTelegram"
+                                           class="form-control"
+                                           placeholder="nombrecanal" />
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ENLACE -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="EnlaceTelegram"
+                                       class="form-label fw-semibold">
+
+                                    Enlace de Telegram
+
+                                </label>
+
+                                <input asp-for="EnlaceTelegram"
+                                       class="form-control"
+                                       placeholder="https://t.me/nombrecanal" />
+
+                                <span asp-validation-for="EnlaceTelegram"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+
+                            <!-- DESCRIPCIÓN -->
+
+                            <div class="col-12">
+
+                                <label asp-for="Descripcion"
+                                       class="form-label fw-semibold">
+
+                                    Descripción
+
+                                </label>
+
+                                <textarea asp-for="Descripcion"
+                                          class="form-control"
+                                          rows="5"
+                                          placeholder="Describe el contenido del canal...">
+                                </textarea>
+
+                            </div>
+
+
+                            <!-- MIEMBROS -->
+
+                            <div class="col-md-4">
+
+                                <label asp-for="CantidadMiembros"
+                                       class="form-label fw-semibold">
+
+                                    Miembros
+
+                                </label>
+
+                                <input asp-for="CantidadMiembros"
+                                       type="number"
+                                       min="0"
+                                       class="form-control" />
+
+                            </div>
+
+
+                            <!-- IDIOMA -->
+
+                            <div class="col-md-4">
+
+                                <label asp-for="Idioma"
+                                       class="form-label fw-semibold">
+
+                                    Idioma
+
+                                </label>
+
+                                <input asp-for="Idioma"
+                                       class="form-control" />
+
+                            </div>
+
+
+                            <!-- PAÍS -->
+
+                            <div class="col-md-4">
+
+                                <label asp-for="Pais"
+                                       class="form-label fw-semibold">
+
+                                    País
+
+                                </label>
+
+                                <input asp-for="Pais"
+                                       class="form-control" />
+
+                            </div>
+
+
+                            <!-- IMAGEN -->
+
+                            <div class="col-12">
+
+                                <label class="form-label fw-semibold">
+                                    Imagen o logo del canal
+                                </label>
+
+                                <input type="file"
+                                       name="imagenArchivo"
+                                       class="form-control"
+                                       accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+
+                                <span class="text-danger">
+                                    @Html.ValidationMessage("imagenArchivo")
+                                </span>
+
+                                <div class="form-text">
+                                    JPG, PNG o WebP. Máximo 5 MB.
+                                </div>
+
+                            </div>
+
+
+                            <!-- DESTACADO -->
+
+                            <div class="col-md-6">
+
+                                <div class="form-check
+                                            form-switch
+                                            mt-3">
+
+                                    <input asp-for="EsDestacado"
+                                           class="form-check-input" />
+
+                                    <label asp-for="EsDestacado"
+                                           class="form-check-label">
+
+                                        Canal destacado
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ESTADO -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="Estado"
+                                       class="form-label fw-semibold">
+
+                                    Estado
+
+                                </label>
+
+                                <select asp-for="Estado"
+                                        class="form-select">
+
+                                    <option value="Activo">
+                                        Activo
+                                    </option>
+
+                                    <option value="Inactivo">
+                                        Inactivo
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <hr class="my-4" />
+
+
+                        <div class="d-flex
+                                    justify-content-end
+                                    gap-2">
+
+                            <a asp-controller="AdminCanales"
+                               asp-action="Index"
+                               class="btn btn-light">
+
+                                Cancelar
+
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+
+                                <i class="bi bi-check-lg"></i>
+
+                                Guardar canal
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

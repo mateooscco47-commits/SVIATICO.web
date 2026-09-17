@@ -287,7 +287,6 @@ C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\st
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.Dinacen.props
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.Dinacen.props
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\staticwebassets.pack.json
-C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\Dinacen.csproj.Up2Date
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\Dinacen.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\refint\Dinacen.dll
@@ -530,3 +529,39 @@ C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\obj\Debug
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\Dinacen.pdb
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\Dinacen.genruntimeconfig.cache
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\obj\Debug\net8.0\ref\Dinacen.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-Black.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-BlackItalic.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-Bold.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-BoldItalic.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-ExtraBold.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-ExtraBoldItalic.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-ExtraLight.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-ExtraLightItalic.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-Italic.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-Light.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-LightItalic.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-Medium.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-MediumItalic.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-Regular.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-SemiBold.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-SemiBoldItalic.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-Thin.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-ThinItalic.ttf
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\OFL.txt
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\QuestPDF.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\linux-arm64\native\libQuestPdfSkia.so
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\linux-arm64\native\libqpdf.so
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\linux-musl-x64\native\libQuestPdfSkia.so
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\linux-musl-x64\native\libqpdf.so
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\linux-x64\native\libQuestPdfSkia.so
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\linux-x64\native\libqpdf.so
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\osx-arm64\native\libQuestPdfSkia.dylib
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\osx-arm64\native\libqpdf.dylib
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\osx-x64\native\libQuestPdfSkia.dylib
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\osx-x64\native\libqpdf.dylib
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\win-arm64\native\QuestPdfSkia.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\win-arm64\native\qpdf.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\win-x64\native\QuestPdfSkia.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\win-x64\native\qpdf.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\win-x86\native\QuestPdfSkia.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\win-x86\native\qpdf.dll

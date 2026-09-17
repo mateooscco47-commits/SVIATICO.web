@@ -1,5 +1,6 @@
 ﻿using Dinacem.Models;
 using Dinacem.Models.Servicios;
+using ImageMagick;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -2226,7 +2227,7 @@ namespace Dinacem.Controllers
                     "El domicilio fiscal no puede superar los 300 caracteres.");
             }
         }
-        
+
         // =========================================================
         // GUARDAR COMPROBANTE
         // =========================================================
@@ -2247,12 +2248,10 @@ namespace Dinacem.Controllers
             }
 
             var extension =
-                Path.GetExtension(
-                    archivo.FileName)
-                .ToLowerInvariant();
+                Path.GetExtension(archivo.FileName)
+                    .ToLowerInvariant();
 
-            if (!ExtensionesPermitidas.Contains(
-                extension))
+            if (!ExtensionesPermitidas.Contains(extension))
             {
                 return new ResultadoArchivo
                 {
@@ -2262,8 +2261,7 @@ namespace Dinacem.Controllers
                 };
             }
 
-            if (archivo.Length >
-                TAMANIO_MAXIMO_COMPROBANTE)
+            if (archivo.Length > TAMANIO_MAXIMO_COMPROBANTE)
             {
                 return new ResultadoArchivo
                 {
@@ -2273,41 +2271,78 @@ namespace Dinacem.Controllers
                 };
             }
 
-            var nombreArchivo =
-                $"{Guid.NewGuid()}{extension}";
-
             var carpeta =
                 Path.Combine(
                     Directory.GetCurrentDirectory(),
                     "wwwroot",
                     "comprobantes");
 
-            Directory.CreateDirectory(
-                carpeta);
+            Directory.CreateDirectory(carpeta);
 
-            var rutaFisica =
-                Path.Combine(
-                    carpeta,
-                    nombreArchivo);
-
-            await using var stream =
-                new FileStream(
-                    rutaFisica,
-                    FileMode.Create);
-
-            await archivo.CopyToAsync(
-                stream);
-
-            return new ResultadoArchivo
+            // Los PDF se conservan sin modificar.
+            if (extension == ".pdf")
             {
-                Exito = true,
+                var nombrePdf = $"{Guid.NewGuid()}.pdf";
+                var rutaPdf = Path.Combine(carpeta, nombrePdf);
 
-                RutaPublica =
-                    $"/comprobantes/{nombreArchivo}",
+                await using var streamPdf =
+                    new FileStream(rutaPdf, FileMode.Create);
 
-                RutaFisica =
-                    rutaFisica
-            };
+                await archivo.CopyToAsync(streamPdf);
+
+                return new ResultadoArchivo
+                {
+                    Exito = true,
+                    RutaPublica = $"/comprobantes/{nombrePdf}",
+                    RutaFisica = rutaPdf
+                };
+            }
+
+            // Para imágenes no confiamos en la extensión. Magick.NET
+            // detecta el formato real (incluido HEIF/HEIC de iPhone)
+            // y lo normaliza a un JPEG verdadero para QuestPDF.
+            try
+            {
+                await using var memoria = new MemoryStream();
+                await archivo.CopyToAsync(memoria);
+                memoria.Position = 0;
+
+                using var imagen = new MagickImage(memoria);
+
+                imagen.AutoOrient();
+                imagen.BackgroundColor = MagickColors.White;
+                imagen.Alpha(AlphaOption.Remove);
+                imagen.Strip();
+                imagen.Format = MagickFormat.Jpeg;
+                imagen.Quality = 90;
+
+                var nombreImagen = $"{Guid.NewGuid()}.jpg";
+                var rutaImagen = Path.Combine(carpeta, nombreImagen);
+
+                await imagen.WriteAsync(rutaImagen);
+
+                return new ResultadoArchivo
+                {
+                    Exito = true,
+                    RutaPublica = $"/comprobantes/{nombreImagen}",
+                    RutaFisica = rutaImagen
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "No se pudo procesar el comprobante {Archivo} como imagen.",
+                    archivo.FileName);
+
+                return new ResultadoArchivo
+                {
+                    Exito = false,
+                    Mensaje =
+                        "No se pudo procesar la imagen del comprobante. " +
+                        "Seleccione una imagen JPG, JPEG o PNG válida."
+                };
+            }
         }
 
         // =========================================================
