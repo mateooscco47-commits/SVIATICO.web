@@ -1,0 +1,610 @@
+﻿@model IEnumerable<TelegramCatalogo.Models.Canal>
+
+@{
+    ViewData["Title"] =
+        "Canales de Telegram en Español | TelegramCatalogo";
+
+    ViewData["Description"] =
+        "Descubre canales de Telegram en español de tecnología, educación, noticias, ofertas, deportes y más.";
+
+    ViewData["Canonical"] =
+        $"{Context.Request.Scheme}://{Context.Request.Host}/";
+}
+
+<div class="container py-5">
+
+    <!-- ================================================= -->
+    <!-- HERO / BUSCADOR -->
+    <!-- ================================================= -->
+
+    <section class="text-center mb-5">
+
+        <h1 class="display-4 fw-bold">
+            Encuentra los mejores canales de Telegram
+        </h1>
+
+        <p class="lead text-muted mt-3">
+            Descubre comunidades, noticias, tecnología,
+            educación, ofertas y mucho más.
+        </p>
+
+        <form asp-controller="Canales"
+              asp-action="Index"
+              method="get"
+              class="row justify-content-center mt-4">
+
+            <div class="col-lg-7 col-md-9">
+
+                <div class="input-group input-group-lg">
+
+                    <input type="text"
+                           name="buscar"
+                           class="form-control"
+                           placeholder="Buscar canales, temas o categorías..."
+                           autocomplete="off" />
+
+                    <button type="submit"
+                            class="btn btn-primary px-4">
+
+                        <i class="bi bi-search me-1"></i>
+                        Buscar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- ================================================= -->
+    <!-- CATEGORÍAS -->
+    <!-- ================================================= -->
+
+    <section class="mb-5">
+
+        <div class="d-flex
+                    justify-content-between
+                    align-items-center
+                    mb-4">
+
+            <div>
+
+                <h2 class="fw-bold mb-1">
+                    Explorar por categoría
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Encuentra canales según tus intereses.
+                </p>
+
+            </div>
+
+            <a asp-controller="Canales"
+               asp-action="Index"
+               class="text-decoration-none">
+
+                Ver todos
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <div class="row g-3">
+
+            @if (ViewBag.Categorias != null)
+            {
+                @foreach (var categoria in ViewBag.Categorias)
+                {
+                    <div class="col-xl-3
+                                col-lg-4
+                                col-md-6">
+
+                        <a asp-controller="Canales"
+                           asp-action="Categoria"
+                           asp-route-slug="@categoria.Slug"
+                           class="text-decoration-none text-dark">
+
+                            <div class="card
+                                        categoria-card
+                                        border-0
+                                        shadow-sm
+                                        h-100">
+
+                                <div class="card-body
+                                            d-flex
+                                            align-items-center
+                                            p-3">
+
+                                    <!-- ICONO -->
+
+                                    <div class="rounded-circle
+                                                bg-primary
+                                                bg-opacity-10
+                                                text-primary
+                                                d-flex
+                                                align-items-center
+                                                justify-content-center
+                                                me-3"
+                                         style="width:55px;
+                                                height:55px;
+                                                min-width:55px;">
+
+                                        @if (!string.IsNullOrWhiteSpace(
+                                       categoria.Icono))
+                                        {
+                                            <i class="bi
+                                                      @categoria.Icono
+                                                      fs-4">
+                                            </i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi
+                                                      bi-grid
+                                                      fs-4">
+                                            </i>
+                                        }
+
+                                    </div>
+
+
+                                    <!-- INFORMACIÓN -->
+
+                                    <div>
+
+                                        <h6 class="fw-bold mb-1">
+                                            @categoria.Nombre
+                                        </h6>
+
+                                        <small class="text-muted">
+                                            Explorar canales
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </a>
+
+                    </div>
+                }
+            }
+
+        </div>
+
+    </section>
+
+
+    <!-- ================================================= -->
+    <!-- CANALES RECIENTES -->
+    <!-- ================================================= -->
+
+    <section>
+
+        <div class="d-flex
+                    justify-content-between
+                    align-items-center
+                    mb-4">
+
+            <div>
+
+                <h2 class="fw-bold mb-1">
+                    Canales recientes
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Descubre los últimos canales agregados.
+                </p>
+
+            </div>
+
+
+            <a asp-controller="Canales"
+               asp-action="Index"
+               class="text-decoration-none">
+
+                Ver todos
+
+                <i class="bi bi-arrow-right"></i>
+
+            </a>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- SI NO EXISTEN CANALES -->
+        <!-- ================================================= -->
+        @if (Model == null || !Model.Any())
+        {
+            <div class="text-center py-5">
+
+                <div class="mb-3">
+
+                    <i class="bi
+                              bi-telegram
+                              text-primary"
+                       style="font-size:60px;">
+                    </i>
+
+                </div>
+
+                <h4 class="fw-bold">
+                    Todavía no hay canales
+                </h4>
+
+                <p class="text-muted">
+                    Próximamente encontrarás nuevos
+                    canales de Telegram.
+                </p>
+
+            </div>
+        }
+        else
+        {
+            <!-- ================================================= -->
+            <!-- LISTADO DE CANALES -->
+            <!-- ================================================= -->
+
+            <div class="row g-4">
+
+                @foreach (var canal in Model)
+                {
+                    <div class="col-xl-3
+                                col-lg-4
+                                col-md-6">
+
+                        <div class="card
+                                    canal-card
+                                    h-100
+                                    shadow-sm
+                                    border-0">
+
+                            <!-- ================================= -->
+                            <!-- IMAGEN DEL CANAL -->
+                            <!-- ================================= -->
+
+                            <div class="canal-imagen-container">
+
+                                @if (!string.IsNullOrWhiteSpace(
+                               canal.Imagen))
+                                {
+                                    <img src="@canal.Imagen"
+                                         alt="Logo de @canal.Nombre"
+                                         class="canal-imagen"
+                                         loading="lazy" />
+                                }
+                                else
+                                {
+                                    <div class="canal-imagen-placeholder">
+
+                                        <i class="bi bi-telegram"></i>
+
+                                    </div>
+                                }
+
+
+                                <!-- DESTACADO -->
+                                @if (canal.EsDestacado)
+                                {
+                                    <span class="badge
+                                                 bg-warning
+                                                 text-dark
+                                                 destacado-badge">
+
+                                        <i class="bi bi-star-fill"></i>
+
+                                        Destacado
+
+                                    </span>
+                                }
+
+                            </div>
+
+
+                            <!-- ================================= -->
+                            <!-- CONTENIDO -->
+                            <!-- ================================= -->
+
+                            <div class="card-body
+                                        d-flex
+                                        flex-column">
+
+                                <!-- NOMBRE -->
+
+                                <h5 class="mb-1 fw-bold">
+
+                                    @canal.Nombre
+
+                                </h5>
+
+
+                                <!-- USERNAME -->
+                                @if (!string.IsNullOrWhiteSpace(
+                               canal.UsernameTelegram))
+                                {
+                                    <div class="text-muted
+                                                small
+                                                mb-3">
+
+                                        @("@" + canal.UsernameTelegram)
+
+                                    </div>
+                                }
+
+
+                                <!-- DESCRIPCIÓN -->
+                                @if (!string.IsNullOrWhiteSpace(
+                               canal.Descripcion))
+                                {
+                                    <p class="text-muted
+                                              canal-descripcion">
+
+                                        @canal.Descripcion
+
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p class="text-muted
+                                              canal-descripcion">
+
+                                        Sin descripción disponible.
+
+                                    </p>
+                                }
+
+
+                                <!-- ================================= -->
+                                <!-- CATEGORÍA -->
+                                <!-- ================================= -->
+
+                                <div class="mb-3">
+
+                                    @if (canal.Categoria != null)
+                                    {
+                                        <a asp-controller="Canales"
+                                           asp-action="Categoria"
+                                           asp-route-slug="@canal.Categoria.Slug"
+                                           class="badge
+                                                  bg-light
+                                                  text-dark
+                                                  border
+                                                  text-decoration-none">
+
+                                            @if (!string.IsNullOrWhiteSpace(
+                                           canal.Categoria.Icono))
+                                            {
+                                                <i class="bi
+                                                          @canal.Categoria.Icono
+                                                          me-1">
+                                                </i>
+                                            }
+
+                                            @canal.Categoria.Nombre
+
+                                        </a>
+                                    }
+
+                                </div>
+
+
+                                <!-- ================================= -->
+                                <!-- INFORMACIÓN -->
+                                <!-- ================================= -->
+
+                                <div class="d-flex
+                                            justify-content-between
+                                            align-items-center
+                                            text-muted
+                                            small
+                                            mb-3">
+
+                                    <!-- MIEMBROS -->
+
+                                    <span>
+
+                                        <i class="bi bi-people me-1"></i>
+
+                                        @canal.CantidadMiembros.ToString("N0")
+
+                                    </span>
+
+
+                                    <!-- PAÍS -->
+                                    @if (!string.IsNullOrWhiteSpace(
+                                   canal.Pais))
+                                    {
+                                        <span>
+
+                                            <i class="bi
+                                                      bi-geo-alt
+                                                      me-1">
+                                            </i>
+
+                                            @canal.Pais
+
+                                        </span>
+                                    }
+
+                                </div>
+
+
+                                <!-- ================================= -->
+                                <!-- BOTÓN DETALLE -->
+                                <!-- ================================= -->
+
+                                <div class="mt-auto">
+
+                                    <a asp-controller="Canales"
+                                       asp-action="DetalleSlug"
+                                       asp-route-slug="@canal.Slug"
+                                       class="btn
+                                              btn-primary
+                                              w-100">
+
+                                        Ver canal
+
+                                        <i class="bi
+                                                  bi-arrow-right
+                                                  ms-1">
+                                        </i>
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </section>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- ESTILOS -->
+<!-- ================================================= -->
+
+<style>
+
+    /* ============================================= */
+    /* CATEGORÍAS */
+    /* ============================================= */
+
+    .categoria-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+        border-radius: 14px;
+    }
+
+        .categoria-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .12) !important;
+        }
+
+
+    /* ============================================= */
+    /* TARJETAS DE CANALES */
+    /* ============================================= */
+
+    .canal-card {
+        border-radius: 16px;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .canal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 .75rem 1.5rem rgba(0, 0, 0, .12) !important;
+        }
+
+
+    /* ============================================= */
+    /* IMAGEN */
+    /* ============================================= */
+
+    .canal-imagen-container {
+        position: relative;
+        width: 100%;
+        height: 190px;
+        overflow: hidden;
+        background-color: #f4f6f9;
+    }
+
+    .canal-imagen {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.3s ease;
+    }
+
+    .canal-card:hover .canal-imagen {
+        transform: scale(1.04);
+    }
+
+
+    /* ============================================= */
+    /* CANAL SIN IMAGEN */
+    /* ============================================= */
+
+    .canal-imagen-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient( 135deg, #eef6ff, #f8fbff );
+        color: #0d6efd;
+    }
+
+        .canal-imagen-placeholder i {
+            font-size: 4rem;
+        }
+
+
+    /* ============================================= */
+    /* DESTACADO */
+    /* ============================================= */
+
+    .destacado-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 7px 10px;
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+    }
+
+
+    /* ============================================= */
+    /* DESCRIPCIÓN */
+    /* ============================================= */
+
+    .canal-descripcion {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 72px;
+    }
+
+
+    /* ============================================= */
+    /* CATEGORÍA */
+    /* ============================================= */
+
+    .badge.border:hover {
+        background-color: #e9ecef !important;
+    }
+
+
+    /* ============================================= */
+    /* RESPONSIVE */
+    /* ============================================= */
+
+    @@media (max-width: 767px) {
+
+        .canal-imagen-container {
+            height: 220px;
+        }
+    }
+
+</style>

@@ -1,0 +1,519 @@
+﻿/* ============================================================
+   INDEX SOLICITUDES - ESTILOS GENERALES
+   ============================================================ */
+
+
+/* ============================================================
+   CONTENEDOR PRINCIPAL
+   ============================================================ */
+
+.page-wrapper {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+
+/* ============================================================
+   ENCABEZADO DE PÁGINA
+   ============================================================ */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 22px;
+    margin-bottom: 24px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+}
+
+
+/* ============================================================
+   TÍTULO PRINCIPAL
+   ============================================================ */
+
+.page-title {
+    margin: 0 0 5px;
+    color: #0f172a;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+
+/* ============================================================
+   DESCRIPCIÓN
+   ============================================================ */
+
+.page-description {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+/* ============================================================
+   TARJETAS RESUMEN
+   ============================================================ */
+
+.summary-card {
+    height: 100%;
+    padding: 17px 18px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, .04);
+}
+
+
+.summary-label {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+
+.summary-value {
+    margin-top: 4px;
+    color: #0f172a;
+    font-size: 26px;
+    font-weight: 800;
+}
+
+
+/* ============================================================
+   PANEL
+   ============================================================ */
+
+.panel {
+    background: #ffffff;
+    border: 1px solid #dbe1ea;
+    border-radius: 15px;
+    box-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+    overflow: hidden;
+}
+
+
+/* ============================================================
+   CABECERA DEL PANEL
+   ============================================================ */
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+
+.panel-title {
+    margin: 0;
+    color: #0f172a;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+
+/* ============================================================
+   CUERPO DEL PANEL
+   ============================================================ */
+
+.panel-body {
+    padding: 20px;
+}
+
+
+/* ============================================================
+   TÍTULO "LISTA DE SOLICITUDES"
+   ============================================================ */
+
+.users-list-title {
+    margin-bottom: 20px;
+}
+
+
+    /* Título */
+
+    .users-list-title .box-title {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: fit-content;
+        padding-bottom: 8px;
+        color: #1f2937;
+        font-size: 1.45rem;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+    }
+
+
+        /* Línea decorativa */
+
+        .users-list-title .box-title::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 45px;
+            height: 3px;
+            background: #0C4A8A;
+            border-radius: 3px;
+        }
+
+
+        /* Ícono */
+
+        .users-list-title .box-title i {
+            color: #0C4A8A;
+            font-size: 1.35rem;
+        }
+
+
+    /* Subtítulo */
+
+    .users-list-title .box-subtitle {
+        margin-top: 5px;
+        margin-left: 34px;
+        color: #6b7280;
+        font-size: 0.88rem;
+    }
+
+
+/* ============================================================
+   BUSCADOR
+   ============================================================ */
+
+.users-search {
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+
+    /* Grupo del buscador */
+
+    .users-search .input-group {
+        width: 100%;
+        max-width: 650px;
+        border-radius: 9px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, .04);
+    }
+
+
+    /* Ícono de búsqueda */
+
+    .users-search .input-group-text {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 45px;
+        color: #64748b;
+        background: #ffffff;
+        border: 1px solid #dbe1ea;
+        border-right: 0;
+        border-radius: 9px 0 0 9px;
+    }
+
+
+    /* Input */
+
+    .users-search .search-input,
+    .users-search .form-control {
+        height: 43px;
+        color: #1f2937;
+        background: #ffffff;
+        border: 1px solid #dbe1ea;
+        border-left: 0;
+        font-size: 14px;
+        box-shadow: none;
+    }
+
+
+        /* Placeholder */
+
+        .users-search .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+
+        /* Focus */
+
+        .users-search .form-control:focus {
+            color: #1f2937;
+            background: #ffffff;
+            border-color: #0C4A8A;
+            box-shadow: 0 0 0 3px rgba(12, 74, 138, .10);
+        }
+
+
+    /* Mantener borde del icono al hacer focus */
+
+    .users-search .input-group:focus-within .input-group-text {
+        border-color: #0C4A8A;
+        color: #0C4A8A;
+    }
+
+
+/* ============================================================
+   BOTÓN X DEL BUSCADOR
+   ============================================================ */
+
+#btnLimpiarBusquedaSolicitudes {
+    display: none;
+    min-width: 43px;
+    height: 43px;
+    color: #64748b;
+    background: #ffffff;
+    border: 1px solid #dbe1ea;
+    border-left: 0;
+    border-radius: 0 9px 9px 0;
+    transition: color .2s ease, background-color .2s ease, border-color .2s ease;
+}
+
+
+    #btnLimpiarBusquedaSolicitudes:hover {
+        color: #dc3545;
+        background: #fef2f2;
+        border-color: #dbe1ea;
+    }
+
+
+    #btnLimpiarBusquedaSolicitudes:focus {
+        box-shadow: none;
+    }
+
+
+/* ============================================================
+   TABLA
+   ============================================================ */
+
+.table {
+    min-width: 1100px;
+    font-size: 14px;
+}
+
+
+    /* Cabecera */
+
+    .table thead th {
+        color: #64748b;
+        background: #f8fafc;
+        font-size: 12px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+
+    /* Celdas */
+
+    .table td {
+        vertical-align: middle;
+    }
+
+
+/* ============================================================
+   ESTADOS
+   ============================================================ */
+
+.estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* Pendiente */
+
+.estado-pendiente {
+    color: #92400e;
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+}
+
+
+/* Aprobado */
+
+.estado-aprobado {
+    color: #166534;
+    background: #dcfce7;
+    border: 1px solid #86efac;
+}
+
+
+/* Rechazado */
+
+.estado-rechazado {
+    color: #991b1b;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+}
+
+
+/* ============================================================
+   ACCIONES
+   ============================================================ */
+
+.acciones {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+
+/* ============================================================
+   OBSERVACIÓN DE RECHAZO
+   ============================================================ */
+
+.observacion-rechazo {
+    max-width: 260px;
+    color: #991b1b;
+    font-size: 13px;
+}
+
+
+/* ============================================================
+   MODALES
+   ============================================================ */
+
+.modal-content {
+    border: 0;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+
+/* Cabecera modal rechazo */
+
+.modal-header-rechazo {
+    color: #ffffff;
+    background: #dc3545;
+}
+
+
+/* ============================================================
+   CONTADOR DE RESULTADOS
+   ============================================================ */
+
+#contadorResultadosSolicitudes {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+/* ============================================================
+   RESPONSIVE - TABLET
+   ============================================================ */
+
+@media (max-width: 991.98px) {
+
+    .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+        .page-header .btn {
+            width: 100%;
+        }
+
+
+    .panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .users-search .input-group {
+        max-width: 100%;
+    }
+}
+
+
+/* ============================================================
+   RESPONSIVE - MÓVIL
+   ============================================================ */
+
+@media (max-width: 767.98px) {
+
+    .page-header {
+        padding: 18px;
+        border-radius: 13px;
+    }
+
+
+    .page-title {
+        font-size: 23px;
+    }
+
+
+    .summary-value {
+        font-size: 23px;
+    }
+
+
+    .panel-body {
+        padding: 14px;
+    }
+
+
+    /* Título de lista */
+
+    .users-list-title .box-title {
+        font-size: 1.25rem;
+    }
+
+
+        .users-list-title .box-title i {
+            font-size: 1.20rem;
+        }
+
+
+    .users-list-title .box-subtitle {
+        margin-left: 0;
+        font-size: 0.82rem;
+    }
+
+
+    /* Buscador */
+
+    .users-search {
+        margin-top: 12px;
+    }
+
+
+        .users-search .form-control {
+            font-size: 13px;
+        }
+
+
+    /* Modal */
+
+    .modal-dialog {
+        margin: 12px;
+    }
+
+
+    .modal-footer {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+
+        .modal-footer .btn {
+            width: 100%;
+        }
+}

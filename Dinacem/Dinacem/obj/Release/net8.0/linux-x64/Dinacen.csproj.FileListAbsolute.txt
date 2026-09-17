@@ -1,7 +1,6 @@
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\appsettings.Development.json
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\appsettings.json
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\Dinacen.staticwebassets.runtime.json
-C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\Dinacen.staticwebassets.endpoints.json
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\Dinacen
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\Dinacen.deps.json
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\Dinacen.runtimeconfig.json
@@ -48,7 +47,6 @@ C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\System.Composition.TypedParts.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\System.Configuration.ConfigurationManager.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\System.Drawing.Common.dll
-C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\System.Formats.Asn1.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\System.Memory.Data.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\System.Runtime.Caching.dll
@@ -121,14 +119,11 @@ C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\scopedcss\projectbundle\Dinacen.bundle.scp.css
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\staticwebassets.build.json
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\staticwebassets.development.json
-C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\staticwebassets.build.endpoints.json
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\staticwebassets\msbuild.Dinacen.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\staticwebassets\msbuild.Dinacen.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\staticwebassets\msbuild.build.Dinacen.props
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\staticwebassets\msbuild.buildMultiTargeting.Dinacen.props
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\staticwebassets\msbuild.buildTransitive.Dinacen.props
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\staticwebassets.pack.json
-C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\staticwebassets.upToDateCheck.txt
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\Dinacen.csproj.Up2Date
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\Dinacen.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\refint\Dinacen.dll
@@ -161,3 +156,7 @@ C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\QuestPDF.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\libQuestPdfSkia.so
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\libqpdf.so
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\global.json
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\Magick.NET-Q8-AnyCPU.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\Magick.NET.Core.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\linux-x64\Magick.Native-Q8-x64.dll.so

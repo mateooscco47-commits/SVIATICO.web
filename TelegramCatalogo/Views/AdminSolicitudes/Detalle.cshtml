@@ -1,0 +1,299 @@
+﻿@model TelegramCatalogo.Models.SolicitudCanal
+
+@{
+    ViewData["Title"] = "Revisar solicitud";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <a asp-controller="AdminSolicitudes"
+               asp-action="Index"
+               class="text-decoration-none">
+
+                <i class="bi bi-arrow-left"></i>
+                Volver a solicitudes
+
+            </a>
+            @if (TempData["Exito"] != null)
+            {
+                <div class="alert alert-success mt-4">
+
+                    <i class="bi bi-check-circle me-1"></i>
+
+                    @TempData["Exito"]
+
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger mt-4">
+
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+
+                    @TempData["Error"]
+
+                </div>
+            }
+
+
+            <div class="card
+                        border-0
+                        shadow-sm
+                        mt-4">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-start">
+
+                        <div>
+
+                            <div class="text-muted mb-2">
+                                Solicitud #@Model.IdSolicitud
+                            </div>
+
+                            <h1 class="fw-bold">
+                                @Model.NombreCanal
+                            </h1>
+
+                        </div>
+
+
+                        @if (Model.Estado == "Pendiente")
+                        {
+                            <span class="badge
+                                         bg-warning
+                                         text-dark">
+
+                                Pendiente
+
+                            </span>
+                        }
+                        else if (Model.Estado == "Aprobada")
+                        {
+                            <span class="badge bg-success">
+                                Aprobada
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">
+                                Rechazada
+                            </span>
+                        }
+
+                    </div>
+
+
+                    <hr />
+
+
+                    <div class="mb-4">
+
+                        <strong>Categoría</strong>
+
+                        <div class="text-muted">
+                            @Model.Categoria?.Nombre
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-4">
+
+                        <strong>Enlace de Telegram</strong>
+
+                        <div>
+
+                            <a href="@Model.EnlaceTelegram"
+                               target="_blank"
+                               rel="noopener noreferrer">
+
+                                @Model.EnlaceTelegram
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-4">
+
+                        <strong>Descripción</strong>
+
+                        <div class="text-muted mt-1">
+                            @Model.Descripcion
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-4">
+
+                        <strong>Correo de contacto</strong>
+
+                        <div class="text-muted">
+                            @Model.CorreoContacto
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-4">
+
+                        <strong>Fecha de solicitud</strong>
+
+                        <div class="text-muted">
+                            @Model.FechaSolicitud
+                            .ToString("dd/MM/yyyy HH:mm")
+                        </div>
+
+                    </div>
+
+
+                    @if (!string.IsNullOrWhiteSpace(
+                    Model.Observaciones))
+                    {
+                        <div class="alert alert-light border">
+
+                            <strong>Observaciones</strong>
+
+                            <div>
+                                @Model.Observaciones
+                            </div>
+
+                        </div>
+                    }
+
+
+                    @if (Model.Estado == "Pendiente")
+                    {
+                        <hr class="my-4" />
+
+                        <h4 class="fw-bold mb-3">
+                            Revisar solicitud
+                        </h4>
+
+                        <!-- APROBAR -->
+
+                        <div class="card
+                border-success
+                mb-4">
+
+                            <div class="card-body">
+
+                                <h5 class="fw-bold text-success">
+
+                                    <i class="bi bi-check-circle"></i>
+
+                                    Aprobar solicitud
+
+                                </h5>
+
+                                <p class="text-muted">
+                                    El canal será creado y publicado
+                                    inmediatamente en el catálogo.
+                                </p>
+
+                                <form asp-controller="AdminSolicitudes"
+                                      asp-action="Aprobar"
+                                      asp-route-id="@Model.IdSolicitud"
+                                      method="post">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="btn btn-success"
+                                            onclick="return confirm('¿Seguro que deseas aprobar y publicar este canal?');">
+
+                                        <i class="bi bi-check-lg"></i>
+
+                                        Aprobar y publicar
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- RECHAZAR -->
+
+                        <div class="card border-danger">
+
+                            <div class="card-body">
+
+                                <h5 class="fw-bold text-danger">
+
+                                    <i class="bi bi-x-circle"></i>
+
+                                    Rechazar solicitud
+
+                                </h5>
+
+                                <p class="text-muted">
+                                    Indica el motivo por el que
+                                    la solicitud será rechazada.
+                                </p>
+
+                                <form asp-controller="AdminSolicitudes"
+                                      asp-action="Rechazar"
+                                      asp-route-id="@Model.IdSolicitud"
+                                      method="post">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <div class="mb-3">
+
+                                        <label class="form-label fw-semibold">
+                                            Motivo del rechazo
+                                        </label>
+
+                                        <textarea name="observaciones"
+                                                  class="form-control"
+                                                  rows="4"
+                                                  maxlength="500"
+                                                  placeholder="Ej: El enlace proporcionado no corresponde a un canal público."
+                                                  required></textarea>
+
+                                        <div class="form-text">
+                                            Máximo 500 caracteres.
+                                        </div>
+
+                                    </div>
+
+                                    <button type="submit"
+                                            class="btn btn-danger"
+                                            onclick="return confirm('¿Seguro que deseas rechazar esta solicitud?');">
+
+                                        <i class="bi bi-x-lg"></i>
+
+                                        Rechazar solicitud
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

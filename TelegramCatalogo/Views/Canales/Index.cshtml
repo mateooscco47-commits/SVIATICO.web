@@ -1,0 +1,512 @@
+﻿@model IEnumerable<TelegramCatalogo.Models.Canal>
+
+@{
+    var categoriaActual =
+        ViewBag.CategoriaActual as TelegramCatalogo.Models.Categoria;
+
+    if (categoriaActual != null)
+    {
+        ViewData["Title"] =
+            $"Canales de Telegram de {categoriaActual.Nombre} | TelegramCatalogo";
+
+        ViewData["Description"] =
+            $"Descubre canales de Telegram de {categoriaActual.Nombre}. " +
+            $"Encuentra comunidades, contenido y canales relacionados con {categoriaActual.Nombre}.";
+
+        ViewData["Canonical"] =
+            $"{Context.Request.Scheme}://{Context.Request.Host}/canales/{categoriaActual.Slug}";
+    }
+    else
+    {
+        ViewData["Title"] =
+            "Explorar Canales de Telegram | TelegramCatalogo";
+
+        ViewData["Description"] =
+            "Explora canales de Telegram por categoría, nombre y temática.";
+
+        ViewData["Canonical"] =
+            $"{Context.Request.Scheme}://{Context.Request.Host}/canales";
+    }
+}
+
+<div class="container py-5">
+
+    <!-- ========================================= -->
+    <!-- ENCABEZADO -->
+    <!-- ========================================= -->
+
+    <div class="text-center mb-5">
+
+        @if (categoriaActual != null)
+        {
+            <h1 class="fw-bold">
+                Canales de Telegram de @categoriaActual.Nombre
+            </h1>
+
+            <p class="text-muted">
+                Descubre canales de Telegram relacionados con
+                @categoriaActual.Nombre.
+            </p>
+        }
+        else
+        {
+            <h1 class="fw-bold">
+                Explorar canales de Telegram
+            </h1>
+
+            <p class="text-muted">
+                Encuentra canales de Telegram por nombre,
+                tema o categoría.
+            </p>
+        }
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- BUSCADOR -->
+    <!-- ========================================= -->
+
+    <form asp-controller="Canales"
+          asp-action="Index"
+          method="get"
+          class="row g-2 mb-5">
+
+        <div class="col-md-7">
+
+            <input type="text"
+                   name="buscar"
+                   value="@ViewBag.Buscar"
+                   class="form-control form-control-lg"
+                   placeholder="Buscar canales..." />
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <select name="categoria"
+                    class="form-select form-select-lg">
+
+                <option value="">
+                    Todas las categorías
+                </option>
+
+                @if (ViewBag.Categorias != null)
+                {
+                    @foreach (var categoria in ViewBag.Categorias)
+                    {
+                        if (ViewBag.CategoriaSeleccionada ==
+                        categoria.IdCategoria)
+                        {
+                            <option value="@categoria.IdCategoria"
+                                    selected>
+                                @categoria.Nombre
+                            </option>
+                        }
+                        else
+                        {
+                            <option value="@categoria.IdCategoria">
+                                @categoria.Nombre
+                            </option>
+                        }
+                    }
+                }
+
+            </select>
+
+        </div>
+
+
+        <div class="col-md-2">
+
+            <button type="submit"
+                    class="btn btn-primary btn-lg w-100">
+
+                <i class="bi bi-search"></i>
+                Buscar
+
+            </button>
+
+        </div>
+
+    </form>
+
+
+    <!-- ========================================= -->
+    <!-- RESULTADOS -->
+    <!-- ========================================= -->
+
+    <div class="d-flex
+                justify-content-between
+                align-items-center
+                mb-4">
+
+        <h4 class="fw-bold mb-0">
+            Canales
+        </h4>
+
+        <span class="text-muted">
+
+            @Model.Count()
+
+            @if (Model.Count() == 1)
+            {
+                <text>resultado</text>
+            }
+            else
+            {
+                <text>resultados</text>
+            }
+
+        </span>
+
+    </div>
+
+
+    <!-- ========================================= -->
+    <!-- SIN RESULTADOS -->
+    <!-- ========================================= -->
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+
+            <div class="mb-3">
+
+                <i class="bi bi-search
+                          display-4
+                          text-muted">
+                </i>
+
+            </div>
+
+            <h4 class="fw-bold">
+                No encontramos canales
+            </h4>
+
+            <p class="text-muted">
+                Intenta utilizar otra búsqueda
+                o seleccionar otra categoría.
+            </p>
+
+            <a asp-controller="Canales"
+               asp-action="Index"
+               class="btn btn-outline-primary">
+
+                <i class="bi bi-arrow-left"></i>
+                Ver todos los canales
+
+            </a>
+
+        </div>
+    }
+    else
+    {
+        <!-- ===================================== -->
+        <!-- TARJETAS -->
+        <!-- ===================================== -->
+
+        <div class="row g-4">
+
+            @foreach (var canal in Model)
+            {
+                <div class="col-xl-3
+                            col-lg-4
+                            col-md-6">
+
+                    <div class="card
+                                canal-card
+                                h-100
+                                border-0
+                                shadow-sm">
+
+                        <!-- ========================= -->
+                        <!-- IMAGEN -->
+                        <!-- ========================= -->
+
+                        <div class="canal-imagen-container">
+
+                            @if (!string.IsNullOrWhiteSpace(
+                           canal.Imagen))
+                            {
+                                <img src="@canal.Imagen"
+                                     alt="Logo de @canal.Nombre"
+                                     class="canal-imagen"
+                                     loading="lazy" />
+                            }
+                            else
+                            {
+                                <div class="canal-imagen-placeholder">
+
+                                    <i class="bi bi-telegram"></i>
+
+                                </div>
+                            }
+
+
+                            <!-- DESTACADO SOBRE IMAGEN -->
+                            @if (canal.EsDestacado)
+                            {
+                                <span class="badge
+                                             bg-warning
+                                             text-dark
+                                             destacado-badge">
+
+                                    <i class="bi bi-star-fill"></i>
+                                    Destacado
+
+                                </span>
+                            }
+
+                        </div>
+
+
+                        <!-- ========================= -->
+                        <!-- CONTENIDO -->
+                        <!-- ========================= -->
+
+                        <div class="card-body
+                                    d-flex
+                                    flex-column">
+
+                            <!-- NOMBRE -->
+
+                            <h5 class="fw-bold mb-1">
+
+                                @canal.Nombre
+
+                            </h5>
+
+
+                            <!-- USERNAME -->
+                            @if (!string.IsNullOrWhiteSpace(
+                           canal.UsernameTelegram))
+                            {
+                                <div class="text-muted
+                                            small
+                                            mb-3">
+
+                                    @("@" + canal.UsernameTelegram)
+
+                                </div>
+                            }
+
+
+                            <!-- DESCRIPCIÓN -->
+                            @if (!string.IsNullOrWhiteSpace(
+                           canal.Descripcion))
+                            {
+                                <p class="text-muted
+                                          canal-descripcion">
+
+                                    @canal.Descripcion
+
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="text-muted
+                                          canal-descripcion">
+
+                                    Canal de Telegram disponible
+                                    en nuestro catálogo.
+
+                                </p>
+                            }
+
+
+                            <!-- CATEGORÍA -->
+
+                            <div class="mb-3">
+
+                                @if (canal.Categoria != null)
+                                {
+                                    <a asp-controller="Canales"
+                                       asp-action="Categoria"
+                                       asp-route-slug="@canal.Categoria.Slug"
+                                       class="badge
+                                              bg-light
+                                              text-dark
+                                              text-decoration-none
+                                              border">
+
+                                        @if (!string.IsNullOrWhiteSpace(
+                                       canal.Categoria.Icono))
+                                        {
+                                            <i class="bi @canal.Categoria.Icono me-1"></i>
+                                        }
+
+                                        @canal.Categoria.Nombre
+
+                                    </a>
+                                }
+
+                            </div>
+
+
+                            <!-- INFORMACIÓN -->
+
+                            <div class="d-flex
+                                        justify-content-between
+                                        align-items-center
+                                        text-muted
+                                        small
+                                        mb-3">
+
+                                <span>
+
+                                    <i class="bi bi-people me-1"></i>
+
+                                    @canal.CantidadMiembros.ToString("N0")
+
+                                </span>
+
+
+                                @if (!string.IsNullOrWhiteSpace(
+                               canal.Pais))
+                                {
+                                    <span>
+
+                                        <i class="bi bi-geo-alt me-1"></i>
+
+                                        @canal.Pais
+
+                                    </span>
+                                }
+
+                            </div>
+
+
+                            <!-- BOTÓN -->
+
+                            <div class="mt-auto">
+
+                                <a asp-controller="Canales"
+                                   asp-action="DetalleSlug"
+                                   asp-route-slug="@canal.Slug"
+                                   class="btn
+                                          btn-primary
+                                          w-100">
+
+                                    Ver canal
+
+                                    <i class="bi
+                                              bi-arrow-right
+                                              ms-1">
+                                    </i>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+
+
+<!-- ============================================= -->
+<!-- ESTILOS -->
+<!-- ============================================= -->
+
+<style>
+
+    .canal-card {
+        border-radius: 16px;
+        overflow: hidden;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+        .canal-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 .75rem 1.5rem rgba(0, 0, 0, .12) !important;
+        }
+
+
+    /* IMAGEN */
+
+    .canal-imagen-container {
+        position: relative;
+        width: 100%;
+        height: 190px;
+        overflow: hidden;
+        background: #f4f6f9;
+    }
+
+    .canal-imagen {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform .3s ease;
+    }
+
+    .canal-card:hover .canal-imagen {
+        transform: scale(1.04);
+    }
+
+
+    /* SIN IMAGEN */
+
+    .canal-imagen-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient( 135deg, #eef6ff, #f8fbff );
+        color: #0d6efd;
+    }
+
+        .canal-imagen-placeholder i {
+            font-size: 4rem;
+        }
+
+
+    /* DESTACADO */
+
+    .destacado-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 7px 10px;
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+    }
+
+
+    /* DESCRIPCIÓN */
+
+    .canal-descripcion {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 72px;
+    }
+
+
+    /* CATEGORÍA */
+
+    .badge.border:hover {
+        background-color: #e9ecef !important;
+    }
+
+
+    /* MÓVIL */
+
+    @@media (max-width: 767px) {
+
+        .canal-imagen-container {
+            height: 220px;
+        }
+    }
+
+</style>

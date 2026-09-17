@@ -4,657 +4,530 @@ using Dinacem.Models;
 
 namespace Dinacem.Controllers
 {
-        public class UsuarioController : Controller
+    public class UsuarioController : Controller
+    {
+        private readonly AplicacionDbContexto _context;
+
+        public UsuarioController(AplicacionDbContexto context)
         {
-            private readonly AplicacionDbContexto _context;
+            _context = context;
+        }
 
-            public UsuarioController(AplicacionDbContexto context)
+        // =========================================================
+        // LISTADO DE USUARIOS
+        // =========================================================
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var usuarios = await _context.Usuarios
+                .Include(u => u.Rol)
+                .Include(u => u.Zona)
+                .OrderBy(u => u.Nombres)
+                .ThenBy(u => u.Apellidos)
+                .ToListAsync();
+
+            var zonas = await _context.Zonas
+                .Where(z => z.Estado)
+                .OrderBy(z => z.CodigoZona)
+                .ToListAsync();
+
+            var roles = await _context.Roles
+                .Where(r => r.Estado)
+                .OrderBy(r => r.IdRol)
+                .ToListAsync();
+
+            ViewBag.Zonas = zonas;
+            ViewBag.Roles = roles;
+
+            return View(usuarios);
+        }
+
+        // =========================================================
+        // CREAR USUARIO
+        // USUARIO DE ACCESO INGRESADO MANUALMENTE
+        // =========================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Usuario usuario)
+        {
+            // -----------------------------------------------------
+            // LIMPIAR DATOS
+            // -----------------------------------------------------
+
+            usuario.UsuarioAcceso = usuario.UsuarioAcceso?.Trim();
+            usuario.Nombres = usuario.Nombres?.Trim();
+            usuario.Apellidos = usuario.Apellidos?.Trim();
+            usuario.Correo = usuario.Correo?.Trim();
+            usuario.Celular = usuario.Celular?.Trim();
+
+            // -----------------------------------------------------
+            // VALIDAR ZONA
+            // -----------------------------------------------------
+
+            if (!usuario.IdZona.HasValue)
             {
-                _context = context;
-            }
-
-
-            // =========================================================
-            // LISTADO DE USUARIOS
-            // =========================================================
-
-            [HttpGet]
-            public async Task<IActionResult> Index()
-            {
-                // -----------------------------------------------------
-                // OBTENER USUARIOS
-                // -----------------------------------------------------
-
-                var usuarios = await _context.Usuarios
-                    .Include(u => u.Rol)
-                    .Include(u => u.Zona)
-                    .OrderBy(u => u.Nombres)
-                    .ThenBy(u => u.Apellidos)
-                    .ToListAsync();
-
-
-                // -----------------------------------------------------
-                // OBTENER ZONAS ACTIVAS
-                // -----------------------------------------------------
-
-                var zonas = await _context.Zonas
-                    .Where(z => z.Estado)
-                    .OrderBy(z => z.CodigoZona)
-                    .ToListAsync();
-
-
-                // -----------------------------------------------------
-                // OBTENER ROLES ACTIVOS
-                // -----------------------------------------------------
-
-                var roles = await _context.Roles
-                    .Where(r => r.Estado)
-                    .OrderBy(r => r.IdRol)
-                    .ToListAsync();
-
-
-                // -----------------------------------------------------
-                // ENVIAR DATOS A LA VISTA
-                // -----------------------------------------------------
-
-                ViewBag.Zonas = zonas;
-                ViewBag.Roles = roles;
-
-
-                // -----------------------------------------------------
-                // YA NO SE GENERA USUARIO AUTOMÁTICAMENTE
-                // -----------------------------------------------------
-
-                return View(usuarios);
-            }
-
-
-            // =========================================================
-            // CREAR USUARIO
-            // =========================================================
-
-            [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Create(Usuario usuario)
-            {
-                // -----------------------------------------------------
-                // LIMPIAR DATOS
-                // -----------------------------------------------------
-
-                usuario.UsuarioAcceso = usuario.UsuarioAcceso?.Trim();
-                usuario.Nombres = usuario.Nombres?.Trim();
-                usuario.Apellidos = usuario.Apellidos?.Trim();
-                usuario.Correo = usuario.Correo?.Trim();
-                usuario.Celular = usuario.Celular?.Trim();
-
-
-                // -----------------------------------------------------
-                // VALIDAR USUARIO DE ACCESO
-                // -----------------------------------------------------
-
-                if (string.IsNullOrWhiteSpace(usuario.UsuarioAcceso))
-                {
-                    TempData["UsuarioError"] =
-                        "Debe ingresar el usuario de acceso.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR LONGITUD DEL USUARIO
-                // -----------------------------------------------------
-
-                if (usuario.UsuarioAcceso.Length > 50)
-                {
-                    TempData["UsuarioError"] =
-                        "El usuario de acceso no puede superar los 50 caracteres.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR USUARIO DE ACCESO ÚNICO
-                // -----------------------------------------------------
-
-                var usuarioAccesoExiste = await _context.Usuarios
-                    .AnyAsync(u =>
-                        u.UsuarioAcceso != null &&
-                        u.UsuarioAcceso.ToLower() ==
-                        usuario.UsuarioAcceso.ToLower());
-
-                if (usuarioAccesoExiste)
-                {
-                    TempData["UsuarioError"] =
-                        "El usuario de acceso ya está registrado. Ingrese otro.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR ZONA
-                // -----------------------------------------------------
-
-                if (!usuario.IdZona.HasValue)
-                {
-                    TempData["UsuarioError"] =
-                        "Debe seleccionar una zona.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                var zonaExiste = await _context.Zonas
-                    .AnyAsync(z =>
-                        z.IdZona == usuario.IdZona.Value &&
-                        z.Estado);
-
-                if (!zonaExiste)
-                {
-                    TempData["UsuarioError"] =
-                        "La zona seleccionada no existe o está desactivada.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR ROL
-                // -----------------------------------------------------
-
-                if (usuario.IdRol <= 0)
-                {
-                    TempData["UsuarioError"] =
-                        "Debe seleccionar un rol.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                var rolExiste = await _context.Roles
-                    .AnyAsync(r =>
-                        r.IdRol == usuario.IdRol &&
-                        r.Estado);
-
-                if (!rolExiste)
-                {
-                    TempData["UsuarioError"] =
-                        "El rol seleccionado no existe o está desactivado.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR NOMBRES
-                // -----------------------------------------------------
-
-                if (string.IsNullOrWhiteSpace(usuario.Nombres))
-                {
-                    TempData["UsuarioError"] =
-                        "Debe ingresar los nombres.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR APELLIDOS
-                // -----------------------------------------------------
-
-                if (string.IsNullOrWhiteSpace(usuario.Apellidos))
-                {
-                    TempData["UsuarioError"] =
-                        "Debe ingresar los apellidos.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR CORREO
-                // -----------------------------------------------------
-
-                if (string.IsNullOrWhiteSpace(usuario.Correo))
-                {
-                    TempData["UsuarioError"] =
-                        "Debe ingresar el correo.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR CONTRASEÑA
-                // -----------------------------------------------------
-
-                if (string.IsNullOrWhiteSpace(usuario.Contrasenia))
-                {
-                    TempData["UsuarioError"] =
-                        "Debe ingresar una contraseña.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR CELULAR
-                // -----------------------------------------------------
-
-                if (!string.IsNullOrWhiteSpace(usuario.Celular) &&
-                    (usuario.Celular.Length != 9 ||
-                     !usuario.Celular.All(char.IsDigit)))
-                {
-                    TempData["UsuarioError"] =
-                        "El celular debe contener exactamente 9 dígitos.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR CORREO ÚNICO
-                // -----------------------------------------------------
-
-                var correoExiste = await _context.Usuarios
-                    .AnyAsync(u =>
-                        u.Correo != null &&
-                        u.Correo.ToLower() ==
-                        usuario.Correo.ToLower());
-
-                if (correoExiste)
-                {
-                    TempData["UsuarioError"] =
-                        "El correo ya está registrado.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // CONFIGURAR USUARIO
-                // -----------------------------------------------------
-
-                usuario.Estado = true;
-
-
-                // -----------------------------------------------------
-                // LAS RELACIONES SE ESTABLECEN MEDIANTE LAS FK
-                // -----------------------------------------------------
-
-                usuario.Rol = null;
-                usuario.Zona = null;
-
-
-                // -----------------------------------------------------
-                // GUARDAR USUARIO
-                // -----------------------------------------------------
-
-                _context.Usuarios.Add(usuario);
-
-                await _context.SaveChangesAsync();
-
-
-                // -----------------------------------------------------
-                // MENSAJE DE ÉXITO
-                // -----------------------------------------------------
-
-                TempData["UsuarioMensaje"] =
-                    $"Usuario registrado correctamente. Usuario de acceso: {usuario.UsuarioAcceso}";
-
+                TempData["UsuarioError"] =
+                    "Debe seleccionar una zona.";
 
                 return RedirectToAction(nameof(Index));
             }
 
+            var zonaExiste = await _context.Zonas
+                .AnyAsync(z =>
+                    z.IdZona == usuario.IdZona.Value &&
+                    z.Estado);
 
-            // =========================================================
-            // EDITAR USUARIO - GET
-            // =========================================================
-
-            [HttpGet]
-            public async Task<IActionResult> Edit(int id)
+            if (!zonaExiste)
             {
-                // -----------------------------------------------------
-                // OBTENER USUARIO + ZONA
-                // -----------------------------------------------------
-
-                var usuario = await _context.Usuarios
-                    .Include(u => u.Zona)
-                    .FirstOrDefaultAsync(u =>
-                        u.IdUsuario == id);
-
-
-                if (usuario == null)
-                {
-                    TempData["UsuarioError"] =
-                        "No se encontró el usuario seleccionado.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // OBTENER ROLES ACTIVOS
-                // -----------------------------------------------------
-
-                var roles = await _context.Roles
-                    .Where(r => r.Estado)
-                    .OrderBy(r => r.IdRol)
-                    .ToListAsync();
-
-
-                // -----------------------------------------------------
-                // ENVIAR ROLES A EDIT.CSHTML
-                // -----------------------------------------------------
-
-                ViewBag.Roles = roles;
-
-
-                return View(usuario);
-            }
-
-
-            // =========================================================
-            // EDITAR USUARIO - POST
-            // =========================================================
-
-            [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Edit(Usuario modelo)
-            {
-                // -----------------------------------------------------
-                // BUSCAR USUARIO
-                // -----------------------------------------------------
-
-                var usuario = await _context.Usuarios
-                    .FirstOrDefaultAsync(u =>
-                        u.IdUsuario == modelo.IdUsuario);
-
-
-                if (usuario == null)
-                {
-                    TempData["UsuarioError"] =
-                        "No se encontró el usuario seleccionado.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR ROL
-                // -----------------------------------------------------
-
-                if (modelo.IdRol <= 0)
-                {
-                    TempData["UsuarioError"] =
-                        "Debe seleccionar un rol.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                var rolExiste = await _context.Roles
-                    .AnyAsync(r =>
-                        r.IdRol == modelo.IdRol &&
-                        r.Estado);
-
-
-                if (!rolExiste)
-                {
-                    TempData["UsuarioError"] =
-                        "El rol seleccionado no existe o está desactivado.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // LIMPIAR DATOS
-                // -----------------------------------------------------
-
-                modelo.UsuarioAcceso = modelo.UsuarioAcceso?.Trim();
-                modelo.Nombres = modelo.Nombres?.Trim();
-                modelo.Apellidos = modelo.Apellidos?.Trim();
-                modelo.Correo = modelo.Correo?.Trim();
-                modelo.Celular = modelo.Celular?.Trim();
-
-
-                // -----------------------------------------------------
-                // VALIDAR USUARIO DE ACCESO
-                // -----------------------------------------------------
-
-                if (string.IsNullOrWhiteSpace(modelo.UsuarioAcceso))
-                {
-                    TempData["UsuarioError"] =
-                        "Debe ingresar el usuario de acceso.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR LONGITUD DEL USUARIO
-                // -----------------------------------------------------
-
-                if (modelo.UsuarioAcceso.Length > 50)
-                {
-                    TempData["UsuarioError"] =
-                        "El usuario de acceso no puede superar los 50 caracteres.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR USUARIO ÚNICO
-                // -----------------------------------------------------
-
-                var usuarioAccesoExiste = await _context.Usuarios
-                    .AnyAsync(u =>
-                        u.UsuarioAcceso != null &&
-                        u.UsuarioAcceso.ToLower() ==
-                        modelo.UsuarioAcceso.ToLower() &&
-                        u.IdUsuario != modelo.IdUsuario);
-
-
-                if (usuarioAccesoExiste)
-                {
-                    TempData["UsuarioError"] =
-                        "El usuario de acceso ya pertenece a otro usuario.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR NOMBRES
-                // -----------------------------------------------------
-
-                if (string.IsNullOrWhiteSpace(modelo.Nombres))
-                {
-                    TempData["UsuarioError"] =
-                        "Debe ingresar los nombres.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR APELLIDOS
-                // -----------------------------------------------------
-
-                if (string.IsNullOrWhiteSpace(modelo.Apellidos))
-                {
-                    TempData["UsuarioError"] =
-                        "Debe ingresar los apellidos.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR CORREO
-                // -----------------------------------------------------
-
-                if (string.IsNullOrWhiteSpace(modelo.Correo))
-                {
-                    TempData["UsuarioError"] =
-                        "Debe ingresar el correo.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR CELULAR
-                // -----------------------------------------------------
-
-                if (!string.IsNullOrWhiteSpace(modelo.Celular) &&
-                    (modelo.Celular.Length != 9 ||
-                     !modelo.Celular.All(char.IsDigit)))
-                {
-                    TempData["UsuarioError"] =
-                        "El celular debe contener exactamente 9 dígitos.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // VALIDAR CORREO ÚNICO
-                // -----------------------------------------------------
-
-                var correoExiste = await _context.Usuarios
-                    .AnyAsync(u =>
-                        u.Correo != null &&
-                        u.Correo.ToLower() ==
-                        modelo.Correo.ToLower() &&
-                        u.IdUsuario != modelo.IdUsuario);
-
-
-                if (correoExiste)
-                {
-                    TempData["UsuarioError"] =
-                        "El correo ya pertenece a otro usuario.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                // -----------------------------------------------------
-                // ACTUALIZAR DATOS
-                // -----------------------------------------------------
-
-                usuario.UsuarioAcceso = modelo.UsuarioAcceso;
-                usuario.IdRol = modelo.IdRol;
-                usuario.Nombres = modelo.Nombres;
-                usuario.Apellidos = modelo.Apellidos;
-                usuario.Correo = modelo.Correo;
-                usuario.Celular = modelo.Celular;
-
-
-                // -----------------------------------------------------
-                // LA ZONA NO SE MODIFICA
-                // -----------------------------------------------------
-                // Se conserva la zona que ya tiene el usuario.
-
-
-                // -----------------------------------------------------
-                // CONTRASEÑA
-                // -----------------------------------------------------
-
-                if (!string.IsNullOrWhiteSpace(modelo.Contrasenia))
-                {
-                    usuario.Contrasenia = modelo.Contrasenia;
-                }
-
-
-                // -----------------------------------------------------
-                // GUARDAR CAMBIOS
-                // -----------------------------------------------------
-
-                await _context.SaveChangesAsync();
-
-
-                TempData["UsuarioMensaje"] =
-                    "Usuario actualizado correctamente.";
-
+                TempData["UsuarioError"] =
+                    "La zona seleccionada no existe o está desactivada.";
 
                 return RedirectToAction(nameof(Index));
             }
 
+            // -----------------------------------------------------
+            // VALIDAR ROL
+            // -----------------------------------------------------
 
-            // =========================================================
-            // DESACTIVAR USUARIO
-            // =========================================================
-
-            [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Desactivar(int id)
+            if (usuario.IdRol <= 0)
             {
-                var usuario = await _context.Usuarios
-                    .FirstOrDefaultAsync(u =>
-                        u.IdUsuario == id);
-
-
-                if (usuario == null)
-                {
-                    TempData["UsuarioError"] =
-                        "No se encontró el usuario.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                usuario.Estado = false;
-
-
-                await _context.SaveChangesAsync();
-
-
-                TempData["UsuarioMensaje"] =
-                    "Usuario desactivado correctamente.";
-
+                TempData["UsuarioError"] =
+                    "Debe seleccionar un rol.";
 
                 return RedirectToAction(nameof(Index));
             }
 
+            var rolExiste = await _context.Roles
+                .AnyAsync(r =>
+                    r.IdRol == usuario.IdRol &&
+                    r.Estado);
 
-            // =========================================================
-            // ACTIVAR USUARIO
-            // =========================================================
-
-            [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Activar(int id)
+            if (!rolExiste)
             {
-                var usuario = await _context.Usuarios
-                    .FirstOrDefaultAsync(u =>
-                        u.IdUsuario == id);
-
-
-                if (usuario == null)
-                {
-                    TempData["UsuarioError"] =
-                        "No se encontró el usuario.";
-
-                    return RedirectToAction(nameof(Index));
-                }
-
-
-                usuario.Estado = true;
-
-
-                await _context.SaveChangesAsync();
-
-
-                TempData["UsuarioMensaje"] =
-                    "Usuario activado correctamente.";
-
+                TempData["UsuarioError"] =
+                    "El rol seleccionado no existe o está desactivado.";
 
                 return RedirectToAction(nameof(Index));
             }
+
+            // -----------------------------------------------------
+            // VALIDAR USUARIO DE ACCESO MANUAL
+            // -----------------------------------------------------
+
+            if (string.IsNullOrWhiteSpace(usuario.UsuarioAcceso))
+            {
+                TempData["UsuarioError"] =
+                    "Debe ingresar el usuario de acceso.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (usuario.UsuarioAcceso.Length > 50)
+            {
+                TempData["UsuarioError"] =
+                    "El usuario de acceso no puede superar los 50 caracteres.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR NOMBRES
+            // -----------------------------------------------------
+
+            if (string.IsNullOrWhiteSpace(usuario.Nombres))
+            {
+                TempData["UsuarioError"] =
+                    "Debe ingresar los nombres.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR APELLIDOS
+            // -----------------------------------------------------
+
+            if (string.IsNullOrWhiteSpace(usuario.Apellidos))
+            {
+                TempData["UsuarioError"] =
+                    "Debe ingresar los apellidos.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR CORREO
+            // -----------------------------------------------------
+
+            if (string.IsNullOrWhiteSpace(usuario.Correo))
+            {
+                TempData["UsuarioError"] =
+                    "Debe ingresar el correo.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR CONTRASEÑA
+            // -----------------------------------------------------
+
+            if (string.IsNullOrWhiteSpace(usuario.Contrasenia))
+            {
+                TempData["UsuarioError"] =
+                    "Debe ingresar una contraseña.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR CELULAR
+            // -----------------------------------------------------
+
+            if (!string.IsNullOrWhiteSpace(usuario.Celular) &&
+                (usuario.Celular.Length != 9 ||
+                 !usuario.Celular.All(char.IsDigit)))
+            {
+                TempData["UsuarioError"] =
+                    "El celular debe contener exactamente 9 dígitos.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR USUARIO DE ACCESO ÚNICO
+            // -----------------------------------------------------
+
+            var usuarioAccesoExiste = await _context.Usuarios
+                .AnyAsync(u =>
+                    u.UsuarioAcceso != null &&
+                    u.UsuarioAcceso.ToLower() ==
+                    usuario.UsuarioAcceso.ToLower());
+
+            if (usuarioAccesoExiste)
+            {
+                TempData["UsuarioError"] =
+                    "El usuario de acceso ya está registrado.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR CORREO ÚNICO
+            // -----------------------------------------------------
+
+            var correoExiste = await _context.Usuarios
+                .AnyAsync(u =>
+                    u.Correo != null &&
+                    u.Correo.ToLower() ==
+                    usuario.Correo.ToLower());
+
+            if (correoExiste)
+            {
+                TempData["UsuarioError"] =
+                    "El correo ya está registrado.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // CONFIGURAR Y GUARDAR USUARIO
+            // -----------------------------------------------------
+
+            usuario.Estado = true;
+
+            // Las relaciones se establecen mediante las FK.
+            usuario.Rol = null;
+            usuario.Zona = null;
+
+            _context.Usuarios.Add(usuario);
+            await _context.SaveChangesAsync();
+
+            TempData["UsuarioMensaje"] =
+                $"Usuario {usuario.UsuarioAcceso} registrado correctamente.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // =========================================================
+        // EDITAR USUARIO - GET
+        // =========================================================
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var usuario = await _context.Usuarios
+                .Include(u => u.Zona)
+                .FirstOrDefaultAsync(u =>
+                    u.IdUsuario == id);
+
+            if (usuario == null)
+            {
+                TempData["UsuarioError"] =
+                    "No se encontró el usuario seleccionado.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            var roles = await _context.Roles
+                .Where(r => r.Estado)
+                .OrderBy(r => r.IdRol)
+                .ToListAsync();
+
+            ViewBag.Roles = roles;
+
+            return View(usuario);
+        }
+
+        // =========================================================
+        // EDITAR USUARIO - POST
+        // =========================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Usuario modelo)
+        {
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u =>
+                    u.IdUsuario == modelo.IdUsuario);
+
+            if (usuario == null)
+            {
+                TempData["UsuarioError"] =
+                    "No se encontró el usuario seleccionado.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // LIMPIAR DATOS
+            // -----------------------------------------------------
+
+            modelo.UsuarioAcceso = modelo.UsuarioAcceso?.Trim();
+            modelo.Nombres = modelo.Nombres?.Trim();
+            modelo.Apellidos = modelo.Apellidos?.Trim();
+            modelo.Correo = modelo.Correo?.Trim();
+            modelo.Celular = modelo.Celular?.Trim();
+
+            // -----------------------------------------------------
+            // VALIDAR ROL
+            // -----------------------------------------------------
+
+            if (modelo.IdRol <= 0)
+            {
+                TempData["UsuarioError"] =
+                    "Debe seleccionar un rol.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            var rolExiste = await _context.Roles
+                .AnyAsync(r =>
+                    r.IdRol == modelo.IdRol &&
+                    r.Estado);
+
+            if (!rolExiste)
+            {
+                TempData["UsuarioError"] =
+                    "El rol seleccionado no existe o está desactivado.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR USUARIO DE ACCESO
+            // -----------------------------------------------------
+
+            if (string.IsNullOrWhiteSpace(modelo.UsuarioAcceso))
+            {
+                TempData["UsuarioError"] =
+                    "Debe ingresar el usuario de acceso.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (modelo.UsuarioAcceso.Length > 50)
+            {
+                TempData["UsuarioError"] =
+                    "El usuario de acceso no puede superar los 50 caracteres.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR NOMBRES
+            // -----------------------------------------------------
+
+            if (string.IsNullOrWhiteSpace(modelo.Nombres))
+            {
+                TempData["UsuarioError"] =
+                    "Debe ingresar los nombres.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR APELLIDOS
+            // -----------------------------------------------------
+
+            if (string.IsNullOrWhiteSpace(modelo.Apellidos))
+            {
+                TempData["UsuarioError"] =
+                    "Debe ingresar los apellidos.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR CORREO
+            // -----------------------------------------------------
+
+            if (string.IsNullOrWhiteSpace(modelo.Correo))
+            {
+                TempData["UsuarioError"] =
+                    "Debe ingresar el correo.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR CELULAR
+            // -----------------------------------------------------
+
+            if (!string.IsNullOrWhiteSpace(modelo.Celular) &&
+                (modelo.Celular.Length != 9 ||
+                 !modelo.Celular.All(char.IsDigit)))
+            {
+                TempData["UsuarioError"] =
+                    "El celular debe contener exactamente 9 dígitos.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR USUARIO ÚNICO
+            // -----------------------------------------------------
+
+            var usuarioAccesoExiste = await _context.Usuarios
+                .AnyAsync(u =>
+                    u.UsuarioAcceso != null &&
+                    u.UsuarioAcceso.ToLower() ==
+                    modelo.UsuarioAcceso.ToLower() &&
+                    u.IdUsuario != modelo.IdUsuario);
+
+            if (usuarioAccesoExiste)
+            {
+                TempData["UsuarioError"] =
+                    "El usuario de acceso ya pertenece a otro usuario.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // VALIDAR CORREO ÚNICO
+            // -----------------------------------------------------
+
+            var correoExiste = await _context.Usuarios
+                .AnyAsync(u =>
+                    u.Correo != null &&
+                    u.Correo.ToLower() ==
+                    modelo.Correo.ToLower() &&
+                    u.IdUsuario != modelo.IdUsuario);
+
+            if (correoExiste)
+            {
+                TempData["UsuarioError"] =
+                    "El correo ya pertenece a otro usuario.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            // -----------------------------------------------------
+            // ACTUALIZAR DATOS
+            // -----------------------------------------------------
+
+            usuario.UsuarioAcceso = modelo.UsuarioAcceso;
+            usuario.IdRol = modelo.IdRol;
+            usuario.Nombres = modelo.Nombres;
+            usuario.Apellidos = modelo.Apellidos;
+            usuario.Correo = modelo.Correo;
+            usuario.Celular = modelo.Celular;
+
+            // La zona se conserva tal como estaba.
+            // Si luego deseas permitir cambiarla desde Edit,
+            // se puede agregar IdZona al formulario de edición.
+
+            if (!string.IsNullOrWhiteSpace(modelo.Contrasenia))
+            {
+                usuario.Contrasenia = modelo.Contrasenia;
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["UsuarioMensaje"] =
+                "Usuario actualizado correctamente.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // =========================================================
+        // DESACTIVAR USUARIO
+        // =========================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Desactivar(int id)
+        {
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u =>
+                    u.IdUsuario == id);
+
+            if (usuario == null)
+            {
+                TempData["UsuarioError"] =
+                    "No se encontró el usuario.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            usuario.Estado = false;
+
+            await _context.SaveChangesAsync();
+
+            TempData["UsuarioMensaje"] =
+                "Usuario desactivado correctamente.";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // =========================================================
+        // ACTIVAR USUARIO
+        // =========================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Activar(int id)
+        {
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u =>
+                    u.IdUsuario == id);
+
+            if (usuario == null)
+            {
+                TempData["UsuarioError"] =
+                    "No se encontró el usuario.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            usuario.Estado = true;
+
+            await _context.SaveChangesAsync();
+
+            TempData["UsuarioMensaje"] =
+                "Usuario activado correctamente.";
+
+            return RedirectToAction(nameof(Index));
         }
     }
+}

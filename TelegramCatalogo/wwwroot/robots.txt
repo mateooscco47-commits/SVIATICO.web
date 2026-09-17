@@ -1,0 +1,8 @@
+﻿User-agent: *
+Allow: /
+
+Disallow: /Admin/
+Disallow: /Cuenta/
+Disallow: /Canales/IrTelegram
+
+Sitemap: https://TU-DOMINIO.com/sitemap.xml

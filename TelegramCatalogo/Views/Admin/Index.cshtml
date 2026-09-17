@@ -1,0 +1,397 @@
+﻿@{
+    ViewData["Title"] = "Panel de administración";
+}
+
+<div class="container py-5">
+
+    <!-- CABECERA -->
+
+    <div class="d-flex
+                justify-content-between
+                align-items-center
+                mb-5">
+
+        <div>
+
+            <h1 class="fw-bold mb-1">
+                Panel de administración
+            </h1>
+
+            <p class="text-muted mb-0">
+
+                Bienvenido,
+                <strong>@User.Identity?.Name</strong>
+
+            </p>
+
+        </div>
+
+
+        <form method="post"
+              asp-controller="Admin"
+              asp-action="Logout">
+
+            @Html.AntiForgeryToken()
+
+            <button type="submit"
+                    class="btn btn-outline-danger">
+
+                <i class="bi bi-box-arrow-right"></i>
+
+                Cerrar sesión
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- ESTADÍSTICAS -->
+
+    <div class="row g-4 mb-5">
+
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center">
+
+                        <div>
+
+                            <div class="text-muted">
+                                Canales
+                            </div>
+
+                            <div class="display-6 fw-bold">
+                                @ViewBag.TotalCanales
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-telegram
+                                  fs-1
+                                  text-primary"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center">
+
+                        <div>
+
+                            <div class="text-muted">
+                                Activos
+                            </div>
+
+                            <div class="display-6 fw-bold">
+                                @ViewBag.CanalesActivos
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-check-circle
+                                  fs-1
+                                  text-success"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center">
+
+                        <div>
+
+                            <div class="text-muted">
+                                Destacados
+                            </div>
+
+                            <div class="display-6 fw-bold">
+                                @ViewBag.Destacados
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-star
+                                  fs-1
+                                  text-warning"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex
+                                justify-content-between
+                                align-items-center">
+
+                        <div>
+
+                            <div class="text-muted">
+                                Categorías
+                            </div>
+
+                            <div class="display-6 fw-bold">
+                                @ViewBag.TotalCategorias
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-grid
+                                  fs-1
+                                  text-info"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TRÁFICO -->
+
+    <h3 class="fw-bold mb-3">
+        Tráfico
+    </h3>
+
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-6">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <div class="text-muted mb-2">
+                        Visitas a canales
+                    </div>
+
+                    <h2 class="fw-bold mb-0">
+
+                        <i class="bi bi-eye me-2"></i>
+
+                        @ViewBag.TotalVisitas
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <div class="text-muted mb-2">
+                        Clics hacia Telegram
+                    </div>
+
+                    <h2 class="fw-bold mb-0">
+
+                        <i class="bi bi-cursor me-2"></i>
+
+                        @ViewBag.TotalClicks
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ADMINISTRACIÓN -->
+
+    <h3 class="fw-bold mb-3">
+        Administración
+    </h3>
+
+
+    <div class="row g-4">
+
+        <div class="col-md-6">
+
+            <div class="card
+                        border-0
+                        shadow-sm
+                        h-100">
+
+                <div class="card-body p-4">
+
+                    <i class="bi bi-telegram
+                              fs-1
+                              text-primary"></i>
+
+                    <h4 class="fw-bold mt-3">
+                        Gestionar canales
+                    </h4>
+
+                    <p class="text-muted">
+                        Agrega, modifica, destaca o
+                        desactiva canales del catálogo.
+                    </p>
+
+                    <a asp-controller="AdminCanales"
+                       asp-action="Index"
+                       class="btn btn-primary">
+
+                        <i class="bi bi-telegram"></i>
+
+                        Administrar canales
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6">
+
+            <div class="card
+                        border-0
+                        shadow-sm
+                        h-100">
+
+                <div class="card-body p-4">
+
+                    <i class="bi bi-grid
+                              fs-1
+                              text-primary"></i>
+
+                    <h4 class="fw-bold mt-3">
+                        Gestionar categorías
+                    </h4>
+
+                    <p class="text-muted">
+                        Administra las categorías
+                        utilizadas en el catálogo.
+                    </p>
+
+                    <a asp-controller="AdminCategorias"
+                       asp-action="Index"
+                       class="btn btn-outline-primary">
+
+                        <i class="bi bi-grid"></i>
+
+                        Administrar categorías
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-md-6">
+
+            <div class="card
+                border-0
+                shadow-sm
+                h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex
+                        justify-content-between">
+
+                        <i class="bi bi-inbox
+                          fs-1
+                          text-primary"></i>
+
+                        @if (ViewBag.SolicitudesPendientes > 0)
+                        {
+                            <span class="badge
+                                 bg-danger
+                                 rounded-pill
+                                 align-self-start">
+
+                                @ViewBag.SolicitudesPendientes
+
+                            </span>
+                        }
+
+                    </div>
+
+                    <h4 class="fw-bold mt-3">
+                        Solicitudes
+                    </h4>
+
+                    <p class="text-muted">
+                        Revisa los canales enviados
+                        por los visitantes.
+                    </p>
+
+                    <a asp-controller="AdminSolicitudes"
+                       asp-action="Index"
+                       class="btn btn-outline-primary">
+
+                        Revisar solicitudes
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

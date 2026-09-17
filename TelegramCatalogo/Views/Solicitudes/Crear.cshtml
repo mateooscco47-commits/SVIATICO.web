@@ -1,0 +1,224 @@
+﻿@model TelegramCatalogo.Models.SolicitudCanal
+
+@{
+    ViewData["Title"] =
+        "Agregar mi canal de Telegram | TelegramCatalogo";
+
+    ViewData["Description"] =
+        "Envía tu canal de Telegram para solicitar su publicación en nuestro catálogo.";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="text-center mb-5">
+
+                <div class="display-4 text-primary mb-3">
+                    <i class="bi bi-telegram"></i>
+                </div>
+
+                <h1 class="fw-bold">
+                    Agregar mi canal
+                </h1>
+
+                <p class="text-muted">
+                    Envíanos tu canal de Telegram.
+                    Revisaremos la información antes
+                    de publicarlo en el catálogo.
+                </p>
+
+            </div>
+
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <form asp-controller="Solicitudes"
+                          asp-action="Crear"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger">
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label asp-for="NombreCanal"
+                                   class="form-label fw-semibold">
+
+                                Nombre del canal *
+
+                            </label>
+
+                            <input asp-for="NombreCanal"
+                                   class="form-control"
+                                   placeholder="Ej: Cursos de programación" />
+
+                            <span asp-validation-for="NombreCanal"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label asp-for="EnlaceTelegram"
+                                   class="form-label fw-semibold">
+
+                                Enlace de Telegram *
+
+                            </label>
+
+                            <input asp-for="EnlaceTelegram"
+                                   class="form-control"
+                                   placeholder="https://t.me/tu_canal" />
+
+                            <span asp-validation-for="EnlaceTelegram"
+                                  class="text-danger">
+                            </span>
+
+                            <div class="form-text">
+                                Ejemplo:
+                                https://t.me/tu_canal
+                            </div>
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label asp-for="IdCategoria"
+                                   class="form-label fw-semibold">
+
+                                Categoría *
+
+                            </label>
+
+                            <select asp-for="IdCategoria"
+                                    asp-items="ViewBag.Categorias"
+                                    class="form-select">
+
+                                <option value="">
+                                    Selecciona una categoría
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="IdCategoria"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label asp-for="Descripcion"
+                                   class="form-label fw-semibold">
+
+                                Descripción
+
+                            </label>
+
+                            <textarea asp-for="Descripcion"
+                                      class="form-control"
+                                      rows="5"
+                                      placeholder="Cuéntanos de qué trata el canal...">
+                            </textarea>
+
+                            <div class="form-text">
+                                Máximo 1000 caracteres.
+                            </div>
+
+                        </div>
+
+
+                        <div class="mb-4">
+
+                            <label asp-for="CorreoContacto"
+                                   class="form-label fw-semibold">
+
+                                Correo de contacto
+
+                            </label>
+
+                            <input asp-for="CorreoContacto"
+                                   type="email"
+                                   class="form-control"
+                                   placeholder="correo@ejemplo.com" />
+
+                            <span asp-validation-for="CorreoContacto"
+                                  class="text-danger">
+                            </span>
+
+                            <div class="form-text">
+                                Lo utilizaremos únicamente
+                                para comunicarnos sobre la solicitud.
+                            </div>
+
+                        </div>
+
+
+                        <div class="alert alert-light border">
+
+                            <div class="d-flex gap-3">
+
+                                <i class="bi bi-info-circle
+                                          text-primary fs-4"></i>
+
+                                <div>
+
+                                    <strong>
+                                        Revisión manual
+                                    </strong>
+
+                                    <div class="text-muted">
+                                        Enviar el formulario no
+                                        publica automáticamente el canal.
+                                        La solicitud será revisada antes
+                                        de aparecer en el catálogo.
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <button type="submit"
+                                class="btn
+                                       btn-primary
+                                       btn-lg
+                                       w-100">
+
+                            <i class="bi bi-send me-1"></i>
+
+                            Enviar solicitud
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

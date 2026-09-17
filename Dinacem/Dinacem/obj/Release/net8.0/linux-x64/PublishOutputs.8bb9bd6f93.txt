@@ -1,6 +1,7 @@
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Dinacen
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\appsettings.Development.json
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\appsettings.json
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\global.json
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\LatoFont\Lato-Black.ttf
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\LatoFont\Lato-BlackItalic.ttf
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\LatoFont\Lato-Bold.ttf
@@ -26,6 +27,8 @@ C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Azure.Core.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Azure.Identity.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\BouncyCastle.Cryptography.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Magick.NET-Q8-AnyCPU.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Magick.NET.Core.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\MailKit.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Microsoft.Data.SqlClient.dll
@@ -54,7 +57,6 @@ C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.ClientModel.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Configuration.ConfigurationManager.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Drawing.Common.dll
-C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Formats.Asn1.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Memory.Data.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Runtime.Caching.dll
@@ -62,6 +64,7 @@ C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Security.Cryptography.ProtectedData.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Security.Permissions.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\System.Windows.Extensions.dll
+C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Magick.Native-Q8-x64.dll.so
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\libQuestPdfSkia.so
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\libqpdf.so
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\linux-x64\PubTmp\Out\Dinacen.deps.json

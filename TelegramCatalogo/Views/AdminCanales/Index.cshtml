@@ -1,0 +1,295 @@
+﻿@model IEnumerable<TelegramCatalogo.Models.Canal>
+
+@{
+    ViewData["Title"] = "Administrar canales";
+}
+
+<div class="container py-5">
+
+    <div class="d-flex
+                justify-content-between
+                align-items-center
+                mb-4">
+
+        <div>
+
+            <a asp-controller="Admin"
+               asp-action="Index"
+               class="text-decoration-none">
+
+                <i class="bi bi-arrow-left"></i>
+                Panel de administración
+
+            </a>
+
+            <h1 class="fw-bold mt-3 mb-1">
+                Canales
+            </h1>
+
+            <p class="text-muted mb-0">
+                Administra los canales publicados
+                en el catálogo.
+            </p>
+
+        </div>
+
+        <a asp-controller="AdminCanales"
+           asp-action="Crear"
+           class="btn btn-primary">
+
+            <i class="bi bi-plus-lg"></i>
+            Nuevo canal
+
+        </a>
+
+    </div>
+
+
+    @if (TempData["Exito"] != null)
+    {
+        <div class="alert alert-success">
+
+            <i class="bi bi-check-circle me-1"></i>
+
+            @TempData["Exito"]
+
+        </div>
+    }
+
+
+    <form method="get"
+          asp-controller="AdminCanales"
+          asp-action="Index"
+          class="mb-4">
+
+        <div class="input-group">
+
+            <input type="text"
+                   name="buscar"
+                   value="@ViewBag.Buscar"
+                   class="form-control"
+                   placeholder="Buscar canal..." />
+
+            <button class="btn btn-outline-primary"
+                    type="submit">
+
+                <i class="bi bi-search"></i>
+                Buscar
+
+            </button>
+
+        </div>
+
+    </form>
+
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="table-responsive">
+
+            <table class="table
+                          table-hover
+                          align-middle
+                          mb-0">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th class="ps-4">
+                            Canal
+                        </th>
+
+                        <th>
+                            Categoría
+                        </th>
+
+                        <th>
+                            Miembros
+                        </th>
+
+                        <th>
+                            Estado
+                        </th>
+
+                        <th>
+                            Destacado
+                        </th>
+
+                        <th>
+                            Visitas
+                        </th>
+
+                        <th>
+                            Clics
+                        </th>
+
+                        <th class="text-end pe-4">
+                            Acciones
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var canal in Model)
+                    {
+                        <tr>
+
+                            <td class="ps-4">
+
+                                <div class="fw-bold">
+                                    @canal.Nombre
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(
+                               canal.UsernameTelegram))
+                                {
+                                    <small class="text-muted">
+
+                                        @("@" + canal.UsernameTelegram)
+
+                                    </small>
+                                }
+
+                            </td>
+
+
+                            <td>
+                                @canal.Categoria?.Nombre
+                            </td>
+
+
+                            <td>
+                                @canal.CantidadMiembros.ToString("N0")
+                            </td>
+
+
+                            <td>
+
+                                @if (canal.Estado == "Activo")
+                                {
+                                    <span class="badge bg-success">
+                                        Activo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        Inactivo
+                                    </span>
+                                }
+
+                            </td>
+
+
+                            <td>
+
+                                @if (canal.EsDestacado)
+                                {
+                                    <span class="badge
+                                                 bg-warning
+                                                 text-dark">
+
+                                        <i class="bi bi-star-fill"></i>
+                                        Sí
+
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">
+                                        No
+                                    </span>
+                                }
+
+                            </td>
+
+
+                            <td>
+                                @canal.Visitas.ToString("N0")
+                            </td>
+
+                            <td>
+                                @canal.Clicks.ToString("N0")
+                            </td>
+
+
+                            <td class="text-end pe-4">
+
+                                <a asp-controller="AdminCanales"
+                                   asp-action="Editar"
+                                   asp-route-id="@canal.IdCanal"
+                                   class="btn
+                                          btn-sm
+                                          btn-outline-primary">
+
+                                    <i class="bi bi-pencil"></i>
+
+                                </a>
+
+
+                                <form asp-controller="AdminCanales"
+                                      asp-action="CambiarDestacado"
+                                      asp-route-id="@canal.IdCanal"
+                                      method="post"
+                                      class="d-inline">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="btn
+                                                   btn-sm
+                                                   btn-outline-warning"
+                                            title="Cambiar destacado">
+
+                                        <i class="bi bi-star"></i>
+
+                                    </button>
+
+                                </form>
+
+
+                                <form asp-controller="AdminCanales"
+                                      asp-action="CambiarEstado"
+                                      asp-route-id="@canal.IdCanal"
+                                      method="post"
+                                      class="d-inline">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="btn
+                                                   btn-sm
+                                                   btn-outline-secondary"
+                                            title="Activar o desactivar">
+
+                                        @if (canal.Estado == "Activo")
+                                        {
+                                            <i class="bi bi-eye-slash"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-eye"></i>
+                                        }
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

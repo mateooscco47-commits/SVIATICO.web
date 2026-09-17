@@ -1,244 +1,200 @@
-﻿/*=========================================
-    COLORES DINACEN
-=========================================*/
-:root {
-    --azul: #0C4A8A;
-    --verde: #6AA84F;
-    --gris: #D8DEE8;
-    --fondo: #F3F6F9;
+﻿:root {
+    --dinacen-blue: #0C3E8A;
+    --dinacen-blue-dark: #072554;
+    --dinacen-green: #7BB342;
+    --border-color: #dbe2ea;
 }
 
 * {
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    min-height: 100vh;
-    font-family: 'Segoe UI', sans-serif;
-    overflow-x: hidden;
-    position: relative;
-    background: #F3F6F9;
-}
-
-/*=========================================
-    FONDO DIFUMINADO DINACEN
-=========================================*/
-
-body {
-    position: relative;
-    min-height: 100vh;
-    overflow: hidden;
-    background: #F7FAFC;
-}
-
-    body::before {
-        content: "";
-        position: fixed;
-        inset: -20%;
-        z-index: -1;
-        background: radial-gradient(circle at 15% 20%, rgba(0, 77, 153, 0.35) 0%, rgba(0, 77, 153, 0.18) 20%, transparent 45%), radial-gradient(circle at 85% 15%, rgba(107, 170, 73, 0.30) 0%, rgba(107, 170, 73, 0.15) 20%, transparent 42%), radial-gradient(circle at 20% 85%, rgba(0, 96, 170, 0.25) 0%, transparent 38%), radial-gradient(circle at 82% 82%, rgba(128, 190, 82, 0.25) 0%, transparent 40%), radial-gradient(circle at 50% 50%, rgba(255,255,255,0.9) 0%, transparent 65%);
-        filter: blur(90px);
-        transform: scale(1.15);
-    }
-
-/*=========================================
-    CONTENEDOR
-=========================================*/
-
-.login-container {
     min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    background-color: #081325;
+    overflow: hidden;
+}
+
+/* Canvas animado al fondo */
+#bgCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+/* Contenedor principal */
+.login-container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 440px;
     padding: 20px;
 }
 
+/* Card con fondo idéntico al logo (Blanco Puro) */
 .login-card {
-    width: 100%;
-    max-width: 420px;
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 45px;
-    border: 1px solid rgba(255,255,255,0.5);
-    box-shadow: 0 15px 45px rgba(0,0,0,.10), 0 0 25px rgba(12,74,138,.08);
-    animation: fade .6s;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 40px 36px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
 }
 
-/*=========================================
-    LOGO
-=========================================*/
-
+/* Logo más grande */
 .logo {
-    width: 130px;
-    max-width: 100%;
-    margin-bottom: 20px;
+    max-height: 110px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
 }
 
+/* Título */
 .titulo {
-    color: var(--azul);
+    font-size: 1.35rem;
     font-weight: 700;
-    font-size: 26px;
-    letter-spacing: 1px;
+    color: var(--dinacen-blue);
+    letter-spacing: 0.5px;
+    margin: 0;
 }
 
-/*=========================================
-    FORMULARIOS
-=========================================*/
-
+/* Labels */
 .form-label {
-    color: #345;
+    font-size: 0.875rem;
     font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 6px;
 }
 
-.form-control {
-    height: 48px;
-    border-radius: 10px;
-    border: 1px solid var(--gris);
+/* Input Groups */
+.custom-input-group {
+    border-radius: 8px;
+    border: 1.5px solid var(--border-color);
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-    .form-control:focus {
-        border-color: var(--azul);
-        box-shadow: 0 0 0 .15rem rgba(12,74,138,.20);
+    .custom-input-group:focus-within {
+        border-color: var(--dinacen-blue);
+        box-shadow: 0 0 0 3px rgba(12, 62, 138, 0.12);
     }
 
-.input-group-text {
-    background: white;
-    border-radius: 10px 0 0 10px;
-    color: var(--azul);
-    border: 1px solid var(--gris);
+    .custom-input-group .input-group-text {
+        background: #f8fafc;
+        border: none;
+        color: var(--dinacen-blue);
+        font-size: 1.1rem;
+        padding: 0 14px;
+    }
+
+    .custom-input-group .form-control {
+        border: none;
+        padding: 12px 14px;
+        font-size: 0.95rem;
+        color: #000000;
+        background: #ffffff;
+    }
+
+        .custom-input-group .form-control:focus {
+            box-shadow: none;
+        }
+
+/* Ocultar botón de ojo por defecto de los navegadores (Edge, Chrome, Safari) */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-contacts-auto-fill-button,
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none !important;
 }
 
-/*=========================================
-    BOTÓN
-=========================================*/
-
-.btn-login {
-    background: var(--azul);
+/* Ojo fijo personalizado */
+.btn-toggle-password {
+    background: #f8fafc;
     border: none;
-    height: 48px;
-    border-radius: 10px;
-    color: white;
-    font-size: 17px;
+    color: #64748b;
+    padding: 0 14px;
+    cursor: pointer;
+}
+
+    .btn-toggle-password:hover {
+        color: var(--dinacen-blue);
+    }
+
+/* Botón Ingresar */
+.btn-login {
+    background: var(--dinacen-blue);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 1rem;
     font-weight: 600;
-    transition: .3s;
+    transition: background-color 0.2s ease;
+    margin-top: 8px;
 }
 
     .btn-login:hover {
-        background: var(--verde);
-        transform: translateY(-2px);
+        background: var(--dinacen-blue-dark);
+        color: #ffffff;
     }
 
-/*=========================================
-    ANIMACIÓN
-=========================================*/
-
-@keyframes fade {
-
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Texto del Pie en un solo formato y color negro */
+.card-footer-text {
+    font-size: 0.8rem;
+    color: #000000;
+    font-weight: 500;
+    border-top: 1px solid var(--border-color);
+    padding-top: 18px;
 }
 
-/*=========================================
-    CELULARES
-    320px - 576px
-=========================================*/
-
-@media (max-width: 576px) {
-
-    .login-container {
-        padding: 15px;
+    .card-footer-text i {
+        color: #000000;
+        margin-right: 4px;
     }
 
-    .login-card {
-        max-width: 100%;
-        padding: 30px 20px;
-        border-radius: 15px;
-    }
-
-    .logo {
-        width: 95px;
-    }
-
-    .titulo {
-        font-size: 20px;
-    }
-
-    .form-control,
-    .btn-login {
-        height: 45px;
-        font-size: 15px;
-    }
+/* Ventana Emergente de Bienvenida */
+.modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-/*=========================================
-    TABLETS
-    577px - 991px
-=========================================*/
-
-@media (min-width:577px) and (max-width:991px) {
-
-    .login-container {
-        padding: 30px;
-    }
-
-    .login-card {
-        max-width: 460px;
-        padding: 40px;
-    }
-
-    .logo {
-        width: 115px;
-    }
-
-    .titulo {
-        font-size: 24px;
-    }
+.icon-circle {
+    width: 64px;
+    height: 64px;
+    background-color: rgba(123, 179, 66, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/*=========================================
-    LAPTOPS
-    992px - 1366px
-=========================================*/
-
-@media (min-width:992px) and (max-width:1366px) {
-
-    .login-card {
-        max-width: 430px;
+    .icon-circle i {
+        font-size: 2rem;
+        color: var(--dinacen-green);
     }
 
-    .titulo {
-        font-size: 25px;
-    }
+.modal-welcome-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--dinacen-blue);
+    margin-bottom: 4px;
 }
 
-/*=========================================
-    COMPUTADORAS GRANDES
-    Más de 1366px
-=========================================*/
+.modal-welcome-text {
+    font-size: 0.95rem;
+    color: #475569;
+    margin-bottom: 12px;
+}
 
-@media (min-width:1367px) {
-
-    .login-card {
-        max-width: 450px;
-        padding: 50px;
-    }
-
-    .titulo {
-        font-size: 28px;
-    }
-
-    .logo {
-        width: 140px;
-    }
+.spinner-border.text-primary {
+    color: var(--dinacen-blue) !important;
 }

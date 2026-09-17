@@ -1,4 +1,5 @@
 ﻿using Dinacem.Models;
+using ImageMagick;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -1689,23 +1690,43 @@ public class RendicionPdfService
                 return null;
             }
 
-            var extension =
-                Path.GetExtension(rutaFisica)
-                    .ToLowerInvariant();
-
-            if (extension != ".jpg" &&
-                extension != ".jpeg" &&
-                extension != ".png" &&
-                extension != ".webp")
+            // Los PDF no se cargan como imagen dentro de QuestPDF.
+            if (EsArchivoPdf(rutaArchivo))
             {
                 return null;
             }
 
-            return File.ReadAllBytes(
-                rutaFisica);
+            // IMPORTANTE:
+            // No confiamos en la extensión del archivo.
+            // Magick.NET inspecciona el contenido real, por lo que puede
+            // abrir un HEIF/HEIC aunque el archivo haya sido guardado
+            // incorrectamente con extensión .jpg.
+            using var imagen =
+                new MagickImage(rutaFisica);
+
+            // Respeta la orientación EXIF de fotografías tomadas con celular.
+            imagen.AutoOrient();
+
+            // QuestPDF recibe siempre un JPEG real y compatible.
+            // El fondo blanco evita problemas al convertir imágenes
+            // que contienen transparencia.
+            imagen.BackgroundColor =
+                MagickColors.White;
+
+            imagen.Alpha(
+                AlphaOption.Remove);
+
+            imagen.Format =
+                MagickFormat.Jpeg;
+
+            imagen.Quality = 90;
+
+            return imagen.ToByteArray();
         }
         catch
         {
+            // Un comprobante dañado o no interpretable no debe impedir
+            // que se genere toda la liquidación.
             return null;
         }
     }

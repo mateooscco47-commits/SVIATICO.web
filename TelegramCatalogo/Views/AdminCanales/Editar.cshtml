@@ -1,0 +1,609 @@
+﻿@model TelegramCatalogo.Models.Canal
+
+@{
+    ViewData["Title"] = "Editar canal";
+}
+
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-xl-9 col-lg-10">
+
+
+            <!-- VOLVER -->
+
+            <div class="mb-4">
+
+                <a asp-controller="AdminCanales"
+                   asp-action="Index"
+                   class="text-decoration-none">
+
+                    <i class="bi bi-arrow-left me-1"></i>
+
+                    Volver a canales
+
+                </a>
+
+            </div>
+
+
+            <!-- ENCABEZADO -->
+
+            <div class="mb-4">
+
+                <h1 class="fw-bold mb-1">
+                    Editar canal
+                </h1>
+
+                <p class="text-muted mb-0">
+                    Modifica la información del canal.
+                </p>
+
+            </div>
+
+
+            <!-- FORMULARIO -->
+
+            <div class="card
+                        border-0
+                        shadow-sm">
+
+                <div class="card-body p-4 p-md-5">
+
+
+                    <form asp-controller="AdminCanales"
+                          asp-action="Editar"
+                          asp-route-id="@Model.IdCanal"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        @Html.AntiForgeryToken()
+
+
+                        <input asp-for="IdCanal"
+                               type="hidden" />
+
+
+                        <!-- ERRORES GENERALES -->
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+
+                        <div class="row g-4">
+
+
+                            <!-- ============================== -->
+                            <!-- NOMBRE -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="Nombre"
+                                       class="form-label fw-semibold">
+
+                                    Nombre del canal *
+
+                                </label>
+
+                                <input asp-for="Nombre"
+                                       class="form-control"
+                                       placeholder="Nombre del canal" />
+
+                                <span asp-validation-for="Nombre"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+
+                            <!-- ============================== -->
+                            <!-- CATEGORÍA -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="IdCategoria"
+                                       class="form-label fw-semibold">
+
+                                    Categoría *
+
+                                </label>
+
+                                <select asp-for="IdCategoria"
+                                        asp-items="ViewBag.Categorias"
+                                        class="form-select">
+
+                                    <option value="">
+                                        Selecciona una categoría
+                                    </option>
+
+                                </select>
+
+                                <span asp-validation-for="IdCategoria"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+
+                            <!-- ============================== -->
+                            <!-- USERNAME -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="UsernameTelegram"
+                                       class="form-label fw-semibold">
+
+                                    Username de Telegram
+
+                                </label>
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+                                        @@
+                                    </span>
+
+                                    <input asp-for="UsernameTelegram"
+                                           class="form-control"
+                                           placeholder="nombrecanal" />
+
+                                </div>
+
+                                <span asp-validation-for="UsernameTelegram"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+
+                            <!-- ============================== -->
+                            <!-- ENLACE -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="EnlaceTelegram"
+                                       class="form-label fw-semibold">
+
+                                    Enlace de Telegram *
+
+                                </label>
+
+                                <input asp-for="EnlaceTelegram"
+                                       class="form-control"
+                                       placeholder="https://t.me/nombrecanal" />
+
+                                <span asp-validation-for="EnlaceTelegram"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+
+                            <!-- ============================== -->
+                            <!-- DESCRIPCIÓN -->
+                            <!-- ============================== -->
+
+                            <div class="col-12">
+
+                                <label asp-for="Descripcion"
+                                       class="form-label fw-semibold">
+
+                                    Descripción
+
+                                </label>
+
+                                <textarea asp-for="Descripcion"
+                                          class="form-control"
+                                          rows="5"
+                                          placeholder="Describe el contenido del canal...">
+                                </textarea>
+
+                                <span asp-validation-for="Descripcion"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+
+                            <!-- ============================== -->
+                            <!-- MIEMBROS -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-4">
+
+                                <label asp-for="CantidadMiembros"
+                                       class="form-label fw-semibold">
+
+                                    Cantidad de miembros
+
+                                </label>
+
+                                <input asp-for="CantidadMiembros"
+                                       type="number"
+                                       min="0"
+                                       class="form-control" />
+
+                                <span asp-validation-for="CantidadMiembros"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+
+                            <!-- ============================== -->
+                            <!-- IDIOMA -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-4">
+
+                                <label asp-for="Idioma"
+                                       class="form-label fw-semibold">
+
+                                    Idioma
+
+                                </label>
+
+                                <input asp-for="Idioma"
+                                       class="form-control"
+                                       placeholder="Español" />
+
+                                <span asp-validation-for="Idioma"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+
+                            <!-- ============================== -->
+                            <!-- PAÍS -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-4">
+
+                                <label asp-for="Pais"
+                                       class="form-label fw-semibold">
+
+                                    País
+
+                                </label>
+
+                                <input asp-for="Pais"
+                                       class="form-control"
+                                       placeholder="Perú" />
+
+                                <span asp-validation-for="Pais"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+
+                            <!-- ============================== -->
+                            <!-- IMAGEN -->
+                            <!-- ============================== -->
+
+                            <div class="col-12">
+
+                                <hr class="my-2" />
+
+                                <h5 class="fw-bold mb-3">
+                                    Imagen del canal
+                                </h5>
+
+
+                                @if (!string.IsNullOrWhiteSpace(
+                                Model.Imagen))
+                                {
+                                    <div class="imagen-actual mb-4">
+
+                                        <div class="mb-2">
+
+                                            <small class="text-muted">
+                                                Imagen actual
+                                            </small>
+
+                                        </div>
+
+
+                                        <img src="@Model.Imagen"
+                                             alt="@Model.Nombre"
+                                             class="preview-canal" />
+
+
+                                        <div class="form-check mt-3">
+
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   name="eliminarImagen"
+                                                   value="true"
+                                                   id="eliminarImagen" />
+
+                                            <label class="form-check-label
+                                                          text-danger"
+                                                   for="eliminarImagen">
+
+                                                <i class="bi
+                                                          bi-trash
+                                                          me-1">
+                                                </i>
+
+                                                Quitar imagen actual
+
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert
+                                                alert-light
+                                                border
+                                                mb-3">
+
+                                        <i class="bi
+                                                  bi-image
+                                                  me-1">
+                                        </i>
+
+                                        Este canal no tiene
+                                        una imagen actualmente.
+
+                                    </div>
+                                }
+
+
+                                <label class="form-label fw-semibold">
+
+                                    @if (!string.IsNullOrWhiteSpace(
+                                    Model.Imagen))
+                                    {
+                                        <text>
+                                            Reemplazar imagen
+                                        </text>
+                                    }
+                                    else
+                                    {
+                                        <text>
+                                            Subir imagen
+                                        </text>
+                                    }
+
+                                </label>
+
+
+                                <input type="file"
+                                       name="imagenArchivo"
+                                       id="imagenArchivo"
+                                       class="form-control"
+                                       accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+
+
+                                <span class="text-danger">
+
+                                    @Html.ValidationMessage(
+                                             "imagenArchivo")
+
+                                </span>
+
+
+                                <div class="form-text">
+                                    JPG, PNG o WebP.
+                                    Máximo 5 MB.
+                                    Si no seleccionas una imagen,
+                                    se conservará la actual.
+                                </div>
+
+
+                                <!-- PREVISUALIZACIÓN -->
+
+                                <div id="contenedorPreview"
+                                     class="mt-3"
+                                     style="display:none;">
+
+                                    <small class="text-muted">
+                                        Nueva imagen
+                                    </small>
+
+                                    <div class="mt-2">
+
+                                        <img id="previewImagen"
+                                             alt="Vista previa"
+                                             class="preview-canal" />
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ============================== -->
+                            <!-- DESTACADO -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-6">
+
+                                <div class="form-check
+                                            form-switch
+                                            mt-2">
+
+                                    <input asp-for="EsDestacado"
+                                           class="form-check-input" />
+
+                                    <label asp-for="EsDestacado"
+                                           class="form-check-label
+                                                  fw-semibold">
+
+                                        Canal destacado
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ============================== -->
+                            <!-- ESTADO -->
+                            <!-- ============================== -->
+
+                            <div class="col-md-6">
+
+                                <label asp-for="Estado"
+                                       class="form-label fw-semibold">
+
+                                    Estado
+
+                                </label>
+
+                                <select asp-for="Estado"
+                                        class="form-select">
+
+                                    <option value="Activo">
+                                        Activo
+                                    </option>
+
+                                    <option value="Inactivo">
+                                        Inactivo
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ============================== -->
+                        <!-- BOTONES -->
+                        <!-- ============================== -->
+
+                        <hr class="my-4" />
+
+
+                        <div class="d-flex
+                                    justify-content-end
+                                    gap-2">
+
+                            <a asp-controller="AdminCanales"
+                               asp-action="Index"
+                               class="btn
+                                      btn-outline-secondary">
+
+                                Cancelar
+
+                            </a>
+
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+
+                                <i class="bi
+                                          bi-check-lg
+                                          me-1">
+                                </i>
+
+                                Guardar cambios
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .preview-canal {
+        width: 130px;
+        height: 130px;
+        object-fit: cover;
+        border-radius: 18px;
+        border: 1px solid #dee2e6;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, .08);
+    }
+
+</style>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+
+    <script>
+
+        const inputImagen =
+            document.getElementById(
+                "imagenArchivo"
+            );
+
+        const contenedorPreview =
+            document.getElementById(
+                "contenedorPreview"
+            );
+
+        const previewImagen =
+            document.getElementById(
+                "previewImagen"
+            );
+
+
+        inputImagen.addEventListener(
+            "change",
+            function () {
+
+                const archivo =
+                    this.files[0];
+
+
+                if (!archivo) {
+
+                    contenedorPreview.style.display =
+                        "none";
+
+                    previewImagen.removeAttribute(
+                        "src"
+                    );
+
+                    return;
+                }
+
+
+                const url =
+                    URL.createObjectURL(
+                        archivo
+                    );
+
+
+                previewImagen.src =
+                    url;
+
+
+                contenedorPreview.style.display =
+                    "block";
+
+            }
+        );
+
+    </script>
+}
