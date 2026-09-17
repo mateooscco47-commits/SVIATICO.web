@@ -163,7 +163,7 @@
 
         const opcion =
             tipoGasto.options[
-                tipoGasto.selectedIndex
+            tipoGasto.selectedIndex
             ];
 
         return opcion?.text || "";
@@ -183,7 +183,7 @@
 
         const opcion =
             tipoComprobante.options[
-                tipoComprobante.selectedIndex
+            tipoComprobante.selectedIndex
             ];
 
         return opcion?.text || "";
@@ -245,10 +245,17 @@
     //
     // Solamente FACTURA exige RUC.
     //
-    // Boleta              -> RUC opcional
-    // Ticket              -> RUC opcional
-    // Recibo por Honorarios -> RUC opcional
-    // Movilidad           -> RUC opcional
+    // Boleta                  -> RUC opcional
+    // Ticket                  -> RUC opcional
+    // Recibo por Honorarios   -> RUC opcional
+    // Movilidad               -> RUC opcional
+    //
+    // IMPORTANTE:
+    // Que el RUC sea opcional NO significa que la consulta
+    // esté deshabilitada.
+    //
+    // Si el usuario escribe un RUC de 11 dígitos,
+    // puede consultarlo para cualquier tipo de gasto.
     //
     // =========================================================
 
@@ -277,6 +284,24 @@
 
 
         // =====================================================
+        // DOMICILIO FISCAL
+        // =====================================================
+        //
+        // SIEMPRE EDITABLE.
+        //
+        // No importa si viene de SUNAT o si el usuario
+        // lo escribe manualmente.
+        //
+        // =====================================================
+
+        if (domicilio) {
+
+            domicilio.removeAttribute("readonly");
+
+        }
+
+
+        // =====================================================
         // HOSPEDAJE
         // =====================================================
 
@@ -297,37 +322,54 @@
         if (!hospedaje) {
 
             if (fechaInicioHospedaje) {
+
                 fechaInicioHospedaje.value = "";
+
                 fechaInicioHospedaje
                     .removeAttribute("required");
+
             }
 
             if (fechaFinHospedaje) {
+
                 fechaFinHospedaje.value = "";
+
                 fechaFinHospedaje
                     .removeAttribute("required");
+
             }
 
             if (diasHospedaje) {
+
                 diasHospedaje.value = "";
+
                 diasHospedaje
                     .removeAttribute("required");
+
                 diasHospedaje
                     .removeAttribute("min");
+
             }
 
             if (maximoHospedaje) {
+
                 maximoHospedaje.value = "";
+
             }
 
             if (mensajeHospedaje) {
+
                 mensajeHospedaje.textContent = "";
+
                 mensajeHospedaje.className =
                     "small mt-3";
+
             }
 
             if (montoTotal) {
+
                 montoTotal.removeAttribute("max");
+
             }
 
             diasHospedajeEditadosManualmente =
@@ -371,20 +413,33 @@
 
         if (movilidad) {
 
-            // RUC
+            // RUC OPCIONAL
             ruc?.removeAttribute("required");
 
-            // Proveedor
+
+            // RAZÓN SOCIAL OPCIONAL
             razonSocial?.removeAttribute("required");
+
+
+            // DOMICILIO FISCAL OPCIONAL
             domicilio?.removeAttribute("required");
 
-            // Comprobante
-            tipoComprobante?.removeAttribute("required");
 
+            // COMPROBANTE OPCIONAL
+            tipoComprobante?.removeAttribute(
+                "required"
+            );
+
+
+            // SERIE OPCIONAL
             serie?.removeAttribute("required");
+
+
+            // NÚMERO OPCIONAL
             numero?.removeAttribute("required");
 
-            // Archivo
+
+            // ARCHIVO OPCIONAL
             archivo?.removeAttribute("required");
 
 
@@ -408,7 +463,7 @@
             if (mensajeTipoGasto) {
 
                 mensajeTipoGasto.textContent =
-                    "Movilidad: RUC, comprobante y voucher son opcionales.";
+                    "Movilidad: RUC, comprobante y voucher son opcionales. Si ingresa un RUC, puede consultarlo.";
 
                 mensajeTipoGasto.className =
                     "form-text text-success";
@@ -436,8 +491,8 @@
                 "is-invalid"
             );
 
-
             return;
+
         }
 
 
@@ -477,11 +532,7 @@
         // RUC
         // =====================================================
         //
-        // IMPORTANTE:
-        //
-        // NO hacemos RUC obligatorio para todos.
-        //
-        // Solamente FACTURA.
+        // Solamente FACTURA lo exige.
         //
         // =====================================================
 
@@ -504,10 +555,6 @@
 
         // =====================================================
         // PROVEEDOR
-        // =====================================================
-        //
-        // Solo FACTURA necesita proveedor.
-        //
         // =====================================================
 
         if (rucEsObligatorio()) {
@@ -579,7 +626,7 @@
             ) {
 
                 mensajeTipoGasto.textContent =
-                    "RUC opcional para este tipo de comprobante.";
+                    "RUC opcional para este tipo de comprobante. Si lo ingresa, puede consultarlo.";
 
                 mensajeTipoGasto.className =
                     "form-text text-success";
@@ -602,41 +649,26 @@
     // =========================================================
     // CONSULTAR RUC
     // =========================================================
+    //
+    // IMPORTANTE:
+    //
+    // YA NO SE BLOQUEA LA CONSULTA PARA MOVILIDAD.
+    //
+    // La consulta funciona para TODOS los tipos de gasto.
+    //
+    // El RUC solamente debe tener 11 dígitos.
+    //
+    // =========================================================
 
     async function consultarRuc() {
-
-        if (esMovilidad()) {
-            return;
-        }
-
 
         const numeroRuc =
             ruc?.value.trim() || "";
 
 
-        if (
-            numeroRuc === ultimaConsulta &&
-            numeroRuc !== ""
-        ) {
-
-            return;
-        }
-
-
-        if (razonSocial) {
-            razonSocial.value = "";
-        }
-
-
-        if (domicilio) {
-            domicilio.value = "";
-        }
-
-
-        if (mensajeRuc) {
-            mensajeRuc.textContent = "";
-        }
-
+        // =====================================================
+        // VALIDAR RUC
+        // =====================================================
 
         if (!/^\d{11}$/.test(numeroRuc)) {
 
@@ -651,8 +683,57 @@
             }
 
             return;
+
         }
 
+
+        // =====================================================
+        // EVITAR CONSULTA DUPLICADA
+        // =====================================================
+
+        if (
+            numeroRuc === ultimaConsulta &&
+            numeroRuc !== ""
+        ) {
+
+            return;
+
+        }
+
+
+        // =====================================================
+        // LIMPIAR DATOS ANTERIORES
+        // =====================================================
+
+        if (razonSocial) {
+
+            razonSocial.value = "";
+
+        }
+
+
+        if (domicilio) {
+
+            domicilio.value = "";
+
+            // Siempre editable
+            domicilio.removeAttribute(
+                "readonly"
+            );
+
+        }
+
+
+        if (mensajeRuc) {
+
+            mensajeRuc.textContent = "";
+
+        }
+
+
+        // =====================================================
+        // VALIDAR URL
+        // =====================================================
 
         if (!urlConsultarRuc) {
 
@@ -667,8 +748,13 @@
             }
 
             return;
+
         }
 
+
+        // =====================================================
+        // DESHABILITAR BOTÓN
+        // =====================================================
 
         if (btnRuc) {
 
@@ -679,6 +765,10 @@
 
         }
 
+
+        // =====================================================
+        // CONSULTAR
+        // =====================================================
 
         try {
 
@@ -692,7 +782,9 @@
                 urlConsultarRuc +
                 separador +
                 "ruc=" +
-                encodeURIComponent(numeroRuc);
+                encodeURIComponent(
+                    numeroRuc
+                );
 
 
             const response =
@@ -701,11 +793,16 @@
                     {
                         method: "GET",
                         headers: {
-                            "Accept": "application/json"
+                            "Accept":
+                                "application/json"
                         }
                     }
                 );
 
+
+            // =================================================
+            // RESPUESTA JSON
+            // =================================================
 
             let data;
 
@@ -725,6 +822,10 @@
             }
 
 
+            // =================================================
+            // ERROR
+            // =================================================
+
             if (!response.ok) {
 
                 throw new Error(
@@ -735,6 +836,10 @@
             }
 
 
+            // =================================================
+            // RAZÓN SOCIAL
+            // =================================================
+
             if (razonSocial) {
 
                 razonSocial.value =
@@ -743,13 +848,30 @@
             }
 
 
+            // =================================================
+            // DOMICILIO FISCAL
+            // =================================================
+            //
+            // IMPORTANTE:
+            // Se carga automáticamente, pero queda editable.
+            //
+            // =================================================
+
             if (domicilio) {
 
                 domicilio.value =
                     data?.domicilioFiscal ?? "";
 
+                domicilio.removeAttribute(
+                    "readonly"
+                );
+
             }
 
+
+            // =================================================
+            // MENSAJE
+            // =================================================
 
             if (mensajeRuc) {
 
@@ -762,9 +884,17 @@
             }
 
 
+            // =================================================
+            // GUARDAR ÚLTIMA CONSULTA
+            // =================================================
+
             ultimaConsulta =
                 numeroRuc;
 
+
+            // =================================================
+            // VALIDAR COMPROBANTE
+            // =================================================
 
             validarComprobantePorRuc();
 
@@ -807,12 +937,29 @@
 
     function validarComprobantePorRuc() {
 
+        // =====================================================
+        // MOVILIDAD
+        // =====================================================
+
         if (esMovilidad()) {
 
             if (mensajeComprobante) {
 
-                mensajeComprobante.textContent =
-                    "Para Movilidad el comprobante es opcional.";
+                if (
+                    ruc &&
+                    ruc.value.trim()
+                ) {
+
+                    mensajeComprobante.textContent =
+                        "Para Movilidad el comprobante es opcional. El RUC ingresado puede utilizarse para consultar los datos del proveedor.";
+
+                }
+                else {
+
+                    mensajeComprobante.textContent =
+                        "Para Movilidad el comprobante y el RUC son opcionales.";
+
+                }
 
                 mensajeComprobante.className =
                     "form-text text-success";
@@ -824,11 +971,18 @@
             );
 
             return true;
+
         }
 
 
+        // =====================================================
+        // VALIDACIÓN BÁSICA
+        // =====================================================
+
         if (!ruc || !tipoComprobante) {
+
             return true;
+
         }
 
 
@@ -838,7 +992,7 @@
 
         const opcionSeleccionada =
             tipoComprobante.options[
-                tipoComprobante.selectedIndex
+            tipoComprobante.selectedIndex
             ];
 
 
@@ -878,9 +1032,17 @@
         // FACTURA
         // =====================================================
 
-        if (comprobante.includes("factura")) {
+        if (
+            comprobante.includes(
+                "factura"
+            )
+        ) {
 
-            if (!/^\d{11}$/.test(numeroRuc)) {
+            if (
+                !/^\d{11}$/.test(
+                    numeroRuc
+                )
+            ) {
 
                 if (mensajeComprobante) {
 
@@ -892,12 +1054,18 @@
 
                 }
 
+                tipoComprobante.classList.add(
+                    "is-invalid"
+                );
+
                 return false;
+
             }
 
 
-            // RUC 20 = factura válida
-            if (numeroRuc.startsWith("20")) {
+            if (
+                numeroRuc.startsWith("20")
+            ) {
 
                 if (mensajeComprobante) {
 
@@ -914,10 +1082,10 @@
                 );
 
                 return true;
+
             }
 
 
-            // RUC válido pero no empieza en 20
             if (mensajeComprobante) {
 
                 mensajeComprobante.textContent =
@@ -933,22 +1101,23 @@
             );
 
             return true;
+
         }
 
 
         // =====================================================
         // BOLETA / TICKET / RECIBO POR HONORARIOS
         // =====================================================
-        //
-        // RUC OPCIONAL.
-        //
-        // =====================================================
 
         if (mensajeComprobante) {
 
             if (numeroRuc) {
 
-                if (!/^\d{11}$/.test(numeroRuc)) {
+                if (
+                    !/^\d{11}$/.test(
+                        numeroRuc
+                    )
+                ) {
 
                     mensajeComprobante.textContent =
                         "El RUC es opcional, pero si lo ingresa debe contener 11 dígitos.";
@@ -956,7 +1125,12 @@
                     mensajeComprobante.className =
                         "form-text text-warning";
 
+                    tipoComprobante.classList.add(
+                        "is-invalid"
+                    );
+
                     return false;
+
                 }
 
                 mensajeComprobante.textContent =
@@ -979,7 +1153,6 @@
         tipoComprobante.classList.remove(
             "is-invalid"
         );
-
 
         return true;
 
@@ -1008,7 +1181,9 @@
 
 
         if (
-            tipo.includes("alimentacion")
+            tipo.includes(
+                "alimentacion"
+            )
         ) {
 
             return LIMITE_ALIMENTACION;
@@ -1114,7 +1289,9 @@
 
 
                 const total =
-                    parseFloat(totalTexto) || 0;
+                    parseFloat(
+                        totalTexto
+                    ) || 0;
 
 
                 totalExistente += total;
@@ -1301,7 +1478,10 @@
             disponible.toFixed(2);
 
 
-        if (totalExistente >= limite) {
+        if (
+            totalExistente >=
+            limite
+        ) {
 
             if (mostrarMensaje) {
 
@@ -2027,6 +2207,10 @@
 
     if (ruc && btnRuc) {
 
+        // =====================================================
+        // BOTÓN BUSCAR
+        // =====================================================
+
         btnRuc.addEventListener(
             "click",
             function (event) {
@@ -2039,12 +2223,20 @@
         );
 
 
+        // =====================================================
+        // BLUR DEL RUC
+        // =====================================================
+        //
+        // FUNCIONA PARA TODOS LOS TIPOS DE GASTO,
+        // INCLUYENDO MOVILIDAD.
+        //
+        // =====================================================
+
         ruc.addEventListener(
             "blur",
             function () {
 
                 if (
-                    !esMovilidad() &&
                     /^\d{11}$/.test(
                         ruc.value.trim()
                     )
@@ -2057,6 +2249,10 @@
             }
         );
 
+
+        // =====================================================
+        // CAMBIO DEL RUC
+        // =====================================================
 
         ruc.addEventListener(
             "input",
@@ -2077,22 +2273,39 @@
 
 
                     if (razonSocial) {
-                        razonSocial.value = "";
+
+                        razonSocial.value =
+                            "";
+
                     }
 
 
                     if (domicilio) {
-                        domicilio.value = "";
+
+                        domicilio.value =
+                            "";
+
+                        // Siempre editable
+                        domicilio.removeAttribute(
+                            "readonly"
+                        );
+
                     }
 
 
                     if (mensajeRuc) {
-                        mensajeRuc.textContent = "";
+
+                        mensajeRuc.textContent =
+                            "";
+
                     }
 
 
                     if (mensajeComprobante) {
-                        mensajeComprobante.textContent = "";
+
+                        mensajeComprobante.textContent =
+                            "";
+
                     }
 
 
@@ -2457,17 +2670,54 @@
             // MOVILIDAD
             // =====================================================
             //
-            // NO se valida:
+            // NO se exige:
             // - RUC
             // - Razón social
             // - Domicilio
             // - Comprobante
+            // - Serie
+            // - Número
             // - Voucher
             //
-            // Solo fecha, tipo, detalle y monto.
+            // PERO:
+            // Si el usuario ingresó RUC, debe ser válido.
             // =====================================================
 
             if (movilidad) {
+
+                const numeroRuc =
+                    ruc?.value.trim() || "";
+
+
+                if (
+                    numeroRuc &&
+                    !/^\d{11}$/.test(
+                        numeroRuc
+                    )
+                ) {
+
+                    event.preventDefault();
+
+
+                    mostrarAlerta(
+                        "RUC inválido",
+                        "El RUC es opcional para Movilidad, pero si lo ingresa debe contener exactamente 11 dígitos.",
+                        "warning"
+                    );
+
+
+                    ruc?.focus();
+
+                    return;
+
+                }
+
+
+                // No se valida comprobante.
+                // No se valida voucher.
+                // No se valida domicilio.
+                // No se valida razón social.
+
 
                 return;
 
@@ -2719,14 +2969,14 @@
                 // -------------------------------------------------
                 // RUC
                 // -------------------------------------------------
-                //
-                // SOLAMENTE FACTURA LO EXIGE.
-                //
-                // -------------------------------------------------
 
                 const numeroRuc =
                     ruc?.value.trim() || "";
 
+
+                // -------------------------------------------------
+                // FACTURA
+                // -------------------------------------------------
 
                 if (esFactura()) {
 
@@ -2753,16 +3003,13 @@
                     }
 
                 }
-                else {
 
-                    // -------------------------------------------------
-                    // BOLETA / TICKET / RECIBO POR HONORARIOS
-                    // -------------------------------------------------
-                    //
-                    // RUC OPCIONAL.
-                    //
-                    // Pero si lo ingresó, debe ser válido.
-                    // -------------------------------------------------
+
+                // -------------------------------------------------
+                // BOLETA / TICKET / RECIBO
+                // -------------------------------------------------
+
+                else {
 
                     if (
                         numeroRuc &&
@@ -3004,6 +3251,16 @@
     // =========================================================
     // INICIALIZACIÓN
     // =========================================================
+
+    // Asegurar que el domicilio fiscal siempre sea editable
+    if (domicilio) {
+
+        domicilio.removeAttribute(
+            "readonly"
+        );
+
+    }
+
 
     actualizarRequisitos();
 

@@ -9,8 +9,16 @@
       "PackagePath": "staticwebassets\\Images\\logo-dinacen.png"
     },
     {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\2beeadfe-b051-438e-868e-ba2f3b239cca.jpg",
+      "PackagePath": "staticwebassets\\comprobantes\\2beeadfe-b051-438e-868e-ba2f3b239cca.jpg"
+    },
+    {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\30dd91f7-29d3-4be1-b1c3-9714379207f7.jpg",
       "PackagePath": "staticwebassets\\comprobantes\\30dd91f7-29d3-4be1-b1c3-9714379207f7.jpg"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\3560d7b1-ac98-4d32-9b64-bf426b49d0db.jpg",
+      "PackagePath": "staticwebassets\\comprobantes\\3560d7b1-ac98-4d32-9b64-bf426b49d0db.jpg"
     },
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\38c34b44-c4c9-4bc0-a01b-4c82f5a709b6.png",
@@ -83,6 +91,14 @@
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\95f2f472-634d-463e-9c8f-3de8a8ac6905.jpg",
       "PackagePath": "staticwebassets\\comprobantes\\95f2f472-634d-463e-9c8f-3de8a8ac6905.jpg"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\975b587b-bc21-49bc-b17a-2849fe3342e7.jpg",
+      "PackagePath": "staticwebassets\\comprobantes\\975b587b-bc21-49bc-b17a-2849fe3342e7.jpg"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\a33a17c3-95f2-4c11-b056-94efbe17c75c.jpg",
+      "PackagePath": "staticwebassets\\comprobantes\\a33a17c3-95f2-4c11-b056-94efbe17c75c.jpg"
     },
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\a4805190-1cfd-4c79-8c61-70957e26ca46.png",
@@ -457,6 +473,10 @@
       "PackagePath": "staticwebassets\\liquidaciones\\Comprobantes-14-Moises-Oscco-Huarocc.pdf"
     },
     {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Comprobantes-16-Josue-Abel-Huarocc-Oscco.pdf",
+      "PackagePath": "staticwebassets\\liquidaciones\\Comprobantes-16-Josue-Abel-Huarocc-Oscco.pdf"
+    },
+    {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Comprobantes-5-Leonel-Lopez-Aliaga.pdf",
       "PackagePath": "staticwebassets\\liquidaciones\\Comprobantes-5-Leonel-Lopez-Aliaga.pdf"
     },
@@ -491,6 +511,10 @@
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-14-Moises-Oscco-Huarocc.pdf",
       "PackagePath": "staticwebassets\\liquidaciones\\Liquidacion-14-Moises-Oscco-Huarocc.pdf"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-16-Josue-Abel-Huarocc-Oscco.pdf",
+      "PackagePath": "staticwebassets\\liquidaciones\\Liquidacion-16-Josue-Abel-Huarocc-Oscco.pdf"
     },
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-2-Juan-Perez-Garcia.pdf",
@@ -593,6 +617,14 @@
       "PackagePath": "staticwebassets\\uploads\\comprobantes\\Comprobante_8_b4ff2230-e86e-46c5-8106-d52a51d75163.png"
     },
     {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\uploads\\rechazos\\Rechazo_1023_476fd4ea-1a55-4fe1-b946-b961e4ae44d4.jpg",
+      "PackagePath": "staticwebassets\\uploads\\rechazos\\Rechazo_1023_476fd4ea-1a55-4fe1-b946-b961e4ae44d4.jpg"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\uploads\\rechazos\\Rechazo_1024_f5023135be874a48b17a8bf404543ae5.jpg",
+      "PackagePath": "staticwebassets\\uploads\\rechazos\\Rechazo_1024_f5023135be874a48b17a8bf404543ae5.jpg"
+    },
+    {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\vouchers-devolucion\\03932076-d975-403f-b4c2-920c6527daad.jpeg",
       "PackagePath": "staticwebassets\\vouchers-devolucion\\03932076-d975-403f-b4c2-920c6527daad.jpeg"
     },
@@ -667,6 +699,10 @@
     {
       "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\vouchers-devolucion\\e61ec734-dcd8-45a7-8b68-12704c5a18d7.jpg",
       "PackagePath": "staticwebassets\\vouchers-devolucion\\e61ec734-dcd8-45a7-8b68-12704c5a18d7.jpg"
+    },
+    {
+      "Id": "C:\\Users\\lucas\\Documents\\github\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\vouchers-devolucion\\e8ce7b43-3b21-45a2-b8c4-9833214493ef.jpg",
+      "PackagePath": "staticwebassets\\vouchers-devolucion\\e8ce7b43-3b21-45a2-b8c4-9833214493ef.jpg"
     },
     {
       "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.Dinacen.Microsoft.AspNetCore.StaticWebAssets.props",
