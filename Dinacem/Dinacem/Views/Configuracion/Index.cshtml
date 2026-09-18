@@ -14,6 +14,10 @@
         padding: 20px 15px 40px;
     }
 
+    /* =========================================================
+           ENCABEZADO
+           ========================================================= */
+
     .config-header {
         display: flex;
         align-items: center;
@@ -52,12 +56,17 @@
         font-size: 13px;
     }
 
+    /* =========================================================
+           TARJETAS
+           ========================================================= */
+
     .config-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
         border-radius: 14px;
         box-shadow: 0 3px 12px rgba(15,23,42,.05);
         overflow: hidden;
+        margin-bottom: 20px;
     }
 
     .config-card-header {
@@ -71,6 +80,10 @@
     .config-card-body {
         padding: 22px;
     }
+
+    /* =========================================================
+           INFORMACIÓN
+           ========================================================= */
 
     .config-info {
         background: #f8fafc;
@@ -93,6 +106,10 @@
         font-size: 12px;
         line-height: 1.5;
     }
+
+    /* =========================================================
+           TARIFA
+           ========================================================= */
 
     .tarifa-box {
         display: grid;
@@ -136,19 +153,96 @@
             color: #ffffff;
         }
 
+    /* =========================================================
+           EJEMPLO
+           ========================================================= */
+
     .ejemplo-box {
         margin-top: 20px;
         background: #eef6ff;
         border: 1px solid #cfe2ff;
         border-radius: 10px;
         padding: 16px;
+        color: #475569;
+        font-size: 13px;
+        line-height: 1.6;
     }
 
         .ejemplo-box strong {
             color: #0c4a8a;
         }
 
-    @@media(max-width: 767px) {
+    /* =========================================================
+           ADMINISTRAR RUTAS
+           ========================================================= */
+
+    .ruta-admin-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .ruta-admin-content {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .ruta-admin-icon {
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eaf2fb;
+        color: #0c4a8a;
+        border-radius: 10px;
+        font-size: 20px;
+    }
+
+    .ruta-admin-title {
+        margin: 0 0 4px;
+        color: #172033;
+        font-size: 15px;
+        font-weight: 800;
+    }
+
+    .ruta-admin-text {
+        margin: 0;
+        color: #64748b;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .btn-rutas {
+        min-height: 44px;
+        padding: 0 18px;
+        background: #0c4a8a;
+        border: 1px solid #0c4a8a;
+        color: #ffffff;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .btn-rutas:hover {
+            background: #083b70;
+            border-color: #083b70;
+            color: #ffffff;
+        }
+
+    /* =========================================================
+           RESPONSIVE
+           ========================================================= */
+
+    @@media (max-width: 767px) {
 
         .config-wrapper {
             padding: 10px;
@@ -169,12 +263,25 @@
         .btn-guardar {
             width: 100%;
         }
+
+        .ruta-admin-box {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-rutas {
+            width: 100%;
+        }
     }
 
 </style>
 
 
 <div class="config-wrapper">
+
+    <!-- =====================================================
+         ENCABEZADO
+         ===================================================== -->
 
     <div class="config-header">
 
@@ -196,6 +303,10 @@
 
     </div>
 
+
+    <!-- =====================================================
+         BITÁCORA VEHICULAR
+         ===================================================== -->
 
     <div class="config-card">
 
@@ -292,6 +403,68 @@
                 <strong>
                     S/ @((120m * Model.TarifaKilometro).ToString("N2"))
                 </strong>.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ADMINISTRACIÓN DE RUTAS
+         ===================================================== -->
+
+    <div class="config-card">
+
+        <div class="config-card-header">
+
+            <i class="bi bi-signpost-2-fill me-2 text-primary"></i>
+
+            Rutas
+
+        </div>
+
+
+        <div class="config-card-body">
+
+            <div class="ruta-admin-box">
+
+                <div class="ruta-admin-content">
+
+                    <div class="ruta-admin-icon">
+
+                        <i class="bi bi-signpost-2-fill"></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h3 class="ruta-admin-title">
+                            Administrar rutas
+                        </h3>
+
+                        <p class="ruta-admin-text">
+                            Registre, edite y administre las rutas utilizadas
+                            en la bitácora vehicular, incluyendo su distancia
+                            en kilómetros y estado.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <a asp-controller="Ruta"
+                   asp-action="Index"
+                   class="btn-rutas">
+
+                    <i class="bi bi-plus-circle me-2"></i>
+
+                    Administrar 
+
+                </a>
 
             </div>
 

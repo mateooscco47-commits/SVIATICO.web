@@ -571,7 +571,7 @@ namespace Dinacen.Migrations
                     b.ToTable("Zonas", (string)null);
                 });
 
-            modelBuilder.Entity("Dinacen.Models.Entidades.Ruta", b =>
+            modelBuilder.Entity("Dinacem.Models.Entidades.Ruta", b =>
                 {
                     b.Property<int>("IdRuta")
                         .ValueGeneratedOnAdd()

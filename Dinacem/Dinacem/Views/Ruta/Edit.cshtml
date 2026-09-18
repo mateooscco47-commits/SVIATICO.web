@@ -1,0 +1,514 @@
+﻿@model Dinacem.Models.Entidades.Ruta
+
+@{
+    ViewData["Title"] = "Editar ruta";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+}
+
+<style>
+    .ruta-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .ruta-header {
+        background: linear-gradient(135deg, #0C4A8A, #083663);
+        color: white;
+        border-radius: 16px 16px 0 0;
+        padding: 24px 28px;
+    }
+
+    .ruta-header h4 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.35rem;
+    }
+
+    .ruta-header p {
+        margin: 6px 0 0;
+        opacity: 0.9;
+        font-size: 0.92rem;
+    }
+
+    .ruta-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .ruta-body {
+        padding: 30px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        min-height: 46px;
+        border: 1px solid #ced4da;
+        border-radius: 9px;
+        padding: 10px 13px;
+    }
+
+    .form-control:focus {
+        border-color: #0C4A8A;
+        box-shadow: 0 0 0 0.2rem rgba(12, 74, 138, 0.12);
+    }
+
+    .input-group-text {
+        background: #EBF3FA;
+        color: #0C4A8A;
+        border-color: #ced4da;
+    }
+
+    .input-group .input-group-text:first-child {
+        border-radius: 9px 0 0 9px;
+    }
+
+    .input-group .input-group-text:last-child {
+        border-radius: 0 9px 9px 0;
+    }
+
+    .input-group .form-control {
+        border-radius: 0;
+    }
+
+    .campo-info {
+        color: #6c757d;
+        font-size: 0.82rem;
+        margin-top: 5px;
+    }
+
+    .validation-message {
+        font-size: 0.82rem;
+        margin-top: 5px;
+    }
+
+    .alert-validation {
+        border-radius: 10px;
+        font-size: 0.9rem;
+    }
+
+    /* =========================================================
+       ESTADO
+       ========================================================= */
+
+    .estado-container {
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 14px 16px;
+        min-height: 46px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .estado-container.activo {
+        background: #eef8f0;
+        border-color: #b9dfc0;
+    }
+
+    .estado-container.inactivo {
+        background: #f8f9fa;
+        border-color: #dee2e6;
+    }
+
+    .estado-container input {
+        width: 19px;
+        height: 19px;
+        cursor: pointer;
+    }
+
+    .estado-label {
+        font-weight: 600;
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .estado-ayuda {
+        font-size: 0.8rem;
+        color: #6c757d;
+        margin-top: 6px;
+    }
+
+    /* =========================================================
+       INFORMACIÓN
+       ========================================================= */
+
+    .info-ruta {
+        background: #EBF3FA;
+        border: 1px solid #cfe2f3;
+        border-radius: 10px;
+        padding: 14px 16px;
+        color: #083663;
+        margin-top: 22px;
+    }
+
+    .info-ruta i {
+        font-size: 1.1rem;
+    }
+
+    /* =========================================================
+       BOTONES
+       ========================================================= */
+
+    .acciones {
+        border-top: 1px solid #e9ecef;
+        margin-top: 28px;
+        padding-top: 22px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn-cancelar {
+        border: 1px solid #adb5bd;
+        color: #495057;
+        background: white;
+        font-weight: 600;
+        border-radius: 9px;
+        padding: 10px 20px;
+    }
+
+    .btn-cancelar:hover {
+        background: #f1f3f5;
+        color: #212529;
+    }
+
+    .btn-guardar {
+        background: #0C4A8A;
+        border: none;
+        color: white;
+        font-weight: 700;
+        border-radius: 9px;
+        padding: 10px 22px;
+    }
+
+    .btn-guardar:hover {
+        background: #083663;
+        color: white;
+    }
+
+    @@media (max-width: 576px) {
+        .ruta-body {
+            padding: 20px 16px;
+        }
+
+        .ruta-header {
+            padding: 20px;
+        }
+
+        .acciones {
+            flex-direction: column-reverse;
+        }
+
+        .acciones .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <div class="ruta-container">
+
+        <div class="ruta-card">
+
+            <!-- =====================================================
+                 ENCABEZADO
+                 ===================================================== -->
+
+            <div class="ruta-header">
+
+                <h4>
+                    <i class="bi bi-pencil-square me-2"></i>
+                    Editar ruta
+                </h4>
+
+                <p>
+                    Modifica los datos de la ruta seleccionada.
+                </p>
+
+            </div>
+
+            <!-- =====================================================
+                 FORMULARIO
+                 ===================================================== -->
+
+            <div class="ruta-body">
+
+                <form asp-controller="Ruta"
+                      asp-action="Edit"
+                      asp-route-id="@Model.IdRuta"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <!-- ID -->
+                    <input type="hidden"
+                           asp-for="IdRuta" />
+
+                    <!-- ERRORES GENERALES -->
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger alert-validation"
+                         role="alert">
+                    </div>
+
+                    <div class="row g-4">
+
+                        <!-- =================================================
+                             ORIGEN
+                             ================================================= -->
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Origen"
+                                   class="form-label">
+
+                                <i class="bi bi-geo-alt-fill me-1"></i>
+                                Origen
+
+                            </label>
+
+                            <input asp-for="Origen"
+                                   class="form-control"
+                                   placeholder="Ej. Huancayo"
+                                   maxlength="200"
+                                   autocomplete="off" />
+
+                            <span asp-validation-for="Origen"
+                                  class="text-danger validation-message">
+                            </span>
+
+                            <div class="campo-info">
+                                Ciudad o lugar desde donde inicia el recorrido.
+                            </div>
+
+                        </div>
+
+                        <!-- =================================================
+                             DESTINO
+                             ================================================= -->
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Destino"
+                                   class="form-label">
+
+                                <i class="bi bi-geo-alt me-1"></i>
+                                Destino
+
+                            </label>
+
+                            <input asp-for="Destino"
+                                   class="form-control"
+                                   placeholder="Ej. Tarma"
+                                   maxlength="200"
+                                   autocomplete="off" />
+
+                            <span asp-validation-for="Destino"
+                                  class="text-danger validation-message">
+                            </span>
+
+                            <div class="campo-info">
+                                Ciudad o lugar donde termina el recorrido.
+                            </div>
+
+                        </div>
+
+                        <!-- =================================================
+                             KILÓMETROS
+                             ================================================= -->
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Kilometros"
+                                   class="form-label">
+
+                                <i class="bi bi-signpost-split-fill me-1"></i>
+                                Kilómetros
+
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-speedometer2"></i>
+                                </span>
+
+                                <input asp-for="Kilometros"
+                                       type="number"
+                                       class="form-control"
+                                       placeholder="Ej. 108.00"
+                                       min="0.01"
+                                       step="0.01" />
+
+                                <span class="input-group-text">
+                                    km
+                                </span>
+
+                            </div>
+
+                            <span asp-validation-for="Kilometros"
+                                  class="text-danger validation-message">
+                            </span>
+
+                            <div class="campo-info">
+                                Distancia correspondiente a la ruta.
+                            </div>
+
+                        </div>
+
+                        <!-- =================================================
+                             ESTADO
+                             ================================================= -->
+
+                        <div class="col-md-6">
+
+                            <label class="form-label">
+                                <i class="bi bi-toggle-on me-1"></i>
+                                Estado
+                            </label>
+
+                            <div id="estadoContainer"
+                                 class="estado-container">
+
+                                <input asp-for="Estado"
+                                       type="checkbox"
+                                       id="Estado" />
+
+                                <label for="Estado"
+                                       id="estadoLabel"
+                                       class="estado-label">
+                                    Ruta activa
+                                </label>
+
+                            </div>
+
+                            <div id="estadoAyuda"
+                                 class="estado-ayuda">
+                                La ruta activa estará disponible para utilizarse
+                                en el sistema.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- =====================================================
+                         INFORMACIÓN
+                         ===================================================== -->
+
+                    <div class="info-ruta">
+
+                        <div class="d-flex align-items-start">
+
+                            <i class="bi bi-info-circle-fill me-2"></i>
+
+                            <div>
+                                <strong>Importante</strong>
+
+                                <div class="small mt-1">
+                                    Si una ruta deja de utilizarse, puedes
+                                    desactivarla sin eliminarla de la base
+                                    de datos. Esto permite conservar el
+                                    historial del sistema.
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- =====================================================
+                         BOTONES
+                         ===================================================== -->
+
+                    <div class="acciones">
+
+                        <a asp-controller="Ruta"
+                           asp-action="Index"
+                           class="btn btn-cancelar">
+
+                            <i class="bi bi-arrow-left me-1"></i>
+                            Cancelar
+
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-guardar">
+
+                            <i class="bi bi-check-circle me-1"></i>
+                            Guardar cambios
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const estado =
+                document.getElementById("Estado");
+
+            const contenedor =
+                document.getElementById("estadoContainer");
+
+            const etiqueta =
+                document.getElementById("estadoLabel");
+
+            const ayuda =
+                document.getElementById("estadoAyuda");
+
+            function actualizarEstado() {
+
+                if (estado.checked) {
+
+                    contenedor.classList.remove("inactivo");
+                    contenedor.classList.add("activo");
+
+                    etiqueta.textContent = "Ruta activa";
+
+                    ayuda.textContent =
+                        "La ruta activa estará disponible para utilizarse en el sistema.";
+
+                } else {
+
+                    contenedor.classList.remove("activo");
+                    contenedor.classList.add("inactivo");
+
+                    etiqueta.textContent = "Ruta inactiva";
+
+                    ayuda.textContent =
+                        "La ruta inactiva no debería utilizarse para nuevos registros.";
+
+                }
+            }
+
+            estado.addEventListener("change", actualizarEstado);
+
+            actualizarEstado();
+
+        });
+    </script>
+}

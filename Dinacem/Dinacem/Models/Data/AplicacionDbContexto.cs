@@ -1,4 +1,4 @@
-﻿using Dinacen.Models.Entidades;
+﻿using Dinacem.Models.Entidades;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dinacem.Models

@@ -1,0 +1,768 @@
+﻿@model IEnumerable<Dinacem.Models.Entidades.Ruta>
+
+@{
+    ViewData["Title"] = "Administrar rutas";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+}
+
+<style>
+
+    .ruta-wrapper {
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px 15px 40px;
+    }
+
+    /* =========================================================
+           ENCABEZADO
+           ========================================================= */
+
+    .ruta-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 12px rgba(15, 23, 42, .05);
+    }
+
+    .ruta-header-content {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .ruta-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eaf2fb;
+        color: #0c4a8a;
+        border-radius: 12px;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    .ruta-title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 800;
+        color: #172033;
+    }
+
+    .ruta-description {
+        margin: 4px 0 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    /* =========================================================
+           BOTÓN NUEVA RUTA
+           ========================================================= */
+
+    .btn-nueva-ruta {
+        min-height: 44px;
+        padding: 0 18px;
+        background: #0c4a8a;
+        border: 1px solid #0c4a8a;
+        color: #ffffff;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+        .btn-nueva-ruta:hover {
+            background: #083b70;
+            border-color: #083b70;
+            color: #ffffff;
+        }
+
+    /* =========================================================
+           TARJETA
+           ========================================================= */
+
+    .ruta-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        box-shadow: 0 3px 12px rgba(15, 23, 42, .05);
+        overflow: hidden;
+    }
+
+    .ruta-card-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #e8edf3;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .ruta-card-title {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 800;
+        color: #172033;
+    }
+
+    /* =========================================================
+           BUSCADOR
+           ========================================================= */
+
+    .ruta-search {
+        position: relative;
+        width: 280px;
+    }
+
+        .ruta-search i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            pointer-events: none;
+        }
+
+        .ruta-search input {
+            width: 100%;
+            min-height: 40px;
+            border: 1px solid #d7dee8;
+            border-radius: 8px;
+            padding: 8px 12px 8px 36px;
+            font-size: 13px;
+            outline: none;
+        }
+
+            .ruta-search input:focus {
+                border-color: #0c4a8a;
+                box-shadow: 0 0 0 3px rgba(12, 74, 138, .08);
+            }
+
+    /* =========================================================
+           TABLA
+           ========================================================= */
+
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .ruta-table {
+        width: 100%;
+        margin: 0;
+        border-collapse: collapse;
+    }
+
+        .ruta-table thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            padding: 13px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .ruta-table tbody td {
+            padding: 14px 16px;
+            color: #334155;
+            font-size: 13px;
+            border-bottom: 1px solid #edf1f5;
+            vertical-align: middle;
+        }
+
+        .ruta-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .ruta-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+    .ruta-id {
+        font-weight: 700;
+        color: #64748b;
+    }
+
+    .ruta-lugar {
+        font-weight: 700;
+        color: #172033;
+    }
+
+    .ruta-km {
+        font-weight: 700;
+        color: #172033;
+        white-space: nowrap;
+    }
+
+    /* =========================================================
+           ESTADOS
+           ========================================================= */
+
+    .estado-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .estado-activo {
+        background: #eaf7ef;
+        color: #218739;
+    }
+
+    .estado-inactivo {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    /* =========================================================
+           ACCIONES
+           ========================================================= */
+
+    .acciones {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        white-space: nowrap;
+    }
+
+    .btn-accion {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #dbe2ea;
+        background: #ffffff;
+        color: #475569;
+        text-decoration: none;
+        cursor: pointer;
+        transition: .15s ease;
+    }
+
+        .btn-accion:hover {
+            background: #f8fafc;
+            color: #0c4a8a;
+            border-color: #b9c8d9;
+        }
+
+    .btn-estado {
+        border: 1px solid #dbe2ea;
+    }
+
+    /* =========================================================
+           SIN REGISTROS
+           ========================================================= */
+
+    .sin-rutas {
+        text-align: center;
+        padding: 50px 20px;
+        color: #64748b;
+    }
+
+        .sin-rutas i {
+            display: block;
+            font-size: 38px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        .sin-rutas strong {
+            display: block;
+            color: #334155;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .sin-rutas span {
+            font-size: 12px;
+        }
+
+    /* =========================================================
+           RESPONSIVE
+           ========================================================= */
+
+    @@media (max-width: 767px) {
+
+        .ruta-wrapper {
+            padding: 10px;
+        }
+
+        .ruta-header {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .ruta-header-content {
+            align-items: flex-start;
+        }
+
+        .ruta-title {
+            font-size: 21px;
+        }
+
+        .btn-nueva-ruta {
+            width: 100%;
+        }
+
+        .ruta-card-header {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .ruta-search {
+            width: 100%;
+        }
+
+        .ruta-table {
+            min-width: 750px;
+        }
+    }
+
+</style>
+
+
+<div class="ruta-wrapper">
+
+    <!-- =====================================================
+         ENCABEZADO
+         ===================================================== -->
+
+    <div class="ruta-header">
+
+        <div class="ruta-header-content">
+
+            <div class="ruta-icon">
+                <i class="bi bi-signpost-2-fill"></i>
+            </div>
+
+            <div>
+
+                <h1 class="ruta-title">
+                    Administrar rutas
+                </h1>
+
+                <p class="ruta-description">
+                    Registre y gestione las rutas utilizadas en la
+                    bitácora vehicular.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a asp-controller="Ruta"
+           asp-action="Create"
+           class="btn-nueva-ruta">
+
+            <i class="bi bi-plus-circle me-2"></i>
+
+            Nueva ruta
+
+        </a>
+
+    </div>
+
+
+    <!-- =====================================================
+         LISTADO DE RUTAS
+         ===================================================== -->
+
+    <div class="ruta-card">
+
+        <div class="ruta-card-header">
+
+            <h2 class="ruta-card-title">
+
+                <i class="bi bi-list-ul me-2 text-primary"></i>
+
+                Rutas registradas
+
+            </h2>
+
+
+            <div class="ruta-search">
+
+                <i class="bi bi-search"></i>
+
+                <input type="text"
+                       id="buscadorRutas"
+                       placeholder="Buscar ruta..."
+                       autocomplete="off" />
+
+            </div>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+            @if (Model != null && Model.Any())
+            {
+                <table class="ruta-table"
+                       id="tablaRutas">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Origen</th>
+
+                            <th>Destino</th>
+
+                            <th>Kilómetros</th>
+
+                            <th>Estado</th>
+
+                            <th>Acciones</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @foreach (var ruta in Model)
+                        {
+                            <tr>
+
+                                <td class="ruta-id">
+                                    @ruta.IdRuta
+                                </td>
+
+
+                                <td>
+                                    <span class="ruta-lugar">
+                                        @ruta.Origen
+                                    </span>
+                                </td>
+
+
+                                <td>
+                                    <span class="ruta-lugar">
+                                        @ruta.Destino
+                                    </span>
+                                </td>
+
+
+                                <td>
+                                    <span class="ruta-km">
+                                        @ruta.Kilometros.ToString("N2") km
+                                    </span>
+                                </td>
+
+
+                                <td>
+
+                                    @if (ruta.Estado)
+                                    {
+                                        <span class="estado-badge estado-activo">
+
+                                            <i class="bi bi-check-circle-fill"></i>
+
+                                            Activo
+
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="estado-badge estado-inactivo">
+
+                                            <i class="bi bi-x-circle-fill"></i>
+
+                                            Inactivo
+
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <td>
+
+                                    <div class="acciones">
+
+                                        <!-- =================================
+                                             EDITAR
+                                             ================================= -->
+
+                                        <a asp-controller="Ruta"
+                                           asp-action="Edit"
+                                           asp-route-id="@ruta.IdRuta"
+                                           class="btn-accion"
+                                           title="Editar ruta">
+
+                                            <i class="bi bi-pencil-fill"></i>
+
+                                        </a>
+
+
+                                        <!-- =================================
+                                             CAMBIAR ESTADO
+                                             ================================= -->
+
+                                        <form asp-controller="Ruta"
+                                              asp-action="CambiarEstado"
+                                              asp-route-id="@ruta.IdRuta"
+                                              method="post"
+                                              class="form-cambiar-estado"
+                                              data-estado="@ruta.Estado">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="btn-accion btn-estado"
+                                                    title="Cambiar estado">
+
+                                                @if (ruta.Estado)
+                                                {
+                                                    <i class="bi bi-toggle-on"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="bi bi-toggle-off"></i>
+                                                }
+
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+            }
+            else
+            {
+                <div class="sin-rutas">
+
+                    <i class="bi bi-signpost-2"></i>
+
+                    <strong>
+                        No hay rutas registradas
+                    </strong>
+
+                    <span>
+                        Presione "Nueva ruta" para registrar la primera ruta.
+                    </span>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function() {
+
+            // =====================================================
+            // ELEMENTOS
+            // =====================================================
+
+            const buscador =
+                document.getElementById("buscadorRutas");
+
+            const tabla =
+                document.getElementById("tablaRutas");
+
+
+            // =====================================================
+            // BUSCADOR
+            // =====================================================
+
+            if (buscador && tabla) {
+
+                buscador.addEventListener("input", function() {
+
+                    const texto =
+                        this.value
+                            .toLowerCase()
+                            .trim();
+
+                    const filas =
+                        tabla.querySelectorAll("tbody tr");
+
+
+                    filas.forEach(function(fila) {
+
+                        const contenido =
+                            fila.textContent
+                                .toLowerCase();
+
+                        if (contenido.includes(texto)) {
+
+                            fila.style.display = "";
+
+                        } else {
+
+                            fila.style.display = "none";
+
+                        }
+
+                    });
+
+                });
+
+            }
+
+
+            // =====================================================
+            // CAMBIAR ESTADO
+            // =====================================================
+
+            const formularios =
+                document.querySelectorAll(".form-cambiar-estado");
+
+
+            formularios.forEach(function(formulario) {
+
+                formulario.addEventListener("submit", function(evento) {
+
+                    evento.preventDefault();
+
+
+                    const estado =
+                        formulario.dataset.estado === "True" ||
+                        formulario.dataset.estado === "true";
+
+
+                    const mensaje =
+                        estado
+                            ? "La ruta será desactivada."
+                            : "La ruta será activada.";
+
+
+                    // =================================================
+                    // SWEETALERT
+                    // =================================================
+
+                    if (typeof Swal !== "undefined") {
+
+                        Swal.fire({
+
+                            title: "¿Está seguro?",
+
+                            text: mensaje,
+
+                            icon: "question",
+
+                            showCancelButton: true,
+
+                            confirmButtonText: "Sí, continuar",
+
+                            cancelButtonText: "Cancelar",
+
+                            reverseButtons: true
+
+                        }).then(function(resultado) {
+
+                            if (resultado.isConfirmed) {
+
+                                formulario.submit();
+
+                            }
+
+                        });
+
+                    }
+
+                    // =================================================
+                    // FALLBACK
+                    // =================================================
+
+                    else {
+
+                        if (confirm(mensaje)) {
+
+                            formulario.submit();
+
+                        }
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+    <!-- =========================================================
+     NOTIFICACIONES
+========================================================= -->
+
+@if (TempData["Success"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            Swal.fire({
+                icon: "success",
+                title: "Operación realizada",
+                text: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["Success"])),
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#0C4A8A",
+                timer: 3000,
+                timerProgressBar: true
+            });
+
+        });
+    </script>
+}
+
+@if (TempData["Error"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            Swal.fire({
+                icon: "error",
+                title: "No se pudo completar",
+                text: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["Error"])),
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#0C4A8A"
+            });
+
+        });
+    </script>
+}
+
+}

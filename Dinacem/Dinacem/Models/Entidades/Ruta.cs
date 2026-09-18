@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Dinacen.Models.Entidades
+namespace Dinacem.Models.Entidades
 {
     public class Ruta
     {
