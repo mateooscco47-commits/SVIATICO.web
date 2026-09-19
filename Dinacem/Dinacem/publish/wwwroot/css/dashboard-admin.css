@@ -1,0 +1,86 @@
+﻿.dashboard-container {
+    padding: 40px;
+}
+
+
+
+.titulo h2 {
+    font-weight: 800;
+    color: #003366;
+}
+
+
+.titulo p {
+    color: #6c757d;
+}
+
+
+
+
+
+.card-dashboard {
+    background: white;
+    height: 220px;
+    border-radius: 18px;
+    padding: 30px;
+    text-decoration: none;
+    color: #333;
+    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+    transition: .3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+
+    .card-dashboard i {
+        font-size: 45px;
+        color: #0066cc;
+        margin-bottom: 15px;
+    }
+
+
+
+    .card-dashboard h4 {
+        font-weight: 700;
+    }
+
+
+
+    .card-dashboard p {
+        color: #6c757d;
+    }
+
+
+
+    .card-dashboard:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 25px rgba(0,0,0,.15);
+    }
+
+
+
+
+.panel-info {
+    background: white;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.08);
+}
+
+
+
+    .panel-info h2 {
+        color: #0066cc;
+        font-weight: 800;
+    }
+
+
+
+@media(max-width:768px) {
+
+    .dashboard-container {
+        padding: 20px;
+    }
+}

@@ -1,0 +1,200 @@
+﻿:root {
+    --dinacen-blue: #0C3E8A;
+    --dinacen-blue-dark: #072554;
+    --dinacen-green: #7BB342;
+    --border-color: #dbe2ea;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #081325;
+    overflow: hidden;
+}
+
+/* Canvas animado al fondo */
+#bgCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+/* Contenedor principal */
+.login-container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 440px;
+    padding: 20px;
+}
+
+/* Card con fondo idéntico al logo (Blanco Puro) */
+.login-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 40px 36px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+}
+
+/* Logo más grande */
+.logo {
+    max-height: 110px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Título */
+.titulo {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--dinacen-blue);
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+/* Labels */
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 6px;
+}
+
+/* Input Groups */
+.custom-input-group {
+    border-radius: 8px;
+    border: 1.5px solid var(--border-color);
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .custom-input-group:focus-within {
+        border-color: var(--dinacen-blue);
+        box-shadow: 0 0 0 3px rgba(12, 62, 138, 0.12);
+    }
+
+    .custom-input-group .input-group-text {
+        background: #f8fafc;
+        border: none;
+        color: var(--dinacen-blue);
+        font-size: 1.1rem;
+        padding: 0 14px;
+    }
+
+    .custom-input-group .form-control {
+        border: none;
+        padding: 12px 14px;
+        font-size: 0.95rem;
+        color: #000000;
+        background: #ffffff;
+    }
+
+        .custom-input-group .form-control:focus {
+            box-shadow: none;
+        }
+
+/* Ocultar botón de ojo por defecto de los navegadores (Edge, Chrome, Safari) */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-contacts-auto-fill-button,
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none !important;
+}
+
+/* Ojo fijo personalizado */
+.btn-toggle-password {
+    background: #f8fafc;
+    border: none;
+    color: #64748b;
+    padding: 0 14px;
+    cursor: pointer;
+}
+
+    .btn-toggle-password:hover {
+        color: var(--dinacen-blue);
+    }
+
+/* Botón Ingresar */
+.btn-login {
+    background: var(--dinacen-blue);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+    margin-top: 8px;
+}
+
+    .btn-login:hover {
+        background: var(--dinacen-blue-dark);
+        color: #ffffff;
+    }
+
+/* Texto del Pie en un solo formato y color negro */
+.card-footer-text {
+    font-size: 0.8rem;
+    color: #000000;
+    font-weight: 500;
+    border-top: 1px solid var(--border-color);
+    padding-top: 18px;
+}
+
+    .card-footer-text i {
+        color: #000000;
+        margin-right: 4px;
+    }
+
+/* Ventana Emergente de Bienvenida */
+.modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.icon-circle {
+    width: 64px;
+    height: 64px;
+    background-color: rgba(123, 179, 66, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .icon-circle i {
+        font-size: 2rem;
+        color: var(--dinacen-green);
+    }
+
+.modal-welcome-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--dinacen-blue);
+    margin-bottom: 4px;
+}
+
+.modal-welcome-text {
+    font-size: 0.95rem;
+    color: #475569;
+    margin-bottom: 12px;
+}
+
+.spinner-border.text-primary {
+    color: var(--dinacen-blue) !important;
+}
