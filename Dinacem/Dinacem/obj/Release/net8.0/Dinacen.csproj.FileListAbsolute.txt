@@ -391,9 +391,3 @@ C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\obj\Relea
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\Dinacen.pdb
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\Dinacen.genruntimeconfig.cache
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\obj\Release\net8.0\ref\Dinacen.dll
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\publish\web.config
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\publish\appsettings.Development.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\publish\appsettings.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\publish\Dinacen.deps.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\publish\Dinacen.runtimeconfig.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Release\net8.0\publish\global.json

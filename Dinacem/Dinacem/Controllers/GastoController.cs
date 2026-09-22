@@ -26,6 +26,7 @@ namespace Dinacem.Controllers
         private const int ESTADO_REEMBOLSO_PENDIENTE = 1;
 
         private const decimal LIMITE_ALIMENTACION_DIARIO = 40m;
+        private const decimal LIMITE_MOVILIDAD_INTERNA_DIARIO = 10m;
         private const decimal LIMITE_HOSPEDAJE_POR_DIA = 50m;
 
         private const decimal TASA_IGV = 0.18m;
@@ -272,8 +273,15 @@ namespace Dinacem.Controllers
                     gasto.IdRendicion);
             }
 
+            // =====================================================
+            // IDENTIFICAR TIPO DE GASTO
+            // =====================================================
+
             bool esMovilidad =
                 EsMovilidad(tipoGasto);
+
+            bool esMovilidadInterna =
+                EsMovilidadInterna(tipoGasto);
 
             bool esHospedaje =
                 EsHospedaje(tipoGasto);
@@ -293,17 +301,31 @@ namespace Dinacem.Controllers
             CalcularImpuestos(gasto);
 
             // =====================================================
-            // HOSPEDAJE / MOVILIDAD
+            // LIMPIAR DATOS SEGÚN TIPO DE GASTO
             // =====================================================
 
-            if (esMovilidad)
+            if (esMovilidadInterna)
             {
-                // Movilidad no utiliza los campos específicos
-                // de hospedaje.
+                // Movilidad interna NO utiliza comprobante
+                // ni RUC ni datos de proveedor.
+
+                LimpiarDatosComprobante(gasto);
+
+                // Tampoco utiliza hospedaje.
+                LimpiarDatosHospedaje(gasto);
+            }
+            else if (esMovilidad)
+            {
+                // Movilidad normal SÍ utiliza comprobante.
+
+                // Solamente limpiamos hospedaje.
                 LimpiarDatosHospedaje(gasto);
             }
             else if (!esHospedaje)
             {
+                // Alimentación y otros gastos que no sean
+                // hospedaje tampoco utilizan datos de hospedaje.
+
                 LimpiarDatosHospedaje(gasto);
             }
 
@@ -316,7 +338,8 @@ namespace Dinacem.Controllers
                 await ValidarHospedajeAsync(
                     gasto,
                     rendicion,
-                    gasto.IdGasto);
+                    gasto.IdGasto,
+                    validarPeriodoRendicion: true);
             }
             else if (gasto.Fecha != default)
             {
@@ -330,48 +353,31 @@ namespace Dinacem.Controllers
             // VALIDACIÓN DE COMPROBANTE Y RUC
             // =====================================================
 
-            if (esMovilidad)
+            if (esMovilidadInterna)
             {
                 // =================================================
-                // MOVILIDAD
+                // MOVILIDAD INTERNA
                 // =================================================
-                // La factura/comprobante es OPCIONAL.
-                //
-                // Si el usuario coloca RUC:
-                // - Se valida.
-                // - Se consulta.
-                // - Se obtiene Razón Social y Domicilio Fiscal.
-                //
-                // Si no coloca RUC:
-                // - No se genera ningún error.
+                // No utiliza:
+                // - comprobante
+                // - RUC
+                // - razón social
+                // - domicilio fiscal
+                // - serie
+                // - número
+                // - archivo
 
-                if (!string.IsNullOrWhiteSpace(gasto.Ruc))
-                {
-                    gasto.Ruc =
-                        gasto.Ruc.Trim();
-
-                    if (gasto.Ruc.Length != 11 ||
-                        !gasto.Ruc.All(char.IsDigit))
-                    {
-                        ModelState.AddModelError(
-                            nameof(Gasto.Ruc),
-                            "El RUC debe contener exactamente 11 dígitos.");
-                    }
-                    else if (ModelState.IsValid)
-                    {
-                        await ValidarRucAsync(gasto);
-                    }
-                }
-
-                // Para Movilidad NO llamamos a
-                // ValidarDatosComprobante(), porque el comprobante
-                // es opcional.
+                LimpiarDatosComprobante(gasto);
             }
             else
             {
                 // =================================================
-                // RESTO DE TIPOS DE GASTO
+                // RESTO DE TIPOS
                 // =================================================
+                // Incluye:
+                // - Alimentación
+                // - Hospedaje
+                // - Movilidad
 
                 ValidarDatosComprobante(gasto);
 
@@ -382,6 +388,18 @@ namespace Dinacem.Controllers
                 }
 
                 ValidarDatosProveedor(gasto);
+
+                // -------------------------------------------------
+                // COMPROBANTE FÍSICO OBLIGATORIO
+                // -------------------------------------------------
+
+                if (archivo == null ||
+                    archivo.Length == 0)
+                {
+                    ModelState.AddModelError(
+                        "archivo",
+                        "Debe adjuntar el comprobante.");
+                }
             }
 
             // =====================================================
@@ -395,22 +413,11 @@ namespace Dinacem.Controllers
             }
 
             // =====================================================
-            // GUARDAR COMPROBANTE SI EXISTE
-            // =====================================================
-            //
-            // IMPORTANTE:
-            // Movilidad también puede tener factura.
-            //
-            // Si se sube archivo:
-            //     -> se guarda.
-            //
-            // Si no se sube archivo:
-            //     -> queda NULL.
-            //
-            // No se obliga a subirlo para Movilidad.
+            // GUARDAR COMPROBANTE
             // =====================================================
 
-            if (archivo != null &&
+            if (!esMovilidadInterna &&
+                archivo != null &&
                 archivo.Length > 0)
             {
                 var resultadoArchivo =
@@ -577,6 +584,8 @@ namespace Dinacem.Controllers
                 await _context.Gastos
                     .Include(g => g.Rendicion)
                         .ThenInclude(r => r!.Solicitud)
+                    .Include(g => g.TipoGasto)
+                    .Include(g => g.TipoComprobante)
                     .FirstOrDefaultAsync(g =>
                         g.IdGasto == modelo.IdGasto);
 
@@ -619,6 +628,10 @@ namespace Dinacem.Controllers
                     });
             }
 
+            // =====================================================
+            // LIMPIAR Y PREPARAR DATOS
+            // =====================================================
+
             LimpiarCampos(modelo);
 
             EliminarValidacionesCalculadas(
@@ -642,42 +655,94 @@ namespace Dinacem.Controllers
                     "El tipo de gasto seleccionado no existe.");
             }
 
+            // =====================================================
+            // IDENTIFICAR TIPO DE GASTO
+            // =====================================================
+
             bool esMovilidad =
                 tipoGasto != null &&
                 EsMovilidad(tipoGasto);
+
+            bool esMovilidadInterna =
+                tipoGasto != null &&
+                EsMovilidadInterna(tipoGasto);
 
             bool esHospedaje =
                 tipoGasto != null &&
                 EsHospedaje(tipoGasto);
 
-            ValidarFechaGasto(
-                modelo.Fecha,
-                rendicion,
-                incluirMensajeDetallado: false);
+            // =====================================================
+            // FECHA DEL ADMINISTRADOR
+            // =====================================================
+            //
+            // IMPORTANTE:
+            // El administrador NO está limitado por:
+            //
+            // rendicion.FechaInicio
+            // rendicion.FechaFin
+            //
+            // Solamente verificamos que exista una fecha válida.
+            // =====================================================
+
+            if (modelo.Fecha == default)
+            {
+                ModelState.AddModelError(
+                    nameof(modelo.Fecha),
+                    "Debe ingresar la fecha del gasto.");
+            }
+
+            // =====================================================
+            // MONTO E IMPUESTOS
+            // =====================================================
 
             ValidarMonto(
                 modelo.MontoTotal);
 
             CalcularImpuestos(modelo);
 
-            if (esMovilidad)
+            // =====================================================
+            // LIMPIAR DATOS SEGÚN TIPO
+            // =====================================================
+
+            if (esMovilidadInterna)
             {
+                // Movilidad interna NO utiliza comprobante.
                 LimpiarDatosComprobante(modelo);
+
+                // Tampoco utiliza hospedaje.
+                LimpiarDatosHospedaje(modelo);
+            }
+            else if (esMovilidad)
+            {
+                // Movilidad normal SÍ utiliza comprobante.
+                // NO limpiar comprobante.
+
+                // Pero no utiliza hospedaje.
                 LimpiarDatosHospedaje(modelo);
             }
             else if (!esHospedaje)
             {
+                // Alimentación y otros gastos
+                // tampoco utilizan hospedaje.
                 LimpiarDatosHospedaje(modelo);
             }
+
+            // =====================================================
+            // VALIDACIONES ESPECÍFICAS
+            // =====================================================
 
             if (tipoGasto != null)
             {
                 if (esHospedaje)
                 {
+                    // El administrador puede modificar libremente
+                    // las fechas de hospedaje sin estar limitado
+                    // al periodo de la rendición.
                     await ValidarHospedajeAsync(
                         modelo,
                         rendicion,
-                        gasto.IdGasto);
+                        gasto.IdGasto,
+                        validarPeriodoRendicion: false);
                 }
                 else if (modelo.Fecha != default)
                 {
@@ -688,8 +753,24 @@ namespace Dinacem.Controllers
                 }
             }
 
-            if (!esMovilidad)
+            // =====================================================
+            // VALIDACIÓN DE COMPROBANTE
+            // =====================================================
+
+            if (esMovilidadInterna)
             {
+                // =================================================
+                // MOVILIDAD INTERNA
+                // =================================================
+
+                LimpiarDatosComprobante(modelo);
+            }
+            else
+            {
+                // =================================================
+                // MOVILIDAD NORMAL + RESTO DE TIPOS
+                // =================================================
+
                 ValidarDatosComprobante(modelo);
 
                 if (ModelState.IsValid &&
@@ -699,7 +780,40 @@ namespace Dinacem.Controllers
                 }
 
                 ValidarDatosProveedor(modelo);
+
+                // -------------------------------------------------
+                // COMPROBANTE
+                // -------------------------------------------------
+                //
+                // Puede ocurrir cualquiera de estas situaciones:
+                //
+                // 1. El administrador sube uno nuevo.
+                // 2. Ya existe uno y quiere conservarlo.
+                // 3. No existe ninguno.
+                //
+                // En el caso 3 debemos impedir guardar.
+                // -------------------------------------------------
+
+                bool existeComprobanteAnterior =
+                    !string.IsNullOrWhiteSpace(
+                        gasto.Comprobante);
+
+                bool seSubioNuevoComprobante =
+                    archivo != null &&
+                    archivo.Length > 0;
+
+                if (!existeComprobanteAnterior &&
+                    !seSubioNuevoComprobante)
+                {
+                    ModelState.AddModelError(
+                        "archivo",
+                        "Debe adjuntar el comprobante.");
+                }
             }
+
+            // =====================================================
+            // VALIDAR MODELSTATE
+            // =====================================================
 
             if (!ModelState.IsValid)
             {
@@ -713,10 +827,14 @@ namespace Dinacem.Controllers
                     });
             }
 
+            // =====================================================
+            // PREPARAR NUEVO COMPROBANTE
+            // =====================================================
+
             string? nuevaRutaComprobante = null;
             string? nuevaRutaFisica = null;
 
-            if (!esMovilidad &&
+            if (!esMovilidadInterna &&
                 archivo != null &&
                 archivo.Length > 0)
             {
@@ -744,44 +862,22 @@ namespace Dinacem.Controllers
                     resultadoArchivo.RutaFisica;
             }
 
+            // =====================================================
+            // CONSERVAR COMPROBANTE ANTERIOR
+            // =====================================================
+
             var comprobanteAnterior =
                 gasto.Comprobante;
+
+            // =====================================================
+            // ACTUALIZAR CAMPOS BÁSICOS
+            // =====================================================
 
             gasto.Fecha =
                 modelo.Fecha;
 
             gasto.IdTipoGasto =
                 modelo.IdTipoGasto;
-
-            gasto.IdTipoComprobante =
-                esMovilidad
-                    ? null
-                    : modelo.IdTipoComprobante;
-
-            gasto.Ruc =
-                esMovilidad
-                    ? null
-                    : modelo.Ruc;
-
-            gasto.RazonSocial =
-                esMovilidad
-                    ? null
-                    : modelo.RazonSocial;
-
-            gasto.DomicilioFiscal =
-                esMovilidad
-                    ? null
-                    : modelo.DomicilioFiscal;
-
-            gasto.Serie =
-                esMovilidad
-                    ? null
-                    : modelo.Serie;
-
-            gasto.Numero =
-                esMovilidad
-                    ? null
-                    : modelo.Numero;
 
             gasto.Detalle =
                 modelo.Detalle;
@@ -797,6 +893,62 @@ namespace Dinacem.Controllers
 
             gasto.ExoneracionIGV =
                 modelo.ExoneracionIGV;
+
+            // =====================================================
+            // ACTUALIZAR DATOS DE COMPROBANTE
+            // =====================================================
+
+            if (esMovilidadInterna)
+            {
+                // Movilidad interna NO conserva ningún dato
+                // relacionado con comprobantes.
+
+                gasto.Ruc = null;
+                gasto.RazonSocial = null;
+                gasto.DomicilioFiscal = null;
+                gasto.IdTipoComprobante = null;
+                gasto.Serie = null;
+                gasto.Numero = null;
+                gasto.Comprobante = null;
+            }
+            else
+            {
+                // Movilidad normal y demás tipos
+                // sí conservan/actualizan comprobante.
+
+                gasto.IdTipoComprobante =
+                    modelo.IdTipoComprobante;
+
+                gasto.Ruc =
+                    modelo.Ruc;
+
+                gasto.RazonSocial =
+                    modelo.RazonSocial;
+
+                gasto.DomicilioFiscal =
+                    modelo.DomicilioFiscal;
+
+                gasto.Serie =
+                    modelo.Serie;
+
+                gasto.Numero =
+                    modelo.Numero;
+
+                // Si se cargó uno nuevo, reemplazar.
+                //
+                // Si no se cargó uno nuevo, conservar
+                // el comprobante anterior.
+                if (!string.IsNullOrWhiteSpace(
+                    nuevaRutaComprobante))
+                {
+                    gasto.Comprobante =
+                        nuevaRutaComprobante;
+                }
+            }
+
+            // =====================================================
+            // ACTUALIZAR HOSPEDAJE
+            // =====================================================
 
             if (esHospedaje)
             {
@@ -816,16 +968,9 @@ namespace Dinacem.Controllers
                 gasto.DiasHospedaje = 0;
             }
 
-            if (esMovilidad)
-            {
-                gasto.Comprobante = null;
-            }
-            else if (!string.IsNullOrWhiteSpace(
-                nuevaRutaComprobante))
-            {
-                gasto.Comprobante =
-                    nuevaRutaComprobante;
-            }
+            // =====================================================
+            // GUARDAR Y REGENERAR PDF
+            // =====================================================
 
             try
             {
@@ -916,17 +1061,30 @@ namespace Dinacem.Controllers
                     });
             }
 
-            if (esMovilidad)
+            // =====================================================
+            // ELIMINAR ARCHIVO ANTERIOR
+            // =====================================================
+
+            if (esMovilidadInterna)
             {
+                // Se cambió a Movilidad interna.
+                // Por tanto, se elimina el comprobante anterior.
+
                 EliminarComprobante(
                     comprobanteAnterior);
             }
             else if (!string.IsNullOrWhiteSpace(
                 nuevaRutaComprobante))
             {
+                // Se reemplazó por un comprobante nuevo.
+
                 EliminarComprobante(
                     comprobanteAnterior);
             }
+
+            // =====================================================
+            // MENSAJE FINAL
+            // =====================================================
 
             TempData["mensaje"] =
                 "El gasto fue corregido correctamente por el administrador.";
@@ -1659,6 +1817,20 @@ namespace Dinacem.Controllers
         }
 
         // =========================================================
+        // MOVILIDAD INTERNA
+        // =========================================================
+
+        private static bool EsMovilidadInterna(
+            TipoGasto tipoGasto)
+        {
+            return tipoGasto.Nombre
+                .Trim()
+                .Equals(
+                    "Movilidad interna",
+                    StringComparison.OrdinalIgnoreCase);
+        }
+
+        // =========================================================
         // HOSPEDAJE
         // =========================================================
 
@@ -1698,6 +1870,13 @@ namespace Dinacem.Controllers
                 return LIMITE_ALIMENTACION_DIARIO;
             }
 
+            if (EsMovilidadInterna(tipoGasto))
+            {
+                return LIMITE_MOVILIDAD_INTERNA_DIARIO;
+            }
+
+            // Movilidad normal = sin límite.
+            // Hospedaje utiliza su propia validación.
             return 0m;
         }
 
@@ -1867,7 +2046,7 @@ namespace Dinacem.Controllers
         }
 
         // =========================================================
-        // VALIDAR LÍMITE ALIMENTACIÓN
+        // VALIDAR LÍMITE DIARIO
         // =========================================================
 
         private async Task ValidarLimiteDiarioAsync(
@@ -1875,7 +2054,10 @@ namespace Dinacem.Controllers
             TipoGasto tipoGasto,
             int idGastoExcluir)
         {
-            if (!EsAlimentacion(tipoGasto))
+            // Solo Alimentación y Movilidad interna
+            // tienen límite diario.
+            if (!EsAlimentacion(tipoGasto) &&
+                !EsMovilidadInterna(tipoGasto))
             {
                 return;
             }
@@ -1952,7 +2134,8 @@ namespace Dinacem.Controllers
         private async Task ValidarHospedajeAsync(
             Gasto gasto,
             Rendicion rendicion,
-            int idGastoExcluir)
+            int idGastoExcluir,
+            bool validarPeriodoRendicion)
         {
             if (gasto.FechaInicioHospedaje == null)
             {
@@ -1996,33 +2179,51 @@ namespace Dinacem.Controllers
                 return;
             }
 
-            if (fechaInicio <
-                    rendicion.FechaInicio.Date ||
-                fechaInicio >
-                    rendicion.FechaFin.Date)
-            {
-                ModelState.AddModelError(
-                    nameof(Gasto.FechaInicioHospedaje),
-                    $"La fecha de inicio del hospedaje debe estar entre " +
-                    $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
-                    $"{rendicion.FechaFin:dd/MM/yyyy}.");
+            // =====================================================
+            // VALIDAR PERIODO DE RENDICIÓN
+            // =====================================================
+            //
+            // Usuario normal:
+            // true  → sí se valida.
+            //
+            // Administrador:
+            // false → puede usar cualquier fecha.
+            // =====================================================
 
-                return;
+            if (validarPeriodoRendicion)
+            {
+                if (fechaInicio <
+                        rendicion.FechaInicio.Date ||
+                    fechaInicio >
+                        rendicion.FechaFin.Date)
+                {
+                    ModelState.AddModelError(
+                        nameof(Gasto.FechaInicioHospedaje),
+                        $"La fecha de inicio del hospedaje debe estar entre " +
+                        $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
+                        $"{rendicion.FechaFin:dd/MM/yyyy}.");
+
+                    return;
+                }
+
+                if (fechaFin <
+                        rendicion.FechaInicio.Date ||
+                    fechaFin >
+                        rendicion.FechaFin.Date)
+                {
+                    ModelState.AddModelError(
+                        nameof(Gasto.FechaFinHospedaje),
+                        $"La fecha de fin del hospedaje debe estar entre " +
+                        $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
+                        $"{rendicion.FechaFin:dd/MM/yyyy}.");
+
+                    return;
+                }
             }
 
-            if (fechaFin <
-                    rendicion.FechaInicio.Date ||
-                fechaFin >
-                    rendicion.FechaFin.Date)
-            {
-                ModelState.AddModelError(
-                    nameof(Gasto.FechaFinHospedaje),
-                    $"La fecha de fin del hospedaje debe estar entre " +
-                    $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
-                    $"{rendicion.FechaFin:dd/MM/yyyy}.");
-
-                return;
-            }
+            // =====================================================
+            // EVITAR CRUCE DE HOSPEDAJES
+            // =====================================================
 
             var hospedajes =
                 _context.Gastos
@@ -2058,6 +2259,10 @@ namespace Dinacem.Controllers
                 return;
             }
 
+            // =====================================================
+            // LÍMITE DE HOSPEDAJE
+            // =====================================================
+
             var limiteHospedaje =
                 gasto.DiasHospedaje *
                 LIMITE_HOSPEDAJE_POR_DIA;
@@ -2081,9 +2286,9 @@ namespace Dinacem.Controllers
         private void ValidarDatosComprobante(
             Gasto gasto)
         {
-            // ---------------------------------------------------------
-            // EL TIPO DE COMPROBANTE SÍ ES OBLIGATORIO
-            // ---------------------------------------------------------
+            // -----------------------------------------------------
+            // TIPO DE COMPROBANTE
+            // -----------------------------------------------------
 
             if (!gasto.IdTipoComprobante.HasValue ||
                 gasto.IdTipoComprobante.Value <= 0)
@@ -2115,18 +2320,16 @@ namespace Dinacem.Controllers
                     .Trim()
                     .ToLowerInvariant() ?? "";
 
-            // ---------------------------------------------------------
+            // -----------------------------------------------------
             // FACTURA
-            // ---------------------------------------------------------
-            // Para factura sí exigimos RUC.
-            // ---------------------------------------------------------
+            // -----------------------------------------------------
 
             bool esFactura =
                 nombreComprobante == "factura";
 
-            // ---------------------------------------------------------
+            // -----------------------------------------------------
             // RUC
-            // ---------------------------------------------------------
+            // -----------------------------------------------------
 
             if (!string.IsNullOrWhiteSpace(gasto.Ruc))
             {
@@ -2148,12 +2351,9 @@ namespace Dinacem.Controllers
                     "Para una factura debe ingresar el RUC.");
             }
 
-            // ---------------------------------------------------------
-            // FACTURA
-            // ---------------------------------------------------------
-            // Si es factura, también necesitamos los datos del proveedor.
-            // Para los demás comprobantes son opcionales.
-            // ---------------------------------------------------------
+            // -----------------------------------------------------
+            // DATOS DEL PROVEEDOR PARA FACTURA
+            // -----------------------------------------------------
 
             if (esFactura)
             {
@@ -2234,10 +2434,6 @@ namespace Dinacem.Controllers
         private void ValidarDatosProveedor(
             Gasto gasto)
         {
-            // ---------------------------------------------------------
-            // Si no hay tipo de comprobante, no validar proveedor
-            // ---------------------------------------------------------
-
             if (!gasto.IdTipoComprobante.HasValue)
             {
                 return;
@@ -2259,15 +2455,12 @@ namespace Dinacem.Controllers
                     .Trim()
                     .ToLowerInvariant() ?? "";
 
-            // ---------------------------------------------------------
-            // SOLO FACTURA EXIGE DATOS COMPLETOS DEL PROVEEDOR
-            // ---------------------------------------------------------
+            // -----------------------------------------------------
+            // NO FACTURA
+            // -----------------------------------------------------
 
             if (nombreComprobante != "factura")
             {
-                // Para Boleta, Ticket y Recibo por Honorarios
-                // los datos del proveedor son opcionales.
-
                 if (!string.IsNullOrWhiteSpace(gasto.RazonSocial) &&
                     gasto.RazonSocial.Length > 250)
                 {
@@ -2287,9 +2480,9 @@ namespace Dinacem.Controllers
                 return;
             }
 
-            // ---------------------------------------------------------
+            // -----------------------------------------------------
             // FACTURA
-            // ---------------------------------------------------------
+            // -----------------------------------------------------
 
             if (string.IsNullOrWhiteSpace(
                 gasto.RazonSocial))
@@ -2373,53 +2566,87 @@ namespace Dinacem.Controllers
 
             Directory.CreateDirectory(carpeta);
 
-            // Los PDF se conservan sin modificar.
+            // =====================================================
+            // PDF
+            // =====================================================
+
             if (extension == ".pdf")
             {
-                var nombrePdf = $"{Guid.NewGuid()}.pdf";
-                var rutaPdf = Path.Combine(carpeta, nombrePdf);
+                var nombrePdf =
+                    $"{Guid.NewGuid()}.pdf";
+
+                var rutaPdf =
+                    Path.Combine(
+                        carpeta,
+                        nombrePdf);
 
                 await using var streamPdf =
-                    new FileStream(rutaPdf, FileMode.Create);
+                    new FileStream(
+                        rutaPdf,
+                        FileMode.Create);
 
-                await archivo.CopyToAsync(streamPdf);
+                await archivo.CopyToAsync(
+                    streamPdf);
 
                 return new ResultadoArchivo
                 {
                     Exito = true,
-                    RutaPublica = $"/comprobantes/{nombrePdf}",
-                    RutaFisica = rutaPdf
+                    RutaPublica =
+                        $"/comprobantes/{nombrePdf}",
+                    RutaFisica =
+                        rutaPdf
                 };
             }
 
-            // Para imágenes no confiamos en la extensión. Magick.NET
-            // detecta el formato real (incluido HEIF/HEIC de iPhone)
-            // y lo normaliza a un JPEG verdadero para QuestPDF.
+            // =====================================================
+            // IMAGEN
+            // =====================================================
+
             try
             {
-                await using var memoria = new MemoryStream();
-                await archivo.CopyToAsync(memoria);
+                await using var memoria =
+                    new MemoryStream();
+
+                await archivo.CopyToAsync(
+                    memoria);
+
                 memoria.Position = 0;
 
-                using var imagen = new MagickImage(memoria);
+                using var imagen =
+                    new MagickImage(memoria);
 
                 imagen.AutoOrient();
-                imagen.BackgroundColor = MagickColors.White;
-                imagen.Alpha(AlphaOption.Remove);
+                imagen.BackgroundColor =
+                    MagickColors.White;
+
+                imagen.Alpha(
+                    AlphaOption.Remove);
+
                 imagen.Strip();
-                imagen.Format = MagickFormat.Jpeg;
+
+                imagen.Format =
+                    MagickFormat.Jpeg;
+
                 imagen.Quality = 90;
 
-                var nombreImagen = $"{Guid.NewGuid()}.jpg";
-                var rutaImagen = Path.Combine(carpeta, nombreImagen);
+                var nombreImagen =
+                    $"{Guid.NewGuid()}.jpg";
 
-                await imagen.WriteAsync(rutaImagen);
+                var rutaImagen =
+                    Path.Combine(
+                        carpeta,
+                        nombreImagen);
+
+                await imagen.WriteAsync(
+                    rutaImagen);
 
                 return new ResultadoArchivo
                 {
                     Exito = true,
-                    RutaPublica = $"/comprobantes/{nombreImagen}",
-                    RutaFisica = rutaImagen
+                    RutaPublica =
+                        $"/comprobantes/{nombreImagen}",
+                    RutaFisica =
+                        rutaImagen
                 };
             }
             catch (Exception ex)

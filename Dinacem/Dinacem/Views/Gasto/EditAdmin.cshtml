@@ -533,11 +533,9 @@
                         </label>
 
                         <input asp-for="Fecha"
-                               type="date"
-                               class="form-control"
-                               min="@rendicion?.FechaInicio.ToString("yyyy-MM-dd")"
-                               max="@rendicion?.FechaFin.ToString("yyyy-MM-dd")"
-                               required />
+       type="date"
+       class="form-control"
+       required />
 
                         <span asp-validation-for="Fecha"
                               class="text-danger">

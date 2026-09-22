@@ -129,6 +129,8 @@
 
     const LIMITE_ALIMENTACION = 40.00;
 
+    const LIMITE_MOVILIDAD_INTERNA = 10.00;
+
     const LIMITE_HOSPEDAJE = 50.00;
 
     const TAMANIO_MAXIMO_ARCHIVO =
@@ -202,7 +204,42 @@
                 obtenerNombreTipo()
             );
 
-        return tipo.includes("movilidad");
+        return (
+            tipo.includes("movilidad") &&
+            !tipo.includes("movilidad interna")
+        );
+
+    }
+
+
+    // =========================================================
+    // ES MOVILIDAD INTERNA
+    // =========================================================
+
+    function esMovilidadInterna() {
+
+        const tipo =
+            normalizarTexto(
+                obtenerNombreTipo()
+            );
+
+        return tipo.includes(
+            "movilidad interna"
+        );
+
+    }
+
+
+    // =========================================================
+    // ES MOVILIDAD NORMAL
+    // =========================================================
+
+    function esMovilidadNormal() {
+
+        return (
+            esMovilidad() &&
+            !esMovilidadInterna()
+        );
 
     }
 
@@ -242,27 +279,15 @@
     // =========================================================
     // RUC OBLIGATORIO
     // =========================================================
-    //
-    // Solamente FACTURA exige RUC.
-    //
-    // Boleta                  -> RUC opcional
-    // Ticket                  -> RUC opcional
-    // Recibo por Honorarios   -> RUC opcional
-    // Movilidad               -> RUC opcional
-    //
-    // IMPORTANTE:
-    // Que el RUC sea opcional NO significa que la consulta
-    // esté deshabilitada.
-    //
-    // Si el usuario escribe un RUC de 11 dígitos,
-    // puede consultarlo para cualquier tipo de gasto.
-    //
-    // =========================================================
 
     function rucEsObligatorio() {
 
-        if (esMovilidad()) {
+        if (esMovilidadInterna()) {
             return false;
+        }
+
+        if (esMovilidadNormal()) {
+            return true;
         }
 
         return esFactura();
@@ -279,6 +304,12 @@
         const movilidad =
             esMovilidad();
 
+        const movilidadInterna =
+            esMovilidadInterna();
+
+        const movilidadNormal =
+            esMovilidadNormal();
+
         const hospedaje =
             esHospedaje();
 
@@ -286,17 +317,12 @@
         // =====================================================
         // DOMICILIO FISCAL
         // =====================================================
-        //
-        // SIEMPRE EDITABLE.
-        //
-        // No importa si viene de SUNAT o si el usuario
-        // lo escribe manualmente.
-        //
-        // =====================================================
 
         if (domicilio) {
 
-            domicilio.removeAttribute("readonly");
+            domicilio.removeAttribute(
+                "readonly"
+            );
 
         }
 
@@ -408,39 +434,43 @@
 
 
         // =====================================================
-        // MOVILIDAD
+        // MOVILIDAD INTERNA
         // =====================================================
 
-        if (movilidad) {
+        if (movilidadInterna) {
 
             // RUC OPCIONAL
-            ruc?.removeAttribute("required");
+            ruc?.removeAttribute(
+                "required"
+            );
 
+            // PROVEEDOR OPCIONAL
+            razonSocial?.removeAttribute(
+                "required"
+            );
 
-            // RAZÓN SOCIAL OPCIONAL
-            razonSocial?.removeAttribute("required");
-
-
-            // DOMICILIO FISCAL OPCIONAL
-            domicilio?.removeAttribute("required");
-
+            domicilio?.removeAttribute(
+                "required"
+            );
 
             // COMPROBANTE OPCIONAL
             tipoComprobante?.removeAttribute(
                 "required"
             );
 
+            // SERIE Y NÚMERO OPCIONALES
+            serie?.removeAttribute(
+                "required"
+            );
 
-            // SERIE OPCIONAL
-            serie?.removeAttribute("required");
+            numero?.removeAttribute(
+                "required"
+            );
 
-
-            // NÚMERO OPCIONAL
-            numero?.removeAttribute("required");
-
-
-            // ARCHIVO OPCIONAL
-            archivo?.removeAttribute("required");
+            // VOUCHER OPCIONAL
+            archivo?.removeAttribute(
+                "required"
+            );
 
 
             if (mensajeMovilidad) {
@@ -455,7 +485,7 @@
 
                 mensajeArchivo.innerHTML =
                     "PDF, JPG, JPEG o PNG. " +
-                    "<strong>Opcional para Movilidad.</strong>";
+                    "<strong>Opcional para Movilidad interna.</strong>";
 
             }
 
@@ -463,9 +493,20 @@
             if (mensajeTipoGasto) {
 
                 mensajeTipoGasto.textContent =
-                    "Movilidad: RUC, comprobante y voucher son opcionales. Si ingresa un RUC, puede consultarlo.";
+                    "Movilidad interna: RUC, comprobante y voucher son opcionales. Si ingresa un RUC, puede buscarlo y consultar sus datos.";
 
                 mensajeTipoGasto.className =
+                    "form-text text-success";
+
+            }
+
+
+            if (mensajeComprobante) {
+
+                mensajeComprobante.textContent =
+                    "Para Movilidad interna el comprobante es opcional. Puede seleccionarlo y adjuntar el voucher si corresponde.";
+
+                mensajeComprobante.className =
                     "form-text text-success";
 
             }
@@ -487,78 +528,40 @@
                 "is-invalid"
             );
 
+            serie?.classList.remove(
+                "is-invalid"
+            );
+
+            numero?.classList.remove(
+                "is-invalid"
+            );
+
             archivo?.classList.remove(
                 "is-invalid"
             );
 
-            return;
+
+            // IMPORTANTE:
+            // NO hacemos return aquí.
+            // Debe continuar para validar el límite
+            // diario de S/ 10.00 al enviar.
 
         }
 
 
         // =====================================================
-        // NO ES MOVILIDAD
+        // MOVILIDAD NORMAL
         // =====================================================
 
-        if (mensajeMovilidad) {
+        else if (movilidadNormal) {
 
-            mensajeMovilidad.style.display =
-                "none";
-
-        }
-
-
-        // =====================================================
-        // TIPO DE COMPROBANTE
-        // =====================================================
-
-        tipoComprobante?.setAttribute(
-            "required",
-            "required"
-        );
-
-
-        // =====================================================
-        // VOUCHER
-        // =====================================================
-
-        archivo?.setAttribute(
-            "required",
-            "required"
-        );
-
-
-        // =====================================================
-        // RUC
-        // =====================================================
-        //
-        // Solamente FACTURA lo exige.
-        //
-        // =====================================================
-
-        if (rucEsObligatorio()) {
-
+            // RUC OBLIGATORIO
             ruc?.setAttribute(
                 "required",
                 "required"
             );
 
-        }
-        else {
-
-            ruc?.removeAttribute(
-                "required"
-            );
-
-        }
-
-
-        // =====================================================
-        // PROVEEDOR
-        // =====================================================
-
-        if (rucEsObligatorio()) {
-
+            // DATOS DEL PROVEEDOR OBLIGATORIOS
             razonSocial?.setAttribute(
                 "required",
                 "required"
@@ -569,75 +572,229 @@
                 "required"
             );
 
-        }
-        else {
-
-            razonSocial?.removeAttribute(
+            // COMPROBANTE OBLIGATORIO
+            tipoComprobante?.setAttribute(
+                "required",
                 "required"
             );
 
-            domicilio?.removeAttribute(
+            // SERIE Y NÚMERO OPCIONALES
+            serie?.removeAttribute(
                 "required"
             );
 
-        }
+            numero?.removeAttribute(
+                "required"
+            );
+
+            // VOUCHER OBLIGATORIO
+            archivo?.setAttribute(
+                "required",
+                "required"
+            );
 
 
-        // =====================================================
-        // SERIE Y NÚMERO
-        // =====================================================
+            if (mensajeMovilidad) {
 
-        serie?.removeAttribute("required");
+                mensajeMovilidad.style.display =
+                    "block";
 
-        numero?.removeAttribute("required");
-
-
-        // =====================================================
-        // MENSAJE ARCHIVO
-        // =====================================================
-
-        if (mensajeArchivo) {
-
-            mensajeArchivo.innerHTML =
-                "PDF, JPG, JPEG o PNG. " +
-                "<strong>Obligatorio excepto para Movilidad.</strong>";
-
-        }
+            }
 
 
-        // =====================================================
-        // MENSAJE TIPO GASTO
-        // =====================================================
+            if (mensajeArchivo) {
 
-        if (mensajeTipoGasto) {
+                mensajeArchivo.innerHTML =
+                    "PDF, JPG, JPEG o PNG. " +
+                    "<strong>Obligatorio para Movilidad.</strong>";
 
-            if (esFactura()) {
+            }
+
+
+            if (mensajeTipoGasto) {
 
                 mensajeTipoGasto.textContent =
-                    "Factura: debe ingresar un RUC válido.";
+                    "Movilidad: debe ingresar un RUC válido, consultar sus datos, seleccionar un comprobante y adjuntar el voucher.";
 
                 mensajeTipoGasto.className =
                     "form-text text-primary";
 
             }
-            else if (
-                tipoComprobante &&
-                tipoComprobante.value
-            ) {
 
-                mensajeTipoGasto.textContent =
-                    "RUC opcional para este tipo de comprobante. Si lo ingresa, puede consultarlo.";
 
-                mensajeTipoGasto.className =
-                    "form-text text-success";
+            if (mensajeComprobante) {
+
+                mensajeComprobante.textContent =
+                    "Para Movilidad el comprobante es obligatorio.";
+
+                mensajeComprobante.className =
+                    "form-text text-primary";
+
+            }
+
+
+            ruc?.classList.remove(
+                "is-invalid"
+            );
+
+            razonSocial?.classList.remove(
+                "is-invalid"
+            );
+
+            domicilio?.classList.remove(
+                "is-invalid"
+            );
+
+
+        }
+
+
+        // =====================================================
+        // NO ES MOVILIDAD
+        // =====================================================
+
+        else {
+
+            if (mensajeMovilidad) {
+
+                mensajeMovilidad.style.display =
+                    "none";
+
+            }
+
+
+            // =================================================
+            // TIPO DE COMPROBANTE
+            // =================================================
+
+            tipoComprobante?.setAttribute(
+                "required",
+                "required"
+            );
+
+
+            // =================================================
+            // VOUCHER
+            // =================================================
+
+            archivo?.setAttribute(
+                "required",
+                "required"
+            );
+
+
+            // =================================================
+            // RUC
+            // =================================================
+
+            if (rucEsObligatorio()) {
+
+                ruc?.setAttribute(
+                    "required",
+                    "required"
+                );
 
             }
             else {
 
-                mensajeTipoGasto.textContent = "";
+                ruc?.removeAttribute(
+                    "required"
+                );
 
-                mensajeTipoGasto.className =
-                    "form-text";
+            }
+
+
+            // =================================================
+            // PROVEEDOR
+            // =================================================
+
+            if (rucEsObligatorio()) {
+
+                razonSocial?.setAttribute(
+                    "required",
+                    "required"
+                );
+
+                domicilio?.setAttribute(
+                    "required",
+                    "required"
+                );
+
+            }
+            else {
+
+                razonSocial?.removeAttribute(
+                    "required"
+                );
+
+                domicilio?.removeAttribute(
+                    "required"
+                );
+
+            }
+
+
+            // =================================================
+            // SERIE Y NÚMERO
+            // =================================================
+
+            serie?.removeAttribute(
+                "required"
+            );
+
+            numero?.removeAttribute(
+                "required"
+            );
+
+
+            // =================================================
+            // MENSAJE ARCHIVO
+            // =================================================
+
+            if (mensajeArchivo) {
+
+                mensajeArchivo.innerHTML =
+                    "PDF, JPG, JPEG o PNG. " +
+                    "<strong>Obligatorio excepto para Movilidad interna.</strong>";
+
+            }
+
+
+            // =================================================
+            // MENSAJE TIPO GASTO
+            // =================================================
+
+            if (mensajeTipoGasto) {
+
+                if (esFactura()) {
+
+                    mensajeTipoGasto.textContent =
+                        "Factura: debe ingresar un RUC válido.";
+
+                    mensajeTipoGasto.className =
+                        "form-text text-primary";
+
+                }
+                else if (
+                    tipoComprobante &&
+                    tipoComprobante.value
+                ) {
+
+                    mensajeTipoGasto.textContent =
+                        "RUC opcional para este tipo de comprobante. Si lo ingresa, puede consultarlo.";
+
+                    mensajeTipoGasto.className =
+                        "form-text text-success";
+
+                }
+                else {
+
+                    mensajeTipoGasto.textContent = "";
+
+                    mensajeTipoGasto.className =
+                        "form-text";
+
+                }
 
             }
 
@@ -648,16 +805,6 @@
 
     // =========================================================
     // CONSULTAR RUC
-    // =========================================================
-    //
-    // IMPORTANTE:
-    //
-    // YA NO SE BLOQUEA LA CONSULTA PARA MOVILIDAD.
-    //
-    // La consulta funciona para TODOS los tipos de gasto.
-    //
-    // El RUC solamente debe tener 11 dígitos.
-    //
     // =========================================================
 
     async function consultarRuc() {
@@ -716,7 +863,6 @@
 
             domicilio.value = "";
 
-            // Siempre editable
             domicilio.removeAttribute(
                 "readonly"
             );
@@ -851,11 +997,6 @@
             // =================================================
             // DOMICILIO FISCAL
             // =================================================
-            //
-            // IMPORTANTE:
-            // Se carga automáticamente, pero queda editable.
-            //
-            // =================================================
 
             if (domicilio) {
 
@@ -938,33 +1079,10 @@
     function validarComprobantePorRuc() {
 
         // =====================================================
-        // MOVILIDAD
+        // MOVILIDAD INTERNA
         // =====================================================
 
-        if (esMovilidad()) {
-
-            if (mensajeComprobante) {
-
-                if (
-                    ruc &&
-                    ruc.value.trim()
-                ) {
-
-                    mensajeComprobante.textContent =
-                        "Para Movilidad el comprobante es opcional. El RUC ingresado puede utilizarse para consultar los datos del proveedor.";
-
-                }
-                else {
-
-                    mensajeComprobante.textContent =
-                        "Para Movilidad el comprobante y el RUC son opcionales.";
-
-                }
-
-                mensajeComprobante.className =
-                    "form-text text-success";
-
-            }
+        if (esMovilidadInterna()) {
 
             tipoComprobante?.classList.remove(
                 "is-invalid"
@@ -980,9 +1098,7 @@
         // =====================================================
 
         if (!ruc || !tipoComprobante) {
-
             return true;
-
         }
 
 
@@ -1029,19 +1145,95 @@
 
 
         // =====================================================
+        // VALIDAR RUC SI FUE INGRESADO
+        // =====================================================
+
+        if (
+            numeroRuc &&
+            !/^\d{11}$/.test(numeroRuc)
+        ) {
+
+            if (mensajeComprobante) {
+
+                mensajeComprobante.textContent =
+                    "El RUC debe contener exactamente 11 dígitos.";
+
+                mensajeComprobante.className =
+                    "form-text text-danger";
+
+            }
+
+            tipoComprobante.classList.add(
+                "is-invalid"
+            );
+
+            return false;
+
+        }
+
+
+        // =====================================================
+        // RUC QUE EMPIEZA EN 20
+        // =====================================================
+
+        const rucEmpiezaEn20 =
+            numeroRuc.startsWith("20");
+
+
+        if (rucEmpiezaEn20) {
+
+            if (
+                comprobante.includes("factura")
+            ) {
+
+                if (mensajeComprobante) {
+
+                    mensajeComprobante.textContent =
+                        "RUC iniciado en 20: solo se permite FACTURA.";
+
+                    mensajeComprobante.className =
+                        "form-text text-success";
+
+                }
+
+                tipoComprobante.classList.remove(
+                    "is-invalid"
+                );
+
+                return true;
+
+            }
+
+
+            if (mensajeComprobante) {
+
+                mensajeComprobante.textContent =
+                    "El RUC ingresado empieza con 20. Para este RUC únicamente se permite FACTURA.";
+
+                mensajeComprobante.className =
+                    "form-text text-danger";
+
+            }
+
+            tipoComprobante.classList.add(
+                "is-invalid"
+            );
+
+            return false;
+
+        }
+
+
+        // =====================================================
         // FACTURA
         // =====================================================
 
         if (
-            comprobante.includes(
-                "factura"
-            )
+            comprobante.includes("factura")
         ) {
 
             if (
-                !/^\d{11}$/.test(
-                    numeroRuc
-                )
+                !/^\d{11}$/.test(numeroRuc)
             ) {
 
                 if (mensajeComprobante) {
@@ -1059,29 +1251,6 @@
                 );
 
                 return false;
-
-            }
-
-
-            if (
-                numeroRuc.startsWith("20")
-            ) {
-
-                if (mensajeComprobante) {
-
-                    mensajeComprobante.textContent =
-                        "RUC iniciado en 20: comprobante válido.";
-
-                    mensajeComprobante.className =
-                        "form-text text-success";
-
-                }
-
-                tipoComprobante.classList.remove(
-                    "is-invalid"
-                );
-
-                return true;
 
             }
 
@@ -1113,34 +1282,14 @@
 
             if (numeroRuc) {
 
-                if (
-                    !/^\d{11}$/.test(
-                        numeroRuc
-                    )
-                ) {
-
-                    mensajeComprobante.textContent =
-                        "El RUC es opcional, pero si lo ingresa debe contener 11 dígitos.";
-
-                    mensajeComprobante.className =
-                        "form-text text-warning";
-
-                    tipoComprobante.classList.add(
-                        "is-invalid"
-                    );
-
-                    return false;
-
-                }
-
                 mensajeComprobante.textContent =
-                    "RUC válido. El RUC es opcional para este comprobante.";
+                    "RUC válido. Puede utilizar este comprobante.";
 
             }
             else {
 
                 mensajeComprobante.textContent =
-                    "El RUC es opcional para este tipo de comprobante.";
+                    "Debe ingresar un RUC válido.";
 
             }
 
@@ -1187,6 +1336,17 @@
         ) {
 
             return LIMITE_ALIMENTACION;
+
+        }
+
+
+        if (
+            tipo.includes(
+                "movilidad interna"
+            )
+        ) {
+
+            return LIMITE_MOVILIDAD_INTERNA;
 
         }
 
@@ -1375,7 +1535,7 @@
 
 
         // =====================================================
-        // MOVILIDAD
+        // MOVILIDAD NORMAL
         // =====================================================
 
         if (esMovilidad()) {
@@ -1400,7 +1560,7 @@
 
 
         // =====================================================
-        // ALIMENTACIÓN
+        // ALIMENTACIÓN / MOVILIDAD INTERNA
         // =====================================================
 
         const fecha =
@@ -2226,11 +2386,6 @@
         // =====================================================
         // BLUR DEL RUC
         // =====================================================
-        //
-        // FUNCIONA PARA TODOS LOS TIPOS DE GASTO,
-        // INCLUYENDO MOVILIDAD.
-        //
-        // =====================================================
 
         ruc.addEventListener(
             "blur",
@@ -2285,7 +2440,6 @@
                         domicilio.value =
                             "";
 
-                        // Siempre editable
                         domicilio.removeAttribute(
                             "readonly"
                         );
@@ -2662,28 +2816,21 @@
             const movilidad =
                 esMovilidad();
 
+            const movilidadInterna =
+                esMovilidadInterna();
+
+            const movilidadNormal =
+                esMovilidadNormal();
+
             const hospedaje =
                 esHospedaje();
 
 
             // =====================================================
-            // MOVILIDAD
-            // =====================================================
-            //
-            // NO se exige:
-            // - RUC
-            // - Razón social
-            // - Domicilio
-            // - Comprobante
-            // - Serie
-            // - Número
-            // - Voucher
-            //
-            // PERO:
-            // Si el usuario ingresó RUC, debe ser válido.
+            // MOVILIDAD INTERNA
             // =====================================================
 
-            if (movilidad) {
+            if (movilidadInterna) {
 
                 const numeroRuc =
                     ruc?.value.trim() || "";
@@ -2701,7 +2848,7 @@
 
                     mostrarAlerta(
                         "RUC inválido",
-                        "El RUC es opcional para Movilidad, pero si lo ingresa debe contener exactamente 11 dígitos.",
+                        "El RUC es opcional para Movilidad interna, pero si lo ingresa debe contener exactamente 11 dígitos.",
                         "warning"
                     );
 
@@ -2712,11 +2859,127 @@
 
                 }
 
+                // NO hacemos return aquí.
+                // Debe continuar hacia la validación
+                // del límite diario de S/ 10.00.
 
-                // No se valida comprobante.
-                // No se valida voucher.
-                // No se valida domicilio.
-                // No se valida razón social.
+            }
+
+
+            // =====================================================
+            // MOVILIDAD NORMAL
+            // =====================================================
+
+            else if (movilidadNormal) {
+
+                // =================================================
+                // RUC OBLIGATORIO
+                // =================================================
+
+                const numeroRuc =
+                    ruc?.value.trim() || "";
+
+
+                if (
+                    !/^\d{11}$/.test(
+                        numeroRuc
+                    )
+                ) {
+
+                    event.preventDefault();
+
+
+                    mostrarAlerta(
+                        "RUC obligatorio",
+                        "Para Movilidad debe ingresar un RUC válido de 11 dígitos y consultar sus datos.",
+                        "error"
+                    );
+
+
+                    ruc?.focus();
+
+                    return;
+
+                }
+
+
+                // =================================================
+                // COMPROBANTE OBLIGATORIO
+                // =================================================
+
+                if (
+                    !tipoComprobante ||
+                    !tipoComprobante.value
+                ) {
+
+                    event.preventDefault();
+
+
+                    mostrarAlerta(
+                        "Comprobante obligatorio",
+                        "Debe seleccionar el tipo de comprobante para Movilidad.",
+                        "warning"
+                    );
+
+
+                    tipoComprobante?.focus();
+
+                    return;
+
+                }
+
+
+                // =================================================
+                // VALIDAR RUC Y COMPROBANTE
+                // =================================================
+
+                if (
+                    !validarComprobantePorRuc()
+                ) {
+
+                    event.preventDefault();
+
+
+                    mostrarAlerta(
+                        "Comprobante no válido",
+                        mensajeComprobante?.textContent ||
+                        "Revise el tipo de comprobante y el RUC.",
+                        "warning"
+                    );
+
+
+                    tipoComprobante?.focus();
+
+                    return;
+
+                }
+
+
+                // =================================================
+                // VOUCHER OBLIGATORIO
+                // =================================================
+
+                if (
+                    !archivo ||
+                    !archivo.files ||
+                    archivo.files.length === 0
+                ) {
+
+                    event.preventDefault();
+
+
+                    mostrarAlerta(
+                        "Voucher obligatorio",
+                        "Debe adjuntar el comprobante o voucher de Movilidad.",
+                        "warning"
+                    );
+
+
+                    archivo?.focus();
+
+                    return;
+
+                }
 
 
                 return;
@@ -2729,10 +2992,6 @@
             // =====================================================
 
             if (hospedaje) {
-
-                // -------------------------------------------------
-                // VALIDAR HOSPEDAJE
-                // -------------------------------------------------
 
                 if (
                     !calcularHospedaje(true)
@@ -2786,10 +3045,6 @@
                 }
 
 
-                // -------------------------------------------------
-                // COMPROBANTE
-                // -------------------------------------------------
-
                 if (
                     !tipoComprobante ||
                     !tipoComprobante.value
@@ -2811,10 +3066,6 @@
 
                 }
 
-
-                // -------------------------------------------------
-                // VALIDAR RUC SOLO SI ES FACTURA
-                // -------------------------------------------------
 
                 if (esFactura()) {
 
@@ -2847,10 +3098,6 @@
                 }
 
 
-                // -------------------------------------------------
-                // SI HAY RUC, DEBE SER VÁLIDO
-                // -------------------------------------------------
-
                 const numeroRuc =
                     ruc?.value.trim() || "";
 
@@ -2879,10 +3126,6 @@
                 }
 
 
-                // -------------------------------------------------
-                // VALIDAR COMPROBANTE
-                // -------------------------------------------------
-
                 if (
                     !validarComprobantePorRuc()
                 ) {
@@ -2904,10 +3147,6 @@
 
                 }
 
-
-                // -------------------------------------------------
-                // ARCHIVO
-                // -------------------------------------------------
 
                 if (
                     !archivo ||
@@ -2938,11 +3177,7 @@
             // OTROS TIPOS DE GASTO
             // =====================================================
 
-            else {
-
-                // -------------------------------------------------
-                // TIPO COMPROBANTE
-                // -------------------------------------------------
+            else if (!movilidadInterna && !movilidadNormal && !hospedaje) {
 
                 if (
                     !tipoComprobante ||
@@ -2966,17 +3201,9 @@
                 }
 
 
-                // -------------------------------------------------
-                // RUC
-                // -------------------------------------------------
-
                 const numeroRuc =
                     ruc?.value.trim() || "";
 
-
-                // -------------------------------------------------
-                // FACTURA
-                // -------------------------------------------------
 
                 if (esFactura()) {
 
@@ -3004,10 +3231,6 @@
 
                 }
 
-
-                // -------------------------------------------------
-                // BOLETA / TICKET / RECIBO
-                // -------------------------------------------------
 
                 else {
 
@@ -3037,10 +3260,6 @@
                 }
 
 
-                // -------------------------------------------------
-                // VALIDAR COMPROBANTE
-                // -------------------------------------------------
-
                 if (
                     !validarComprobantePorRuc()
                 ) {
@@ -3062,10 +3281,6 @@
 
                 }
 
-
-                // -------------------------------------------------
-                // ARCHIVO
-                // -------------------------------------------------
 
                 if (
                     !archivo ||
@@ -3093,7 +3308,7 @@
 
 
             // =====================================================
-            // LÍMITE ALIMENTACIÓN
+            // LÍMITE ALIMENTACIÓN / MOVILIDAD INTERNA
             // =====================================================
 
             if (
@@ -3252,7 +3467,6 @@
     // INICIALIZACIÓN
     // =========================================================
 
-    // Asegurar que el domicilio fiscal siempre sea editable
     if (domicilio) {
 
         domicilio.removeAttribute(

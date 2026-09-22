@@ -1,13 +1,7 @@
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\publish\Dinacen.exe
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\publish\publish\web.config
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\publish\appsettings.Development.json
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\publish\appsettings.json
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\publish\global.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\publish\publish\appsettings.Development.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\publish\publish\appsettings.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\publish\publish\Dinacen.deps.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\publish\publish\Dinacen.runtimeconfig.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\publish\publish\global.json
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\publish\LatoFont\Lato-Black.ttf
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\publish\LatoFont\Lato-BlackItalic.ttf
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\publish\LatoFont\Lato-Bold.ttf

@@ -332,10 +332,12 @@ namespace Dinacem.Controllers
                 solicitud.IdUsuario =
                     idUsuario.Value;
 
-                solicitud.Fecha =
-                    DateTime.Now;
+            solicitud.Fecha =
+TimeZoneInfo.ConvertTimeBySystemTimeZoneId(
+    DateTime.UtcNow,
+    "SA Pacific Standard Time");
 
-                solicitud.IdEstadoSolicitud =
+            solicitud.IdEstadoSolicitud =
                     1;
 
                 solicitud.Observaciones =
