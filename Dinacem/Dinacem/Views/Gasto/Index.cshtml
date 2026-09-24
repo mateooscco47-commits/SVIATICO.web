@@ -21,14 +21,26 @@
     if (devolucion != null && saldoOriginal > 0)
     {
         saldoPendiente = saldoOriginal - devolucion.Monto;
-
         if (saldoPendiente < 0)
         {
             saldoPendiente = 0;
         }
     }
 
-    var estadoTexto = rendicion?.IdEstadoRendicion switch
+    var estadoRendicion = rendicion?.IdEstadoRendicion ?? 0;
+
+    var puedeModificar =
+        estadoRendicion == 1 ||
+        estadoRendicion == 4;
+
+    var estaRechazada = estadoRendicion == 4;
+
+    var puedeEnviar =
+        puedeModificar &&
+        totalRendido > 0 &&
+        (saldoOriginal <= 0 || devolucion != null);
+
+    var estadoTexto = estadoRendicion switch
     {
         1 => "En proceso",
         2 => "Pendiente de revisión",
@@ -37,7 +49,7 @@
         _ => "Desconocido"
     };
 
-    var estadoClase = rendicion?.IdEstadoRendicion switch
+    var estadoClase = estadoRendicion switch
     {
         1 => "estado-proceso",
         2 => "estado-pendiente",
@@ -47,192 +59,134 @@
     };
 }
 
-<link rel="stylesheet"
-      href="~/css/IndexGasto.css"
-      asp-append-version="true" />
-
+<link rel="stylesheet" href="~/css/IndexGasto.css" asp-append-version="true" />
 
 <div class="rendicion-wrapper">
-
     <div class="page-header">
-
         <div class="page-header-content">
-
             <div class="page-icon">
                 <i class="bi bi-receipt-cutoff"></i>
             </div>
-
             <div>
-
-                <h1 class="page-title">
-                    Rendición de gastos
-                </h1>
-
+                <h1 class="page-title">Rendición de gastos</h1>
                 <p class="page-description">
-                    Registre sus gastos y complete la rendición correspondiente a su comisión.
+                    @if (estaRechazada)
+                    {
+                        <span>Revise las observaciones, corrija sus gastos y vuelva a enviar la misma rendición.</span>
+                    }
+                    else
+                    {
+                        <span>Registre sus gastos y complete la rendición correspondiente a su comisión.</span>
+                    }
                 </p>
-
             </div>
-
         </div>
-
-
         <div class="header-actions">
-
             @if (rendicion != null)
             {
                 <a asp-controller="BitacoraVehiculo"
                    asp-action="Index"
                    asp-route-idRendicion="@rendicion.IdRendicion"
                    class="btn btn-outline-primary">
-
                     <i class="bi bi-car-front-fill me-1"></i>
                     Bitácora de vehículo
-
                 </a>
             }
-
-
             <a asp-controller="Rendicion"
                asp-action="Index"
                class="btn btn-outline-secondary">
-
                 <i class="bi bi-arrow-left me-1"></i>
                 Volver a rendiciones
-
             </a>
-
         </div>
-
     </div>
 
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show alert-custom" role="alert">
+            <i class="bi bi-check-circle me-1"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
 
     @if (TempData["mensaje"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show alert-custom"
-             role="alert">
-
+        <div class="alert alert-success alert-dismissible fade show alert-custom" role="alert">
             <i class="bi bi-check-circle me-1"></i>
             @TempData["mensaje"]
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert">
-            </button>
-
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
-
 
     @if (TempData["error"] != null)
     {
-        <div class="alert alert-danger alert-dismissible fade show alert-custom"
-             role="alert">
-
+        <div class="alert alert-danger alert-dismissible fade show alert-custom" role="alert">
             <i class="bi bi-exclamation-circle me-1"></i>
             @Html.Raw(TempData["error"])
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert">
-            </button>
-
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
-
-    <!-- ========================================================= -->
-    <!-- RESUMEN -->
-    <!-- ========================================================= -->
+    @if (estaRechazada && rendicion != null && !string.IsNullOrWhiteSpace(rendicion.Observaciones))
+    {
+        <div class="alert alert-danger alert-custom mb-4">
+            <div class="d-flex align-items-start">
+                <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                <div class="flex-grow-1">
+                    <h5 class="alert-heading mb-2">Rendición rechazada</h5>
+                    <p class="mb-2">
+                        El administrador ha rechazado esta rendición.
+                        Revise las observaciones, corrija los gastos necesarios
+                        y vuelva a enviarla para revisión.
+                    </p>
+                    <div class="mt-3">
+                        <strong>Observaciones del administrador:</strong>
+                        <div class="mt-2 p-3 bg-white border rounded">
+                            @rendicion.Observaciones
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 
     <div class="summary-grid">
-
         <div class="summary-card green">
-
-            <span class="summary-label">
-                Monto aprobado
-            </span>
-
-            <div class="summary-value">
-                S/ @montoAprobado.ToString("N2")
-            </div>
-
+            <span class="summary-label">Monto aprobado</span>
+            <div class="summary-value">S/ @montoAprobado.ToString("N2")</div>
         </div>
-
-
         <div class="summary-card orange">
-
-            <span class="summary-label">
-                Total rendido
-            </span>
-
-            <div class="summary-value">
-                S/ @totalRendido.ToString("N2")
-            </div>
-
+            <span class="summary-label">Total rendido</span>
+            <div class="summary-value">S/ @totalRendido.ToString("N2")</div>
         </div>
-
-
         <div class="summary-card blue">
-
-            <span class="summary-label">
-                Saldo pendiente
-            </span>
-
-            <div class="summary-value">
-                S/ @saldoPendiente.ToString("N2")
-            </div>
-
+            <span class="summary-label">Saldo pendiente</span>
+            <div class="summary-value">S/ @saldoPendiente.ToString("N2")</div>
         </div>
-
-
         <div class="summary-card">
-
-            <span class="summary-label">
-                Gastos registrados
-            </span>
-
-            <div class="summary-value">
-                @(Model?.Count ?? 0)
-            </div>
-
+            <span class="summary-label">Gastos registrados</span>
+            <div class="summary-value">@(Model?.Count ?? 0)</div>
         </div>
-
     </div>
 
-
     <div class="content-grid">
-
         <div class="main-column">
-
-            <!-- ========================================================= -->
-            <!-- GASTOS REGISTRADOS -->
-            <!-- ========================================================= -->
-
             <div class="panel">
-
                 <div class="panel-header">
-
                     <span>
                         <i class="bi bi-list-ul me-2 text-primary"></i>
                         Gastos registrados
                     </span>
-
                     <span class="mobile-hint">
                         Deslice horizontalmente para ver más.
                     </span>
-
                 </div>
 
-
                 <div class="table-wrapper">
-
                     <table class="table table-gastos align-middle">
-
                         <thead>
-
                             <tr>
-
                                 <th>Fecha</th>
                                 <th>Tipo</th>
                                 <th>Comprobante</th>
@@ -241,511 +195,300 @@
                                 <th>IGV</th>
                                 <th>Total</th>
                                 <th>Acciones</th>
-
                             </tr>
-
                         </thead>
-
-
                         <tbody>
-
                             @if (Model != null && Model.Any())
                             {
-
                                 foreach (var item in Model)
                                 {
-
                                     var esHospedaje =
-                                        item.TipoGasto?.Nombre?
-                                            .Contains(
-                                                "Hospedaje",
-                                                StringComparison.OrdinalIgnoreCase)
-                                        == true;
+                                        item.TipoGasto?.Nombre?.Contains(
+                                            "Hospedaje",
+                                            StringComparison.OrdinalIgnoreCase) == true;
 
-                                    <tr data-inicio-hospedaje="@(item.FechaInicioHospedaje?.ToString("yyyy-MM-dd") ?? "")"
+                                    <tr class="fila-gasto"
+                                        data-id-gasto="@item.IdGasto"
+                                        data-fecha="@item.Fecha.ToString("yyyy-MM-dd")"
+                                        data-id-tipo-gasto="@item.IdTipoGasto"
+                                        data-detalle="@item.Detalle"
+                                        data-ruc="@item.Ruc"
+                                        data-razon-social="@item.RazonSocial"
+                                        data-domicilio-fiscal="@item.DomicilioFiscal"
+                                        data-id-tipo-comprobante="@(item.IdTipoComprobante?.ToString() ?? "")"
+                                        data-serie="@item.Serie"
+                                        data-numero="@item.Numero"
+                                        data-comprobante="@item.Comprobante"
+                                        data-monto-total="@item.MontoTotal.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                        data-valor-venta="@item.ValorVenta.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                        data-igv="@item.IGV.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                        data-exoneracion-igv="@item.ExoneracionIGV.ToString().ToLower()"
+                                        data-inicio-hospedaje="@(item.FechaInicioHospedaje?.ToString("yyyy-MM-dd") ?? "")"
                                         data-fin-hospedaje="@(item.FechaFinHospedaje?.ToString("yyyy-MM-dd") ?? "")"
                                         data-dias-hospedaje="@(item.DiasHospedaje?.ToString() ?? "")">
-
                                         <td>
-
-                                            <div>
-                                                @item.Fecha.ToString("dd/MM/yyyy")
-                                            </div>
-
-
-                                            @if (esHospedaje &&
-                                                item.FechaInicioHospedaje.HasValue &&
-                                                item.FechaFinHospedaje.HasValue)
+                                            <div>@item.Fecha.ToString("dd/MM/yyyy")</div>
+                                            @if (esHospedaje && item.FechaInicioHospedaje.HasValue && item.FechaFinHospedaje.HasValue)
                                             {
-
                                                 <div class="hospedaje-periodo-tabla">
-
                                                     <span>
                                                         <i class="bi bi-building me-1"></i>
                                                         Hospedaje
                                                     </span>
-
                                                     <small>
-
                                                         @item.FechaInicioHospedaje.Value.ToString("dd/MM/yyyy")
                                                         -
                                                         @item.FechaFinHospedaje.Value.ToString("dd/MM/yyyy")
-
                                                         <br />
-
                                                         @(item.DiasHospedaje ?? 0) día(s)
-
                                                     </small>
-
                                                 </div>
-
                                             }
-
                                         </td>
-
-
                                         <td>
-
                                             <span class="badge-gasto">
                                                 @(item.TipoGasto?.Nombre ?? "Sin tipo")
                                             </span>
-
                                         </td>
-
-
                                         <td>
-
                                             @(item.TipoComprobante?.Nombre ?? "Sin comprobante")
-
-                                            @if (!string.IsNullOrWhiteSpace(item.Serie) ||
-                                                 !string.IsNullOrWhiteSpace(item.Numero))
+                                            @if (!string.IsNullOrWhiteSpace(item.Serie) || !string.IsNullOrWhiteSpace(item.Numero))
                                             {
-
                                                 <div class="text-muted mt-1">
-
                                                     @item.Serie - @item.Numero
-
                                                 </div>
-
                                             }
-
                                         </td>
-
-
                                         <td>
-
-                                            @(string.IsNullOrWhiteSpace(item.Detalle)
-                                                ? "-"
-                                                : item.Detalle)
-
+                                            @(string.IsNullOrWhiteSpace(item.Detalle) ? "-" : item.Detalle)
                                         </td>
-
-
                                         <td>
-
                                             S/ @item.ValorVenta.ToString("N2")
-
                                             @if (item.ExoneracionIGV)
                                             {
-
                                                 <div>
-
                                                     <span class="badge bg-info text-dark mt-1">
                                                         Exonerado
                                                     </span>
-
                                                 </div>
-
                                             }
-
                                         </td>
-
-
+                                        <td>S/ @item.IGV.ToString("N2")</td>
                                         <td>
-                                            S/ @item.IGV.ToString("N2")
+                                            <strong>S/ @item.MontoTotal.ToString("N2")</strong>
                                         </td>
-
-
                                         <td>
-
-                                            <strong>
-                                                S/ @item.MontoTotal.ToString("N2")
-                                            </strong>
-
-                                        </td>
-
-
-                                        <td>
-
-                                            @if (rendicion?.IdEstadoRendicion == 1)
+                                            @if (puedeModificar)
                                             {
-
-                                                <form asp-controller="Gasto"
-                                                      asp-action="Delete"
-                                                      method="post">
-
-                                                    <input type="hidden"
-                                                           name="id"
-                                                           value="@item.IdGasto" />
-
-                                                    <input type="hidden"
-                                                           name="idRendicion"
-                                                           value="@rendicion.IdRendicion" />
-
-                                                    <button type="submit"
-                                                            class="btn btn-outline-danger btn-sm"
-                                                            onclick="return confirm('¿Eliminar este gasto?');">
-
-                                                        <i class="bi bi-trash"></i>
-
+                                                <div class="d-flex gap-1">
+                                                    <button type="button"
+                                                            class="btn btn-outline-primary btn-sm btn-editar-gasto"
+                                                            data-id="@item.IdGasto"
+                                                            title="Editar gasto">
+                                                        <i class="bi bi-pencil"></i>
                                                     </button>
 
-                                                </form>
-
+                                                    <form asp-controller="Gasto"
+                                                          asp-action="Delete"
+                                                          method="post">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="id" value="@item.IdGasto" />
+                                                        <input type="hidden" name="idRendicion" value="@rendicion?.IdRendicion" />
+                                                        <button type="submit"
+                                                                class="btn btn-outline-danger btn-sm"
+                                                                title="Eliminar gasto"
+                                                                onclick="return confirm('¿Está seguro de eliminar este gasto?');">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             }
                                             else
                                             {
-
-                                                <span class="text-muted small">
-                                                    Bloqueado
-                                                </span>
-
+                                                <span class="text-muted small">Bloqueado</span>
                                             }
-
                                         </td>
-
                                     </tr>
-
                                 }
-
                             }
                             else
                             {
-
                                 <tr>
-
                                     <td colspan="8">
-
                                         <div class="empty-state">
-
                                             <i class="bi bi-receipt"></i>
-
-                                            <div>
-                                                No hay gastos registrados.
-                                            </div>
-
-                                            <small>
-                                                Los gastos que agregue aparecerán aquí.
-                                            </small>
-
+                                            <div>No hay gastos registrados.</div>
+                                            <small>Los gastos que agregue aparecerán aquí.</small>
                                         </div>
-
                                     </td>
-
                                 </tr>
-
                             }
-
                         </tbody>
-
                     </table>
-
                 </div>
-
 
                 <div class="table-footer">
-
                     <i class="bi bi-info-circle me-1"></i>
-
                     Mostrando @(Model?.Count ?? 0) gasto(s)
-
                 </div>
-
 
                 <div class="row g-3 p-3">
-
                     <div class="col-md-4">
-
                         <div class="tax-summary">
-
                             <div class="tax-item">
-
-                                <small>
-                                    Valor de venta
-                                </small>
-
-                                <strong>
-                                    S/ @totalValorVenta.ToString("N2")
-                                </strong>
-
+                                <small>Valor de venta</small>
+                                <strong>S/ @totalValorVenta.ToString("N2")</strong>
                             </div>
-
                         </div>
-
                     </div>
-
-
                     <div class="col-md-4">
-
                         <div class="tax-summary">
-
                             <div class="tax-item">
-
-                                <small>
-                                    Total IGV
-                                </small>
-
-                                <strong>
-                                    S/ @totalIgv.ToString("N2")
-                                </strong>
-
+                                <small>Total IGV</small>
+                                <strong>S/ @totalIgv.ToString("N2")</strong>
                             </div>
-
                         </div>
-
                     </div>
-
-
                     <div class="col-md-4">
-
                         <div class="tax-summary">
-
                             <div class="tax-item total">
-
-                                <small>
-                                    Total rendido
-                                </small>
-
-                                <strong>
-                                    S/ @totalRendido.ToString("N2")
-                                </strong>
-
+                                <small>Total rendido</small>
+                                <strong>S/ @totalRendido.ToString("N2")</strong>
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
 
-
-            <!-- ========================================================= -->
-            <!-- REGISTRAR GASTO -->
-            <!-- ========================================================= -->
-
-            @if (rendicion?.IdEstadoRendicion == 1)
+            @if (puedeModificar)
             {
-
                 <div class="panel">
-
                     <div class="panel-header">
-
-                        <span>
-
+                        <span id="tituloFormularioGasto">
                             <i class="bi bi-plus-circle me-2 text-primary"></i>
-
-                            Registrar gasto
-
+                            @(estaRechazada
+                                ? "Agregar gasto para corregir la rendición"
+                                : "Registrar gasto")
                         </span>
-
                     </div>
 
+                    @if (estaRechazada)
+                    {
+                        <div class="alert alert-warning alert-custom m-3">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Puede agregar, editar o eliminar gastos antes de volver a enviar esta misma rendición para revisión.
+                        </div>
+                    }
 
                     <div class="panel-body">
-
                         <form asp-controller="Gasto"
                               asp-action="Create"
                               method="post"
                               enctype="multipart/form-data"
                               id="formGasto"
+                              data-create-url="@Url.Action("Create", "Gasto")"
+                              data-edit-url="@Url.Action("Edit", "Gasto")"
                               data-consultar-ruc-url="@Url.Action("ConsultarRuc", "Gasto")"
-                              data-fecha-inicio="@rendicion.FechaInicio.ToString("yyyy-MM-dd")"
-                              data-fecha-fin="@rendicion.FechaFin.ToString("yyyy-MM-dd")">
+                              data-fecha-inicio="@rendicion?.FechaInicio.ToString("yyyy-MM-dd")"
+                              data-fecha-fin="@rendicion?.FechaFin.ToString("yyyy-MM-dd")"
+                              data-estado-rechazada="@(estaRechazada ? "true" : "false")">
 
+                            @Html.AntiForgeryToken()
 
                             <input type="hidden"
                                    name="IdRendicion"
-                                   value="@rendicion.IdRendicion" />
+                                   value="@rendicion?.IdRendicion" />
 
-
-                            <!-- ================================================= -->
-                            <!-- 1. DATOS PRINCIPALES -->
-                            <!-- ================================================= -->
+                            <input type="hidden"
+                                   name="IdGasto"
+                                   id="idGasto"
+                                   value="0" />
 
                             <div class="mb-4">
-
                                 <h6 class="fw-semibold text-primary mb-3">
-
                                     <i class="bi bi-info-circle me-1"></i>
-
                                     Datos principales
-
                                 </h6>
 
-
                                 <div class="form-grid">
-
-
-                                    <!-- FECHA -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            Fecha del gasto
-                                        </label>
-
+                                        <label class="form-label">Fecha del gasto</label>
                                         <input type="date"
                                                name="Fecha"
                                                class="form-control"
-                                               min="@rendicion.FechaInicio.ToString("yyyy-MM-dd")"
-                                               max="@rendicion.FechaFin.ToString("yyyy-MM-dd")"
+                                               min="@rendicion?.FechaInicio.ToString("yyyy-MM-dd")"
+                                               max="@rendicion?.FechaFin.ToString("yyyy-MM-dd")"
                                                required />
-
                                         <div class="form-text">
-
-                                            Del @rendicion.FechaInicio.ToString("dd/MM/yyyy")
-                                            al @rendicion.FechaFin.ToString("dd/MM/yyyy")
-
+                                            Del @rendicion?.FechaInicio.ToString("dd/MM/yyyy")
+                                            al @rendicion?.FechaFin.ToString("dd/MM/yyyy")
                                         </div>
-
                                     </div>
 
-
-                                    <!-- TIPO GASTO -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            Tipo de gasto
-                                        </label>
-
+                                        <label class="form-label">Tipo de gasto</label>
                                         <select name="IdTipoGasto"
                                                 class="form-select"
                                                 required
                                                 id="tipoGasto">
-
-                                            <option value="">
-                                                Seleccionar tipo
-                                            </option>
-
+                                            <option value="">Seleccionar tipo</option>
                                             @if (tiposGasto != null)
                                             {
-
                                                 foreach (var item in tiposGasto)
                                                 {
-
                                                     <option value="@item.IdTipoGasto">
                                                         @item.Nombre
                                                     </option>
-
                                                 }
-
                                             }
-
                                         </select>
-
-                                        <div id="mensajeTipoGasto"
-                                             class="form-text">
-                                        </div>
-
+                                        <div id="mensajeTipoGasto" class="form-text"></div>
                                     </div>
 
-
-                                    <!-- DETALLE -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            Detalle
-                                        </label>
-
+                                        <label class="form-label">Detalle</label>
                                         <input name="Detalle"
                                                class="form-control"
                                                maxlength="300"
                                                placeholder="Ej. Almuerzo" />
-
                                     </div>
-
-
-                                    <!-- ================================================= -->
-                                    <!-- PERÍODO DE HOSPEDAJE -->
-                                    <!-- ================================================= -->
 
                                     <div class="form-col-12"
                                          id="periodoHospedaje"
                                          style="display:none;">
-
                                         <div class="alert alert-info py-3 mb-0">
-
                                             <div class="d-flex align-items-start">
-
                                                 <i class="bi bi-building fs-4 me-2"></i>
-
                                                 <div class="w-100">
-
-                                                    <strong>
-                                                        Período de hospedaje
-                                                    </strong>
-
+                                                    <strong>Período de hospedaje</strong>
                                                     <div class="small mt-1 mb-3">
-
-                                                        Puede registrar una sola factura
-                                                        de hospedaje que cubra varios días.
-
-                                                        El límite es de
-                                                        <strong>S/ 50.00 por día</strong>.
-
+                                                        Puede registrar una sola factura de hospedaje que cubra varios días.
+                                                        El límite es de <strong>S/ 50.00 por día</strong>.
                                                     </div>
 
-
                                                     <div class="row g-3">
-
-                                                        <!-- FECHA INICIO -->
-
                                                         <div class="col-md-4">
-
-                                                            <label class="form-label">
-                                                                Fecha de inicio
-                                                            </label>
-
+                                                            <label class="form-label">Fecha de inicio</label>
                                                             <input type="date"
                                                                    id="fechaInicioHospedaje"
                                                                    name="FechaInicioHospedaje"
                                                                    class="form-control"
-                                                                   min="@rendicion.FechaInicio.ToString("yyyy-MM-dd")"
-                                                                   max="@rendicion.FechaFin.ToString("yyyy-MM-dd")" />
-
+                                                                   min="@rendicion?.FechaInicio.ToString("yyyy-MM-dd")"
+                                                                   max="@rendicion?.FechaFin.ToString("yyyy-MM-dd")" />
                                                         </div>
 
-
-                                                        <!-- FECHA FIN -->
-
                                                         <div class="col-md-4">
-
-                                                            <label class="form-label">
-                                                                Fecha de fin
-                                                            </label>
-
+                                                            <label class="form-label">Fecha de fin</label>
                                                             <input type="date"
                                                                    id="fechaFinHospedaje"
                                                                    name="FechaFinHospedaje"
                                                                    class="form-control"
-                                                                   min="@rendicion.FechaInicio.ToString("yyyy-MM-dd")"
-                                                                   max="@rendicion.FechaFin.ToString("yyyy-MM-dd")" />
-
+                                                                   min="@rendicion?.FechaInicio.ToString("yyyy-MM-dd")"
+                                                                   max="@rendicion?.FechaFin.ToString("yyyy-MM-dd")" />
                                                         </div>
 
-
-                                                        <!-- DÍAS EDITABLE -->
-
                                                         <div class="col-md-2">
-
-                                                            <label class="form-label">
-                                                                Días
-                                                            </label>
-
+                                                            <label class="form-label">Días</label>
                                                             <input type="number"
                                                                    id="diasHospedaje"
                                                                    name="DiasHospedaje"
@@ -753,78 +496,37 @@
                                                                    min="1"
                                                                    step="1"
                                                                    placeholder="Días" />
-
-                                                            <div class="form-text">
-                                                                Editable
-                                                            </div>
-
+                                                            <div class="form-text">Editable</div>
                                                         </div>
 
-
-                                                        <!-- MÁXIMO -->
-
                                                         <div class="col-md-2">
-
-                                                            <label class="form-label">
-                                                                Máximo
-                                                            </label>
-
+                                                            <label class="form-label">Máximo</label>
                                                             <input type="text"
                                                                    id="maximoHospedaje"
                                                                    class="form-control"
                                                                    value="S/ 0.00"
                                                                    readonly />
-
                                                         </div>
-
                                                     </div>
 
-
-                                                    <div id="mensajeHospedaje"
-                                                         class="small mt-3">
-                                                    </div>
-
+                                                    <div id="mensajeHospedaje" class="small mt-3"></div>
                                                 </div>
-
                                             </div>
-
                                         </div>
-
                                     </div>
-
                                 </div>
-
                             </div>
 
-
-                            <!-- ================================================= -->
-                            <!-- 2. DATOS DEL PROVEEDOR -->
-                            <!-- ================================================= -->
-
                             <div class="mb-4 pt-3 border-top">
-
                                 <h6 class="fw-semibold text-primary mb-3">
-
                                     <i class="bi bi-building me-1"></i>
-
                                     Datos del proveedor
-
                                 </h6>
 
-
                                 <div class="form-grid">
-
-
-                                    <!-- RUC -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            RUC
-                                        </label>
-
+                                        <label class="form-label">RUC</label>
                                         <div class="input-group">
-
                                             <input type="text"
                                                    id="ruc"
                                                    name="Ruc"
@@ -834,227 +536,130 @@
                                                    pattern="[0-9]{11}"
                                                    placeholder="20123456789"
                                                    autocomplete="off" />
-
                                             <button type="button"
                                                     id="btnConsultarRuc"
                                                     class="btn btn-outline-primary">
-
                                                 <i class="bi bi-search me-1"></i>
                                                 Buscar
-
                                             </button>
-
                                         </div>
-
-                                        <div id="mensajeRuc"
-                                             class="form-text">
-                                        </div>
-
+                                        <div id="mensajeRuc" class="form-text"></div>
                                     </div>
 
-
-                                    <!-- RAZÓN SOCIAL -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            Razón social
-                                        </label>
-
+                                        <label class="form-label">Razón social</label>
                                         <input type="text"
                                                id="razonSocial"
                                                name="RazonSocial"
                                                class="form-control"
                                                maxlength="200"
                                                readonly />
-
                                     </div>
 
-
-                                    <!-- DOMICILIO -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            Domicilio fiscal
-                                        </label>
-
+                                        <label class="form-label">Domicilio fiscal</label>
                                         <input type="text"
                                                id="domicilioFiscal"
                                                name="DomicilioFiscal"
                                                class="form-control"
                                                maxlength="300"
                                                placeholder="Ingrese o corrija el domicilio fiscal" />
-
                                         <div class="form-text">
                                             Se completa automáticamente al consultar el RUC.
                                         </div>
-
                                     </div>
-
                                 </div>
-
                             </div>
 
-
-                            <!-- ================================================= -->
-                            <!-- 3. COMPROBANTE -->
-                            <!-- ================================================= -->
-
                             <div class="mb-4 pt-3 border-top">
-
                                 <h6 class="fw-semibold text-primary mb-3">
-
                                     <i class="bi bi-receipt me-1"></i>
-
                                     Datos del comprobante
-
                                 </h6>
 
-
-                                
-
-
                                 <div class="form-grid">
-
-
-                                    <!-- TIPO COMPROBANTE -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            Tipo de comprobante
-                                        </label>
-
+                                        <label class="form-label">Tipo de comprobante</label>
                                         <select id="tipoComprobante"
                                                 name="IdTipoComprobante"
                                                 class="form-select">
-
-                                            <option value="">
-                                                Seleccionar comprobante
-                                            </option>
-
+                                            <option value="">Seleccionar comprobante</option>
                                             @if (tiposComprobante != null)
                                             {
-
                                                 foreach (var item in tiposComprobante)
                                                 {
-
                                                     <option value="@item.IdTipoComprobante"
                                                             data-nombre="@item.Nombre">
-
                                                         @item.Nombre
-
                                                     </option>
-
                                                 }
-
                                             }
-
                                         </select>
-
-                                        <div id="mensajeComprobante"
-                                             class="form-text">
-                                        </div>
-
+                                        <div id="mensajeComprobante" class="form-text"></div>
                                     </div>
 
-
-                                    <!-- SERIE -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            Serie
-                                        </label>
-
+                                        <label class="form-label">Serie</label>
                                         <input name="Serie"
                                                id="serie"
                                                class="form-control"
                                                maxlength="20"
                                                placeholder="F001" />
-
                                     </div>
 
-
-                                    <!-- NÚMERO -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            Número
-                                        </label>
-
+                                        <label class="form-label">Número</label>
                                         <input name="Numero"
                                                id="numero"
                                                class="form-control"
                                                maxlength="30"
                                                placeholder="000123" />
-
                                     </div>
 
-
-                                    <!-- ARCHIVO -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            Comprobante / Voucher
-                                        </label>
-
+                                        <label class="form-label">Comprobante / Voucher</label>
                                         <input type="file"
                                                name="archivo"
                                                id="archivo"
                                                class="form-control"
                                                accept=".pdf,.jpg,.jpeg,.png" />
 
-                                        <div id="mensajeArchivo"
-                                             class="form-text">
-
+                                        <div id="mensajeArchivo" class="form-text">
                                             PDF, JPG, JPEG o PNG.
-                                            <strong>Obligatorio excepto para Movilidad.</strong>
-
+                                            <strong>Obligatorio excepto para Movilidad interna.</strong>
                                         </div>
 
+                                        <div id="comprobanteActual"
+                                             class="mt-2"
+                                             style="display:none;">
+                                            <div class="alert alert-info py-2 mb-0">
+                                                <i class="bi bi-file-earmark-check me-1"></i>
+                                                <span>Este gasto ya tiene un comprobante registrado.</span>
+                                                <a id="linkComprobanteActual"
+                                                   href="#"
+                                                   target="_blank"
+                                                   rel="noopener noreferrer"
+                                                   class="btn btn-outline-primary btn-sm ms-2">
+                                                    <i class="bi bi-eye me-1"></i>
+                                                    Ver comprobante actual
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
-
                                 </div>
-
                             </div>
 
-
-                            <!-- ================================================= -->
-                            <!-- 4. MONTOS -->
-                            <!-- ================================================= -->
-
                             <div class="mb-4 pt-3 border-top">
-
                                 <h6 class="fw-semibold text-primary mb-3">
-
                                     <i class="bi bi-calculator me-1"></i>
-
                                     Información del monto
-
                                 </h6>
 
-
                                 <div class="form-grid">
-
-
-                                    <!-- MONTO -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            Monto total
-                                        </label>
-
+                                        <label class="form-label">Monto total</label>
                                         <div class="input-group">
-
-                                            <span class="input-group-text">
-                                                S/
-                                            </span>
-
+                                            <span class="input-group-text">S/</span>
                                             <input type="number"
                                                    id="montoTotal"
                                                    name="MontoTotal"
@@ -1063,59 +668,28 @@
                                                    step="0.01"
                                                    placeholder="0.00"
                                                    required />
-
                                         </div>
-
-
-                                        <div id="mensajeLimiteMonto"
-                                             class="form-text">
-                                        </div>
-
+                                        <div id="mensajeLimiteMonto" class="form-text"></div>
                                     </div>
 
-
-                                    <!-- EXONERACIÓN -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            Tipo de operación
-                                        </label>
-
+                                        <label class="form-label">Tipo de operación</label>
                                         <div class="form-check mt-2">
-
                                             <input type="checkbox"
                                                    id="exoneracionIGV"
                                                    name="ExoneracionIGV"
                                                    value="true"
                                                    class="form-check-input" />
-
-                                            <label class="form-check-label"
-                                                   for="exoneracionIGV">
-
+                                            <label class="form-check-label" for="exoneracionIGV">
                                                 Exonerado de IGV
-
                                             </label>
-
                                         </div>
-
                                     </div>
 
-
-                                    <!-- BASE -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            Valor de venta
-                                        </label>
-
+                                        <label class="form-label">Valor de venta</label>
                                         <div class="input-group">
-
-                                            <span class="input-group-text">
-                                                S/
-                                            </span>
-
+                                            <span class="input-group-text">S/</span>
                                             <input type="number"
                                                    id="valorVenta"
                                                    name="ValorVenta"
@@ -1123,26 +697,13 @@
                                                    step="0.01"
                                                    value="0.00"
                                                    readonly />
-
                                         </div>
-
                                     </div>
 
-
-                                    <!-- IGV -->
-
                                     <div class="form-col-4">
-
-                                        <label class="form-label">
-                                            IGV (18 %)
-                                        </label>
-
+                                        <label class="form-label">IGV (18 %)</label>
                                         <div class="input-group">
-
-                                            <span class="input-group-text">
-                                                S/
-                                            </span>
-
+                                            <span class="input-group-text">S/</span>
                                             <input type="number"
                                                    id="igvCalculado"
                                                    name="IGV"
@@ -1150,582 +711,296 @@
                                                    step="0.01"
                                                    value="0.00"
                                                    readonly />
-
                                         </div>
-
                                     </div>
-
                                 </div>
-
                             </div>
-
-
-                            <!-- ================================================= -->
-                            <!-- 5. RESUMEN -->
-                            <!-- ================================================= -->
 
                             <div class="pt-3 border-top">
-
                                 <h6 class="fw-semibold text-primary mb-3">
-
                                     <i class="bi bi-clipboard-data me-1"></i>
-
                                     Resumen del comprobante
-
                                 </h6>
 
-
                                 <div class="tax-summary">
-
                                     <div class="row g-3">
-
-
                                         <div class="col-md-4">
-
                                             <div class="tax-item">
-
-                                                <small>
-                                                    Valor de venta
-                                                </small>
-
-                                                <strong id="resumenValorVenta">
-                                                    S/ 0.00
-                                                </strong>
-
+                                                <small>Valor de venta</small>
+                                                <strong id="resumenValorVenta">S/ 0.00</strong>
                                             </div>
-
                                         </div>
 
-
                                         <div class="col-md-4">
-
                                             <div class="tax-item">
-
-                                                <small>
-                                                    IGV
-                                                </small>
-
-                                                <strong id="resumenIgv">
-                                                    S/ 0.00
-                                                </strong>
-
+                                                <small>IGV</small>
+                                                <strong id="resumenIgv">S/ 0.00</strong>
                                             </div>
-
                                         </div>
 
-
                                         <div class="col-md-4">
-
                                             <div class="tax-item total">
-
-                                                <small>
-                                                    Total
-                                                </small>
-
-                                                <strong id="resumenTotal">
-                                                    S/ 0.00
-                                                </strong>
-
+                                                <small>Total</small>
+                                                <strong id="resumenTotal">S/ 0.00</strong>
                                             </div>
-
                                         </div>
-
                                     </div>
-
                                 </div>
-
                             </div>
 
-
-                            <!-- ================================================= -->
-                            <!-- BOTÓN -->
-                            <!-- ================================================= -->
-
-                            <div class="mt-4 pt-3 border-top d-flex justify-content-end">
-
-                                <button type="submit"
-                                        class="btn btn-primary-custom px-4">
-
-                                    <i class="bi bi-plus-circle me-1"></i>
-
-                                    Registrar gasto
-
+                            <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                                <button type="button"
+                                        id="btnCancelarEdicion"
+                                        class="btn btn-outline-secondary"
+                                        style="display:none;">
+                                    <i class="bi bi-x-circle me-1"></i>
+                                    Cancelar edición
                                 </button>
 
+                                <button type="submit"
+                                        id="btnGuardarGasto"
+                                        class="btn btn-primary-custom px-4">
+                                    <i class="bi bi-plus-circle me-1" id="iconoGuardarGasto"></i>
+                                    <span id="textoGuardarGasto">
+                                        @(estaRechazada ? "Agregar gasto" : "Registrar gasto")
+                                    </span>
+                                </button>
                             </div>
-
-
                         </form>
-
                     </div>
-
                 </div>
-
             }
             else
             {
-
                 <div class="alert alert-info alert-custom mb-0">
-
                     <i class="bi bi-lock me-1"></i>
-
-                    Esta rendición ya fue enviada.
-                    No se pueden agregar ni eliminar gastos.
-
+                    @if (estadoRendicion == 2)
+                    {
+                        <span>Esta rendición está pendiente de revisión. No se pueden agregar, editar ni eliminar gastos.</span>
+                    }
+                    else if (estadoRendicion == 3)
+                    {
+                        <span>Esta rendición fue aprobada. No se pueden agregar, editar ni eliminar gastos.</span>
+                    }
+                    else
+                    {
+                        <span>Esta rendición no permite modificaciones.</span>
+                    }
                 </div>
-
             }
-
         </div>
 
-
-        <!-- ========================================================= -->
-        <!-- COLUMNA DERECHA -->
-        <!-- ========================================================= -->
-
         <div class="side-column">
-
-
             <div class="panel">
-
                 <div class="panel-header">
-
                     <span>
-
                         <i class="bi bi-file-earmark-text me-2 text-primary"></i>
-
                         Información de la rendición
-
                     </span>
-
                 </div>
 
-
                 <div class="panel-body p-0">
-
                     <div class="table-responsive">
-
                         <table class="table table-bordered info-table">
-
                             <tr>
-
-                                <th>
-                                    Solicitud
-                                </th>
-
-                                <td>
-                                    @rendicion?.IdSolicitud
-                                </td>
-
+                                <th>Solicitud</th>
+                                <td>@rendicion?.IdSolicitud</td>
                             </tr>
-
-
                             <tr>
-
-                                <th>
-                                    Destino
-                                </th>
-
-                                <td>
-                                    @(rendicion?.Solicitud?.Destino ?? "-")
-                                </td>
-
+                                <th>Destino</th>
+                                <td>@(rendicion?.Solicitud?.Destino ?? "-")</td>
                             </tr>
-
-
                             <tr>
-
-                                <th>
-                                    Motivo
-                                </th>
-
-                                <td>
-                                    @(rendicion?.Solicitud?.Motivo ?? "-")
-                                </td>
-
+                                <th>Motivo</th>
+                                <td>@(rendicion?.Solicitud?.Motivo ?? "-")</td>
                             </tr>
-
-
                             <tr>
-
-                                <th>
-                                    Fecha inicio
-                                </th>
-
+                                <th>Fecha inicio</th>
                                 <td>
-
                                     @(rendicion != null
                                         ? rendicion.FechaInicio.ToString("dd/MM/yyyy")
                                         : "-")
-
                                 </td>
-
                             </tr>
-
-
                             <tr>
-
-                                <th>
-                                    Fecha fin
-                                </th>
-
+                                <th>Fecha fin</th>
                                 <td>
-
                                     @(rendicion != null
                                         ? rendicion.FechaFin.ToString("dd/MM/yyyy")
                                         : "-")
-
                                 </td>
-
                             </tr>
-
-
                             <tr>
-
-                                <th>
-                                    Monto aprobado
-                                </th>
-
+                                <th>Monto aprobado</th>
                                 <td>
-
-                                    <strong>
-                                        S/ @montoAprobado.ToString("N2")
-                                    </strong>
-
+                                    <strong>S/ @montoAprobado.ToString("N2")</strong>
                                 </td>
-
                             </tr>
-
-
                             <tr>
-
-                                <th>
-                                    Estado
-                                </th>
-
+                                <th>Estado</th>
                                 <td>
-
-                                    <span class="estado @estadoClase">
-                                        @estadoTexto
-                                    </span>
-
+                                    <span class="estado @estadoClase">@estadoTexto</span>
                                 </td>
-
                             </tr>
-
                         </table>
-
                     </div>
-
                 </div>
-
             </div>
 
-
-            <!-- ========================================================= -->
-            <!-- DEVOLUCIÓN -->
-            <!-- ========================================================= -->
-
-            @if (rendicion != null &&
-                 rendicion.IdEstadoRendicion == 1 &&
-                 rendicion.Saldo > 0)
+            @if (rendicion != null && estadoRendicion == 1 && rendicion.Saldo > 0)
             {
-
                 <div class="panel devolucion-box @(devolucion != null ? "ok" : "")">
-
                     <div class="panel-header">
-
                         <span>
-
                             <i class="bi bi-bank me-2"></i>
-
                             Devolución de saldo
-
                         </span>
-
                     </div>
 
-
                     <div class="panel-body">
-
                         @if (devolucion == null)
                         {
-
                             <div class="alert alert-warning alert-custom">
-
                                 Tiene un saldo pendiente de devolución de
-
-                                <strong>
-                                    S/ @rendicion.Saldo.ToString("N2")
-                                </strong>.
-
+                                <strong>S/ @rendicion.Saldo.ToString("N2")</strong>.
                                 Registre el depósito antes de enviar la rendición.
-
                             </div>
-
 
                             <form asp-controller="DevolucionSaldo"
                                   asp-action="Registrar"
                                   method="post"
                                   enctype="multipart/form-data">
+                                @Html.AntiForgeryToken()
 
                                 <input type="hidden"
                                        name="IdRendicion"
                                        value="@rendicion.IdRendicion" />
 
-
                                 <div class="mb-3">
-
-                                    <label class="form-label">
-                                        Monto a devolver
-                                    </label>
-
+                                    <label class="form-label">Monto a devolver</label>
                                     <input type="number"
                                            name="Monto"
                                            class="form-control"
                                            value="@rendicion.Saldo.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
                                            step="0.01"
                                            readonly />
-
                                 </div>
 
-
                                 <div class="mb-3">
-
-                                    <label class="form-label">
-                                        Fecha del depósito
-                                    </label>
-
+                                    <label class="form-label">Fecha del depósito</label>
                                     <input type="date"
                                            name="Fecha"
                                            class="form-control"
                                            value="@DateTime.Now.ToString("yyyy-MM-dd")"
                                            required />
-
                                 </div>
 
+                                <div class="mb-3">
+                                    <label class="form-label">Banco</label>
+                                    <select name="Banco"
+                                            class="form-select"
+                                            required>
+                                        <option value="">Seleccionar banco</option>
+                                        <option value="BCP">BCP</option>
+                                        <option value="BBVA">BBVA</option>
+                                        <option value="Caja Huancayo">Caja Huancayo</option>
+                                        <option value="Interbank">Interbank</option>
+                                    </select>
+                                </div>
 
                                 <div class="mb-3">
-
-    <label class="form-label">
-        Banco
-    </label>
-
-    <select name="Banco"
-            class="form-select"
-            required>
-
-        <option value="">
-            Seleccionar banco
-        </option>
-
-        <option value="BCP">
-            BCP
-        </option>
-
-        <option value="BBVA">
-            BBVA
-        </option>
-
-        <option value="Caja Huancayo">
-            Caja Huancayo
-        </option>
-
-        <option value="Interbank">
-            Interbank
-        </option>
-
-    </select>
-
-</div>
-
-
-                                <div class="mb-3">
-
-                                    <label class="form-label">
-                                        Número de operación
-                                    </label>
-
+                                    <label class="form-label">Número de operación</label>
                                     <input type="text"
                                            name="NumeroOperacion"
                                            class="form-control"
                                            maxlength="100"
                                            required />
-
                                 </div>
 
-
                                 <div class="mb-3">
-
-                                    <label class="form-label">
-                                        Voucher
-                                    </label>
-
+                                    <label class="form-label">Voucher</label>
                                     <input type="file"
                                            name="voucher"
                                            class="form-control"
                                            accept=".pdf,.jpg,.jpeg,.png"
                                            required />
-
                                 </div>
 
-
                                 <div class="mb-3">
-
-                                    <label class="form-label">
-                                        Observaciones
-                                    </label>
-
+                                    <label class="form-label">Observaciones</label>
                                     <textarea name="Observaciones"
                                               class="form-control"
                                               rows="3"
                                               maxlength="500"></textarea>
-
                                 </div>
-
 
                                 <button type="submit"
                                         class="btn btn-primary-custom w-100">
-
                                     <i class="bi bi-check2-circle me-1"></i>
-
                                     Registrar devolución
-
                                 </button>
-
                             </form>
-
                         }
                         else
                         {
-
                             <div class="alert alert-success alert-custom">
-
                                 <i class="bi bi-check-circle me-1"></i>
-
                                 Devolución registrada correctamente.
-
                             </div>
 
-
                             <div class="table-responsive">
-
                                 <table class="table table-bordered info-table">
-
                                     <tr>
-
-                                        <th>
-                                            Monto
-                                        </th>
-
-                                        <td>
-                                            S/ @devolucion.Monto.ToString("N2")
-                                        </td>
-
+                                        <th>Monto</th>
+                                        <td>S/ @devolucion.Monto.ToString("N2")</td>
                                     </tr>
-
-
                                     <tr>
-
-                                        <th>
-                                            Fecha
-                                        </th>
-
-                                        <td>
-                                            @devolucion.Fecha.ToString("dd/MM/yyyy")
-                                        </td>
-
+                                        <th>Fecha</th>
+                                        <td>@devolucion.Fecha.ToString("dd/MM/yyyy")</td>
                                     </tr>
-
-
                                     <tr>
-
-                                        <th>
-                                            Banco
-                                        </th>
-
-                                        <td>
-                                            @devolucion.Banco
-                                        </td>
-
+                                        <th>Banco</th>
+                                        <td>@devolucion.Banco</td>
                                     </tr>
-
-
                                     <tr>
-
-                                        <th>
-                                            Operación
-                                        </th>
-
-                                        <td>
-                                            @devolucion.NumeroOperacion
-                                        </td>
-
+                                        <th>Operación</th>
+                                        <td>@devolucion.NumeroOperacion</td>
                                     </tr>
-
-
                                     <tr>
-
-                                        <th>
-                                            Voucher
-                                        </th>
-
+                                        <th>Voucher</th>
                                         <td>
-
                                             @if (!string.IsNullOrWhiteSpace(devolucion.Voucher))
                                             {
-
                                                 <a href="@devolucion.Voucher"
                                                    target="_blank"
                                                    rel="noopener"
                                                    class="btn btn-outline-primary btn-sm voucher-link">
-
                                                     <i class="bi bi-file-earmark-arrow-up me-1"></i>
-
                                                     Ver voucher
-
                                                 </a>
-
                                             }
                                             else
                                             {
-
-                                                <span class="text-muted">
-                                                    Sin archivo
-                                                </span>
-
+                                                <span class="text-muted">Sin archivo</span>
                                             }
-
                                         </td>
-
                                     </tr>
-
-
                                     <tr>
-
-                                        <th>
-                                            Observaciones
-                                        </th>
-
+                                        <th>Observaciones</th>
                                         <td>
-
                                             @(string.IsNullOrWhiteSpace(devolucion.Observaciones)
                                                 ? "-"
                                                 : devolucion.Observaciones)
-
                                         </td>
-
                                     </tr>
-
                                 </table>
-
                             </div>
-
 
                             <form asp-controller="DevolucionSaldo"
                                   asp-action="Eliminar"
                                   method="post"
                                   class="mt-3">
+                                @Html.AntiForgeryToken()
 
                                 <input type="hidden"
                                        name="id"
@@ -1738,160 +1013,113 @@
                                 <button type="submit"
                                         class="btn btn-outline-danger w-100"
                                         onclick="return confirm('¿Desea eliminar la devolución registrada?');">
-
                                     <i class="bi bi-trash me-1"></i>
-
                                     Eliminar devolución
-
                                 </button>
-
                             </form>
-
                         }
-
                     </div>
-
                 </div>
-
             }
 
-
-            <!-- ========================================================= -->
-            <!-- ACCIONES -->
-            <!-- ========================================================= -->
-
             <div class="panel">
-
                 <div class="panel-header">
-
                     <span>
-
                         <i class="bi bi-lightning-charge me-2 text-primary"></i>
-
                         Acciones
-
                     </span>
-
                 </div>
 
-
                 <div class="panel-body">
-
                     <div class="action-stack">
-
-
-                        @if (rendicion?.IdEstadoRendicion == 1)
+                        @if (puedeModificar)
                         {
-
-                            var puedeEnviar =
-                                rendicion.Total > 0 &&
-                                (rendicion.Saldo <= 0 || devolucion != null);
-
-
                             <form asp-controller="Gasto"
                                   asp-action="EnviarRendicion"
                                   method="post">
+                                @Html.AntiForgeryToken()
 
                                 <input type="hidden"
                                        name="idRendicion"
-                                       value="@rendicion.IdRendicion" />
+                                       value="@rendicion?.IdRendicion" />
 
                                 <button type="submit"
-                                        class="btn btn-success w-100"
+                                        class="btn @(estaRechazada ? "btn-warning" : "btn-success") w-100"
                                         disabled="@(puedeEnviar ? null : "disabled")"
-                                        onclick="return confirm('¿Desea enviar esta rendición para revisión?');">
-
-                                    <i class="bi bi-send-check me-1"></i>
-
-                                    Finalizar y enviar
-
+                                        onclick="return confirm('@(estaRechazada ? "¿Desea volver a enviar esta misma rendición para revisión?" : "¿Desea enviar esta rendición para revisión?")');">
+                                    <i class="bi @(estaRechazada ? "bi-arrow-repeat" : "bi-send-check") me-1"></i>
+                                    @(estaRechazada ? "Corregir y volver a enviar" : "Finalizar y enviar")
                                 </button>
-
                             </form>
 
-
-                            @if (rendicion.Total <= 0)
+                            @if (rendicion != null && rendicion.Total <= 0)
                             {
-
                                 <p class="action-note">
-
                                     <i class="bi bi-exclamation-circle me-1"></i>
-
                                     Debe registrar al menos un gasto.
-
                                 </p>
-
                             }
-                            else if (rendicion.Saldo > 0 && devolucion == null)
+                            else if (rendicion != null && rendicion.Saldo > 0 && devolucion == null)
                             {
-
                                 <p class="action-note">
-
                                     <i class="bi bi-exclamation-circle me-1"></i>
-
                                     Debe registrar la devolución del saldo pendiente.
-
                                 </p>
-
                             }
-
+                            else if (estaRechazada)
+                            {
+                                <p class="action-note text-warning">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Revise las observaciones del rechazo antes de volver a enviar.
+                                </p>
+                            }
                         }
-
+                        else if (estadoRendicion == 2)
+                        {
+                            <div class="alert alert-warning alert-custom mb-0">
+                                <i class="bi bi-hourglass-split me-1"></i>
+                                La rendición está pendiente de revisión por el administrador.
+                            </div>
+                        }
+                        else if (estadoRendicion == 3)
+                        {
+                            <div class="alert alert-success alert-custom mb-0">
+                                <i class="bi bi-check-circle me-1"></i>
+                                La rendición fue aprobada y ya no puede modificarse.
+                            </div>
+                        }
 
                         @if (rendicion != null)
                         {
-
                             <a asp-controller="BitacoraVehiculo"
                                asp-action="Index"
                                asp-route-idRendicion="@rendicion.IdRendicion"
                                class="btn btn-outline-primary">
-
                                 <i class="bi bi-car-front-fill me-1"></i>
-
                                 Bitácora de vehículo
-
                             </a>
-
                         }
-
 
                         <a asp-controller="Rendicion"
                            asp-action="MisRendiciones"
                            class="btn btn-outline-secondary">
-
                             <i class="bi bi-clock-history me-1"></i>
-
                             Historial de rendiciones
-
                         </a>
-
 
                         <a asp-controller="Rendicion"
                            asp-action="Index"
                            class="btn btn-outline-secondary">
-
                             <i class="bi bi-arrow-left me-1"></i>
-
                             Volver a rendiciones
-
                         </a>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
-
 @section Scripts {
-
-    <script src="~/js/IndexGasto.js"
-            asp-append-version="true"></script>
-
+    <script src="~/js/IndexGasto.js" asp-append-version="true"></script>
 }

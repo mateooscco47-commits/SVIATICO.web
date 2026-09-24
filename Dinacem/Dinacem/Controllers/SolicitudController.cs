@@ -19,167 +19,165 @@ namespace Dinacem.Controllers
             }
 
 
-            // =========================================================
-            // OBTENER MOTIVO DE BLOQUEO
-            // =========================================================
-            //
-            // REGLAS:
-            //
-            // SOLICITUD
-            // 1 = Pendiente de revisión
-            // 2 = Aprobada
-            // 3 = Rechazada
-            //
-            // RENDICIÓN
-            // 1 = Borrador
-            // 2 = Pendiente de revisión
-            // 3 = Aprobada
-            //
-            // El representante NO puede crear una nueva solicitud
-            // mientras tenga un proceso anterior pendiente.
-            //
-            // =========================================================
+        // =========================================================
+        // OBTENER MOTIVO DE BLOQUEO
+        // =========================================================
+        //
+        // REGLAS:
+        //
+        // SOLICITUD
+        // 1 = Pendiente de revisión
+        // 2 = Aprobada
+        // 3 = Rechazada
+        //
+        // RENDICIÓN
+        // 1 = Borrador
+        // 2 = Pendiente de revisión
+        // 3 = Aprobada
+        // 4 = Rechazada
+        //
+        // El representante NO puede crear una nueva solicitud
+        // mientras tenga un proceso anterior pendiente.
+        //
+        // =========================================================
 
-            private async Task<(bool tieneBloqueo, string mensajeError)>
-                ObtenerMotivoBloqueoAsync(int idUsuario)
+        private async Task<(bool tieneBloqueo, string mensajeError)>
+            ObtenerMotivoBloqueoAsync(int idUsuario)
+        {
+            // =====================================================
+            // ESTADOS DE SOLICITUD
+            // =====================================================
+
+            const int ESTADO_SOLICITUD_PENDIENTE = 1;
+            const int ESTADO_SOLICITUD_APROBADA = 2;
+
+            // =====================================================
+            // ESTADOS DE RENDICIÓN
+            // =====================================================
+
+            const int ESTADO_RENDICION_BORRADOR = 1;
+            const int ESTADO_RENDICION_PENDIENTE_REVISION = 2;
+            const int ESTADO_RENDICION_RECHAZADA = 4;
+
+            // =====================================================
+            // 1. SOLICITUD PENDIENTE DE REVISIÓN
+            // =====================================================
+
+            bool tieneSolicitudPendiente =
+                await _context.Solicitudes
+                    .AsNoTracking()
+                    .AnyAsync(s =>
+                        s.IdUsuario == idUsuario &&
+                        s.IdEstadoSolicitud ==
+                            ESTADO_SOLICITUD_PENDIENTE);
+
+            if (tieneSolicitudPendiente)
             {
-                // =====================================================
-                // ESTADOS DE SOLICITUD
-                // =====================================================
-
-                const int ESTADO_SOLICITUD_PENDIENTE = 1;
-                const int ESTADO_SOLICITUD_APROBADA = 2;
-
-
-                // =====================================================
-                // ESTADOS DE RENDICIÓN
-                // =====================================================
-
-                const int ESTADO_RENDICION_BORRADOR = 1;
-                const int ESTADO_RENDICION_PENDIENTE_REVISION = 2;
-
-
-                // =====================================================
-                // 1. SOLICITUD PENDIENTE DE REVISIÓN
-                // =====================================================
-
-                bool tieneSolicitudPendiente =
-                    await _context.Solicitudes
-                        .AsNoTracking()
-                        .AnyAsync(s =>
-                            s.IdUsuario == idUsuario &&
-                            s.IdEstadoSolicitud ==
-                                ESTADO_SOLICITUD_PENDIENTE);
-
-                if (tieneSolicitudPendiente)
-                {
-                    return (
-                        true,
-                        "No puede registrar una nueva solicitud porque tiene una solicitud pendiente de revisión."
-                    );
-                }
-
-
-                // =====================================================
-                // 2. SOLICITUD APROBADA SIN RENDICIÓN
-                // =====================================================
-                //
-                // Si la solicitud fue aprobada pero todavía no tiene
-                // una rendición registrada, también bloqueamos.
-                //
-                // =====================================================
-
-                bool tieneSolicitudSinRendicion =
-                    await _context.Solicitudes
-                        .AsNoTracking()
-                        .AnyAsync(s =>
-                            s.IdUsuario == idUsuario &&
-                            s.IdEstadoSolicitud ==
-                                ESTADO_SOLICITUD_APROBADA &&
-                            !_context.Rendiciones
-                                .Any(r =>
-                                    r.IdSolicitud ==
-                                    s.IdSolicitud));
-
-                if (tieneSolicitudSinRendicion)
-                {
-                    return (
-                        true,
-                        "No puede registrar una nueva solicitud porque tiene una solicitud aprobada pendiente de rendición."
-                    );
-                }
-
-
-                // =====================================================
-                // 3. RENDICIÓN EN BORRADOR
-                // =====================================================
-
-                bool tieneRendicionBorrador =
-                    await _context.Rendiciones
-                        .AsNoTracking()
-                        .AnyAsync(r =>
-                            r.IdUsuario == idUsuario &&
-                            r.IdEstadoRendicion ==
-                                ESTADO_RENDICION_BORRADOR);
-
-                if (tieneRendicionBorrador)
-                {
-                    return (
-                        true,
-                        "No puede registrar una nueva solicitud porque tiene una rendición pendiente de completar."
-                    );
-                }
-
-
-                // =====================================================
-                // 4. RENDICIÓN PENDIENTE DE REVISIÓN
-                // =====================================================
-                //
-                // ESTA ES LA CORRECCIÓN PRINCIPAL.
-                //
-                // Antes estabas utilizando:
-                //
-                // IdEstadoRendicion == 1
-                //
-                // pero 1 corresponde a Borrador.
-                //
-                // Pendiente de revisión = 2.
-                //
-                // =====================================================
-
-                bool tieneRendicionPendienteRevision =
-                    await _context.Rendiciones
-                        .AsNoTracking()
-                        .AnyAsync(r =>
-                            r.IdUsuario == idUsuario &&
-                            r.IdEstadoRendicion ==
-                                ESTADO_RENDICION_PENDIENTE_REVISION);
-
-                if (tieneRendicionPendienteRevision)
-                {
-                    return (
-                        true,
-                        "No puede registrar una nueva solicitud porque tiene una rendición pendiente de revisión. Debe esperar a que la rendición sea aprobada."
-                    );
-                }
-
-
-                // =====================================================
-                // 5. NO EXISTE BLOQUEO
-                // =====================================================
-
                 return (
-                    false,
-                    string.Empty
+                    true,
+                    "No puede registrar una nueva solicitud porque tiene una solicitud pendiente de revisión."
                 );
             }
 
+            // =====================================================
+            // 2. SOLICITUD APROBADA SIN RENDICIÓN
+            // =====================================================
 
-            // =========================================================
-            // CREAR SOLICITUD - GET
-            // =========================================================
+            bool tieneSolicitudSinRendicion =
+                await _context.Solicitudes
+                    .AsNoTracking()
+                    .AnyAsync(s =>
+                        s.IdUsuario == idUsuario &&
+                        s.IdEstadoSolicitud ==
+                            ESTADO_SOLICITUD_APROBADA &&
+                        !_context.Rendiciones
+                            .Any(r =>
+                                r.IdSolicitud ==
+                                s.IdSolicitud));
 
-            [HttpGet]
+            if (tieneSolicitudSinRendicion)
+            {
+                return (
+                    true,
+                    "No puede registrar una nueva solicitud porque tiene una solicitud aprobada pendiente de rendición."
+                );
+            }
+
+            // =====================================================
+            // 3. RENDICIÓN EN BORRADOR
+            // =====================================================
+
+            bool tieneRendicionBorrador =
+                await _context.Rendiciones
+                    .AsNoTracking()
+                    .AnyAsync(r =>
+                        r.IdUsuario == idUsuario &&
+                        r.IdEstadoRendicion ==
+                            ESTADO_RENDICION_BORRADOR);
+
+            if (tieneRendicionBorrador)
+            {
+                return (
+                    true,
+                    "No puede registrar una nueva solicitud porque tiene una rendición pendiente de completar."
+                );
+            }
+
+            // =====================================================
+            // 4. RENDICIÓN PENDIENTE DE REVISIÓN
+            // =====================================================
+
+            bool tieneRendicionPendienteRevision =
+                await _context.Rendiciones
+                    .AsNoTracking()
+                    .AnyAsync(r =>
+                        r.IdUsuario == idUsuario &&
+                        r.IdEstadoRendicion ==
+                            ESTADO_RENDICION_PENDIENTE_REVISION);
+
+            if (tieneRendicionPendienteRevision)
+            {
+                return (
+                    true,
+                    "No puede registrar una nueva solicitud porque tiene una rendición pendiente de revisión. Debe esperar a que la rendición sea aprobada."
+                );
+            }
+
+            // =====================================================
+            // 5. RENDICIÓN RECHAZADA
+            // =====================================================
+
+            bool tieneRendicionRechazada =
+                await _context.Rendiciones
+                    .AsNoTracking()
+                    .AnyAsync(r =>
+                        r.IdUsuario == idUsuario &&
+                        r.IdEstadoRendicion ==
+                            ESTADO_RENDICION_RECHAZADA);
+
+            if (tieneRendicionRechazada)
+            {
+                return (
+                    true,
+                    "No puede registrar una nueva solicitud porque tiene una rendición rechazada pendiente de corrección. Debe corregir los gastos observados y volver a enviar la misma rendición."
+                );
+            }
+
+            // =====================================================
+            // 6. NO EXISTE BLOQUEO
+            // =====================================================
+
+            return (
+                false,
+                string.Empty
+            );
+        }
+
+        // =========================================================
+        // CREAR SOLICITUD - GET
+        // =========================================================
+
+        [HttpGet]
             public async Task<IActionResult> Create()
             {
                 var idUsuario =

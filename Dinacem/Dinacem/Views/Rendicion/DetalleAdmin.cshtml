@@ -587,78 +587,31 @@
 <div class="revision-page">
 
     <div class="page-header">
-
         <div class="header-content">
-
             <div class="header-icon">
                 <i class="bi bi-receipt-cutoff"></i>
             </div>
-
             <div>
-                <h1 class="page-title">
-                    Revisión de Rendición
-                </h1>
-
-                <p class="page-description">
-                    Revise la información, gastos y comprobantes de la rendición.
-                </p>
+                <h1 class="page-title">Revisión de Rendición</h1>
+                <p class="page-description">Revise la información, gastos y comprobantes de la rendición.</p>
             </div>
-
         </div>
 
         <div class="header-actions">
-
             @if (!string.IsNullOrWhiteSpace(rendicion?.ArchivoPdf))
             {
-                <a href="@rendicion.ArchivoPdf"
-                   target="_blank"
-                   rel="noopener"
-                   class="btn btn-outline-danger">
-
+                <a href="@rendicion.ArchivoPdf" target="_blank" rel="noopener" class="btn btn-outline-danger">
                     <i class="bi bi-file-earmark-pdf me-1"></i>
                     Ver PDF
-
                 </a>
             }
 
-            <a asp-controller="Rendicion"
-               asp-action="IndexAdmin"
-               class="btn btn-outline-secondary">
-
+            <a asp-controller="Rendicion" asp-action="IndexAdmin" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-1"></i>
                 Volver
-
             </a>
-
         </div>
-
     </div>
-
-    @if (TempData["mensaje"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show">
-            <i class="bi bi-check-circle-fill me-2"></i>
-            @TempData["mensaje"]
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert">
-            </button>
-        </div>
-    }
-
-    @if (TempData["error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            @Html.Raw(TempData["error"])
-
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert">
-            </button>
-        </div>
-    }
 
     @if (rendicion == null)
     {
@@ -670,33 +623,23 @@
     else
     {
         <div class="panel">
-
             <div class="panel-header">
                 <i class="bi bi-info-circle-fill"></i>
                 Información general
             </div>
 
             <div class="panel-body">
-
                 <div class="table-responsive">
-
                     <table class="table table-bordered info-table">
-
                         <tbody>
-
                             <tr>
                                 <th>Rendición</th>
                                 <td>
-                                    <span class="codigo">
-                                        #@rendicion.IdRendicion
-                                    </span>
+                                    <span class="codigo">#@rendicion.IdRendicion</span>
                                 </td>
-
                                 <th>Solicitud</th>
                                 <td>
-                                    <span class="codigo">
-                                        #@rendicion.IdSolicitud
-                                    </span>
+                                    <span class="codigo">#@rendicion.IdSolicitud</span>
                                 </td>
                             </tr>
 
@@ -706,35 +649,22 @@
                                     @rendicion.Usuario?.Nombres
                                     @rendicion.Usuario?.Apellidos
                                 </td>
-
                                 <th>Correo</th>
-                                <td>
-                                    @(rendicion.Usuario?.Correo ?? "-")
-                                </td>
+                                <td>@(rendicion.Usuario?.Correo ?? "-")</td>
                             </tr>
 
                             <tr>
                                 <th>Destino</th>
-                                <td>
-                                    @(rendicion.Solicitud?.Destino ?? "-")
-                                </td>
-
+                                <td>@(rendicion.Solicitud?.Destino ?? "-")</td>
                                 <th>Motivo</th>
-                                <td>
-                                    @(rendicion.Solicitud?.Motivo ?? "-")
-                                </td>
+                                <td>@(rendicion.Solicitud?.Motivo ?? "-")</td>
                             </tr>
 
                             <tr>
                                 <th>Fecha inicio</th>
-                                <td>
-                                    @rendicion.FechaInicio.ToString("dd/MM/yyyy")
-                                </td>
-
+                                <td>@rendicion.FechaInicio.ToString("dd/MM/yyyy")</td>
                                 <th>Fecha fin</th>
-                                <td>
-                                    @rendicion.FechaFin.ToString("dd/MM/yyyy")
-                                </td>
+                                <td>@rendicion.FechaFin.ToString("dd/MM/yyyy")</td>
                             </tr>
 
                             <tr>
@@ -747,7 +677,6 @@
 
                                 <th>Estado</th>
                                 <td>
-
                                     @switch (rendicion.IdEstadoRendicion)
                                     {
                                         case 1:
@@ -784,33 +713,23 @@
                                             </span>
                                             break;
                                     }
-
                                 </td>
                             </tr>
-
                         </tbody>
-
                     </table>
-
                 </div>
-
             </div>
-
         </div>
 
         <div class="panel">
-
             <div class="panel-header">
                 <i class="bi bi-cash-stack"></i>
                 Gastos registrados
             </div>
 
             <div class="panel-body">
-
                 <div class="table-responsive">
-
                     <table class="table tabla-gastos">
-
                         <thead>
                             <tr>
                                 <th>Fecha</th>
@@ -827,48 +746,36 @@
                         </thead>
 
                         <tbody>
-
                             @if (Model != null && Model.Any())
                             {
                                 foreach (var item in Model)
                                 {
                                     <tr>
-
-                                        <td>
-                                            @item.Fecha.ToString("dd/MM/yyyy")
-                                        </td>
+                                        <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
 
                                         <td>
                                             @(item.TipoGasto?.Nombre ?? "-")
                                         </td>
 
                                         <td>
-                                            <strong>
-                                                @(item.RazonSocial ?? "-")
-                                            </strong>
+                                            <strong>@(item.RazonSocial ?? "-")</strong>
 
                                             @if (!string.IsNullOrWhiteSpace(item.Ruc))
                                             {
                                                 <br />
-                                                <small class="text-muted">
-                                                    RUC: @item.Ruc
-                                                </small>
+                                                <small class="text-muted">RUC: @item.Ruc</small>
                                             }
                                         </td>
 
                                         <td>
                                             @(item.TipoComprobante?.Nombre ?? "-")
-
                                             <br />
-
                                             <small class="text-muted">
                                                 @item.Serie - @item.Numero
                                             </small>
                                         </td>
 
-                                        <td>
-                                            @(item.Detalle ?? "-")
-                                        </td>
+                                        <td>@(item.Detalle ?? "-")</td>
 
                                         <td>
                                             S/ @item.ValorVenta.ToString("N2")
@@ -893,40 +800,32 @@
                                         </td>
 
                                         <td>
-
                                             @if (!string.IsNullOrWhiteSpace(item.Comprobante))
                                             {
                                                 <a href="@item.Comprobante"
                                                    target="_blank"
                                                    rel="noopener"
                                                    class="btn btn-outline-primary btn-sm archivo-btn">
-
                                                     <i class="bi bi-paperclip me-1"></i>
                                                     Ver
-
                                                 </a>
                                             }
                                             else
                                             {
-                                                <span class="text-muted">
-                                                    Sin archivo
-                                                </span>
+                                                <span class="text-muted">Sin archivo</span>
                                             }
-
                                         </td>
 
                                         <td>
-
-                                            @if (rendicion.IdEstadoRendicion == 2)
+                                            @if (rendicion.IdEstadoRendicion == 2 ||
+                                                 rendicion.IdEstadoRendicion == 4)
                                             {
                                                 <a asp-controller="Gasto"
                                                    asp-action="EditAdmin"
                                                    asp-route-id="@item.IdGasto"
                                                    class="btn btn-outline-warning btn-sm">
-
                                                     <i class="bi bi-pencil-square me-1"></i>
                                                     Editar
-
                                                 </a>
                                             }
                                             else
@@ -936,9 +835,7 @@
                                                     Bloqueado
                                                 </span>
                                             }
-
                                         </td>
-
                                     </tr>
                                 }
                             }
@@ -946,51 +843,29 @@
                             {
                                 <tr>
                                     <td colspan="10" class="empty-state">
-
                                         <i class="bi bi-receipt"></i>
-
-                                        <strong>
-                                            No hay gastos registrados
-                                        </strong>
-
-                                        <span>
-                                            Esta rendición todavía no contiene gastos.
-                                        </span>
-
+                                        <strong>No hay gastos registrados</strong>
+                                        <span>Esta rendición todavía no contiene gastos.</span>
                                     </td>
                                 </tr>
                             }
-
                         </tbody>
-
                     </table>
-
                 </div>
-
             </div>
-
         </div>
 
-        <!-- =========================================
-             BITÁCORA DE VEHÍCULO
-        ========================================== -->
-
         <div class="panel">
-
             <div class="panel-header">
                 <i class="bi bi-car-front-fill"></i>
                 Bitácora de vehículo
             </div>
 
             <div class="panel-body">
-
                 @if (bitacorasVehiculo.Any())
                 {
-
                     <div class="table-responsive">
-
                         <table class="table table-bordered tabla-bitacora">
-
                             <thead>
                                 <tr>
                                     <th>Fecha</th>
@@ -1000,26 +875,21 @@
                                     <th>Tarifa / km</th>
                                     <th>Observaciones</th>
                                     <th>Monto calculado</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-
                                 @foreach (var item in bitacorasVehiculo)
                                 {
                                     <tr>
-
                                         <td>
                                             @item.Fecha.ToString("dd/MM/yyyy")
                                         </td>
 
-                                        <td>
-                                            @item.Origen
-                                        </td>
+                                        <td>@item.Origen</td>
 
-                                        <td>
-                                            @item.Destino
-                                        </td>
+                                        <td>@item.Destino</td>
 
                                         <td>
                                             <strong>
@@ -1044,162 +914,131 @@
                                             </span>
                                         </td>
 
+                                        <td>
+                                            @if (rendicion.IdEstadoRendicion == 2 ||
+                                                 rendicion.IdEstadoRendicion == 4)
+                                            {
+                                                <a asp-controller="BitacoraVehiculo"
+                                                   asp-action="EditAdmin"
+                                                   asp-route-id="@item.IdBitacoraVehiculo"
+                                                   class="btn btn-outline-warning btn-sm">
+                                                    <i class="bi bi-pencil-square me-1"></i>
+                                                    Editar
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">
+                                                    <i class="bi bi-lock me-1"></i>
+                                                    Bloqueado
+                                                </span>
+                                            }
+                                        </td>
                                     </tr>
                                 }
-
                             </tbody>
-
                         </table>
-
                     </div>
 
                     <div class="row g-3 mt-2">
-
                         <div class="col-12 col-md-6 col-xl-3">
-
                             <div class="summary-card summary-primary">
-
-                                <span class="summary-label">
-                                    Recorridos
-                                </span>
-
+                                <span class="summary-label">Recorridos</span>
                                 <div class="summary-value">
                                     @bitacorasVehiculo.Count
                                 </div>
-
                             </div>
-
                         </div>
 
                         <div class="col-12 col-md-6 col-xl-3">
-
                             <div class="summary-card summary-purple">
-
-                                <span class="summary-label">
-                                    Distancia total
-                                </span>
-
+                                <span class="summary-label">Distancia total</span>
                                 <div class="summary-value">
                                     @totalKm.ToString("N2") km
                                 </div>
-
                             </div>
-
                         </div>
 
                         <div class="col-12 col-md-6 col-xl-3">
-
                             <div class="summary-card summary-orange">
-
-                                <span class="summary-label">
-                                    Tarifa por kilómetro
-                                </span>
+                                <span class="summary-label">Tarifa por kilómetro</span>
 
                                 @{
                                     var tarifasUsadas = bitacorasVehiculo
-                                    .Select(x => x.TarifaKilometro)
-                                    .Distinct()
-                                    .ToList();
+                                        .Select(x => x.TarifaKilometro)
+                                        .Distinct()
+                                        .ToList();
                                 }
 
                                 <div class="summary-value">
                                     @if (tarifasUsadas.Count == 1)
                                     {
-                                        <span>S/ @tarifasUsadas[0].ToString("N2")</span>
+                                        <span>
+                                            S/ @tarifasUsadas[0].ToString("N2")
+                                        </span>
                                     }
                                     else
                                     {
                                         <span>Varias</span>
                                     }
                                 </div>
-
                             </div>
-
                         </div>
 
                         <div class="col-12 col-md-6 col-xl-3">
-
                             <div class="summary-card summary-green">
-
-                                <span class="summary-label">
-                                    Total vehículo
-                                </span>
-
+                                <span class="summary-label">Total vehículo</span>
                                 <div class="summary-value">
                                     S/ @totalVehiculo.ToString("N2")
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
                 }
                 else
                 {
                     <div class="empty-state">
-
                         <i class="bi bi-car-front"></i>
-
-                        <strong>
-                            No hay recorridos registrados
-                        </strong>
-
+                        <strong>No hay recorridos registrados</strong>
                         <span>
                             El empleado no registró recorridos de vehículo para esta rendición.
                         </span>
-
                     </div>
                 }
-
             </div>
-
         </div>
 
-
         <div class="resumen-grid">
-
             <div class="summary-card summary-primary">
-                <span class="summary-label">
-                    Monto aprobado
-                </span>
-
+                <span class="summary-label">Monto aprobado</span>
                 <div class="summary-value">
                     S/ @montoAprobado.ToString("N2")
                 </div>
             </div>
 
             <div class="summary-card summary-purple">
-                <span class="summary-label">
-                    Valor de venta
-                </span>
-
+                <span class="summary-label">Valor de venta</span>
                 <div class="summary-value">
                     S/ @totalValorVenta.ToString("N2")
                 </div>
             </div>
 
             <div class="summary-card summary-orange">
-                <span class="summary-label">
-                    IGV total
-                </span>
-
+                <span class="summary-label">IGV total</span>
                 <div class="summary-value">
                     S/ @totalIgv.ToString("N2")
                 </div>
             </div>
 
             <div class="summary-card summary-green">
-                <span class="summary-label">
-                    Total rendido
-                </span>
-
+                <span class="summary-label">Total rendido</span>
                 <div class="summary-value">
                     S/ @totalRendido.ToString("N2")
                 </div>
 
                 <small class="text-muted d-block mt-1">
                     Gastos: S/ @totalGastos.ToString("N2")
+
                     @if (totalVehiculo > 0)
                     {
                         <span>
@@ -1208,24 +1047,20 @@
                     }
                 </small>
             </div>
-
         </div>
 
         @if (rendicion.Saldo > 0 || devolucion != null)
         {
             <div class="panel">
-
                 <div class="panel-header">
                     <i class="bi bi-arrow-return-left"></i>
                     Devolución de saldo
                 </div>
 
                 <div class="panel-body">
-
                     @if (devolucion == null)
                     {
                         <div class="warning-alert">
-
                             <i class="bi bi-exclamation-triangle-fill"></i>
 
                             <div>
@@ -1235,17 +1070,13 @@
                                 </strong>,
                                 pero no se encontró una devolución registrada.
                             </div>
-
                         </div>
                     }
                     else
                     {
                         <div class="table-responsive">
-
                             <table class="table table-bordered tabla-devolucion">
-
                                 <tbody>
-
                                     <tr>
                                         <th>Monto devuelto</th>
                                         <td>
@@ -1262,16 +1093,12 @@
 
                                     <tr>
                                         <th>Banco</th>
-                                        <td>
-                                            @(devolucion.Banco ?? "-")
-                                        </td>
+                                        <td>@(devolucion.Banco ?? "-")</td>
                                     </tr>
 
                                     <tr>
                                         <th>Número de operación</th>
-                                        <td>
-                                            @(devolucion.NumeroOperacion ?? "-")
-                                        </td>
+                                        <td>@(devolucion.NumeroOperacion ?? "-")</td>
                                     </tr>
 
                                     <tr>
@@ -1286,54 +1113,40 @@
                                     <tr>
                                         <th>Voucher</th>
                                         <td>
-
                                             @if (!string.IsNullOrWhiteSpace(devolucion.Voucher))
                                             {
                                                 <a href="@devolucion.Voucher"
                                                    target="_blank"
                                                    rel="noopener"
                                                    class="btn btn-outline-primary btn-sm">
-
                                                     <i class="bi bi-file-earmark-image me-1"></i>
                                                     Ver voucher
-
                                                 </a>
                                             }
                                             else
                                             {
-                                                <span class="text-danger">
-                                                    Sin voucher
-                                                </span>
+                                                <span class="text-danger">Sin voucher</span>
                                             }
-
                                         </td>
                                     </tr>
-
                                 </tbody>
-
                             </table>
-
                         </div>
                     }
-
                 </div>
-
             </div>
         }
 
         @if (rendicion.Saldo < 0)
         {
             <div class="panel reembolso-panel">
-
                 <div class="panel-header">
                     <i class="bi bi-cash-coin"></i>
                     Reembolso al empleado
                 </div>
 
                 <div class="panel-body">
-
                     <div class="info-alert">
-
                         <i class="bi bi-info-circle-fill"></i>
 
                         <div>
@@ -1343,61 +1156,42 @@
                             </strong>.
                             Este importe deberá ser reembolsado al empleado cuando la rendición sea aprobada.
                         </div>
-
                     </div>
 
                     @if (reembolso == null)
                     {
                         <div class="warning-alert">
-
                             <i class="bi bi-exclamation-triangle-fill"></i>
 
                             <div>
                                 No se encontró el registro de reembolso asociado a esta rendición.
                             </div>
-
                         </div>
                     }
                     else
                     {
                         <div class="resumen-grid">
-
                             <div class="summary-card summary-danger">
-
-                                <span class="summary-label">
-                                    Monto por reembolsar
-                                </span>
-
+                                <span class="summary-label">Monto por reembolsar</span>
                                 <div class="reembolso-monto">
                                     S/ @reembolso.Monto.ToString("N2")
                                 </div>
-
                             </div>
 
                             <div class="summary-card">
-
-                                <span class="summary-label">
-                                    Fecha de solicitud
-                                </span>
-
+                                <span class="summary-label">Fecha de solicitud</span>
                                 <div class="summary-value">
                                     @reembolso.FechaSolicitud.ToString("dd/MM/yyyy")
                                 </div>
-
                                 <small class="text-muted">
                                     @reembolso.FechaSolicitud.ToString("HH:mm")
                                 </small>
-
                             </div>
 
                             <div class="summary-card">
-
-                                <span class="summary-label">
-                                    Estado del reembolso
-                                </span>
+                                <span class="summary-label">Estado del reembolso</span>
 
                                 <div class="mt-2">
-
                                     @switch (reembolso.IdEstadoReembolso)
                                     {
                                         case 1:
@@ -1430,19 +1224,13 @@
                                             </span>
                                             break;
                                     }
-
                                 </div>
-
                             </div>
-
                         </div>
 
                         <div class="table-responsive">
-
                             <table class="table table-bordered tabla-devolucion">
-
                                 <tbody>
-
                                     <tr>
                                         <th>Fecha de aprobación</th>
                                         <td>
@@ -1491,17 +1279,14 @@
                                     <tr>
                                         <th>Comprobante</th>
                                         <td>
-
                                             @if (!string.IsNullOrWhiteSpace(reembolso.ComprobantePago))
                                             {
                                                 <a href="@reembolso.ComprobantePago"
                                                    target="_blank"
                                                    rel="noopener"
                                                    class="btn btn-outline-primary btn-sm">
-
                                                     <i class="bi bi-paperclip me-1"></i>
                                                     Ver comprobante
-
                                                 </a>
                                             }
                                             else
@@ -1510,20 +1295,15 @@
                                                     Sin comprobante
                                                 </span>
                                             }
-
                                         </td>
                                     </tr>
-
                                 </tbody>
-
                             </table>
-
                         </div>
 
                         @if (reembolso.IdEstadoReembolso == 2)
                         {
                             <div class="bloque-reembolso">
-
                                 <h5>
                                     <i class="bi bi-bank me-1"></i>
                                     Registrar pago del reembolso
@@ -1544,11 +1324,8 @@
                                            value="@reembolso.IdReembolso" />
 
                                     <div class="row g-3">
-
                                         <div class="col-12 col-md-6">
-
-                                            <label for="bancoReembolso"
-                                                   class="form-label">
+                                            <label for="bancoReembolso" class="form-label">
                                                 Banco
                                             </label>
 
@@ -1559,13 +1336,10 @@
                                                    maxlength="100"
                                                    placeholder="Ej. BCP, BBVA, Interbank"
                                                    required />
-
                                         </div>
 
                                         <div class="col-12 col-md-6">
-
-                                            <label for="numeroOperacionReembolso"
-                                                   class="form-label">
+                                            <label for="numeroOperacionReembolso" class="form-label">
                                                 Número de operación
                                             </label>
 
@@ -1576,13 +1350,10 @@
                                                    maxlength="100"
                                                    placeholder="Ingrese el número de operación"
                                                    required />
-
                                         </div>
 
                                         <div class="col-12 col-md-6">
-
-                                            <label for="fechaPagoReembolso"
-                                                   class="form-label">
+                                            <label for="fechaPagoReembolso" class="form-label">
                                                 Fecha de pago
                                             </label>
 
@@ -1593,13 +1364,10 @@
                                                    value="@DateTime.Now.ToString("yyyy-MM-dd")"
                                                    max="@DateTime.Now.ToString("yyyy-MM-dd")"
                                                    required />
-
                                         </div>
 
                                         <div class="col-12 col-md-6">
-
-                                            <label for="comprobanteReembolso"
-                                                   class="form-label">
+                                            <label for="comprobanteReembolso" class="form-label">
                                                 Comprobante de pago
                                             </label>
 
@@ -1613,13 +1381,10 @@
                                             <small class="text-muted">
                                                 PDF, JPG, JPEG o PNG. Máximo 5 MB.
                                             </small>
-
                                         </div>
 
                                         <div class="col-12">
-
-                                            <label for="observacionesReembolso"
-                                                   class="form-label">
+                                            <label for="observacionesReembolso" class="form-label">
                                                 Observaciones
                                             </label>
 
@@ -1629,68 +1394,49 @@
                                                       rows="3"
                                                       maxlength="1000"
                                                       placeholder="Ingrese alguna observación sobre el pago"></textarea>
-
                                         </div>
-
                                     </div>
 
                                     <div class="d-flex justify-content-end mt-4">
-
                                         <button type="submit"
                                                 class="btn btn-dinacen"
                                                 id="btnRegistrarPago">
-
                                             <i class="bi bi-cash-coin me-1"></i>
                                             Registrar pago
-
                                         </button>
-
                                     </div>
-
                                 </form>
-
                             </div>
                         }
                     }
-
                 </div>
-
             </div>
         }
 
         @if (rendicion.IdEstadoRendicion == 4 &&
-       !string.IsNullOrWhiteSpace(rendicion.Observaciones))
+             !string.IsNullOrWhiteSpace(rendicion.Observaciones))
         {
             <div class="rechazo-alert">
-
                 <i class="bi bi-exclamation-triangle-fill"></i>
 
                 <div>
-
-                    <strong>
-                        Motivo del rechazo
-                    </strong>
+                    <strong>Motivo del rechazo</strong>
 
                     <div class="mt-1">
                         @rendicion.Observaciones
                     </div>
-
                 </div>
-
             </div>
         }
 
         <div class="panel">
-
             <div class="panel-header">
                 <i class="bi bi-check2-square"></i>
                 Acciones
             </div>
 
             <div class="panel-body">
-
                 <div class="acciones">
-
                     @if (rendicion.IdEstadoRendicion == 2)
                     {
                         <form asp-controller="Rendicion"
@@ -1702,23 +1448,18 @@
                                    name="id"
                                    value="@rendicion.IdRendicion" />
 
-                            <button type="submit"
-                                    class="btn btn-aprobar">
-
+                            <button type="submit" class="btn btn-aprobar">
                                 <i class="bi bi-check-circle me-1"></i>
                                 Aprobar rendición
-
                             </button>
-
                         </form>
+
                         <button type="button"
                                 class="btn btn-outline-danger"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modalRechazarRendicion">
-
                             <i class="bi bi-x-circle me-1"></i>
                             Rechazar rendición
-
                         </button>
                     }
                     else
@@ -1735,26 +1476,19 @@
                            target="_blank"
                            rel="noopener"
                            class="btn btn-outline-danger">
-
                             <i class="bi bi-file-earmark-pdf me-1"></i>
                             Ver liquidación PDF
-
                         </a>
                     }
 
                     <a asp-controller="Rendicion"
                        asp-action="IndexAdmin"
                        class="btn btn-outline-secondary">
-
                         <i class="bi bi-arrow-left me-1"></i>
                         Regresar a liquidaciones
-
                     </a>
-
                 </div>
-
             </div>
-
         </div>
 
         @if (rendicion.IdEstadoRendicion == 2)
@@ -1766,7 +1500,6 @@
                  aria-hidden="true">
 
                 <div class="modal-dialog modal-dialog-centered">
-
                     <div class="modal-content">
 
                         <form asp-controller="Rendicion"
@@ -1775,13 +1508,9 @@
                               id="formRechazarRendicion">
 
                             <div class="modal-header bg-danger text-white">
-
-                                <h5 class="modal-title"
-                                    id="tituloModalRechazo">
-
+                                <h5 class="modal-title" id="tituloModalRechazo">
                                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
                                     Rechazar rendición
-
                                 </h5>
 
                                 <button type="button"
@@ -1789,17 +1518,14 @@
                                         data-bs-dismiss="modal"
                                         aria-label="Cerrar">
                                 </button>
-
                             </div>
 
                             <div class="modal-body">
-
                                 <input type="hidden"
                                        name="id"
                                        value="@rendicion.IdRendicion" />
 
-                                <label for="observaciones"
-                                       class="form-label">
+                                <label for="observaciones" class="form-label">
                                     Motivo del rechazo
                                 </label>
 
@@ -1814,49 +1540,35 @@
                                 <small class="text-muted">
                                     Esta observación será visible para el empleado.
                                 </small>
-
                             </div>
 
                             <div class="modal-footer">
-
                                 <button type="button"
                                         class="btn btn-outline-secondary"
                                         data-bs-dismiss="modal">
-
                                     Cancelar
-
                                 </button>
 
                                 <button type="submit"
                                         class="btn btn-danger"
                                         id="btnConfirmarRechazo">
-
                                     <i class="bi bi-x-circle me-1"></i>
                                     Confirmar rechazo
-
                                 </button>
-
                             </div>
-
                         </form>
-
                     </div>
-
                 </div>
-
             </div>
         }
     }
-
 </div>
 
 @section Scripts {
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-
             const formAprobar = document.querySelector(".form-aprobar-rendicion");
             const formRechazar = document.getElementById("formRechazarRendicion");
             const formPago = document.getElementById("formRegistrarPago");
@@ -1885,53 +1597,76 @@
             }
 
             if (formAprobar) {
-
                 formAprobar.addEventListener("submit", function (e) {
-
                     e.preventDefault();
 
                     Swal.fire({
                         title: "¿Aprobar rendición?",
-                        text: "La rendición será marcada como aprobada.",
+                        html: `
+                            <div style="text-align:left;">
+                                <p style="font-size:13px;color:#64748b;margin-bottom:10px;">
+                                    La rendición será marcada como aprobada.
+                                </p>
+                                <label for="observacionAprobacion"
+                                       style="display:block;font-size:13px;font-weight:600;color:#475569;margin-bottom:6px;">
+                                    Observaciones
+                                </label>
+                                <textarea id="observacionAprobacion"
+                                          class="swal2-textarea"
+                                          placeholder="Ingrese una observación sobre la aprobación..."
+                                          maxlength="1000"
+                                          style="width:100%;margin:0;min-height:110px;resize:vertical;"></textarea>
+                                <small style="display:block;margin-top:6px;color:#94a3b8;">
+                                    Este campo es opcional.
+                                </small>
+                            </div>
+                        `,
                         icon: "question",
                         showCancelButton: true,
                         confirmButtonText: "Sí, aprobar",
                         cancelButtonText: "Cancelar",
                         confirmButtonColor: "#198754",
                         cancelButtonColor: "#6c757d",
-                        reverseButtons: true
+                        reverseButtons: true,
+                        focusConfirm: false,
+                        preConfirm: function () {
+                            const campo = document.getElementById("observacionAprobacion");
+                            return campo ? campo.value.trim() : "";
+                        }
                     }).then(function (result) {
+                        if (!result.isConfirmed) return;
 
-                        if (result.isConfirmed) {
+                        const observacion = result.value || "";
+                        let input = formAprobar.querySelector('input[name="observacionAprobacion"]');
 
-                            const boton = formAprobar.querySelector("button");
-
-                            if (boton) {
-                                boton.disabled = true;
-                                boton.innerHTML =
-                                    '<span class="spinner-border spinner-border-sm me-1"></span>Aprobando...';
-                            }
-
-                            formAprobar.submit();
+                        if (!input) {
+                            input = document.createElement("input");
+                            input.type = "hidden";
+                            input.name = "observacionAprobacion";
+                            formAprobar.appendChild(input);
                         }
 
-                    });
+                        input.value = observacion;
 
+                        const boton = formAprobar.querySelector("button");
+
+                        if (boton) {
+                            boton.disabled = true;
+                            boton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Aprobando...';
+                        }
+
+                        formAprobar.submit();
+                    });
                 });
             }
 
             if (formRechazar) {
-
                 formRechazar.addEventListener("submit", function (e) {
-
                     e.preventDefault();
 
-                    const observaciones =
-                        document.getElementById("observaciones");
+                    const observaciones = document.getElementById("observaciones");
 
-                    if (!observaciones ||
-                        observaciones.value.trim() === "") {
-
+                    if (!observaciones || observaciones.value.trim() === "") {
                         Swal.fire({
                             title: "Motivo requerido",
                             text: "Debe indicar el motivo del rechazo.",
@@ -1939,107 +1674,69 @@
                             confirmButtonText: "Entendido",
                             confirmButtonColor: "#0c4a8a"
                         });
-
                         return;
                     }
 
-                    Swal.fire({
-                        title: "¿Rechazar rendición?",
-                        text: "El empleado podrá visualizar el motivo del rechazo.",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonText: "Sí, rechazar",
-                        cancelButtonText: "Cancelar",
-                        confirmButtonColor: "#dc3545",
-                        cancelButtonColor: "#6c757d",
-                        reverseButtons: true
-                    }).then(function (result) {
+                    const boton = document.getElementById("btnConfirmarRechazo");
 
-                        if (result.isConfirmed) {
+                    if (boton) {
+                        boton.disabled = true;
+                        boton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Rechazando...';
+                    }
 
-                            const boton =
-                                document.getElementById("btnConfirmarRechazo");
-
-                            if (boton) {
-                                boton.disabled = true;
-                                boton.innerHTML =
-                                    '<span class="spinner-border spinner-border-sm me-1"></span>Rechazando...';
-                            }
-
-                            formRechazar.submit();
-                        }
-
-                    });
-
+                    formRechazar.submit();
                 });
             }
 
             if (formPago) {
-
                 formPago.addEventListener("submit", function (e) {
-
                     e.preventDefault();
 
-                    const banco =
-                        document.getElementById("bancoReembolso");
-
-                    const numeroOperacion =
-                        document.getElementById("numeroOperacionReembolso");
-
-                    const fechaPago =
-                        document.getElementById("fechaPagoReembolso");
-
-                    const archivo =
-                        document.getElementById("comprobanteReembolso");
+                    const banco = document.getElementById("bancoReembolso");
+                    const numeroOperacion = document.getElementById("numeroOperacionReembolso");
+                    const fechaPago = document.getElementById("fechaPagoReembolso");
+                    const archivo = document.getElementById("comprobanteReembolso");
 
                     if (!banco.value.trim()) {
-
                         Swal.fire({
                             icon: "warning",
                             title: "Banco requerido",
                             text: "Ingrese el banco donde realizó la transferencia.",
                             confirmButtonColor: "#0c4a8a"
                         });
-
                         banco.focus();
                         return;
                     }
 
                     if (!numeroOperacion.value.trim()) {
-
                         Swal.fire({
                             icon: "warning",
                             title: "Número de operación requerido",
                             text: "Ingrese el número de operación de la transferencia.",
                             confirmButtonColor: "#0c4a8a"
                         });
-
                         numeroOperacion.focus();
                         return;
                     }
 
                     if (!fechaPago.value) {
-
                         Swal.fire({
                             icon: "warning",
                             title: "Fecha requerida",
                             text: "Seleccione la fecha del pago.",
                             confirmButtonColor: "#0c4a8a"
                         });
-
                         fechaPago.focus();
                         return;
                     }
 
                     if (!archivo || archivo.files.length === 0) {
-
                         Swal.fire({
                             icon: "warning",
                             title: "Comprobante requerido",
                             text: "Debe adjuntar el comprobante del pago.",
                             confirmButtonColor: "#0c4a8a"
                         });
-
                         return;
                     }
 
@@ -2047,14 +1744,12 @@
                     const maximo = 5 * 1024 * 1024;
 
                     if (archivoSeleccionado.size > maximo) {
-
                         Swal.fire({
                             icon: "warning",
                             title: "Archivo demasiado grande",
                             text: "El comprobante no puede superar los 5 MB.",
                             confirmButtonColor: "#0c4a8a"
                         });
-
                         archivo.value = "";
                         return;
                     }
@@ -2070,26 +1765,19 @@
                         cancelButtonColor: "#6c757d",
                         reverseButtons: true
                     }).then(function (result) {
+                        if (!result.isConfirmed) return;
 
-                        if (result.isConfirmed) {
+                        const boton = document.getElementById("btnRegistrarPago");
 
-                            const boton =
-                                document.getElementById("btnRegistrarPago");
-
-                            if (boton) {
-                                boton.disabled = true;
-                                boton.innerHTML =
-                                    '<span class="spinner-border spinner-border-sm me-1"></span>Registrando...';
-                            }
-
-                            formPago.submit();
+                        if (boton) {
+                            boton.disabled = true;
+                            boton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Registrando...';
                         }
 
+                        formPago.submit();
                     });
-
                 });
             }
-
         });
     </script>
 }

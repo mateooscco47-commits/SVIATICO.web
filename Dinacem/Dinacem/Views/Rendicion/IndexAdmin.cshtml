@@ -825,7 +825,6 @@
                 <i class="bi bi-receipt-cutoff me-2"></i>
                 Liquidaciones
             </h1>
-
             <p class="page-description">
                 Consulte, revise y gestione las rendiciones registradas por los empleados.
             </p>
@@ -841,7 +840,7 @@
         </div>
     </div>
 
-
+    <!-- INDICADORES -->
     <div class="row g-3 mb-4">
 
         <div class="col-6 col-xl-2">
@@ -851,7 +850,6 @@
                         <span class="kpi-label">Total</span>
                         <h3 class="kpi-value">@totalLiquidaciones</h3>
                     </div>
-
                     <div class="kpi-icon kpi-blue">
                         <i class="bi bi-receipt"></i>
                     </div>
@@ -866,7 +864,6 @@
                         <span class="kpi-label">En proceso</span>
                         <h3 class="kpi-value">@enProcesoLiquidaciones</h3>
                     </div>
-
                     <div class="kpi-icon kpi-process">
                         <i class="bi bi-pencil-square"></i>
                     </div>
@@ -881,7 +878,6 @@
                         <span class="kpi-label">Pendientes</span>
                         <h3 class="kpi-value">@pendientesLiquidaciones</h3>
                     </div>
-
                     <div class="kpi-icon kpi-warning">
                         <i class="bi bi-clock"></i>
                     </div>
@@ -896,7 +892,6 @@
                         <span class="kpi-label">Aprobadas</span>
                         <h3 class="kpi-value">@aprobadasLiquidaciones</h3>
                     </div>
-
                     <div class="kpi-icon kpi-green">
                         <i class="bi bi-person-check"></i>
                     </div>
@@ -911,7 +906,6 @@
                         <span class="kpi-label">Rechazadas</span>
                         <h3 class="kpi-value">@rechazadasLiquidaciones</h3>
                     </div>
-
                     <div class="kpi-icon kpi-red">
                         <i class="bi bi-person-x"></i>
                     </div>
@@ -926,7 +920,6 @@
                         <span class="kpi-label">Reembolso pendiente</span>
                         <h3 class="kpi-value">@reembolsosPendientesLiquidaciones</h3>
                     </div>
-
                     <div class="kpi-icon kpi-purple">
                         <i class="bi bi-cash-coin"></i>
                     </div>
@@ -936,6 +929,7 @@
 
     </div>
 
+    <!-- BUSCADOR Y FECHAS -->
     <div class="filtros-card">
 
         <div class="search-box">
@@ -944,7 +938,7 @@
             <input type="search"
                    id="buscarLiquidacion"
                    class="search-input"
-                   placeholder="Buscar empleado, correo, destino o número..."
+                   placeholder="Buscar empleado, correo, zona, destino o número..."
                    autocomplete="off" />
 
             <button type="button"
@@ -982,6 +976,7 @@
 
     </div>
 
+    <!-- FILTROS POR ESTADO -->
     <div class="estado-filtros-container">
 
         <div class="filters">
@@ -1034,10 +1029,10 @@
 
     </div>
 
+    <!-- TABLA -->
     <div class="liquidaciones-list-card">
 
         <div class="liquidaciones-list-header">
-
             <h2 class="liquidaciones-list-title">
                 <i class="bi bi-list-ul me-2"></i>
                 Lista de liquidaciones
@@ -1046,7 +1041,6 @@
             <span class="liquidaciones-list-count">
                 @totalLiquidaciones registro(s)
             </span>
-
         </div>
 
         <div class="table-wrapper">
@@ -1082,6 +1076,9 @@
                             var destinoLiquidacion =
                                 item.Solicitud?.Destino ?? string.Empty;
 
+                            var zonaLiquidacion =
+                                item.Usuario?.Zona?.CodigoZona ?? string.Empty;
+
                             var reembolsoLiquidacion =
                                 listaReembolsos.FirstOrDefault(x =>
                                     x.IdRendicion == item.IdRendicion);
@@ -1100,19 +1097,23 @@
                                 $"{nombreCompletoLiquidacion} " +
                                 $"{correoLiquidacion} " +
                                 $"{destinoLiquidacion} " +
+                                $"{zonaLiquidacion} " +
                                 $"{(tieneReembolsoPendienteLiquidacion ? "reembolso pendiente" : "")}";
 
                             <tr data-estado="@item.IdEstadoRendicion"
                                 data-reembolso="@(tieneReembolsoPendienteLiquidacion ? "true" : "false")"
                                 data-fecha="@item.Fecha.ToString("yyyy-MM-dd")"
+                                data-zona="@zonaLiquidacion"
                                 data-busqueda="@textoBusquedaLiquidacion">
 
+                                <!-- ID -->
                                 <td>
                                     <span class="id-liquidacion">
                                         #@item.IdRendicion
                                     </span>
                                 </td>
 
+                                <!-- EMPLEADO -->
                                 <td>
                                     <div class="empleado-info">
 
@@ -1138,6 +1139,7 @@
                                     </div>
                                 </td>
 
+                                <!-- DESTINO -->
                                 <td>
                                     <span class="destino">
                                         @(string.IsNullOrWhiteSpace(destinoLiquidacion)
@@ -1146,6 +1148,7 @@
                                     </span>
                                 </td>
 
+                                <!-- PERIODO -->
                                 <td>
                                     <span class="fecha">
                                         @item.FechaInicio.ToString("dd/MM/yyyy")
@@ -1156,20 +1159,22 @@
                                     </span>
                                 </td>
 
+                                <!-- TOTAL -->
                                 <td>
                                     <span class="monto">
                                         S/ @item.Total.ToString("N2")
                                     </span>
                                 </td>
 
+                                <!-- SALDO -->
                                 <td>
                                     <span class="saldo">
                                         S/ @item.Saldo.ToString("N2")
                                     </span>
                                 </td>
 
+                                <!-- ESTADO -->
                                 <td>
-
                                     @switch (item.IdEstadoRendicion)
                                     {
                                         case 1:
@@ -1187,7 +1192,6 @@
                                             break;
 
                                         case 3:
-
                                             if (tieneReembolsoPendienteLiquidacion)
                                             {
                                                 <span class="estado estado-reembolso">
@@ -1209,7 +1213,6 @@
                                                     Aprobada
                                                 </span>
                                             }
-
                                             break;
 
                                         case 4:
@@ -1226,11 +1229,10 @@
                                             </span>
                                             break;
                                     }
-
                                 </td>
 
+                                <!-- ACCIONES -->
                                 <td>
-
                                     <div class="acciones">
 
                                         @if (item.IdEstadoRendicion == 1)
@@ -1283,7 +1285,6 @@
                                         }
 
                                     </div>
-
                                 </td>
 
                             </tr>
@@ -1293,34 +1294,20 @@
                     {
                         <tr id="filaSinRegistros">
                             <td colspan="8" class="sin-registros">
-
                                 <i class="bi bi-inbox"></i>
-
-                                <strong>
-                                    No hay liquidaciones registradas
-                                </strong>
-
-                                <span>
-                                    Las rendiciones registradas aparecerán aquí.
-                                </span>
-
+                                <strong>No hay liquidaciones registradas</strong>
+                                <span>Las rendiciones registradas aparecerán aquí.</span>
                             </td>
                         </tr>
                     }
 
-                    <tr id="filaSinResultados" style="display:none;">
+                    <!-- SIN RESULTADOS -->
+                    <tr id="filaSinResultados"
+                        style="display:none;">
                         <td colspan="8" class="sin-registros">
-
                             <i class="bi bi-search"></i>
-
-                            <strong>
-                                No se encontraron resultados
-                            </strong>
-
-                            <span>
-                                Pruebe modificando los criterios de búsqueda o filtros.
-                            </span>
-
+                            <strong>No se encontraron resultados</strong>
+                            <span>Pruebe modificando los criterios de búsqueda o filtros.</span>
                         </td>
                     </tr>
 

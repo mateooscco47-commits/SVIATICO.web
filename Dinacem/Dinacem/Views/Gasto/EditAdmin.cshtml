@@ -213,6 +213,33 @@
     background:var(--borde);
 }
 
+/* =========================================================
+   SECCIÓN HOSPEDAJE
+   ========================================================= */
+
+#seccionHospedaje{
+    display:none;
+}
+
+.campo-hospedaje{
+    display:none;
+}
+
+.hospedaje-info{
+    margin-top:4px;
+    padding:10px 12px;
+    border:1px solid #dbeafe;
+    border-radius:7px;
+    background:#f0f7ff;
+    color:#475569;
+    font-size:12px;
+    line-height:1.5;
+}
+
+.hospedaje-info i{
+    color:var(--dinacen-azul);
+}
+
 .tax-summary{
     height:100%;
     padding:14px;
@@ -533,9 +560,9 @@
                         </label>
 
                         <input asp-for="Fecha"
-       type="date"
-       class="form-control"
-       required />
+                               type="date"
+                               class="form-control"
+                               required />
 
                         <span asp-validation-for="Fecha"
                               class="text-danger">
@@ -549,6 +576,7 @@
 
                         <select asp-for="IdTipoGasto"
                                 class="form-select"
+                                id="IdTipoGasto"
                                 required>
 
                             <option value="">
@@ -571,13 +599,90 @@
                         </span>
                     </div>
 
+                    <!-- =====================================================
+                         PERÍODO DE HOSPEDAJE
+                         ===================================================== -->
+
+                    <div class="col-12"
+                         id="seccionHospedaje">
+
+                        <div class="section-divider">
+                            <i class="bi bi-calendar3"></i>
+                            Período de hospedaje
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-4 campo-hospedaje"
+                         id="campoFechaInicioHospedaje">
+
+                        <label asp-for="FechaInicioHospedaje"
+                               class="form-label">
+                            Fecha de inicio
+                        </label>
+
+                        <input asp-for="FechaInicioHospedaje"
+                               type="date"
+                               class="form-control"
+                               id="fechaInicioHospedaje" />
+
+                        <span asp-validation-for="FechaInicioHospedaje"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                    <div class="col-12 col-md-4 campo-hospedaje"
+                         id="campoFechaFinHospedaje">
+
+                        <label asp-for="FechaFinHospedaje"
+                               class="form-label">
+                            Fecha de fin
+                        </label>
+
+                        <input asp-for="FechaFinHospedaje"
+                               type="date"
+                               class="form-control"
+                               id="fechaFinHospedaje" />
+
+                        <span asp-validation-for="FechaFinHospedaje"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                    <div class="col-12 col-md-4 campo-hospedaje"
+                         id="campoDiasHospedaje">
+
+                        <label asp-for="DiasHospedaje"
+                               class="form-label">
+                            Días de hospedaje
+                        </label>
+
+                        <input asp-for="DiasHospedaje"
+                               type="number"
+                               min="1"
+                               class="form-control"
+                               id="diasHospedaje"
+                               readonly />
+
+                        <div class="hospedaje-info">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Los días se calculan automáticamente según
+                            el período registrado.
+                        </div>
+
+                        <span asp-validation-for="DiasHospedaje"
+                              class="text-danger">
+                        </span>
+                    </div>
+
                     <div class="col-12 col-md-4">
-                        <label asp-for="IdTipoComprobante" class="form-label">
+                        <label asp-for="IdTipoComprobante"
+                               class="form-label">
                             Tipo de comprobante
                         </label>
 
                         <select asp-for="IdTipoComprobante"
                                 class="form-select"
+                                id="IdTipoComprobante"
                                 required>
 
                             <option value="">
@@ -790,7 +895,8 @@
                     </div>
 
                     <div class="col-12 col-md-8">
-                        <label asp-for="RazonSocial" class="form-label">
+                        <label asp-for="RazonSocial"
+                               class="form-label">
                             Razón social
                         </label>
 
@@ -806,7 +912,8 @@
                     </div>
 
                     <div class="col-12">
-                        <label asp-for="DomicilioFiscal" class="form-label">
+                        <label asp-for="DomicilioFiscal"
+                               class="form-label">
                             Domicilio fiscal
                         </label>
 
@@ -921,21 +1028,192 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
-            const formulario = document.getElementById("formEditarGasto");
-            const btnGuardar = document.getElementById("btnGuardarGasto");
+            const formulario =
+                document.getElementById("formEditarGasto");
 
-            const monto = document.getElementById("montoTotal");
-            const exonerado = document.getElementById("exoneracionIGV");
-            const valorVenta = document.getElementById("valorVenta");
-            const igv = document.getElementById("igvCalculado");
+            const btnGuardar =
+                document.getElementById("btnGuardarGasto");
 
-            const resumenValor = document.getElementById("resumenValorVenta");
-            const resumenIgv = document.getElementById("resumenIgv");
-            const resumenTotal = document.getElementById("resumenTotal");
+            const tipoGasto =
+                document.getElementById("IdTipoGasto");
+
+            // =========================================================
+// HOSPEDAJE
+// =========================================================
+
+const seccionHospedaje =
+    document.getElementById("seccionHospedaje");
+
+const campoFechaInicioHospedaje =
+    document.getElementById("campoFechaInicioHospedaje");
+
+const campoFechaFinHospedaje =
+    document.getElementById("campoFechaFinHospedaje");
+
+const campoDiasHospedaje =
+    document.getElementById("campoDiasHospedaje");
+
+const fechaInicioHospedaje =
+    document.getElementById("fechaInicioHospedaje");
+
+const fechaFinHospedaje =
+    document.getElementById("fechaFinHospedaje");
+
+const diasHospedaje =
+    document.getElementById("diasHospedaje");
+
+function esHospedaje() {
+
+    if (!tipoGasto) {
+        return false;
+    }
+
+    const opcion =
+        tipoGasto.options[tipoGasto.selectedIndex];
+
+    if (!opcion) {
+        return false;
+    }
+
+    const texto =
+        (opcion.textContent || "")
+            .trim()
+            .toLowerCase();
+
+    return texto.includes("hospedaje");
+}
+
+function calcularDiasHospedaje() {
+
+    if (!fechaInicioHospedaje ||
+        !fechaFinHospedaje ||
+        !diasHospedaje) {
+        return;
+    }
+
+    const inicio =
+        fechaInicioHospedaje.value;
+
+    const fin =
+        fechaFinHospedaje.value;
+
+    // Si no hay fechas, NO borrar
+    // el valor existente de la base de datos.
+    if (!inicio || !fin) {
+        return;
+    }
+
+    const fechaInicio =
+        new Date(inicio + "T00:00:00");
+
+    const fechaFin =
+        new Date(fin + "T00:00:00");
+
+    if (fechaFin < fechaInicio) {
+
+        diasHospedaje.value = "";
+
+        fechaFinHospedaje.setCustomValidity(
+            "La fecha de fin no puede ser anterior a la fecha de inicio."
+        );
+
+        return;
+    }
+
+    fechaFinHospedaje.setCustomValidity("");
+
+    const diferencia =
+        Math.floor(
+            (
+                fechaFin -
+                fechaInicio
+            ) /
+            (1000 * 60 * 60 * 24)
+        ) + 1;
+
+    diasHospedaje.value =
+        diferencia;
+}
+
+function actualizarSeccionHospedaje() {
+
+    const mostrar =
+        esHospedaje();
+
+    if (seccionHospedaje) {
+        seccionHospedaje.style.display =
+            mostrar ? "block" : "none";
+    }
+
+    if (campoFechaInicioHospedaje) {
+        campoFechaInicioHospedaje.style.display =
+            mostrar ? "block" : "none";
+    }
+
+    if (campoFechaFinHospedaje) {
+        campoFechaFinHospedaje.style.display =
+            mostrar ? "block" : "none";
+    }
+
+    if (campoDiasHospedaje) {
+        campoDiasHospedaje.style.display =
+            mostrar ? "block" : "none";
+    }
+
+    if (mostrar) {
+        calcularDiasHospedaje();
+    }
+}
+
+tipoGasto?.addEventListener(
+    "change",
+    actualizarSeccionHospedaje
+);
+
+fechaInicioHospedaje?.addEventListener(
+    "change",
+    calcularDiasHospedaje
+);
+
+fechaFinHospedaje?.addEventListener(
+    "change",
+    calcularDiasHospedaje
+);
+
+// Ejecutar al cargar.
+// IMPORTANTE: aquí NO se borran los valores
+// que vienen de la base de datos.
+actualizarSeccionHospedaje();
+
+            // =========================================================
+            // IGV
+            // =========================================================
+
+            const monto =
+                document.getElementById("montoTotal");
+
+            const exonerado =
+                document.getElementById("exoneracionIGV");
+
+            const valorVenta =
+                document.getElementById("valorVenta");
+
+            const igv =
+                document.getElementById("igvCalculado");
+
+            const resumenValor =
+                document.getElementById("resumenValorVenta");
+
+            const resumenIgv =
+                document.getElementById("resumenIgv");
+
+            const resumenTotal =
+                document.getElementById("resumenTotal");
 
             function calcular() {
 
-                const total = parseFloat(monto?.value) || 0;
+                const total =
+                    parseFloat(monto?.value) || 0;
 
                 let base = 0;
                 let impuesto = 0;
@@ -950,19 +1228,25 @@
                     } else {
 
                         base =
-                            Math.round((total / 1.18) * 100) / 100;
+                            Math.round(
+                                (total / 1.18) * 100
+                            ) / 100;
 
                         impuesto =
-                            Math.round((total - base) * 100) / 100;
+                            Math.round(
+                                (total - base) * 100
+                            ) / 100;
                     }
                 }
 
                 if (valorVenta) {
-                    valorVenta.value = base.toFixed(2);
+                    valorVenta.value =
+                        base.toFixed(2);
                 }
 
                 if (igv) {
-                    igv.value = impuesto.toFixed(2);
+                    igv.value =
+                        impuesto.toFixed(2);
                 }
 
                 if (resumenValor) {
@@ -981,158 +1265,211 @@
                 }
             }
 
-            monto?.addEventListener("input", calcular);
-            exonerado?.addEventListener("change", calcular);
+            monto?.addEventListener(
+                "input",
+                calcular
+            );
+
+            exonerado?.addEventListener(
+                "change",
+                calcular
+            );
 
             calcular();
 
-            const ruc = document.getElementById("ruc");
-            const boton = document.getElementById("btnConsultarRuc");
-            const razonSocial = document.getElementById("razonSocial");
-            const domicilio = document.getElementById("domicilioFiscal");
-            const mensaje = document.getElementById("mensajeRuc");
+            // =========================================================
+            // CONSULTA RUC
+            // =========================================================
 
-            ruc?.addEventListener("input", function () {
+            const ruc =
+                document.getElementById("ruc");
 
-                this.value = this.value
-                    .replace(/\D/g, "")
-                    .slice(0, 11);
-            });
+            const boton =
+                document.getElementById("btnConsultarRuc");
 
-            boton?.addEventListener("click", async function () {
+            const razonSocial =
+                document.getElementById("razonSocial");
 
-                const valor = ruc?.value.trim() ?? "";
+            const domicilio =
+                document.getElementById("domicilioFiscal");
 
-                if (!/^\d{11}$/.test(valor)) {
+            const mensaje =
+                document.getElementById("mensajeRuc");
 
-                    mensaje.textContent =
-                        "Ingrese un RUC válido de 11 dígitos.";
+            ruc?.addEventListener(
+                "input",
+                function () {
 
-                    mensaje.className =
-                        "form-help text-danger";
-
-                    return;
+                    this.value =
+                        this.value
+                            .replace(/\D/g, "")
+                            .slice(0, 11);
                 }
+            );
 
-                boton.disabled = true;
-                boton.innerHTML =
-                    '<span class="spinner-border spinner-border-sm me-1"></span>Buscando...';
+            boton?.addEventListener(
+                "click",
+                async function () {
 
-                try {
+                    const valor =
+                        ruc?.value.trim() ?? "";
 
-                    const url =
-                        '@Url.Action("ConsultarRuc", "Gasto")' +
-                        '?ruc=' +
-                        encodeURIComponent(valor);
+                    if (!/^\d{11}$/.test(valor)) {
 
-                    const response = await fetch(url);
+                        mensaje.textContent =
+                            "Ingrese un RUC válido de 11 dígitos.";
 
-                    const data = await response.json();
-
-                    if (!response.ok) {
-                        throw new Error(
-                            data.mensaje ??
-                            "No se encontró el RUC."
-                        );
-                    }
-
-                    razonSocial.value =
-                        data.razonSocial ?? "";
-
-                    if (!domicilio.value.trim()) {
-                        domicilio.value =
-                            data.domicilioFiscal ?? "";
-                    }
-
-                    mensaje.textContent =
-                        `Estado: ${data.estado ?? "-"} | ` +
-                        `Condición: ${data.condicion ?? "-"}`;
-
-                    mensaje.className =
-                        "form-help text-success";
-
-                } catch (error) {
-
-                    mensaje.textContent =
-                        error.message;
-
-                    mensaje.className =
-                        "form-help text-danger";
-
-                } finally {
-
-                    boton.disabled = false;
-                    boton.textContent = "Buscar";
-                }
-            });
-
-            if (formulario && btnGuardar) {
-
-                formulario.addEventListener("submit", function (event) {
-
-                    event.preventDefault();
-
-                    if (!formulario.checkValidity()) {
-
-                        formulario.reportValidity();
+                        mensaje.className =
+                            "form-help text-danger";
 
                         return;
                     }
 
-                    Swal.fire({
+                    boton.disabled = true;
 
-                        icon: "question",
+                    boton.innerHTML =
+                        '<span class="spinner-border spinner-border-sm me-1"></span>Buscando...';
 
-                        title: "¿Guardar corrección?",
+                    try {
 
-                        html: `
-                            <div style="font-size:14px;color:#4b5563;line-height:1.6;">
-                                ¿Está seguro de que desea guardar
-                                los cambios realizados en este gasto?
-                                <br>
-                                <strong style="color:#334155;">
-                                    La información será actualizada.
-                                </strong>
-                            </div>
-                        `,
+                        const url =
+                            '@Url.Action("ConsultarRuc", "Gasto")' +
+                            '?ruc=' +
+                            encodeURIComponent(valor);
 
-                        showCancelButton: true,
+                        const response =
+                            await fetch(url);
 
-                        confirmButtonText:
-                            '<i class="bi bi-check-circle me-1"></i> Sí, guardar',
+                        const data =
+                            await response.json();
 
-                        cancelButtonText:
-                            '<i class="bi bi-x-circle me-1"></i> Cancelar',
+                        if (!response.ok) {
 
-                        reverseButtons: true,
-
-                        focusCancel: true,
-
-                        buttonsStyling: false,
-
-                        customClass: {
-                            popup: "swal-gasto-popup",
-                            title: "swal-gasto-title",
-                            htmlContainer: "swal-gasto-text",
-                            confirmButton:
-                                "swal-btn-confirmar swal-btn-guardar",
-                            cancelButton:
-                                "swal-btn-cancelar"
+                            throw new Error(
+                                data.mensaje ??
+                                "No se encontró el RUC."
+                            );
                         }
 
-                    }).then(function (resultado) {
+                        razonSocial.value =
+                            data.razonSocial ?? "";
 
-                        if (resultado.isConfirmed) {
+                        if (!domicilio.value.trim()) {
 
-                            btnGuardar.disabled = true;
-
-                            btnGuardar.innerHTML =
-                                '<span class="spinner-border spinner-border-sm me-1"></span>Guardando...';
-
-                            formulario.submit();
+                            domicilio.value =
+                                data.domicilioFiscal ?? "";
                         }
-                    });
-                });
+
+                        mensaje.textContent =
+                            `Estado: ${data.estado ?? "-"} | ` +
+                            `Condición: ${data.condicion ?? "-"}`;
+
+                        mensaje.className =
+                            "form-help text-success";
+
+                    }
+                    catch (error) {
+
+                        mensaje.textContent =
+                            error.message;
+
+                        mensaje.className =
+                            "form-help text-danger";
+
+                    }
+                    finally {
+
+                        boton.disabled = false;
+
+                        boton.textContent =
+                            "Buscar";
+                    }
+                }
+            );
+
+            // =========================================================
+            // CONFIRMACIÓN DE GUARDADO
+            // =========================================================
+
+            if (formulario && btnGuardar) {
+
+                formulario.addEventListener(
+                    "submit",
+                    function (event) {
+
+                        event.preventDefault();
+
+                        calcularDiasHospedaje();
+
+                        if (!formulario.checkValidity()) {
+
+                            formulario.reportValidity();
+
+                            return;
+                        }
+
+                        Swal.fire({
+
+                            icon: "question",
+
+                            title: "¿Guardar corrección?",
+
+                            html: `
+                                <div style="font-size:14px;color:#4b5563;line-height:1.6;">
+                                    ¿Está seguro de que desea guardar
+                                    los cambios realizados en este gasto?
+                                    <br>
+                                    <strong style="color:#334155;">
+                                        La información será actualizada.
+                                    </strong>
+                                </div>
+                            `,
+
+                            showCancelButton: true,
+
+                            confirmButtonText:
+                                '<i class="bi bi-check-circle me-1"></i> Sí, guardar',
+
+                            cancelButtonText:
+                                '<i class="bi bi-x-circle me-1"></i> Cancelar',
+
+                            reverseButtons: true,
+
+                            focusCancel: true,
+
+                            buttonsStyling: false,
+
+                            customClass: {
+                                popup:
+                                    "swal-gasto-popup",
+
+                                title:
+                                    "swal-gasto-title",
+
+                                htmlContainer:
+                                    "swal-gasto-text",
+
+                                confirmButton:
+                                    "swal-btn-confirmar swal-btn-guardar",
+
+                                cancelButton:
+                                    "swal-btn-cancelar"
+                            }
+
+                        }).then(function (resultado) {
+
+                            if (resultado.isConfirmed) {
+
+                                btnGuardar.disabled = true;
+
+                                btnGuardar.innerHTML =
+                                    '<span class="spinner-border spinner-border-sm me-1"></span>Guardando...';
+
+                                formulario.submit();
+                            }
+                        });
+                    }
+                );
             }
         });
     </script>

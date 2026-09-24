@@ -1,0 +1,1242 @@
+﻿@model Dinacem.Models.BitacoraVehiculo
+
+@{
+    ViewData["Title"] = "Editar Recorrido";
+    Layout = "~/Views/Shared/_LayoutAdministrador.cshtml";
+
+    var rendicion =
+        ViewBag.Rendicion as Dinacem.Models.Rendicion;
+
+    var puntos =
+        ViewBag.Puntos as List<string>
+        ?? new List<string>();
+
+    var tarifaKilometro =
+        ViewBag.TarifaKilometro != null
+            ? Convert.ToDecimal(ViewBag.TarifaKilometro)
+            : 0m;
+}
+
+<style>
+    .revision-page {
+        width: 100%;
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 25px 30px 40px;
+        color: #263238;
+    }
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 22px 25px;
+        margin-bottom: 22px;
+        background: #fff;
+        border: 1px solid #dce8f2;
+        border-radius: 12px;
+        box-shadow: 0 3px 12px rgba(12,74,138,.07);
+    }
+
+    .header-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .header-icon {
+        width: 52px;
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: #e7f2ff;
+        color: #3186dc;
+        font-size: 25px;
+    }
+
+    .page-title {
+        margin: 0;
+        color: #174f7c;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .page-description {
+        margin: 4px 0 0;
+        color: #71808a;
+        font-size: 13px;
+    }
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .header-actions .btn,
+    .acciones .btn {
+        min-height: 38px;
+        padding: 7px 13px;
+        border-radius: 7px;
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+
+    .btn-dinacen {
+        background: #0c4a8a;
+        border: 1px solid #0c4a8a;
+        color: #fff;
+    }
+
+    .btn-dinacen:hover {
+        background: #093b70;
+        border-color: #093b70;
+        color: #fff;
+    }
+
+    .panel {
+        margin-bottom: 20px;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #dce5eb;
+        border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(15,23,42,.06);
+    }
+
+    .panel-header {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 17px 20px;
+        background: #fff;
+        border-bottom: 1px solid #e4ebf0;
+        color: #174f7c;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .panel-header i {
+        color: #3186dc;
+        font-size: 18px;
+    }
+
+    .panel-body {
+        padding: 20px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+    }
+
+    .info-item {
+        padding: 13px 14px;
+        background: #f8fafc;
+        border: 1px solid #e1e8ed;
+        border-radius: 8px;
+    }
+
+    .info-label {
+        display: block;
+        margin-bottom: 5px;
+        color: #71808a;
+        font-size: 10.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+    }
+
+    .info-value {
+        color: #263238;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .estado {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .estado-pendiente {
+        background: #fff5d6;
+        border: 1px solid #f3dfa0;
+        color: #a97808;
+    }
+
+    .estado-rechazada {
+        background: #ffebeb;
+        border: 1px solid #f0cccc;
+        color: #c34646;
+    }
+
+    .form-label {
+        margin-bottom: 6px;
+        color: #526572;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .form-control,
+    .form-select {
+        min-height: 42px;
+        border: 1px solid #cfd9df;
+        border-radius: 7px;
+        color: #263238;
+        font-size: 13px;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #3186dc;
+        box-shadow: 0 0 0 .15rem rgba(49,134,220,.12);
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .form-text {
+        color: #71808a;
+        font-size: 11px;
+        margin-top: 5px;
+    }
+
+    .calculo-panel {
+        margin-top: 22px;
+        padding: 18px;
+        background: #f8fafc;
+        border: 1px solid #e1e8ed;
+        border-radius: 10px;
+    }
+
+    .calculo-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+    }
+
+    .calculo-item {
+        padding: 14px;
+        background: #fff;
+        border: 1px solid #e1e8ed;
+        border-radius: 9px;
+    }
+
+    .calculo-label {
+        display: block;
+        margin-bottom: 6px;
+        color: #71808a;
+        font-size: 10.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+    }
+
+    .calculo-value {
+        color: #174f7c;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .calculo-value.monto {
+        color: #3d8a51;
+    }
+
+    .monto-asignado {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        background: #e8f7ec;
+        border: 1px solid #c9e8d1;
+        color: #3d8a51;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .info-alert,
+    .warning-alert,
+    .rechazo-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 13px 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        font-size: 13px;
+    }
+
+    .info-alert {
+        color: #075985;
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+    }
+
+    .warning-alert {
+        color: #8a6500;
+        background: #fff8df;
+        border: 1px solid #f1dfa0;
+    }
+
+    .rechazo-alert {
+        color: #a83d3d;
+        background: #fff1f1;
+        border: 1px solid #efcaca;
+    }
+
+    .acciones {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding-top: 20px;
+        margin-top: 20px;
+        border-top: 1px solid #e4ebf0;
+    }
+
+    .acciones .btn {
+        min-height: 40px;
+        padding: 8px 15px;
+        border-radius: 7px;
+        font-size: 12.5px;
+        font-weight: 600;
+    }
+
+    .btn-guardar {
+        background: #0c4a8a;
+        border: 1px solid #0c4a8a;
+        color: #fff;
+    }
+
+    .btn-guardar:hover {
+        background: #093b70;
+        border-color: #093b70;
+        color: #fff;
+    }
+
+    .btn-cancelar {
+        background: #fff;
+        border: 1px solid #cfd9df;
+        color: #526572;
+    }
+
+    .btn-cancelar:hover {
+        background: #f3f7fa;
+        border-color: #b9c7d0;
+        color: #263238;
+    }
+
+    .ruta-message {
+        margin-top: 16px;
+        margin-bottom: 0;
+    }
+
+    /* =========================================================
+       TOM SELECT - COMBOBOX BUSCADOR
+       ========================================================= */
+
+    .ts-wrapper {
+        width: 100%;
+    }
+
+    .ts-control {
+        min-height: 42px !important;
+        padding: 8px 12px !important;
+        border: 1px solid #cfd9df !important;
+        border-radius: 7px !important;
+        background: #fff !important;
+        color: #263238 !important;
+        font-size: 13px !important;
+        box-shadow: none !important;
+    }
+
+    .ts-control:hover {
+        border-color: #b9c7d0 !important;
+    }
+
+    .ts-wrapper.focus .ts-control {
+        border-color: #3186dc !important;
+        box-shadow: 0 0 0 .15rem rgba(49,134,220,.12) !important;
+    }
+
+    .ts-dropdown {
+        margin-top: 4px !important;
+        border: 1px solid #dce5eb !important;
+        border-radius: 8px !important;
+        box-shadow: 0 5px 18px rgba(15,23,42,.12) !important;
+        overflow: hidden;
+        font-size: 13px !important;
+    }
+
+    .ts-dropdown .option {
+        padding: 9px 12px !important;
+        color: #465660;
+    }
+
+    .ts-dropdown .option:hover,
+    .ts-dropdown .active {
+        background: #e7f2ff !important;
+        color: #174f7c !important;
+    }
+
+    .ts-control input {
+        font-size: 13px !important;
+        color: #263238 !important;
+    }
+
+    .ts-control input::placeholder {
+        color: #929da5;
+    }
+
+    .ts-dropdown-content {
+        max-height: 250px !important;
+    }
+
+    .ts-wrapper.single .ts-control {
+        padding-right: 35px !important;
+    }
+
+    .ts-wrapper.single .ts-control::after {
+        border-color: #71808a transparent transparent transparent !important;
+    }
+
+    .ts-wrapper.single.dropdown-active .ts-control::after {
+        border-color: transparent transparent #71808a transparent !important;
+    }
+
+    @@media (max-width: 1100px) {
+        .info-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .calculo-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @@media (max-width: 767.98px) {
+        .revision-page {
+            padding: 18px 15px 30px;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 18px;
+        }
+
+        .header-content {
+            width: 100%;
+        }
+
+        .header-actions {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        .header-actions .btn {
+            width: 100%;
+        }
+
+        .header-icon {
+            width: 46px;
+            height: 46px;
+            font-size: 21px;
+        }
+
+        .page-title {
+            font-size: 21px;
+        }
+
+        .page-description {
+            font-size: 12px;
+        }
+
+        .panel {
+            border-radius: 10px;
+        }
+
+        .panel-header {
+            padding: 14px 16px;
+            font-size: 13.5px;
+        }
+
+        .panel-body {
+            padding: 14px;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .calculo-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .acciones {
+            display: grid;
+            grid-template-columns: 1fr;
+            width: 100%;
+        }
+
+        .acciones .btn {
+            width: 100%;
+        }
+
+        .ts-control {
+            min-height: 42px !important;
+        }
+    }
+</style>
+
+<div class="revision-page">
+
+    <!-- =====================================================
+         ENCABEZADO
+         ===================================================== -->
+    <div class="page-header">
+
+        <div class="header-content">
+
+            <div class="header-icon">
+                <i class="bi bi-pencil-square"></i>
+            </div>
+
+            <div>
+                <h1 class="page-title">
+                    Editar recorrido
+                </h1>
+
+                <p class="page-description">
+                    Modifique los datos del recorrido registrado en la rendición.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="header-actions">
+
+            <a asp-controller="Rendicion"
+               asp-action="DetalleAdmin"
+               asp-route-id="@Model.IdRendicion"
+               class="btn btn-cancelar">
+
+                <i class="bi bi-arrow-left me-1"></i>
+                Volver a la rendición
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+         INFORMACIÓN DE RENDICIÓN
+         ===================================================== -->
+    @if (rendicion != null)
+    {
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <i class="bi bi-receipt"></i>
+
+                <span>
+                    Información de la rendición
+                </span>
+
+            </div>
+
+            <div class="panel-body">
+
+                <div class="info-grid">
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            N.° Rendición
+                        </span>
+
+                        <span class="info-value">
+                            #@rendicion.IdRendicion
+                        </span>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Fecha inicio
+                        </span>
+
+                        <span class="info-value">
+                            @rendicion.FechaInicio.ToString("dd/MM/yyyy")
+                        </span>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Fecha fin
+                        </span>
+
+                        <span class="info-value">
+                            @rendicion.FechaFin.ToString("dd/MM/yyyy")
+                        </span>
+
+                    </div>
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Estado
+                        </span>
+
+                        @if (rendicion.IdEstadoRendicion == 2)
+                        {
+                            <span class="estado estado-pendiente">
+                                <i class="bi bi-clock"></i>
+                                Pendiente de revisión
+                            </span>
+                        }
+                        else if (rendicion.IdEstadoRendicion == 4)
+                        {
+                            <span class="estado estado-rechazada">
+                                <i class="bi bi-x-circle"></i>
+                                Rechazada
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="estado estado-pendiente">
+                                Estado @rendicion.IdEstadoRendicion
+                            </span>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+    <!-- =====================================================
+         AVISO
+         ===================================================== -->
+    @if (rendicion?.IdEstadoRendicion == 4)
+    {
+        <div class="rechazo-alert">
+
+            <i class="bi bi-exclamation-triangle-fill"></i>
+
+            <div>
+                <strong>Rendición rechazada.</strong>
+                Puede corregir este recorrido y guardar los cambios.
+                El registro original será actualizado.
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="info-alert">
+
+            <i class="bi bi-info-circle-fill"></i>
+
+            <div>
+                Los kilómetros y el monto asignado se calculan automáticamente
+                de acuerdo con la ruta registrada y la tarifa vigente.
+            </div>
+
+        </div>
+    }
+
+    <!-- =====================================================
+         FORMULARIO
+         ===================================================== -->
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <i class="bi bi-car-front"></i>
+
+            <span>
+                Datos del recorrido
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <form asp-controller="BitacoraVehiculo"
+                  asp-action="EditAdmin"
+                  method="post"
+                  id="formEditAdmin">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       asp-for="IdBitacoraVehiculo" />
+
+                <input type="hidden"
+                       asp-for="IdRendicion" />
+
+                <div class="row g-4">
+
+                    <!-- FECHA -->
+                    <div class="col-md-4">
+
+                        <label asp-for="Fecha"
+                               class="form-label">
+
+                            <i class="bi bi-calendar3 me-1"></i>
+                            Fecha
+
+                        </label>
+
+                        <input asp-for="Fecha"
+                               type="date"
+                               class="form-control"
+                               id="Fecha"
+                               min="@(rendicion?.FechaInicio.ToString("yyyy-MM-dd"))"
+                               max="@(rendicion?.FechaFin.ToString("yyyy-MM-dd"))" />
+
+                        <span asp-validation-for="Fecha"
+                              class="text-danger small">
+                        </span>
+
+                        @if (rendicion != null)
+                        {
+                            <div class="form-text">
+
+                                Permitido desde
+                                <strong>
+                                    @rendicion.FechaInicio.ToString("dd/MM/yyyy")
+                                </strong>
+                                hasta
+                                <strong>
+                                    @rendicion.FechaFin.ToString("dd/MM/yyyy")
+                                </strong>.
+
+                            </div>
+                        }
+
+                    </div>
+
+                    <!-- ORIGEN -->
+                    <div class="col-md-4">
+
+                        <label asp-for="Origen"
+                               class="form-label">
+
+                            <i class="bi bi-geo-alt me-1"></i>
+                            Origen
+
+                        </label>
+
+                        <select asp-for="Origen"
+                                class="form-select"
+                                id="Origen">
+
+                            <option value="">
+                                Buscar o seleccionar origen...
+                            </option>
+
+                            @foreach (var punto in puntos)
+                            {
+                                <option value="@punto">
+                                    @punto
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="Origen"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+                    <!-- DESTINO -->
+                    <div class="col-md-4">
+
+                        <label asp-for="Destino"
+                               class="form-label">
+
+                            <i class="bi bi-geo-alt-fill me-1"></i>
+                            Destino
+
+                        </label>
+
+                        <select asp-for="Destino"
+                                class="form-select"
+                                id="Destino">
+
+                            <option value="">
+                                Buscar o seleccionar destino...
+                            </option>
+
+                            @foreach (var punto in puntos)
+                            {
+                                <option value="@punto">
+                                    @punto
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="Destino"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- =================================================
+                     DATOS CALCULADOS
+                     ================================================= -->
+                <div class="calculo-panel">
+
+                    <div class="calculo-grid">
+
+                        <div class="calculo-item">
+
+                            <span class="calculo-label">
+                                <i class="bi bi-signpost-2 me-1"></i>
+                                Distancia
+                            </span>
+
+                            <div class="calculo-value">
+
+                                <span id="distanciaTexto">
+                                    @Model.DistanciaKm.ToString("N2")
+                                </span>
+
+                                <small>km</small>
+
+                            </div>
+
+                        </div>
+
+                        <div class="calculo-item">
+
+                            <span class="calculo-label">
+                                <i class="bi bi-cash-coin me-1"></i>
+                                Tarifa por kilómetro
+                            </span>
+
+                            <div class="calculo-value">
+
+                                S/
+                                <span id="tarifaTexto">
+                                    @Model.TarifaKilometro.ToString("N2")
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="calculo-item">
+
+                            <span class="calculo-label">
+                                <i class="bi bi-calculator me-1"></i>
+                                Monto asignado
+                            </span>
+
+                            <div class="calculo-value monto">
+
+                                S/
+                                <span id="montoTexto">
+                                    @Model.MontoAsignado.ToString("N2")
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- =================================================
+                     MENSAJE DE RUTA
+                     ================================================= -->
+                <div id="mensajeRuta"
+                     class="alert ruta-message d-none">
+                </div>
+
+                <!-- =================================================
+                     OBSERVACIONES
+                     ================================================= -->
+                <div class="mt-4">
+
+                    <label asp-for="Observaciones"
+                           class="form-label">
+
+                        <i class="bi bi-chat-left-text me-1"></i>
+                        Observaciones
+
+                    </label>
+
+                    <textarea asp-for="Observaciones"
+                              class="form-control"
+                              id="Observaciones"
+                              rows="4"
+                              maxlength="500"
+                              placeholder="Ingrese alguna observación del recorrido..."></textarea>
+
+                    <span asp-validation-for="Observaciones"
+                          class="text-danger small">
+                    </span>
+
+                    <div class="form-text">
+                        Máximo 500 caracteres.
+                    </div>
+
+                </div>
+
+                <!-- =================================================
+                     BOTONES
+                     ================================================= -->
+                <div class="acciones">
+
+                    <a asp-controller="Rendicion"
+                       asp-action="DetalleAdmin"
+                       asp-route-id="@Model.IdRendicion"
+                       class="btn btn-cancelar">
+
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelar
+
+                    </a>
+
+                    <button type="submit"
+                            class="btn btn-guardar"
+                            id="btnGuardar">
+
+                        <i class="bi bi-check-circle me-1"></i>
+                        Guardar cambios
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <!-- TOM SELECT -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.bootstrap5.min.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            /* =====================================================
+               COMBOBOX BUSCADOR
+               ===================================================== */
+
+            const origenSelect =
+                document.getElementById("Origen");
+
+            const destinoSelect =
+                document.getElementById("Destino");
+
+            const origenTom =
+                new TomSelect("#Origen", {
+                    create: false,
+                    allowEmptyOption: true,
+                    maxOptions: 500,
+                    placeholder: "Buscar o seleccionar origen...",
+                    searchField: ["text"],
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    }
+                });
+
+            const destinoTom =
+                new TomSelect("#Destino", {
+                    create: false,
+                    allowEmptyOption: true,
+                    maxOptions: 500,
+                    placeholder: "Buscar o seleccionar destino...",
+                    searchField: ["text"],
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    }
+                });
+
+            /* =====================================================
+               ELEMENTOS
+               ===================================================== */
+
+            const distanciaTexto =
+                document.getElementById("distanciaTexto");
+
+            const tarifaTexto =
+                document.getElementById("tarifaTexto");
+
+            const montoTexto =
+                document.getElementById("montoTexto");
+
+            const mensajeRuta =
+                document.getElementById("mensajeRuta");
+
+            const form =
+                document.getElementById("formEditAdmin");
+
+            const btnGuardar =
+                document.getElementById("btnGuardar");
+
+            /* =====================================================
+               OBTENER RUTA
+               ===================================================== */
+
+            async function obtenerRuta() {
+
+                const valorOrigen =
+                    origenTom.getValue();
+
+                const valorDestino =
+                    destinoTom.getValue();
+
+                mensajeRuta.classList.add("d-none");
+
+                mensajeRuta.classList.remove(
+                    "alert-danger",
+                    "alert-success",
+                    "alert-warning"
+                );
+
+                if (!valorOrigen || !valorDestino) {
+                    return;
+                }
+
+                if (
+                    valorOrigen.trim().toLowerCase() ===
+                    valorDestino.trim().toLowerCase()
+                ) {
+
+                    distanciaTexto.textContent = "0.00";
+                    tarifaTexto.textContent = "0.00";
+                    montoTexto.textContent = "0.00";
+
+                    mensajeRuta.textContent =
+                        "El origen y el destino no pueden ser iguales.";
+
+                    mensajeRuta.classList.remove("d-none");
+                    mensajeRuta.classList.add("alert-danger");
+
+                    return;
+                }
+
+                try {
+
+                    const url =
+                        '@Url.Action("ObtenerRuta", "BitacoraVehiculo")' +
+                        '?origen=' +
+                        encodeURIComponent(valorOrigen) +
+                        '&destino=' +
+                        encodeURIComponent(valorDestino);
+
+                    const response =
+                        await fetch(url, {
+                            method: "GET",
+                            headers: {
+                                "X-Requested-With": "XMLHttpRequest"
+                            }
+                        });
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "No se pudo consultar la ruta."
+                        );
+                    }
+
+                    const data =
+                        await response.json();
+
+                    if (!data.success) {
+
+                        distanciaTexto.textContent = "0.00";
+                        tarifaTexto.textContent = "0.00";
+                        montoTexto.textContent = "0.00";
+
+                        mensajeRuta.textContent =
+                            data.message ||
+                            "No existe una ruta registrada entre los puntos seleccionados.";
+
+                        mensajeRuta.classList.remove("d-none");
+                        mensajeRuta.classList.add("alert-warning");
+
+                        return;
+                    }
+
+                    const distancia =
+                        Number(data.distanciaKm || 0);
+
+                    const tarifa =
+                        Number(data.tarifaKilometro || 0);
+
+                    const monto =
+                        Number(data.montoAsignado || 0);
+
+                    distanciaTexto.textContent =
+                        distancia.toLocaleString("es-PE", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+
+                    tarifaTexto.textContent =
+                        tarifa.toLocaleString("es-PE", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+
+                    montoTexto.textContent =
+                        monto.toLocaleString("es-PE", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+
+                    mensajeRuta.textContent =
+                        "Ruta encontrada correctamente.";
+
+                    mensajeRuta.classList.remove("d-none");
+                    mensajeRuta.classList.add("alert-success");
+
+                }
+                catch (error) {
+
+                    console.error(error);
+
+                    mensajeRuta.textContent =
+                        "No fue posible consultar la ruta. Verifique los datos e intente nuevamente.";
+
+                    mensajeRuta.classList.remove("d-none");
+                    mensajeRuta.classList.add("alert-danger");
+                }
+            }
+
+            /* =====================================================
+               EVENTOS DE LOS COMBOBOX
+               ===================================================== */
+
+            origenTom.on(
+                "change",
+                function () {
+                    obtenerRuta();
+                }
+            );
+
+            destinoTom.on(
+                "change",
+                function () {
+                    obtenerRuta();
+                }
+            );
+
+            /* =====================================================
+               VALIDACIÓN ANTES DE GUARDAR
+               ===================================================== */
+
+            form.addEventListener(
+                "submit",
+                function (event) {
+
+                    const valorOrigen =
+                        origenTom.getValue().trim();
+
+                    const valorDestino =
+                        destinoTom.getValue().trim();
+
+                    if (!valorOrigen || !valorDestino) {
+
+                        event.preventDefault();
+
+                        mensajeRuta.textContent =
+                            "Debe seleccionar el origen y el destino.";
+
+                        mensajeRuta.classList.remove("d-none");
+                        mensajeRuta.classList.add("alert-danger");
+
+                        return;
+                    }
+
+                    if (
+                        valorOrigen.toLowerCase() ===
+                        valorDestino.toLowerCase()
+                    ) {
+
+                        event.preventDefault();
+
+                        mensajeRuta.textContent =
+                            "El origen y el destino no pueden ser iguales.";
+
+                        mensajeRuta.classList.remove("d-none");
+                        mensajeRuta.classList.add("alert-danger");
+
+                        return;
+                    }
+
+                    btnGuardar.disabled = true;
+
+                    btnGuardar.innerHTML =
+                        '<span class="spinner-border spinner-border-sm me-2" role="status"></span>' +
+                        'Guardando...';
+
+                }
+            );
+
+            /* =====================================================
+               CALCULAR AL CARGAR
+               ===================================================== */
+
+            if (
+                origenTom.getValue() &&
+                destinoTom.getValue()
+            ) {
+
+                obtenerRuta();
+
+            }
+
+        });
+
+    </script>
+}

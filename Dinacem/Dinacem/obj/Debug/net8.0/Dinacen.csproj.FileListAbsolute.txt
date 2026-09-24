@@ -376,7 +376,6 @@ C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\ru
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\win-x64\native\qpdf.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\win-x86\native\QuestPdfSkia.dll
 C:\Users\lucas\Documents\github\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\runtimes\win-x86\native\qpdf.dll
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\publish\publish\web.config
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\publish\web.config
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\appsettings.json
@@ -386,11 +385,6 @@ C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\publish\Dinacen.deps.json
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\publish\Dinacen.runtimeconfig.json
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\publish\global.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\publish\publish\appsettings.Development.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\publish\publish\appsettings.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\publish\publish\Dinacen.deps.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\publish\publish\Dinacen.runtimeconfig.json
-C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\publish\publish\global.json
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\Dinacen.staticwebassets.runtime.json
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-Black.ttf
 C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem\bin\Debug\net8.0\LatoFont\Lato-BlackItalic.ttf

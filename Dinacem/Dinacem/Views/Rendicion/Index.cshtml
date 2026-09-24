@@ -718,43 +718,7 @@
 
     </div>
 
-    @if (TempData["mensaje"] != null)
-    {
-        <div class="mensaje-sistema mensaje-exito">
-
-            <i class="bi bi-check-circle-fill"></i>
-
-            <span>
-                @TempData["mensaje"]
-            </span>
-
-            <button type="button"
-                    class="btn-close"
-                    onclick="this.parentElement.remove()"
-                    aria-label="Cerrar">
-            </button>
-
-        </div>
-    }
-
-    @if (TempData["error"] != null)
-    {
-        <div class="mensaje-sistema mensaje-error">
-
-            <i class="bi bi-exclamation-triangle-fill"></i>
-
-            <span>
-                @Html.Raw(TempData["error"])
-            </span>
-
-            <button type="button"
-                    class="btn-close"
-                    onclick="this.parentElement.remove()"
-                    aria-label="Cerrar">
-            </button>
-
-        </div>
-    }
+    
 
     <div class="row g-3 mb-4">
 
@@ -1045,62 +1009,74 @@
 
                                 <td>
 
-                                    <div class="acciones">
+    <div class="acciones">
 
-                                        @if (rendicionExistente == null)
-                                        {
-                                            <a asp-controller="Rendicion"
-                                               asp-action="Create"
-                                               asp-route-idSolicitud="@item.IdSolicitud"
-                                               class="btn-accion btn-crear">
+        @if (rendicionExistente == null)
+        {
+            <a asp-controller="Rendicion"
+               asp-action="Create"
+               asp-route-idSolicitud="@item.IdSolicitud"
+               class="btn-accion btn-crear">
 
-                                                <i class="bi bi-plus-circle"></i>
-                                                Crear rendición
+                <i class="bi bi-plus-circle"></i>
+                Crear rendición
 
-                                            </a>
-                                        }
-                                        else if (rendicionExistente.IdEstadoRendicion == 1)
-                                        {
-                                            <a asp-controller="Gasto"
-                                               asp-action="Index"
-                                               asp-route-idRendicion="@rendicionExistente.IdRendicion"
-                                               class="btn-accion btn-continuar">
+            </a>
+        }
+        else if (rendicionExistente.IdEstadoRendicion == 1)
+        {
+            <a asp-controller="Gasto"
+               asp-action="Index"
+               asp-route-idRendicion="@rendicionExistente.IdRendicion"
+               class="btn-accion btn-continuar">
 
-                                                <i class="bi bi-pencil-square"></i>
-                                                Continuar
+                <i class="bi bi-pencil-square"></i>
+                Continuar
 
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <a asp-controller="Rendicion"
-                                               asp-action="DetalleEmpleado"
-                                               asp-route-id="@rendicionExistente.IdRendicion"
-                                               class="btn-accion btn-detalle">
+            </a>
+        }
+        else if (rendicionExistente.IdEstadoRendicion == 4)
+{
+    <a asp-controller="Gasto"
+       asp-action="Index"
+       asp-route-idRendicion="@rendicionExistente.IdRendicion"
+       class="btn-accion btn-continuar">
 
-                                                <i class="bi bi-eye"></i>
-                                                Ver detalle
+        <i class="bi bi-pencil-square"></i>
+        Corregir rendición
 
-                                            </a>
-                                        }
+    </a>
+}
+        else
+        {
+            <a asp-controller="Rendicion"
+               asp-action="DetalleEmpleado"
+               asp-route-id="@rendicionExistente.IdRendicion"
+               class="btn-accion btn-detalle">
 
-                                        @if (rendicionExistente != null &&
-                                             !string.IsNullOrWhiteSpace(rendicionExistente.ArchivoPdf))
-                                        {
-                                            <a href="@rendicionExistente.ArchivoPdf"
-                                               target="_blank"
-                                               rel="noopener"
-                                               class="btn-accion btn-pdf">
+                <i class="bi bi-eye"></i>
+                Ver detalle
 
-                                                <i class="bi bi-file-earmark-pdf"></i>
-                                                PDF
+            </a>
+        }
 
-                                            </a>
-                                        }
+        @if (rendicionExistente != null &&
+             !string.IsNullOrWhiteSpace(rendicionExistente.ArchivoPdf))
+        {
+            <a href="@rendicionExistente.ArchivoPdf"
+               target="_blank"
+               rel="noopener"
+               class="btn-accion btn-pdf">
 
-                                    </div>
+                <i class="bi bi-file-earmark-pdf"></i>
+                PDF
 
-                                </td>
+            </a>
+        }
+
+    </div>
+
+</td>
 
                             </tr>
                         }

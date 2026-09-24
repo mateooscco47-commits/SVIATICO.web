@@ -14,14 +14,11 @@ namespace Dinacem.Controllers
         private readonly CorreoService _correoService;
         private readonly ILogger<GastoController> _logger;
 
-        // =========================================================
-        // CONSTANTES
-        // =========================================================
-
         private const int ROL_ADMINISTRADOR = 1;
 
         private const int ESTADO_RENDICION_BORRADOR = 1;
         private const int ESTADO_RENDICION_PENDIENTE_REVISION = 2;
+        private const int ESTADO_RENDICION_RECHAZADA = 4;
 
         private const int ESTADO_REEMBOLSO_PENDIENTE = 1;
 
@@ -31,8 +28,7 @@ namespace Dinacem.Controllers
 
         private const decimal TASA_IGV = 0.18m;
 
-        private const long TAMANIO_MAXIMO_COMPROBANTE =
-            5 * 1024 * 1024;
+        private const long TAMANIO_MAXIMO_COMPROBANTE = 5 * 1024 * 1024;
 
         private static readonly string[] ExtensionesPermitidas =
         {
@@ -41,10 +37,6 @@ namespace Dinacem.Controllers
             ".jpeg",
             ".png"
         };
-
-        // =========================================================
-        // CONSTRUCTOR
-        // =========================================================
 
         public GastoController(
             AplicacionDbContexto context,
@@ -67,29 +59,23 @@ namespace Dinacem.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int idRendicion)
         {
-            var idUsuario =
-                HttpContext.Session.GetInt32("IdUsuario");
+            var idUsuario = HttpContext.Session.GetInt32("IdUsuario");
 
             if (!idUsuario.HasValue)
             {
                 TempData["error"] =
                     "La sesión ha expirado. Inicie sesión nuevamente.";
 
-                return RedirectToAction(
-                    "Login",
-                    "Cuenta");
+                return RedirectToAction("Login", "Cuenta");
             }
 
-            var esAdministrador =
-                EsAdministrador();
+            var esAdministrador = EsAdministrador();
 
-            var consulta =
-                _context.Rendiciones
-                    .Include(r => r.Solicitud)
-                    .Include(r => r.EstadoRendicion)
-                    .Include(r => r.Usuario)
-                    .Where(r =>
-                        r.IdRendicion == idRendicion);
+            var consulta = _context.Rendiciones
+                .Include(r => r.Solicitud)
+                .Include(r => r.EstadoRendicion)
+                .Include(r => r.Usuario)
+                .Where(r => r.IdRendicion == idRendicion);
 
             if (!esAdministrador)
             {
@@ -97,40 +83,32 @@ namespace Dinacem.Controllers
                     r.IdUsuario == idUsuario.Value);
             }
 
-            var rendicion =
-                await consulta.FirstOrDefaultAsync();
+            var rendicion = await consulta.FirstOrDefaultAsync();
 
             if (rendicion == null)
             {
                 TempData["error"] =
                     "No se encontró la rendición o no tiene permisos para acceder a ella.";
 
-                return RedirectToAction(
-                    "Index",
-                    "Rendicion");
+                return RedirectToAction("Index", "Rendicion");
             }
 
-            var gastos =
-                await _context.Gastos
-                    .Include(g => g.TipoGasto)
-                    .Include(g => g.TipoComprobante)
-                    .Where(g =>
-                        g.IdRendicion == idRendicion)
-                    .OrderByDescending(g => g.Fecha)
-                    .ToListAsync();
+            var gastos = await _context.Gastos
+                .Include(g => g.TipoGasto)
+                .Include(g => g.TipoComprobante)
+                .Where(g => g.IdRendicion == idRendicion)
+                .OrderByDescending(g => g.Fecha)
+                .ToListAsync();
 
-            ViewBag.Rendicion =
-                rendicion;
+            ViewBag.Rendicion = rendicion;
 
-            ViewBag.TiposGasto =
-                await _context.TipoGastos
-                    .OrderBy(t => t.Nombre)
-                    .ToListAsync();
+            ViewBag.TiposGasto = await _context.TipoGastos
+                .OrderBy(t => t.Nombre)
+                .ToListAsync();
 
-            ViewBag.TiposComprobante =
-                await _context.TipoComprobantes
-                    .OrderBy(t => t.Nombre)
-                    .ToListAsync();
+            ViewBag.TiposComprobante = await _context.TipoComprobantes
+                .OrderBy(t => t.Nombre)
+                .ToListAsync();
 
             ViewBag.DevolucionSaldo =
                 await _context.DevolucionesSaldo
@@ -139,8 +117,7 @@ namespace Dinacem.Controllers
 
             ViewBag.BitacorasVehiculo =
                 await _context.BitacorasVehiculo
-                    .Where(b =>
-                        b.IdRendicion == idRendicion)
+                    .Where(b => b.IdRendicion == idRendicion)
                     .OrderBy(b => b.Fecha)
                     .ToListAsync();
 
@@ -164,8 +141,7 @@ namespace Dinacem.Controllers
 
             ruc = ruc.Trim();
 
-            if (ruc.Length != 11 ||
-                !ruc.All(char.IsDigit))
+            if (ruc.Length != 11 || !ruc.All(char.IsDigit))
             {
                 return BadRequest(new
                 {
@@ -213,9 +189,7 @@ namespace Dinacem.Controllers
                 TempData["error"] =
                     "La sesión ha expirado. Inicie sesión nuevamente.";
 
-                return RedirectToAction(
-                    "Login",
-                    "Cuenta");
+                return RedirectToAction("Login", "Cuenta");
             }
 
             var rendicion =
@@ -233,8 +207,8 @@ namespace Dinacem.Controllers
                     "Rendicion");
             }
 
-            if (rendicion.IdEstadoRendicion !=
-                ESTADO_RENDICION_BORRADOR)
+            if (rendicion.IdEstadoRendicion != ESTADO_RENDICION_BORRADOR &&
+                rendicion.IdEstadoRendicion != ESTADO_RENDICION_RECHAZADA)
             {
                 TempData["error"] =
                     "La rendición ya fue enviada y no permite registrar más gastos.";
@@ -246,10 +220,6 @@ namespace Dinacem.Controllers
                         idRendicion = gasto.IdRendicion
                     });
             }
-
-            // =====================================================
-            // LIMPIAR Y PREPARAR DATOS
-            // =====================================================
 
             LimpiarCampos(gasto);
 
@@ -273,10 +243,6 @@ namespace Dinacem.Controllers
                     gasto.IdRendicion);
             }
 
-            // =====================================================
-            // IDENTIFICAR TIPO DE GASTO
-            // =====================================================
-
             bool esMovilidad =
                 EsMovilidad(tipoGasto);
 
@@ -286,52 +252,29 @@ namespace Dinacem.Controllers
             bool esHospedaje =
                 EsHospedaje(tipoGasto);
 
-            // =====================================================
-            // VALIDACIONES GENERALES
-            // =====================================================
-
             ValidarFechaGasto(
                 gasto.Fecha,
                 rendicion,
-                incluirMensajeDetallado: true);
+                true);
 
             ValidarMonto(
                 gasto.MontoTotal);
 
             CalcularImpuestos(gasto);
 
-            // =====================================================
-            // LIMPIAR DATOS SEGÚN TIPO DE GASTO
-            // =====================================================
-
             if (esMovilidadInterna)
             {
-                // Movilidad interna NO utiliza comprobante
-                // ni RUC ni datos de proveedor.
-
                 LimpiarDatosComprobante(gasto);
-
-                // Tampoco utiliza hospedaje.
                 LimpiarDatosHospedaje(gasto);
             }
             else if (esMovilidad)
             {
-                // Movilidad normal SÍ utiliza comprobante.
-
-                // Solamente limpiamos hospedaje.
                 LimpiarDatosHospedaje(gasto);
             }
             else if (!esHospedaje)
             {
-                // Alimentación y otros gastos que no sean
-                // hospedaje tampoco utilizan datos de hospedaje.
-
                 LimpiarDatosHospedaje(gasto);
             }
-
-            // =====================================================
-            // VALIDACIONES ESPECÍFICAS
-            // =====================================================
 
             if (esHospedaje)
             {
@@ -339,7 +282,7 @@ namespace Dinacem.Controllers
                     gasto,
                     rendicion,
                     gasto.IdGasto,
-                    validarPeriodoRendicion: true);
+                    true);
             }
             else if (gasto.Fecha != default)
             {
@@ -349,36 +292,12 @@ namespace Dinacem.Controllers
                     gasto.IdGasto);
             }
 
-            // =====================================================
-            // VALIDACIÓN DE COMPROBANTE Y RUC
-            // =====================================================
-
             if (esMovilidadInterna)
             {
-                // =================================================
-                // MOVILIDAD INTERNA
-                // =================================================
-                // No utiliza:
-                // - comprobante
-                // - RUC
-                // - razón social
-                // - domicilio fiscal
-                // - serie
-                // - número
-                // - archivo
-
                 LimpiarDatosComprobante(gasto);
             }
             else
             {
-                // =================================================
-                // RESTO DE TIPOS
-                // =================================================
-                // Incluye:
-                // - Alimentación
-                // - Hospedaje
-                // - Movilidad
-
                 ValidarDatosComprobante(gasto);
 
                 if (ModelState.IsValid &&
@@ -389,12 +308,442 @@ namespace Dinacem.Controllers
 
                 ValidarDatosProveedor(gasto);
 
-                // -------------------------------------------------
-                // COMPROBANTE FÍSICO OBLIGATORIO
-                // -------------------------------------------------
+                if (archivo == null || archivo.Length == 0)
+                {
+                    ModelState.AddModelError(
+                        "archivo",
+                        "Debe adjuntar el comprobante.");
+                }
+            }
 
-                if (archivo == null ||
-                    archivo.Length == 0)
+            if (!ModelState.IsValid)
+            {
+                return await ProcesarErroresCreate(
+                    gasto.IdRendicion);
+            }
+
+            if (!esMovilidadInterna &&
+                archivo != null &&
+                archivo.Length > 0)
+            {
+                var resultadoArchivo =
+                    await GuardarComprobanteAsync(archivo);
+
+                if (!resultadoArchivo.Exito)
+                {
+                    TempData["error"] =
+                        resultadoArchivo.Mensaje;
+
+                    return RedirectToAction(
+                        nameof(Index),
+                        new
+                        {
+                            idRendicion = gasto.IdRendicion
+                        });
+                }
+
+                gasto.Comprobante =
+                    resultadoArchivo.RutaPublica;
+            }
+            else
+            {
+                gasto.Comprobante = null;
+            }
+
+            _context.Gastos.Add(gasto);
+
+            await _context.SaveChangesAsync();
+
+            await ActualizarTotalesRendicion(
+                gasto.IdRendicion);
+
+            TempData["mensaje"] =
+                gasto.ExoneracionIGV
+                    ? $"Gasto registrado. Operación exonerada: valor de venta S/ {gasto.ValorVenta:N2}, IGV S/ 0.00."
+                    : $"Gasto registrado. Valor de venta: S/ {gasto.ValorVenta:N2}, IGV: S/ {gasto.IGV:N2}.";
+
+            return RedirectToAction(
+                nameof(Index),
+                new
+                {
+                    idRendicion = gasto.IdRendicion
+                });
+        }
+
+        // =========================================================
+        // EDITAR GASTO - EMPLEADO
+        // =========================================================
+        // Este método NO muestra Edit.cshtml.
+        // Redirige al mismo panel de Registro de Gastos,
+        // indicando qué gasto debe cargarse para edición.
+        // =========================================================
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var idUsuario =
+                HttpContext.Session.GetInt32("IdUsuario");
+
+            if (!idUsuario.HasValue)
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Cuenta");
+            }
+
+            var gasto =
+                await _context.Gastos
+                    .Include(g => g.Rendicion)
+                    .FirstOrDefaultAsync(g =>
+                        g.IdGasto == id);
+
+            if (gasto == null)
+            {
+                TempData["error"] =
+                    "El gasto no existe.";
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
+
+            if (gasto.Rendicion == null)
+            {
+                TempData["error"] =
+                    "La rendición asociada al gasto no existe.";
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
+
+            // =====================================================
+            // VERIFICAR PROPIETARIO
+            // =====================================================
+
+            if (gasto.Rendicion.IdUsuario != idUsuario.Value)
+            {
+                TempData["error"] =
+                    "No tiene permiso para editar este gasto.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new
+                    {
+                        idRendicion = gasto.IdRendicion
+                    });
+            }
+
+            // =====================================================
+            // VERIFICAR ESTADO DE RENDICIÓN
+            // =====================================================
+
+            if (gasto.Rendicion.IdEstadoRendicion !=
+                    ESTADO_RENDICION_BORRADOR &&
+                gasto.Rendicion.IdEstadoRendicion !=
+                    ESTADO_RENDICION_RECHAZADA)
+            {
+                TempData["error"] =
+                    "Este gasto no puede editarse porque la rendición ya fue enviada o finalizada.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new
+                    {
+                        idRendicion = gasto.IdRendicion
+                    });
+            }
+
+            // =====================================================
+            // IR AL MISMO PANEL DE REGISTRO
+            // =====================================================
+            //
+            // Index deberá recibir:
+            //
+            // idRendicion = rendición actual
+            // idGasto     = gasto que se quiere editar
+            //
+            // De esta manera NO se abre Edit.cshtml.
+            // El mismo formulario de Registrar Gasto deberá
+            // cargarse con los datos de este IdGasto.
+            // =====================================================
+
+            return RedirectToAction(
+                nameof(Index),
+                new
+                {
+                    idRendicion = gasto.IdRendicion,
+                    idGasto = gasto.IdGasto
+                });
+        }
+
+
+        // =========================================================
+        // GUARDAR EDICIÓN - EMPLEADO
+        // =========================================================
+        // IMPORTANTE:
+        // Este método ACTUALIZA el mismo gasto.
+        // NO crea un nuevo registro.
+        // =========================================================
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(
+            Gasto modelo,
+            IFormFile? archivo)
+        {
+            var idUsuario =
+                HttpContext.Session.GetInt32("IdUsuario");
+
+            if (!idUsuario.HasValue)
+            {
+                return RedirectToAction(
+                    "Login",
+                    "Cuenta");
+            }
+
+            // =====================================================
+            // VALIDAR ID DEL GASTO
+            // =====================================================
+
+            if (modelo.IdGasto <= 0)
+            {
+                TempData["error"] =
+                    "No se indicó el gasto que se desea editar.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new
+                    {
+                        idRendicion = modelo.IdRendicion
+                    });
+            }
+
+            // =====================================================
+            // BUSCAR GASTO EXISTENTE
+            // =====================================================
+
+            var gasto =
+                await _context.Gastos
+                    .Include(g => g.Rendicion)
+                        .ThenInclude(r => r.Solicitud)
+                    .FirstOrDefaultAsync(g =>
+                        g.IdGasto == modelo.IdGasto);
+
+            if (gasto == null)
+            {
+                TempData["error"] =
+                    "No se encontró el gasto que desea editar.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new
+                    {
+                        idRendicion = modelo.IdRendicion
+                    });
+            }
+
+            if (gasto.Rendicion == null)
+            {
+                TempData["error"] =
+                    "La rendición asociada al gasto no existe.";
+
+                return RedirectToAction(
+                    nameof(Index));
+            }
+
+            // =====================================================
+            // VERIFICAR PROPIETARIO
+            // =====================================================
+
+            if (gasto.Rendicion.IdUsuario != idUsuario.Value)
+            {
+                TempData["error"] =
+                    "No tiene permiso para editar este gasto.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new
+                    {
+                        idRendicion = gasto.IdRendicion
+                    });
+            }
+
+            // =====================================================
+            // VERIFICAR ESTADO DE RENDICIÓN
+            // =====================================================
+
+            if (gasto.Rendicion.IdEstadoRendicion !=
+                    ESTADO_RENDICION_BORRADOR &&
+                gasto.Rendicion.IdEstadoRendicion !=
+                    ESTADO_RENDICION_RECHAZADA)
+            {
+                TempData["error"] =
+                    "La rendición ya fue enviada o finalizada y no permite modificar gastos.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new
+                    {
+                        idRendicion = gasto.IdRendicion
+                    });
+            }
+
+            // =====================================================
+            // LIMPIAR VALIDACIONES DE CAMPOS CALCULADOS
+            // =====================================================
+
+            LimpiarCampos(modelo);
+
+            EliminarValidacionesCalculadas(
+                nameof(modelo.RazonSocial),
+                nameof(modelo.DomicilioFiscal),
+                nameof(modelo.ValorVenta),
+                nameof(modelo.IGV),
+                nameof(modelo.Comprobante),
+                nameof(modelo.Rendicion),
+                nameof(modelo.TipoGasto),
+                nameof(modelo.TipoComprobante));
+
+            var rendicion =
+                gasto.Rendicion;
+
+            // =====================================================
+            // OBTENER TIPO DE GASTO
+            // =====================================================
+
+            var tipoGasto =
+                await ObtenerTipoGastoAsync(
+                    modelo.IdTipoGasto);
+
+            if (tipoGasto == null)
+            {
+                ModelState.AddModelError(
+                    nameof(modelo.IdTipoGasto),
+                    "El tipo de gasto seleccionado no existe.");
+            }
+
+            bool esMovilidad =
+                tipoGasto != null &&
+                EsMovilidad(tipoGasto);
+
+            bool esMovilidadInterna =
+                tipoGasto != null &&
+                EsMovilidadInterna(tipoGasto);
+
+            bool esHospedaje =
+                tipoGasto != null &&
+                EsHospedaje(tipoGasto);
+
+            // =====================================================
+            // VALIDAR FECHA
+            // =====================================================
+
+            ValidarFechaGasto(
+                modelo.Fecha,
+                rendicion,
+                true);
+
+            // =====================================================
+            // VALIDAR MONTO
+            // =====================================================
+
+            ValidarMonto(
+                modelo.MontoTotal);
+
+            // =====================================================
+            // CALCULAR IGV / VALOR DE VENTA
+            // =====================================================
+
+            CalcularImpuestos(modelo);
+
+            // =====================================================
+            // LIMPIAR CAMPOS SEGÚN TIPO DE GASTO
+            // =====================================================
+
+            if (esMovilidadInterna)
+            {
+                LimpiarDatosComprobante(modelo);
+                LimpiarDatosHospedaje(modelo);
+            }
+            else if (esMovilidad)
+            {
+                LimpiarDatosHospedaje(modelo);
+            }
+            else if (!esHospedaje)
+            {
+                LimpiarDatosHospedaje(modelo);
+            }
+
+            // =====================================================
+            // VALIDACIONES ESPECÍFICAS DEL GASTO
+            // =====================================================
+
+            if (tipoGasto != null)
+            {
+                if (esHospedaje)
+                {
+                    await ValidarHospedajeAsync(
+                        modelo,
+                        rendicion,
+                        gasto.IdGasto,
+                        true);
+                }
+                else if (modelo.Fecha != default)
+                {
+                    await ValidarLimiteDiarioAsync(
+                        modelo,
+                        tipoGasto,
+                        gasto.IdGasto);
+                }
+            }
+
+            // =====================================================
+            // MOVILIDAD INTERNA
+            // =====================================================
+
+            if (esMovilidadInterna)
+            {
+                LimpiarDatosComprobante(modelo);
+            }
+            else
+            {
+                // =================================================
+                // COMPROBANTE
+                // =================================================
+
+                ValidarDatosComprobante(modelo);
+
+                // =================================================
+                // RUC
+                // =================================================
+
+                if (ModelState.IsValid &&
+                    !string.IsNullOrWhiteSpace(modelo.Ruc))
+                {
+                    await ValidarRucAsync(modelo);
+                }
+
+                // =================================================
+                // PROVEEDOR
+                // =================================================
+
+                ValidarDatosProveedor(modelo);
+
+                // =================================================
+                // COMPROBANTE EXISTENTE
+                // =================================================
+
+                bool existeComprobanteAnterior =
+                    !string.IsNullOrWhiteSpace(
+                        gasto.Comprobante);
+
+                bool seSubioNuevoComprobante =
+                    archivo != null &&
+                    archivo.Length > 0;
+
+                // Si ya existe comprobante, no es obligatorio
+                // volver a subirlo.
+                if (!existeComprobanteAnterior &&
+                    !seSubioNuevoComprobante)
                 {
                     ModelState.AddModelError(
                         "archivo",
@@ -403,18 +752,30 @@ namespace Dinacem.Controllers
             }
 
             // =====================================================
-            // VALIDAR MODELSTATE
+            // VALIDAR MODELO
             // =====================================================
 
             if (!ModelState.IsValid)
             {
-                return await ProcesarErroresCreate(
-                    gasto.IdRendicion);
+                AgregarErroresTempData();
+
+                // Volvemos al MISMO panel.
+                // El gasto queda seleccionado para edición.
+                return RedirectToAction(
+                    nameof(Index),
+                    new
+                    {
+                        idRendicion = gasto.IdRendicion,
+                        idGasto = gasto.IdGasto
+                    });
             }
 
             // =====================================================
-            // GUARDAR COMPROBANTE
+            // GUARDAR NUEVO COMPROBANTE
             // =====================================================
+
+            string? nuevaRutaComprobante = null;
+            string? nuevaRutaFisica = null;
 
             if (!esMovilidadInterna &&
                 archivo != null &&
@@ -433,55 +794,195 @@ namespace Dinacem.Controllers
                         nameof(Index),
                         new
                         {
-                            idRendicion =
-                                gasto.IdRendicion
+                            idRendicion = gasto.IdRendicion,
+                            idGasto = gasto.IdGasto
                         });
                 }
 
-                gasto.Comprobante =
+                nuevaRutaComprobante =
                     resultadoArchivo.RutaPublica;
+
+                nuevaRutaFisica =
+                    resultadoArchivo.RutaFisica;
+            }
+
+            // =====================================================
+            // GUARDAR REFERENCIA DEL COMPROBANTE ANTERIOR
+            // =====================================================
+
+            var comprobanteAnterior =
+                gasto.Comprobante;
+
+            // =====================================================
+            // ACTUALIZAR EL MISMO GASTO
+            // =====================================================
+
+            gasto.Fecha =
+                modelo.Fecha;
+
+            gasto.IdTipoGasto =
+                modelo.IdTipoGasto;
+
+            gasto.Detalle =
+                modelo.Detalle;
+
+            gasto.MontoTotal =
+                modelo.MontoTotal;
+
+            gasto.ValorVenta =
+                modelo.ValorVenta;
+
+            gasto.IGV =
+                modelo.IGV;
+
+            gasto.ExoneracionIGV =
+                modelo.ExoneracionIGV;
+
+            // =====================================================
+            // DATOS DE COMPROBANTE
+            // =====================================================
+
+            if (esMovilidadInterna)
+            {
+                gasto.Ruc = null;
+
+                gasto.RazonSocial = null;
+
+                gasto.DomicilioFiscal = null;
+
+                gasto.IdTipoComprobante = null;
+
+                gasto.Serie = null;
+
+                gasto.Numero = null;
+
+                gasto.Comprobante = null;
             }
             else
             {
-                gasto.Comprobante = null;
+                gasto.IdTipoComprobante =
+                    modelo.IdTipoComprobante;
+
+                gasto.Ruc =
+                    modelo.Ruc;
+
+                gasto.RazonSocial =
+                    modelo.RazonSocial;
+
+                gasto.DomicilioFiscal =
+                    modelo.DomicilioFiscal;
+
+                gasto.Serie =
+                    modelo.Serie;
+
+                gasto.Numero =
+                    modelo.Numero;
+
+                // Solo reemplazar comprobante si se subió
+                // uno nuevo.
+                if (!string.IsNullOrWhiteSpace(
+                    nuevaRutaComprobante))
+                {
+                    gasto.Comprobante =
+                        nuevaRutaComprobante;
+                }
             }
 
             // =====================================================
-            // GUARDAR GASTO
+            // DATOS DE HOSPEDAJE
             // =====================================================
 
-            _context.Gastos.Add(gasto);
+            if (esHospedaje)
+            {
+                gasto.FechaInicioHospedaje =
+                    modelo.FechaInicioHospedaje;
 
-            await _context.SaveChangesAsync();
+                gasto.FechaFinHospedaje =
+                    modelo.FechaFinHospedaje;
+
+                gasto.DiasHospedaje =
+                    modelo.DiasHospedaje;
+            }
+            else
+            {
+                gasto.FechaInicioHospedaje = null;
+
+                gasto.FechaFinHospedaje = null;
+
+                gasto.DiasHospedaje = 0;
+            }
 
             // =====================================================
-            // ACTUALIZAR TOTALES
+            // GUARDAR CAMBIOS
             // =====================================================
 
-            await ActualizarTotalesRendicion(
-                gasto.IdRendicion);
+            try
+            {
+                await _context.SaveChangesAsync();
+
+                await ActualizarTotalesRendicion(
+                    gasto.IdRendicion);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error actualizando gasto {IdGasto}.",
+                    gasto.IdGasto);
+
+                // Si se subió un archivo nuevo pero la BD falló,
+                // eliminamos el archivo nuevo para no dejar
+                // archivos huérfanos.
+                EliminarArchivoFisico(
+                    nuevaRutaFisica);
+
+                TempData["error"] =
+                    "No se pudo actualizar el gasto.";
+
+                return RedirectToAction(
+                    nameof(Index),
+                    new
+                    {
+                        idRendicion = gasto.IdRendicion,
+                        idGasto = gasto.IdGasto
+                    });
+            }
+
+            // =====================================================
+            // ELIMINAR COMPROBANTE ANTERIOR
+            // =====================================================
+
+            if (esMovilidadInterna ||
+                !string.IsNullOrWhiteSpace(
+                    nuevaRutaComprobante))
+            {
+                EliminarComprobante(
+                    comprobanteAnterior);
+            }
 
             // =====================================================
             // MENSAJE
             // =====================================================
 
             TempData["mensaje"] =
-                gasto.ExoneracionIGV
-                    ? $"Gasto registrado. Operación exonerada: " +
-                      $"valor de venta S/ {gasto.ValorVenta:N2}, " +
-                      "IGV S/ 0.00."
-                    : $"Gasto registrado. Valor de venta: " +
-                      $"S/ {gasto.ValorVenta:N2}, " +
-                      $"IGV: S/ {gasto.IGV:N2}.";
+                "El gasto fue actualizado correctamente.";
+
+            // =====================================================
+            // VOLVER AL PANEL PRINCIPAL
+            //
+            // No enviamos idGasto para que el formulario
+            // aparezca nuevamente limpio y listo para registrar
+            // otro gasto.
+            // =====================================================
 
             return RedirectToAction(
                 nameof(Index),
                 new
                 {
-                    idRendicion =
-                        gasto.IdRendicion
+                    idRendicion = gasto.IdRendicion
                 });
         }
+
 
         // =========================================================
         // EDITAR GASTO - ADMINISTRADOR
@@ -559,7 +1060,6 @@ namespace Dinacem.Controllers
 
             return View(gasto);
         }
-
         // =========================================================
         // GUARDAR EDICIÓN - ADMINISTRADOR
         // =========================================================
@@ -584,8 +1084,6 @@ namespace Dinacem.Controllers
                 await _context.Gastos
                     .Include(g => g.Rendicion)
                         .ThenInclude(r => r!.Solicitud)
-                    .Include(g => g.TipoGasto)
-                    .Include(g => g.TipoComprobante)
                     .FirstOrDefaultAsync(g =>
                         g.IdGasto == modelo.IdGasto);
 
@@ -599,11 +1097,10 @@ namespace Dinacem.Controllers
                     "Rendicion");
             }
 
-            if (gasto.Rendicion == null ||
-                gasto.Rendicion.Solicitud == null)
+            if (gasto.Rendicion == null)
             {
                 TempData["error"] =
-                    "No se encontró la información de la rendición.";
+                    "No se encontró la rendición asociada al gasto.";
 
                 return RedirectToAction(
                     "IndexAdmin",
@@ -628,21 +1125,9 @@ namespace Dinacem.Controllers
                     });
             }
 
-            // =====================================================
-            // LIMPIAR Y PREPARAR DATOS
-            // =====================================================
-
             LimpiarCampos(modelo);
 
-            EliminarValidacionesCalculadas(
-                nameof(modelo.RazonSocial),
-                nameof(modelo.DomicilioFiscal),
-                nameof(modelo.ValorVenta),
-                nameof(modelo.IGV),
-                nameof(modelo.Comprobante),
-                nameof(modelo.Rendicion),
-                nameof(modelo.TipoGasto),
-                nameof(modelo.TipoComprobante));
+            ModelState.Clear();
 
             var tipoGasto =
                 await ObtenerTipoGastoAsync(
@@ -650,174 +1135,8 @@ namespace Dinacem.Controllers
 
             if (tipoGasto == null)
             {
-                ModelState.AddModelError(
-                    nameof(modelo.IdTipoGasto),
-                    "El tipo de gasto seleccionado no existe.");
-            }
-
-            // =====================================================
-            // IDENTIFICAR TIPO DE GASTO
-            // =====================================================
-
-            bool esMovilidad =
-                tipoGasto != null &&
-                EsMovilidad(tipoGasto);
-
-            bool esMovilidadInterna =
-                tipoGasto != null &&
-                EsMovilidadInterna(tipoGasto);
-
-            bool esHospedaje =
-                tipoGasto != null &&
-                EsHospedaje(tipoGasto);
-
-            // =====================================================
-            // FECHA DEL ADMINISTRADOR
-            // =====================================================
-            //
-            // IMPORTANTE:
-            // El administrador NO está limitado por:
-            //
-            // rendicion.FechaInicio
-            // rendicion.FechaFin
-            //
-            // Solamente verificamos que exista una fecha válida.
-            // =====================================================
-
-            if (modelo.Fecha == default)
-            {
-                ModelState.AddModelError(
-                    nameof(modelo.Fecha),
-                    "Debe ingresar la fecha del gasto.");
-            }
-
-            // =====================================================
-            // MONTO E IMPUESTOS
-            // =====================================================
-
-            ValidarMonto(
-                modelo.MontoTotal);
-
-            CalcularImpuestos(modelo);
-
-            // =====================================================
-            // LIMPIAR DATOS SEGÚN TIPO
-            // =====================================================
-
-            if (esMovilidadInterna)
-            {
-                // Movilidad interna NO utiliza comprobante.
-                LimpiarDatosComprobante(modelo);
-
-                // Tampoco utiliza hospedaje.
-                LimpiarDatosHospedaje(modelo);
-            }
-            else if (esMovilidad)
-            {
-                // Movilidad normal SÍ utiliza comprobante.
-                // NO limpiar comprobante.
-
-                // Pero no utiliza hospedaje.
-                LimpiarDatosHospedaje(modelo);
-            }
-            else if (!esHospedaje)
-            {
-                // Alimentación y otros gastos
-                // tampoco utilizan hospedaje.
-                LimpiarDatosHospedaje(modelo);
-            }
-
-            // =====================================================
-            // VALIDACIONES ESPECÍFICAS
-            // =====================================================
-
-            if (tipoGasto != null)
-            {
-                if (esHospedaje)
-                {
-                    // El administrador puede modificar libremente
-                    // las fechas de hospedaje sin estar limitado
-                    // al periodo de la rendición.
-                    await ValidarHospedajeAsync(
-                        modelo,
-                        rendicion,
-                        gasto.IdGasto,
-                        validarPeriodoRendicion: false);
-                }
-                else if (modelo.Fecha != default)
-                {
-                    await ValidarLimiteDiarioAsync(
-                        modelo,
-                        tipoGasto,
-                        gasto.IdGasto);
-                }
-            }
-
-            // =====================================================
-            // VALIDACIÓN DE COMPROBANTE
-            // =====================================================
-
-            if (esMovilidadInterna)
-            {
-                // =================================================
-                // MOVILIDAD INTERNA
-                // =================================================
-
-                LimpiarDatosComprobante(modelo);
-            }
-            else
-            {
-                // =================================================
-                // MOVILIDAD NORMAL + RESTO DE TIPOS
-                // =================================================
-
-                ValidarDatosComprobante(modelo);
-
-                if (ModelState.IsValid &&
-                    !string.IsNullOrWhiteSpace(modelo.Ruc))
-                {
-                    await ValidarRucAsync(modelo);
-                }
-
-                ValidarDatosProveedor(modelo);
-
-                // -------------------------------------------------
-                // COMPROBANTE
-                // -------------------------------------------------
-                //
-                // Puede ocurrir cualquiera de estas situaciones:
-                //
-                // 1. El administrador sube uno nuevo.
-                // 2. Ya existe uno y quiere conservarlo.
-                // 3. No existe ninguno.
-                //
-                // En el caso 3 debemos impedir guardar.
-                // -------------------------------------------------
-
-                bool existeComprobanteAnterior =
-                    !string.IsNullOrWhiteSpace(
-                        gasto.Comprobante);
-
-                bool seSubioNuevoComprobante =
-                    archivo != null &&
-                    archivo.Length > 0;
-
-                if (!existeComprobanteAnterior &&
-                    !seSubioNuevoComprobante)
-                {
-                    ModelState.AddModelError(
-                        "archivo",
-                        "Debe adjuntar el comprobante.");
-                }
-            }
-
-            // =====================================================
-            // VALIDAR MODELSTATE
-            // =====================================================
-
-            if (!ModelState.IsValid)
-            {
-                AgregarErroresTempData();
+                TempData["error"] =
+                    "El tipo de gasto seleccionado no existe.";
 
                 return RedirectToAction(
                     nameof(EditAdmin),
@@ -827,12 +1146,70 @@ namespace Dinacem.Controllers
                     });
             }
 
-            // =====================================================
-            // PREPARAR NUEVO COMPROBANTE
-            // =====================================================
+            bool esMovilidadInterna =
+                EsMovilidadInterna(tipoGasto);
+
+            bool esHospedaje =
+                EsHospedaje(tipoGasto);
+
+            // =========================================================
+            // VALIDAR Y CALCULAR HOSPEDAJE
+            // =========================================================
+
+            if (esHospedaje)
+            {
+                if (!modelo.FechaInicioHospedaje.HasValue ||
+                    !modelo.FechaFinHospedaje.HasValue)
+                {
+                    TempData["error"] =
+                        "Debe indicar la fecha de inicio y la fecha de fin del hospedaje.";
+
+                    return RedirectToAction(
+                        nameof(EditAdmin),
+                        new
+                        {
+                            id = gasto.IdGasto
+                        });
+                }
+
+                if (modelo.FechaFinHospedaje.Value <
+                    modelo.FechaInicioHospedaje.Value)
+                {
+                    TempData["error"] =
+                        "La fecha de fin del hospedaje no puede ser anterior a la fecha de inicio.";
+
+                    return RedirectToAction(
+                        nameof(EditAdmin),
+                        new
+                        {
+                            id = gasto.IdGasto
+                        });
+                }
+
+                modelo.DiasHospedaje =
+                    (modelo.FechaFinHospedaje.Value.Date -
+                     modelo.FechaInicioHospedaje.Value.Date)
+                    .Days + 1;
+            }
+            else
+            {
+                modelo.FechaInicioHospedaje = null;
+                modelo.FechaFinHospedaje = null;
+                modelo.DiasHospedaje = 0;
+            }
+
+            // =========================================================
+            // CALCULAR IMPUESTOS
+            // =========================================================
+
+            CalcularImpuestos(modelo);
 
             string? nuevaRutaComprobante = null;
             string? nuevaRutaFisica = null;
+
+            // =========================================================
+            // GUARDAR NUEVO COMPROBANTE
+            // =========================================================
 
             if (!esMovilidadInterna &&
                 archivo != null &&
@@ -862,16 +1239,12 @@ namespace Dinacem.Controllers
                     resultadoArchivo.RutaFisica;
             }
 
-            // =====================================================
-            // CONSERVAR COMPROBANTE ANTERIOR
-            // =====================================================
-
             var comprobanteAnterior =
                 gasto.Comprobante;
 
-            // =====================================================
-            // ACTUALIZAR CAMPOS BÁSICOS
-            // =====================================================
+            // =========================================================
+            // ACTUALIZAR DATOS GENERALES
+            // =========================================================
 
             gasto.Fecha =
                 modelo.Fecha;
@@ -894,15 +1267,12 @@ namespace Dinacem.Controllers
             gasto.ExoneracionIGV =
                 modelo.ExoneracionIGV;
 
-            // =====================================================
-            // ACTUALIZAR DATOS DE COMPROBANTE
-            // =====================================================
+            // =========================================================
+            // DATOS DEL COMPROBANTE
+            // =========================================================
 
             if (esMovilidadInterna)
             {
-                // Movilidad interna NO conserva ningún dato
-                // relacionado con comprobantes.
-
                 gasto.Ruc = null;
                 gasto.RazonSocial = null;
                 gasto.DomicilioFiscal = null;
@@ -913,9 +1283,6 @@ namespace Dinacem.Controllers
             }
             else
             {
-                // Movilidad normal y demás tipos
-                // sí conservan/actualizan comprobante.
-
                 gasto.IdTipoComprobante =
                     modelo.IdTipoComprobante;
 
@@ -934,10 +1301,8 @@ namespace Dinacem.Controllers
                 gasto.Numero =
                     modelo.Numero;
 
-                // Si se cargó uno nuevo, reemplazar.
-                //
-                // Si no se cargó uno nuevo, conservar
-                // el comprobante anterior.
+                // Si se cargó un nuevo comprobante,
+                // reemplazar el anterior.
                 if (!string.IsNullOrWhiteSpace(
                     nuevaRutaComprobante))
                 {
@@ -946,9 +1311,9 @@ namespace Dinacem.Controllers
                 }
             }
 
-            // =====================================================
-            // ACTUALIZAR HOSPEDAJE
-            // =====================================================
+            // =========================================================
+            // DATOS DEL PERÍODO DE HOSPEDAJE
+            // =========================================================
 
             if (esHospedaje)
             {
@@ -968,16 +1333,24 @@ namespace Dinacem.Controllers
                 gasto.DiasHospedaje = 0;
             }
 
-            // =====================================================
-            // GUARDAR Y REGENERAR PDF
-            // =====================================================
-
             try
             {
+                // =====================================================
+                // GUARDAR CAMBIOS
+                // =====================================================
+
                 await _context.SaveChangesAsync();
+
+                // =====================================================
+                // ACTUALIZAR TOTALES DE LA RENDICIÓN
+                // =====================================================
 
                 await ActualizarTotalesRendicion(
                     gasto.IdRendicion);
+
+                // =====================================================
+                // RECARGAR RENDICIÓN
+                // =====================================================
 
                 var rendicionActualizada =
                     await _context.Rendiciones
@@ -993,7 +1366,7 @@ namespace Dinacem.Controllers
                         nuevaRutaFisica);
 
                     TempData["error"] =
-                        "El gasto fue actualizado, pero no se pudo cargar la rendición para regenerar el PDF.";
+                        "El gasto fue actualizado, pero no se pudo cargar la rendición.";
 
                     return RedirectToAction(
                         "DetalleAdmin",
@@ -1003,6 +1376,10 @@ namespace Dinacem.Controllers
                             id = gasto.IdRendicion
                         });
                 }
+
+                // =====================================================
+                // RECARGAR GASTOS
+                // =====================================================
 
                 var gastosActualizados =
                     await _context.Gastos
@@ -1014,11 +1391,19 @@ namespace Dinacem.Controllers
                         .OrderBy(g => g.Fecha)
                         .ToListAsync();
 
+                // =====================================================
+                // RECARGAR DEVOLUCIÓN
+                // =====================================================
+
                 var devolucionActualizada =
                     await _context.DevolucionesSaldo
                         .FirstOrDefaultAsync(d =>
                             d.IdRendicion ==
                             gasto.IdRendicion);
+
+                // =====================================================
+                // RECARGAR BITÁCORAS
+                // =====================================================
 
                 var bitacorasActualizadas =
                     await _context.BitacorasVehiculo
@@ -1027,6 +1412,10 @@ namespace Dinacem.Controllers
                             gasto.IdRendicion)
                         .OrderBy(b => b.Fecha)
                         .ToListAsync();
+
+                // =====================================================
+                // REGENERAR PDF
+                // =====================================================
 
                 var resultadoPdf =
                     await _rendicionPdfService.GenerarAsync(
@@ -1051,7 +1440,7 @@ namespace Dinacem.Controllers
                     nuevaRutaFisica);
 
                 TempData["error"] =
-                    "No se pudo actualizar completamente el gasto y regenerar el PDF.";
+                    "No se pudo actualizar completamente el gasto.";
 
                 return RedirectToAction(
                     nameof(EditAdmin),
@@ -1061,30 +1450,17 @@ namespace Dinacem.Controllers
                     });
             }
 
-            // =====================================================
-            // ELIMINAR ARCHIVO ANTERIOR
-            // =====================================================
+            // =========================================================
+            // ELIMINAR COMPROBANTE ANTERIOR
+            // =========================================================
 
-            if (esMovilidadInterna)
+            if (esMovilidadInterna ||
+                !string.IsNullOrWhiteSpace(
+                    nuevaRutaComprobante))
             {
-                // Se cambió a Movilidad interna.
-                // Por tanto, se elimina el comprobante anterior.
-
                 EliminarComprobante(
                     comprobanteAnterior);
             }
-            else if (!string.IsNullOrWhiteSpace(
-                nuevaRutaComprobante))
-            {
-                // Se reemplazó por un comprobante nuevo.
-
-                EliminarComprobante(
-                    comprobanteAnterior);
-            }
-
-            // =====================================================
-            // MENSAJE FINAL
-            // =====================================================
 
             TempData["mensaje"] =
                 "El gasto fue corregido correctamente por el administrador.";
@@ -1137,10 +1513,12 @@ namespace Dinacem.Controllers
             }
 
             if (rendicion.IdEstadoRendicion !=
-                ESTADO_RENDICION_BORRADOR)
+                    ESTADO_RENDICION_BORRADOR &&
+                rendicion.IdEstadoRendicion !=
+                    ESTADO_RENDICION_RECHAZADA)
             {
                 TempData["error"] =
-                    "No se pueden eliminar gastos de una rendición enviada.";
+                    "No se pueden eliminar gastos de una rendición enviada o finalizada.";
 
                 return RedirectToAction(
                     nameof(Index),
@@ -1202,12 +1580,10 @@ namespace Dinacem.Controllers
         public async Task<IActionResult> EnviarRendicion(
             int idRendicion)
         {
-            var inicio =
-                DateTime.Now;
+            var inicio = DateTime.Now;
 
             var idUsuario =
-                HttpContext.Session.GetInt32(
-                    "IdUsuario");
+                HttpContext.Session.GetInt32("IdUsuario");
 
             if (!idUsuario.HasValue)
             {
@@ -1218,10 +1594,6 @@ namespace Dinacem.Controllers
                     "Login",
                     "Cuenta");
             }
-
-            // =====================================================
-            // OBTENER RENDICIÓN
-            // =====================================================
 
             var rendicion =
                 await _context.Rendiciones
@@ -1242,19 +1614,20 @@ namespace Dinacem.Controllers
             }
 
             if (rendicion.IdEstadoRendicion !=
-                ESTADO_RENDICION_BORRADOR)
+                    ESTADO_RENDICION_BORRADOR &&
+                rendicion.IdEstadoRendicion !=
+                    ESTADO_RENDICION_RECHAZADA)
             {
                 TempData["error"] =
-                    "Esta rendición ya fue enviada o finalizada.";
+                    "La rendición ya fue enviada o finalizada y no permite registrar más gastos.";
 
                 return RedirectToAction(
-                    "MisRendiciones",
-                    "Rendicion");
+                    nameof(Index),
+                    new
+                    {
+                        idRendicion
+                    });
             }
-
-            // =====================================================
-            // OBTENER GASTOS
-            // =====================================================
 
             var gastos =
                 await _context.Gastos
@@ -1266,10 +1639,6 @@ namespace Dinacem.Controllers
                     .OrderBy(g => g.Fecha)
                     .ToListAsync();
 
-            // =====================================================
-            // OBTENER BITÁCORA
-            // =====================================================
-
             var bitacorasVehiculo =
                 await _context.BitacorasVehiculo
                     .Where(b =>
@@ -1277,10 +1646,6 @@ namespace Dinacem.Controllers
                         idRendicion)
                     .OrderBy(b => b.Fecha)
                     .ToListAsync();
-
-            // =====================================================
-            // VALIDAR EXISTENCIA DE GASTOS
-            // =====================================================
 
             if (gastos.Count == 0 &&
                 bitacorasVehiculo.Count == 0)
@@ -1295,10 +1660,6 @@ namespace Dinacem.Controllers
                         idRendicion
                     });
             }
-
-            // =====================================================
-            // RECALCULAR TOTALES
-            // =====================================================
 
             var totalGastos =
                 gastos.Sum(g =>
@@ -1335,10 +1696,6 @@ namespace Dinacem.Controllers
                 montoAprobado,
                 saldo);
 
-            // =====================================================
-            // DEVOLUCIÓN
-            // =====================================================
-
             var devolucion =
                 await _context.DevolucionesSaldo
                     .FirstOrDefaultAsync(d =>
@@ -1357,16 +1714,8 @@ namespace Dinacem.Controllers
                     });
             }
 
-            // =====================================================
-            // REEMBOLSO
-            // =====================================================
-
             await ProcesarReembolsoAsync(
                 rendicion);
-
-            // =====================================================
-            // GENERAR PDF
-            // =====================================================
 
             ResultadoPdfRendicion resultadoPdf;
 
@@ -1405,10 +1754,6 @@ namespace Dinacem.Controllers
                     });
             }
 
-            // =====================================================
-            // CAMBIAR ESTADO
-            // =====================================================
-
             rendicion.ArchivoPdf =
                 resultadoPdf.RutaPublica;
 
@@ -1417,10 +1762,6 @@ namespace Dinacem.Controllers
 
             rendicion.IdEstadoRendicion =
                 ESTADO_RENDICION_PENDIENTE_REVISION;
-
-            // =====================================================
-            // GUARDAR RENDICIÓN
-            // =====================================================
 
             try
             {
@@ -1448,10 +1789,6 @@ namespace Dinacem.Controllers
                     });
             }
 
-            // =====================================================
-            // OBTENER CORREOS DE ADMINISTRADORES
-            // =====================================================
-
             List<string> correosAdministradores;
 
             try
@@ -1469,50 +1806,26 @@ namespace Dinacem.Controllers
                             c != "")
                         .Distinct()
                         .ToListAsync();
-
-                _logger.LogInformation(
-                    "Rendición {IdRendicion}: se encontraron {Cantidad} administrador(es) con correo válido.",
-                    idRendicion,
-                    correosAdministradores.Count);
-
-                foreach (var correo in correosAdministradores)
-                {
-                    _logger.LogInformation(
-                        "Rendición {IdRendicion}: destinatario: {Correo}",
-                        idRendicion,
-                        correo);
-                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(
                     ex,
-                    "Error consultando los administradores para la rendición {IdRendicion}.",
-                    idRendicion);
+                    "Error consultando administradores.");
 
                 correosAdministradores =
                     new List<string>();
             }
 
-            // =====================================================
-            // NOMBRE DEL EMPLEADO
-            // =====================================================
-
             var nombreEmpleado =
-                $"{rendicion.Usuario?.Nombres} " +
-                $"{rendicion.Usuario?.Apellidos}"
-                .Trim();
+                $"{rendicion.Usuario?.Nombres} {rendicion.Usuario?.Apellidos}"
+                    .Trim();
 
-            if (string.IsNullOrWhiteSpace(
-                nombreEmpleado))
+            if (string.IsNullOrWhiteSpace(nombreEmpleado))
             {
                 nombreEmpleado =
                     $"Usuario {rendicion.IdUsuario}";
             }
-
-            // =====================================================
-            // TOTALES PARA EL CORREO
-            // =====================================================
 
             var totalBase =
                 gastos.Sum(g =>
@@ -1525,16 +1838,8 @@ namespace Dinacem.Controllers
             var saldoCorreo =
                 rendicion.Saldo;
 
-            // =====================================================
-            // ASUNTO
-            // =====================================================
-
             var asunto =
                 $"Liquidación de viáticos #{rendicion.IdRendicion} pendiente de revisión";
-
-            // =====================================================
-            // CONTENIDO HTML
-            // =====================================================
 
             var contenidoHtml =
                 GenerarCorreoLiquidacion(
@@ -1544,158 +1849,70 @@ namespace Dinacem.Controllers
                     totalIgv,
                     saldoCorreo);
 
-            // =====================================================
-            // PREPARAR ADJUNTOS
-            // =====================================================
-
             var adjuntosCorreo =
                 new List<(string Ruta, string Nombre)>();
 
-            // =====================================================
-            // PDF PRINCIPAL
-            // =====================================================
-
             if (!string.IsNullOrWhiteSpace(
-                resultadoPdf.RutaFisica))
-            {
-                if (System.IO.File.Exists(
+                resultadoPdf.RutaFisica) &&
+                System.IO.File.Exists(
                     resultadoPdf.RutaFisica))
-                {
-                    adjuntosCorreo.Add(
-                        (
-                            resultadoPdf.RutaFisica,
-                            resultadoPdf.NombreArchivo
-                        ));
-
-                    _logger.LogInformation(
-                        "Rendición {IdRendicion}: PDF principal agregado: {Archivo}",
-                        idRendicion,
-                        resultadoPdf.RutaFisica);
-                }
-                else
-                {
-                    _logger.LogWarning(
-                        "Rendición {IdRendicion}: el PDF principal no existe: {Archivo}",
-                        idRendicion,
-                        resultadoPdf.RutaFisica);
-                }
+            {
+                adjuntosCorreo.Add(
+                    (
+                        resultadoPdf.RutaFisica,
+                        resultadoPdf.NombreArchivo
+                    ));
             }
-
-            // =====================================================
-            // PDF DE COMPROBANTES
-            // =====================================================
 
             if (!string.IsNullOrWhiteSpace(
-                resultadoPdf.RutaFisicaVouchers))
-            {
-                if (System.IO.File.Exists(
+                resultadoPdf.RutaFisicaVouchers) &&
+                System.IO.File.Exists(
                     resultadoPdf.RutaFisicaVouchers))
-                {
-                    adjuntosCorreo.Add(
-                        (
-                            resultadoPdf.RutaFisicaVouchers,
-                            resultadoPdf.NombreArchivoVouchers
-                        ));
-
-                    _logger.LogInformation(
-                        "Rendición {IdRendicion}: PDF de comprobantes agregado: {Archivo}",
-                        idRendicion,
-                        resultadoPdf.RutaFisicaVouchers);
-                }
-                else
-                {
-                    _logger.LogWarning(
-                        "Rendición {IdRendicion}: el PDF de comprobantes no existe: {Archivo}",
-                        idRendicion,
-                        resultadoPdf.RutaFisicaVouchers);
-                }
-            }
-
-            // =====================================================
-            // ENVIAR CORREO
-            // =====================================================
-
-            bool correoEnviado =
-                false;
-
-            if (correosAdministradores.Count == 0)
             {
-                _logger.LogWarning(
-                    "Rendición {IdRendicion}: no se puede enviar correo porque no existe ningún administrador activo con correo.",
-                    idRendicion);
+                adjuntosCorreo.Add(
+                    (
+                        resultadoPdf.RutaFisicaVouchers,
+                        resultadoPdf.NombreArchivoVouchers
+                    ));
             }
-            else
+
+            bool correoEnviado = false;
+
+            if (correosAdministradores.Count > 0)
             {
                 try
                 {
-                    _logger.LogInformation(
-                        "Rendición {IdRendicion}: intentando enviar correo a {Cantidad} administrador(es).",
-                        idRendicion,
-                        correosAdministradores.Count);
-
-                    _logger.LogInformation(
-                        "Rendición {IdRendicion}: cantidad de adjuntos = {CantidadAdjuntos}.",
-                        idRendicion,
-                        adjuntosCorreo.Count);
-
                     correoEnviado =
                         await _correoService.EnviarAsync(
                             correosAdministradores,
                             asunto,
                             contenidoHtml,
                             adjuntosCorreo);
-
-                    if (correoEnviado)
-                    {
-                        _logger.LogInformation(
-                            "Rendición {IdRendicion}: CORREO ENVIADO CORRECTAMENTE AL ADMINISTRADOR.",
-                            idRendicion);
-                    }
-                    else
-                    {
-                        _logger.LogError(
-                            "Rendición {IdRendicion}: CorreoService devolvió FALSE. El correo NO fue enviado.",
-                            idRendicion);
-                    }
                 }
                 catch (Exception ex)
                 {
-                    correoEnviado =
-                        false;
-
                     _logger.LogError(
                         ex,
-                        "Rendición {IdRendicion}: ERROR AL ENVIAR CORREO AL ADMINISTRADOR.",
+                        "Error enviando correo de rendición {IdRendicion}.",
                         idRendicion);
                 }
             }
 
-            // =====================================================
-            // MENSAJE FINAL
-            // =====================================================
-
             if (correoEnviado)
             {
                 TempData["Success"] =
-                    "La rendición fue enviada correctamente para revisión " +
-                    "y se notificó al administrador por correo.";
+                    "La rendición fue enviada correctamente para revisión y se notificó al administrador por correo.";
             }
             else if (correosAdministradores.Count == 0)
             {
                 TempData["Success"] =
-                    "La rendición fue enviada correctamente para revisión. " +
-                    "No se encontró ningún administrador activo con correo configurado.";
+                    "La rendición fue enviada correctamente para revisión. No se encontró ningún administrador activo con correo configurado.";
             }
             else
             {
                 TempData["Success"] =
-                    "La rendición fue enviada correctamente para revisión, " +
-                    "pero no se pudo enviar el correo de notificación.";
+                    "La rendición fue enviada correctamente para revisión, pero no se pudo enviar el correo de notificación.";
             }
-
-            // =====================================================
-            // LOG FINAL
-            // =====================================================
 
             _logger.LogInformation(
                 "Proceso completo de rendición {IdRendicion} terminado en {Tiempo} ms. CorreoEnviado={CorreoEnviado}",
@@ -1719,8 +1936,7 @@ namespace Dinacem.Controllers
                 await _context.Rendiciones
                     .Include(r => r.Solicitud)
                     .FirstOrDefaultAsync(r =>
-                        r.IdRendicion ==
-                        idRendicion);
+                        r.IdRendicion == idRendicion);
 
             if (rendicion == null ||
                 rendicion.Solicitud == null)
@@ -1731,20 +1947,16 @@ namespace Dinacem.Controllers
             var totalGastos =
                 await _context.Gastos
                     .Where(g =>
-                        g.IdRendicion ==
-                        idRendicion)
+                        g.IdRendicion == idRendicion)
                     .SumAsync(g =>
-                        (decimal?)g.MontoTotal) ??
-                    0m;
+                        (decimal?)g.MontoTotal) ?? 0m;
 
             var totalVehiculo =
                 await _context.BitacorasVehiculo
                     .Where(b =>
-                        b.IdRendicion ==
-                        idRendicion)
+                        b.IdRendicion == idRendicion)
                     .SumAsync(b =>
-                        (decimal?)b.MontoAsignado) ??
-                    0m;
+                        (decimal?)b.MontoAsignado) ?? 0m;
 
             rendicion.Total =
                 totalGastos +
@@ -1769,10 +1981,8 @@ namespace Dinacem.Controllers
                 .Include(r => r.Solicitud)
                 .Include(r => r.Usuario)
                 .FirstOrDefaultAsync(r =>
-                    r.IdRendicion ==
-                        idRendicion &&
-                    r.IdUsuario ==
-                        idUsuario);
+                    r.IdRendicion == idRendicion &&
+                    r.IdUsuario == idUsuario);
         }
 
         // =========================================================
@@ -1784,8 +1994,7 @@ namespace Dinacem.Controllers
         {
             return await _context.TipoGastos
                 .FirstOrDefaultAsync(t =>
-                    t.IdTipoGasto ==
-                    idTipoGasto);
+                    t.IdTipoGasto == idTipoGasto);
         }
 
         // =========================================================
@@ -1795,11 +2004,9 @@ namespace Dinacem.Controllers
         private bool EsAdministrador()
         {
             var idRol =
-                HttpContext.Session.GetInt32(
-                    "IdRol");
+                HttpContext.Session.GetInt32("IdRol");
 
-            return idRol ==
-                ROL_ADMINISTRADOR;
+            return idRol == ROL_ADMINISTRADOR;
         }
 
         // =========================================================
@@ -1875,8 +2082,6 @@ namespace Dinacem.Controllers
                 return LIMITE_MOVILIDAD_INTERNA_DIARIO;
             }
 
-            // Movilidad normal = sin límite.
-            // Hospedaje utiliza su propia validación.
             return 0m;
         }
 
@@ -1965,15 +2170,11 @@ namespace Dinacem.Controllers
                 return;
             }
 
-            if (fecha.Date <
-                    rendicion.FechaInicio.Date ||
-                fecha.Date >
-                    rendicion.FechaFin.Date)
+            if (fecha.Date < rendicion.FechaInicio.Date ||
+                fecha.Date > rendicion.FechaFin.Date)
             {
                 var mensaje =
-                    $"La fecha del gasto debe estar entre " +
-                    $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
-                    $"{rendicion.FechaFin:dd/MM/yyyy}.";
+                    $"La fecha del gasto debe estar entre {rendicion.FechaInicio:dd/MM/yyyy} y {rendicion.FechaFin:dd/MM/yyyy}.";
 
                 if (incluirMensajeDetallado)
                 {
@@ -2013,7 +2214,6 @@ namespace Dinacem.Controllers
             {
                 gasto.ValorVenta = 0;
                 gasto.IGV = 0;
-
                 return;
             }
 
@@ -2026,21 +2226,18 @@ namespace Dinacem.Controllers
                         MidpointRounding.AwayFromZero);
 
                 gasto.IGV = 0;
-
                 return;
             }
 
             gasto.ValorVenta =
                 Math.Round(
-                    gasto.MontoTotal /
-                    (1 + TASA_IGV),
+                    gasto.MontoTotal / (1 + TASA_IGV),
                     2,
                     MidpointRounding.AwayFromZero);
 
             gasto.IGV =
                 Math.Round(
-                    gasto.MontoTotal -
-                    gasto.ValorVenta,
+                    gasto.MontoTotal - gasto.ValorVenta,
                     2,
                     MidpointRounding.AwayFromZero);
         }
@@ -2054,8 +2251,6 @@ namespace Dinacem.Controllers
             TipoGasto tipoGasto,
             int idGastoExcluir)
         {
-            // Solo Alimentación y Movilidad interna
-            // tienen límite diario.
             if (!EsAlimentacion(tipoGasto) &&
                 !EsMovilidadInterna(tipoGasto))
             {
@@ -2079,10 +2274,8 @@ namespace Dinacem.Controllers
             var query =
                 _context.Gastos
                     .Where(g =>
-                        g.IdRendicion ==
-                            gasto.IdRendicion &&
-                        g.IdTipoGasto ==
-                            gasto.IdTipoGasto &&
+                        g.IdRendicion == gasto.IdRendicion &&
+                        g.IdTipoGasto == gasto.IdTipoGasto &&
                         g.Fecha >= inicioDia &&
                         g.Fecha < finDia);
 
@@ -2090,15 +2283,13 @@ namespace Dinacem.Controllers
             {
                 query =
                     query.Where(g =>
-                        g.IdGasto !=
-                        idGastoExcluir);
+                        g.IdGasto != idGastoExcluir);
             }
 
             var montoRegistrado =
                 await query
                     .SumAsync(g =>
-                        (decimal?)g.MontoTotal) ??
-                    0m;
+                        (decimal?)g.MontoTotal) ?? 0m;
 
             var nuevoTotal =
                 montoRegistrado +
@@ -2120,11 +2311,7 @@ namespace Dinacem.Controllers
 
             ModelState.AddModelError(
                 nameof(Gasto.MontoTotal),
-                $"El límite diario para {tipoGasto.Nombre} es " +
-                $"S/ {limiteDiario:N2}. " +
-                $"El {gasto.Fecha:dd/MM/yyyy} ya tiene registrado " +
-                $"S/ {montoRegistrado:N2}. " +
-                $"Solo puede registrar hasta S/ {disponible:N2}.");
+                $"El límite diario para {tipoGasto.Nombre} es S/ {limiteDiario:N2}. El {gasto.Fecha:dd/MM/yyyy} ya tiene registrado S/ {montoRegistrado:N2}. Solo puede registrar hasta S/ {disponible:N2}.");
         }
 
         // =========================================================
@@ -2179,59 +2366,34 @@ namespace Dinacem.Controllers
                 return;
             }
 
-            // =====================================================
-            // VALIDAR PERIODO DE RENDICIÓN
-            // =====================================================
-            //
-            // Usuario normal:
-            // true  → sí se valida.
-            //
-            // Administrador:
-            // false → puede usar cualquier fecha.
-            // =====================================================
-
             if (validarPeriodoRendicion)
             {
-                if (fechaInicio <
-                        rendicion.FechaInicio.Date ||
-                    fechaInicio >
-                        rendicion.FechaFin.Date)
+                if (fechaInicio < rendicion.FechaInicio.Date ||
+                    fechaInicio > rendicion.FechaFin.Date)
                 {
                     ModelState.AddModelError(
                         nameof(Gasto.FechaInicioHospedaje),
-                        $"La fecha de inicio del hospedaje debe estar entre " +
-                        $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
-                        $"{rendicion.FechaFin:dd/MM/yyyy}.");
+                        $"La fecha de inicio del hospedaje debe estar entre {rendicion.FechaInicio:dd/MM/yyyy} y {rendicion.FechaFin:dd/MM/yyyy}.");
 
                     return;
                 }
 
-                if (fechaFin <
-                        rendicion.FechaInicio.Date ||
-                    fechaFin >
-                        rendicion.FechaFin.Date)
+                if (fechaFin < rendicion.FechaInicio.Date ||
+                    fechaFin > rendicion.FechaFin.Date)
                 {
                     ModelState.AddModelError(
                         nameof(Gasto.FechaFinHospedaje),
-                        $"La fecha de fin del hospedaje debe estar entre " +
-                        $"{rendicion.FechaInicio:dd/MM/yyyy} y " +
-                        $"{rendicion.FechaFin:dd/MM/yyyy}.");
+                        $"La fecha de fin del hospedaje debe estar entre {rendicion.FechaInicio:dd/MM/yyyy} y {rendicion.FechaFin:dd/MM/yyyy}.");
 
                     return;
                 }
             }
 
-            // =====================================================
-            // EVITAR CRUCE DE HOSPEDAJES
-            // =====================================================
-
             var hospedajes =
                 _context.Gastos
                     .Where(g =>
-                        g.IdRendicion ==
-                            gasto.IdRendicion &&
-                        g.IdTipoGasto ==
-                            gasto.IdTipoGasto &&
+                        g.IdRendicion == gasto.IdRendicion &&
+                        g.IdTipoGasto == gasto.IdTipoGasto &&
                         g.FechaInicioHospedaje != null &&
                         g.FechaFinHospedaje != null);
 
@@ -2239,8 +2401,7 @@ namespace Dinacem.Controllers
             {
                 hospedajes =
                     hospedajes.Where(g =>
-                        g.IdGasto !=
-                        idGastoExcluir);
+                        g.IdGasto != idGastoExcluir);
             }
 
             var existeCruce =
@@ -2259,10 +2420,6 @@ namespace Dinacem.Controllers
                 return;
             }
 
-            // =====================================================
-            // LÍMITE DE HOSPEDAJE
-            // =====================================================
-
             var limiteHospedaje =
                 gasto.DiasHospedaje *
                 LIMITE_HOSPEDAJE_POR_DIA;
@@ -2272,10 +2429,7 @@ namespace Dinacem.Controllers
             {
                 ModelState.AddModelError(
                     nameof(Gasto.MontoTotal),
-                    $"El monto máximo permitido para hospedaje es " +
-                    $"S/ {limiteHospedaje:N2}, considerando " +
-                    $"{gasto.DiasHospedaje} día(s) × " +
-                    $"S/ {LIMITE_HOSPEDAJE_POR_DIA:N2}.");
+                    $"El monto máximo permitido para hospedaje es S/ {limiteHospedaje:N2}, considerando {gasto.DiasHospedaje} día(s) × S/ {LIMITE_HOSPEDAJE_POR_DIA:N2}.");
             }
         }
 
@@ -2286,10 +2440,6 @@ namespace Dinacem.Controllers
         private void ValidarDatosComprobante(
             Gasto gasto)
         {
-            // -----------------------------------------------------
-            // TIPO DE COMPROBANTE
-            // -----------------------------------------------------
-
             if (!gasto.IdTipoComprobante.HasValue ||
                 gasto.IdTipoComprobante.Value <= 0)
             {
@@ -2320,16 +2470,8 @@ namespace Dinacem.Controllers
                     .Trim()
                     .ToLowerInvariant() ?? "";
 
-            // -----------------------------------------------------
-            // FACTURA
-            // -----------------------------------------------------
-
             bool esFactura =
                 nombreComprobante == "factura";
-
-            // -----------------------------------------------------
-            // RUC
-            // -----------------------------------------------------
 
             if (!string.IsNullOrWhiteSpace(gasto.Ruc))
             {
@@ -2350,10 +2492,6 @@ namespace Dinacem.Controllers
                     nameof(Gasto.Ruc),
                     "Para una factura debe ingresar el RUC.");
             }
-
-            // -----------------------------------------------------
-            // DATOS DEL PROVEEDOR PARA FACTURA
-            // -----------------------------------------------------
 
             if (esFactura)
             {
@@ -2382,8 +2520,7 @@ namespace Dinacem.Controllers
         private async Task ValidarRucAsync(
             Gasto gasto)
         {
-            if (string.IsNullOrWhiteSpace(
-                gasto.Ruc))
+            if (string.IsNullOrWhiteSpace(gasto.Ruc))
             {
                 return;
             }
@@ -2406,10 +2543,9 @@ namespace Dinacem.Controllers
             }
 
             gasto.Ruc =
-                string.IsNullOrWhiteSpace(
-                    consulta.Ruc)
-                        ? gasto.Ruc
-                        : consulta.Ruc.Trim();
+                string.IsNullOrWhiteSpace(consulta.Ruc)
+                    ? gasto.Ruc
+                    : consulta.Ruc.Trim();
 
             gasto.RazonSocial =
                 consulta.RazonSocial?.Trim();
@@ -2455,13 +2591,10 @@ namespace Dinacem.Controllers
                     .Trim()
                     .ToLowerInvariant() ?? "";
 
-            // -----------------------------------------------------
-            // NO FACTURA
-            // -----------------------------------------------------
-
             if (nombreComprobante != "factura")
             {
-                if (!string.IsNullOrWhiteSpace(gasto.RazonSocial) &&
+                if (!string.IsNullOrWhiteSpace(
+                    gasto.RazonSocial) &&
                     gasto.RazonSocial.Length > 250)
                 {
                     ModelState.AddModelError(
@@ -2469,7 +2602,8 @@ namespace Dinacem.Controllers
                         "La razón social no puede superar los 250 caracteres.");
                 }
 
-                if (!string.IsNullOrWhiteSpace(gasto.DomicilioFiscal) &&
+                if (!string.IsNullOrWhiteSpace(
+                    gasto.DomicilioFiscal) &&
                     gasto.DomicilioFiscal.Length > 300)
                 {
                     ModelState.AddModelError(
@@ -2480,10 +2614,6 @@ namespace Dinacem.Controllers
                 return;
             }
 
-            // -----------------------------------------------------
-            // FACTURA
-            // -----------------------------------------------------
-
             if (string.IsNullOrWhiteSpace(
                 gasto.RazonSocial))
             {
@@ -2491,8 +2621,7 @@ namespace Dinacem.Controllers
                     nameof(Gasto.RazonSocial),
                     "No se encontró la razón social del RUC.");
             }
-            else if (
-                gasto.RazonSocial.Length > 250)
+            else if (gasto.RazonSocial.Length > 250)
             {
                 ModelState.AddModelError(
                     nameof(Gasto.RazonSocial),
@@ -2506,8 +2635,7 @@ namespace Dinacem.Controllers
                     nameof(Gasto.DomicilioFiscal),
                     "Debe ingresar el domicilio fiscal.");
             }
-            else if (
-                gasto.DomicilioFiscal.Length > 300)
+            else if (gasto.DomicilioFiscal.Length > 300)
             {
                 ModelState.AddModelError(
                     nameof(Gasto.DomicilioFiscal),
@@ -2548,7 +2676,8 @@ namespace Dinacem.Controllers
                 };
             }
 
-            if (archivo.Length > TAMANIO_MAXIMO_COMPROBANTE)
+            if (archivo.Length >
+                TAMANIO_MAXIMO_COMPROBANTE)
             {
                 return new ResultadoArchivo
                 {
@@ -2565,10 +2694,6 @@ namespace Dinacem.Controllers
                     "comprobantes");
 
             Directory.CreateDirectory(carpeta);
-
-            // =====================================================
-            // PDF
-            // =====================================================
 
             if (extension == ".pdf")
             {
@@ -2597,10 +2722,6 @@ namespace Dinacem.Controllers
                         rutaPdf
                 };
             }
-
-            // =====================================================
-            // IMAGEN
-            // =====================================================
 
             try
             {
@@ -2660,8 +2781,7 @@ namespace Dinacem.Controllers
                 {
                     Exito = false,
                     Mensaje =
-                        "No se pudo procesar la imagen del comprobante. " +
-                        "Seleccione una imagen JPG, JPEG o PNG válida."
+                        "No se pudo procesar la imagen del comprobante. Seleccione una imagen JPG, JPEG o PNG válida."
                 };
             }
         }
@@ -2722,7 +2842,6 @@ namespace Dinacem.Controllers
             }
             catch
             {
-                // No detener la operación principal.
             }
         }
 
@@ -2763,8 +2882,8 @@ namespace Dinacem.Controllers
                             x.Value!.Errors.Select(e =>
                                 string.IsNullOrWhiteSpace(
                                     e.ErrorMessage)
-                                        ? "Valor no válido."
-                                        : e.ErrorMessage))}");
+                                    ? "Valor no válido."
+                                    : e.ErrorMessage))}");
 
             TempData["error"] =
                 string.Join(
@@ -2788,8 +2907,7 @@ namespace Dinacem.Controllers
             if (devolucion == null)
             {
                 TempData["error"] =
-                    $"Debe registrar la devolución de " +
-                    $"S/ {rendicion.Saldo:N2} antes de enviar.";
+                    $"Debe registrar la devolución de S/ {rendicion.Saldo:N2} antes de enviar.";
 
                 return false;
             }
@@ -2798,8 +2916,7 @@ namespace Dinacem.Controllers
                 rendicion.Saldo)
             {
                 TempData["error"] =
-                    $"El monto devuelto debe ser exactamente " +
-                    $"S/ {rendicion.Saldo:N2}.";
+                    $"El monto devuelto debe ser exactamente S/ {rendicion.Saldo:N2}.";
 
                 return false;
             }
@@ -2829,8 +2946,7 @@ namespace Dinacem.Controllers
             }
 
             var montoReembolso =
-                Math.Abs(
-                    rendicion.Saldo);
+                Math.Abs(rendicion.Saldo);
 
             var reembolsoExistente =
                 await _context.Reembolsos
@@ -2845,16 +2961,12 @@ namespace Dinacem.Controllers
                     {
                         IdRendicion =
                             rendicion.IdRendicion,
-
                         IdUsuario =
                             rendicion.IdUsuario,
-
                         Monto =
                             montoReembolso,
-
                         FechaSolicitud =
                             DateTime.Now,
-
                         IdEstadoReembolso =
                             ESTADO_REEMBOLSO_PENDIENTE
                     };
@@ -2874,23 +2986,12 @@ namespace Dinacem.Controllers
             reembolsoExistente.IdEstadoReembolso =
                 ESTADO_REEMBOLSO_PENDIENTE;
 
-            reembolsoExistente.FechaAprobacion =
-                null;
-
-            reembolsoExistente.FechaPago =
-                null;
-
-            reembolsoExistente.Banco =
-                null;
-
-            reembolsoExistente.NumeroOperacion =
-                null;
-
-            reembolsoExistente.ComprobantePago =
-                null;
-
-            reembolsoExistente.Observaciones =
-                null;
+            reembolsoExistente.FechaAprobacion = null;
+            reembolsoExistente.FechaPago = null;
+            reembolsoExistente.Banco = null;
+            reembolsoExistente.NumeroOperacion = null;
+            reembolsoExistente.ComprobantePago = null;
+            reembolsoExistente.Observaciones = null;
         }
 
         // =========================================================
@@ -2907,455 +3008,101 @@ namespace Dinacem.Controllers
             return $$"""
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Liquidación de Viáticos - DINACEN</title>
 </head>
-
-<body style="
-margin:0;
-padding:0;
-background-color:#f2f5f8;
-font-family:Arial,Helvetica,sans-serif;
-color:#111111;">
-
-<table role="presentation"
-       width="100%"
-       cellspacing="0"
-       cellpadding="0"
-       border="0"
-       style="
-       background-color:#f2f5f8;
-       padding:35px 15px;">
-
+<body style="margin:0;padding:0;background-color:#f2f5f8;font-family:Arial,Helvetica,sans-serif;color:#111111;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f2f5f8;padding:35px 15px;">
 <tr>
 <td align="center">
-
-<table role="presentation"
-       width="700"
-       cellspacing="0"
-       cellpadding="0"
-       border="0"
-       style="
-       max-width:700px;
-       width:100%;
-       background:#ffffff;
-       border-radius:12px;
-       overflow:hidden;
-       box-shadow:0 4px 15px rgba(0,0,0,0.08);">
-
+<table role="presentation" width="700" cellspacing="0" cellpadding="0" border="0" style="max-width:700px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.08);">
 <tr>
-<td style="
-background:#ffffff;
-padding:30px 35px 20px 35px;
-text-align:center;">
-
-<img src="cid:logoDinacen"
-     alt="DINACEN"
-     style="
-     width:210px;
-     max-width:80%;
-     height:auto;
-     display:block;
-     margin:0 auto;">
-
+<td style="background:#ffffff;padding:30px 35px 20px;text-align:center;">
+<img src="cid:logoDinacen" alt="DINACEN" style="width:210px;max-width:80%;height:auto;display:block;margin:0 auto;">
 </td>
 </tr>
-
 <tr>
-<td style="
-background:#ffffff;
-padding:0 35px 22px 35px;
-text-align:center;">
-
-<div style="
-height:4px;
-background:#6AA84F;
-width:100%;
-border-radius:3px;">
+<td style="background:#ffffff;padding:0 35px 22px;text-align:center;">
+<div style="height:4px;background:#6AA84F;width:100%;border-radius:3px;"></div>
+</td>
+</tr>
+<tr>
+<td style="background:#0C4A8A;padding:24px 35px;text-align:center;">
+<div style="font-size:25px;font-weight:bold;color:#ffffff;line-height:1.3;">LIQUIDACIÓN DE VIÁTICOS</div>
+<div style="font-size:15px;color:#ffffff;margin-top:8px;opacity:0.95;">Pendiente de revisión</div>
+</td>
+</tr>
+<tr>
+<td style="padding:35px 40px 25px;">
+<div style="font-size:22px;font-weight:bold;color:#111111;margin-bottom:18px;">Nueva liquidación pendiente de revisión</div>
+<div style="font-size:16px;line-height:1.7;color:#222222;margin-bottom:25px;">
+El empleado <strong>{{nombreEmpleado}}</strong> ha enviado una liquidación de gastos que se encuentra pendiente de revisión.
 </div>
-
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#ffffff;border:1px solid #d9e2ea;border-radius:8px;overflow:hidden;">
+<tr>
+<td colspan="2" style="padding:18px 20px;background:#eef4f9;border-bottom:1px solid #d9e2ea;">
+<div style="font-size:18px;font-weight:bold;color:#0C4A8A;">Información de la liquidación</div>
 </td>
 </tr>
-
 <tr>
-<td style="
-background:#0C4A8A;
-padding:24px 35px;
-text-align:center;">
-
-<div style="
-font-size:25px;
-font-weight:bold;
-color:#ffffff;
-line-height:1.3;">
-
-LIQUIDACIÓN DE VIÁTICOS
-
-</div>
-
-<div style="
-font-size:15px;
-color:#ffffff;
-margin-top:8px;
-opacity:0.95;">
-
-Pendiente de revisión
-
-</div>
-
-</td>
+<td width="42%" style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;font-weight:bold;color:#333333;">Liquidación</td>
+<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;color:#333333;">#{{rendicion.IdRendicion}}</td>
 </tr>
-
 <tr>
-<td style="
-padding:35px 40px 25px 40px;">
-
-<div style="
-font-size:22px;
-font-weight:bold;
-color:#111111;
-margin-bottom:18px;">
-
-Nueva liquidación pendiente de revisión
-
-</div>
-
-<div style="
-font-size:16px;
-line-height:1.7;
-color:#222222;
-margin-bottom:25px;">
-
-El empleado
-<strong>{{nombreEmpleado}}</strong>
-ha enviado una liquidación de gastos
-que se encuentra pendiente de revisión.
-
-</div>
-
-<table role="presentation"
-       width="100%"
-       cellspacing="0"
-       cellpadding="0"
-       border="0"
-       style="
-       background:#ffffff;
-       border:1px solid #d9e2ea;
-       border-radius:8px;
-       overflow:hidden;">
-
-<tr>
-<td colspan="2"
-    style="
-    padding:18px 20px;
-    background:#eef4f9;
-    border-bottom:1px solid #d9e2ea;">
-
-<div style="
-font-size:18px;
-font-weight:bold;
-color:#0C4A8A;">
-
-Información de la liquidación
-
-</div>
-
-</td>
+<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;font-weight:bold;color:#333333;">Empleado</td>
+<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;color:#333333;">{{nombreEmpleado}}</td>
 </tr>
-
 <tr>
-<td width="42%"
-    style="
-    padding:14px 20px;
-    border-bottom:1px solid #e1e7ec;
-    font-size:15px;
-    font-weight:bold;
-    color:#333333;">
-
-Liquidación
-
-</td>
-
-<td style="
-padding:14px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:15px;
-color:#333333;">
-
-#{{rendicion.IdRendicion}}
-
-</td>
+<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;font-weight:bold;color:#333333;">Destino</td>
+<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;color:#333333;">{{rendicion.Solicitud?.Destino}}</td>
 </tr>
-
 <tr>
-<td style="
-padding:14px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:15px;
-font-weight:bold;
-color:#333333;">
-
-Empleado
-
-</td>
-
-<td style="
-padding:14px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:15px;
-color:#333333;">
-
-{{nombreEmpleado}}
-
-</td>
+<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;font-weight:bold;color:#333333;">Periodo</td>
+<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;color:#333333;">{{rendicion.FechaInicio:dd/MM/yyyy}} al {{rendicion.FechaFin:dd/MM/yyyy}}</td>
 </tr>
-
 <tr>
-<td style="
-padding:14px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:15px;
-font-weight:bold;
-color:#333333;">
-
-Destino
-
-</td>
-
-<td style="
-padding:14px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:15px;
-color:#333333;">
-
-{{rendicion.Solicitud?.Destino}}
-
-</td>
+<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;font-weight:bold;color:#333333;">Monto aprobado</td>
+<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;font-weight:bold;color:#333333;">S/ {{rendicion.Solicitud?.Monto:N2}}</td>
 </tr>
-
 <tr>
-<td style="
-padding:14px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:15px;
-font-weight:bold;
-color:#333333;">
-
-Periodo
-
-</td>
-
-<td style="
-padding:14px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:15px;
-color:#333333;">
-
-{{rendicion.FechaInicio:dd/MM/yyyy}}
-al
-{{rendicion.FechaFin:dd/MM/yyyy}}
-
-</td>
+<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;font-weight:bold;color:#333333;">Valor de venta</td>
+<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;color:#333333;">S/ {{totalBase:N2}}</td>
 </tr>
-
 <tr>
-<td style="
-padding:14px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:15px;
-font-weight:bold;
-color:#333333;">
-
-Monto aprobado
-
-</td>
-
-<td style="
-padding:14px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:15px;
-font-weight:bold;
-color:#333333;">
-
-S/ {{rendicion.Solicitud?.Monto:N2}}
-
-</td>
+<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;font-weight:bold;color:#333333;">IGV</td>
+<td style="padding:14px 20px;border-bottom:1px solid #e1e7ec;font-size:15px;color:#333333;">S/ {{totalIgv:N2}}</td>
 </tr>
-
 <tr>
-<td style="
-padding:14px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:15px;
-font-weight:bold;
-color:#333333;">
-
-Valor de venta
-
-</td>
-
-<td style="
-padding:14px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:15px;
-color:#333333;">
-
-S/ {{totalBase:N2}}
-
-</td>
+<td style="padding:16px 20px;border-bottom:1px solid #e1e7ec;font-size:16px;font-weight:bold;color:#333333;">Total rendido</td>
+<td style="padding:16px 20px;border-bottom:1px solid #e1e7ec;font-size:19px;font-weight:bold;color:#0C4A8A;">S/ {{rendicion.Total:N2}}</td>
 </tr>
-
 <tr>
-<td style="
-padding:14px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:15px;
-font-weight:bold;
-color:#333333;">
-
-IGV
-
-</td>
-
-<td style="
-padding:14px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:15px;
-color:#333333;">
-
-S/ {{totalIgv:N2}}
-
-</td>
+<td style="padding:16px 20px;font-size:16px;font-weight:bold;color:#333333;">Saldo</td>
+<td style="padding:16px 20px;font-size:19px;font-weight:bold;color:#6AA84F;">S/ {{saldo:N2}}</td>
 </tr>
-
-<tr>
-<td style="
-padding:16px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:16px;
-font-weight:bold;
-color:#333333;">
-
-Total rendido
-
-</td>
-
-<td style="
-padding:16px 20px;
-border-bottom:1px solid #e1e7ec;
-font-size:19px;
-font-weight:bold;
-color:#0C4A8A;">
-
-S/ {{rendicion.Total:N2}}
-
-</td>
-</tr>
-
-<tr>
-<td style="
-padding:16px 20px;
-font-size:16px;
-font-weight:bold;
-color:#333333;">
-
-Saldo
-
-</td>
-
-<td style="
-padding:16px 20px;
-font-size:19px;
-font-weight:bold;
-color:#6AA84F;">
-
-S/ {{saldo:N2}}
-
-</td>
-</tr>
-
 </table>
-
-<div style="
-margin-top:28px;
-padding:20px;
-background:#f7f9fb;
-border-left:5px solid #0C4A8A;
-border-radius:5px;">
-
-<div style="
-font-size:15px;
-line-height:1.7;
-color:#222222;">
-
-Se adjuntan los PDF correspondientes a la
-<strong>liquidación</strong> y a los
-<strong>vouchers</strong> registrados.
-
+<div style="margin-top:28px;padding:20px;background:#f7f9fb;border-left:5px solid #0C4A8A;border-radius:5px;">
+<div style="font-size:15px;line-height:1.7;color:#222222;">
+Se adjuntan los PDF correspondientes a la <strong>liquidación</strong> y a los <strong>vouchers</strong> registrados.
 <br><br>
-
-Ingrese al
-<strong>sistema de gestión de viáticos DINACEN</strong>
-para revisar los comprobantes, verificar la devolución
-y proceder con la aprobación o rechazo de la rendición.
-
+Ingrese al <strong>sistema de gestión de viáticos DINACEN</strong> para revisar los comprobantes, verificar la devolución y proceder con la aprobación o rechazo de la rendición.
 </div>
-
 </div>
-
 </td>
 </tr>
-
 <tr>
-<td style="
-background:#0C4A8A;
-padding:25px 35px;
-text-align:center;">
-
-<div style="
-font-size:17px;
-font-weight:bold;
-color:#ffffff;">
-
-DINACEN
-
-</div>
-
-<div style="
-font-size:13px;
-color:#dce8f2;
-margin-top:7px;">
-
-Sistema de Gestión de Viáticos
-
-</div>
-
-<div style="
-font-size:12px;
-color:#c5d5e2;
-margin-top:12px;
-line-height:1.5;">
-
-Este mensaje ha sido generado automáticamente.
-<br>
-Por favor, no responda a este correo.
-
-</div>
-
+<td style="background:#0C4A8A;padding:25px 35px;text-align:center;">
+<div style="font-size:17px;font-weight:bold;color:#ffffff;">DINACEN</div>
+<div style="font-size:13px;color:#dce8f2;margin-top:7px;">Sistema de Gestión de Viáticos</div>
+<div style="font-size:12px;color:#c5d5e2;margin-top:12px;line-height:1.5;">Este mensaje ha sido generado automáticamente.<br>Por favor, no responda a este correo.</div>
 </td>
 </tr>
-
 </table>
-
 </td>
 </tr>
-
 </table>
-
 </body>
 </html>
 """;
@@ -3368,11 +3115,8 @@ Por favor, no responda a este correo.
         private sealed class ResultadoArchivo
         {
             public bool Exito { get; set; }
-
             public string? Mensaje { get; set; }
-
             public string? RutaPublica { get; set; }
-
             public string? RutaFisica { get; set; }
         }
     }

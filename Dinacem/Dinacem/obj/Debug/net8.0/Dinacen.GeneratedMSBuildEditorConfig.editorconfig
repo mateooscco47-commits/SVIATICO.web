@@ -18,6 +18,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\HP\Documents\SISTEMA DE VIATICOS\SVIATICO.web\Dinacem\Dinacem
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/HP/Documents/SISTEMA DE VIATICOS/SVIATICO.web/Dinacem/Dinacem/Views/BitacoraVehiculo/EditAdmin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQml0YWNvcmFWZWhpY3Vsb1xFZGl0QWRtaW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/HP/Documents/SISTEMA DE VIATICOS/SVIATICO.web/Dinacem/Dinacem/Views/BitacoraVehiculo/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQml0YWNvcmFWZWhpY3Vsb1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

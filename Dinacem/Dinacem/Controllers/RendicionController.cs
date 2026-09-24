@@ -105,7 +105,8 @@ namespace Dinacem.Controllers
                 FechaFin = solicitud.FechaFin,
                 Total = 0,
                 Saldo = solicitud.Monto,
-                IdEstadoRendicion = 1
+                IdEstadoRendicion = 1,
+                Solicitud = solicitud
             };
 
             return View(rendicion);
@@ -219,6 +220,7 @@ namespace Dinacem.Controllers
 
             var lista = await _context.Rendiciones
                 .Include(r => r.Usuario)
+                    .ThenInclude(u => u.Zona)
                 .Include(r => r.Solicitud)
                 .Include(r => r.EstadoRendicion)
                 .OrderByDescending(r => r.Fecha)
@@ -299,7 +301,6 @@ namespace Dinacem.Controllers
                     new { id });
             }
 
-            // 3 = Rendición aprobada
             rendicion.IdEstadoRendicion = 3;
 
             var reembolso = await _context.Reembolsos
@@ -308,7 +309,6 @@ namespace Dinacem.Controllers
 
             if (reembolso != null)
             {
-                // 2 = Aprobado, pendiente de pago
                 reembolso.IdEstadoReembolso = 2;
                 reembolso.FechaAprobacion = DateTime.Now;
             }
@@ -330,8 +330,8 @@ namespace Dinacem.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Rechazar(
-    int id,
-    string observaciones)
+            int id,
+            string observaciones)
         {
             var rendicion = await _context.Rendiciones
                 .FirstOrDefaultAsync(r =>
@@ -373,34 +373,56 @@ namespace Dinacem.Controllers
 
             return RedirectToAction(nameof(IndexAdmin));
         }
+
         // =====================================
         // EMPLEADO
         // VER DETALLE DE SU RENDICIÓN
         // =====================================
-        public IActionResult DetalleEmpleado(int id)
+        [HttpGet]
+        public async Task<IActionResult> DetalleEmpleado(int id)
         {
-            var rendicion = _context.Rendiciones
+            var idUsuario = HttpContext.Session.GetInt32("IdUsuario");
+
+            if (idUsuario == null)
+            {
+                TempData["error"] =
+                    "La sesión ha expirado. Inicie sesión nuevamente.";
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            var rendicion = await _context.Rendiciones
                 .Include(r => r.Usuario)
                 .Include(r => r.Solicitud)
                 .Include(r => r.EstadoRendicion)
-                .FirstOrDefault(r => r.IdRendicion == id);
+                .FirstOrDefaultAsync(r =>
+                    r.IdRendicion == id &&
+                    r.IdUsuario == idUsuario.Value);
 
             if (rendicion == null)
             {
-                return NotFound();
+                TempData["error"] =
+                    "La rendición no existe o no pertenece al usuario conectado.";
+
+                return RedirectToAction(nameof(MisRendiciones));
             }
 
-            var gastos = _context.Gastos
+            var gastos = await _context.Gastos
                 .Include(g => g.TipoGasto)
                 .Include(g => g.TipoComprobante)
                 .Where(g => g.IdRendicion == id)
                 .OrderBy(g => g.Fecha)
-                .ToList();
+                .ToListAsync();
+
+            var devolucion = await _context.DevolucionesSaldo
+                .FirstOrDefaultAsync(d => d.IdRendicion == id);
 
             ViewBag.Rendicion = rendicion;
+            ViewBag.DevolucionSaldo = devolucion;
 
             return View(gastos);
         }
+
         // =====================================
         // ADMINISTRADOR
         // VER DETALLE DE LA RENDICIÓN
@@ -408,6 +430,19 @@ namespace Dinacem.Controllers
         [HttpGet]
         public async Task<IActionResult> DetalleAdmin(int id)
         {
+            var idRol =
+                HttpContext.Session.GetInt32("IdRol");
+
+            if (idRol != 1)
+            {
+                TempData["error"] =
+                    "No tiene permiso para acceder a esta sección.";
+
+                return RedirectToAction(
+                    "Index",
+                    "Home");
+            }
+
             var rendicion = await _context.Rendiciones
                 .Include(r => r.Usuario)
                 .Include(r => r.Solicitud)
@@ -462,5 +497,4 @@ namespace Dinacem.Controllers
             return View(gastos);
         }
     }
-
 }

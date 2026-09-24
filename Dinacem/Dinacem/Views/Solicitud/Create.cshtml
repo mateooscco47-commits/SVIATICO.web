@@ -75,6 +75,28 @@
     }
 </style>
 
+@{
+    // =========================================================
+    // RANGO DE FECHAS DE LA SEMANA ACTUAL
+    // =========================================================
+
+    var hoy = DateTime.Today;
+
+    // Convertir la semana para que lunes sea el primer día.
+    // Sunday = 0, Monday = 1, ..., Saturday = 6
+    var diasDesdeLunes =
+        hoy.DayOfWeek == DayOfWeek.Sunday
+            ? 6
+            : (int)hoy.DayOfWeek - 1;
+
+    var inicioSemana =
+        hoy.AddDays(-diasDesdeLunes);
+
+    // La semana de viáticos termina el sábado.
+    var finSemana =
+        inicioSemana.AddDays(5);
+}
+
 <div class="solicitud-create-page">
 
     <div class="solicitud-create-header">
@@ -82,9 +104,14 @@
             <div class="create-header-icon">
                 <i class="bi bi-file-earmark-plus-fill"></i>
             </div>
+
             <div class="create-header-text">
                 <h1>Nueva Solicitud de Viáticos</h1>
-                <p>Complete los datos del viaje y envíe la solicitud para su revisión y aprobación.</p>
+
+                <p>
+                    Complete los datos del viaje y envíe la solicitud
+                    para su revisión y aprobación.
+                </p>
             </div>
         </div>
 
@@ -95,8 +122,6 @@
             Volver al panel
         </a>
     </div>
-
-    
 
     <div class="formulario-card">
 
@@ -109,6 +134,7 @@
 
             <div class="formulario-intro">
                 <i class="bi bi-info-circle-fill"></i>
+
                 <span>
                     Ingrese la información correspondiente al viaje.
                     Verifique las fechas, destino, motivo y monto antes de enviar la solicitud.
@@ -127,49 +153,95 @@
 
                 <div class="row">
 
+                    <!-- =====================================================
+                         FECHA DE INICIO
+                         ===================================================== -->
+
                     <div class="col-12 col-md-6 campo-grupo">
-                        <label asp-for="FechaInicio" class="campo-label">
+
+                        <label asp-for="FechaInicio"
+                               class="campo-label">
+
                             <i class="bi bi-calendar-event"></i>
+
                             Fecha de inicio
+
                             <span class="campo-obligatorio">*</span>
+
                         </label>
 
-                        <!-- Se agregó el atributo min con la fecha actual del servidor -->
                         <input asp-for="FechaInicio"
                                type="date"
                                class="form-control"
-                               min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                               min="@inicioSemana.ToString("yyyy-MM-dd")"
+                               max="@finSemana.ToString("yyyy-MM-dd")"
                                required />
 
+                        <span class="campo-ayuda">
+                            Puede seleccionar una fecha entre
+                            @inicioSemana.ToString("dd/MM/yyyy")
+                            y
+                            @finSemana.ToString("dd/MM/yyyy").
+                        </span>
+
                         <span asp-validation-for="FechaInicio"
-                              class="text-danger"></span>
+                              class="text-danger">
+                        </span>
+
                     </div>
 
+                    <!-- =====================================================
+                         FECHA DE FIN
+                         ===================================================== -->
+
                     <div class="col-12 col-md-6 campo-grupo">
-                        <label asp-for="FechaFin" class="campo-label">
+
+                        <label asp-for="FechaFin"
+                               class="campo-label">
+
                             <i class="bi bi-calendar-check"></i>
+
                             Fecha de fin
+
                             <span class="campo-obligatorio">*</span>
+
                         </label>
 
-                        <!-- Se agregó el atributo min con la fecha actual del servidor -->
                         <input asp-for="FechaFin"
                                type="date"
                                class="form-control"
-                               min="@DateTime.Now.ToString("yyyy-MM-dd")"
+                               min="@inicioSemana.ToString("yyyy-MM-dd")"
+                               max="@finSemana.ToString("yyyy-MM-dd")"
                                required />
 
+                        <span class="campo-ayuda">
+                            La fecha de fin debe ser igual o posterior
+                            a la fecha de inicio.
+                        </span>
+
                         <span asp-validation-for="FechaFin"
-                              class="text-danger"></span>
+                              class="text-danger">
+                        </span>
+
                     </div>
 
                 </div>
 
+                <!-- =========================================================
+                     DESTINO
+                     ========================================================= -->
+
                 <div class="campo-grupo">
-                    <label asp-for="Destino" class="campo-label">
+
+                    <label asp-for="Destino"
+                           class="campo-label">
+
                         <i class="bi bi-geo-alt"></i>
+
                         Destino
+
                         <span class="campo-obligatorio">*</span>
+
                     </label>
 
                     <input asp-for="Destino"
@@ -183,14 +255,26 @@
                     </span>
 
                     <span asp-validation-for="Destino"
-                          class="text-danger"></span>
+                          class="text-danger">
+                    </span>
+
                 </div>
 
+                <!-- =========================================================
+                     MOTIVO
+                     ========================================================= -->
+
                 <div class="campo-grupo">
-                    <label asp-for="Motivo" class="campo-label">
+
+                    <label asp-for="Motivo"
+                           class="campo-label">
+
                         <i class="bi bi-chat-left-text"></i>
+
                         Motivo del viaje
+
                         <span class="campo-obligatorio">*</span>
+
                     </label>
 
                     <textarea asp-for="Motivo"
@@ -205,18 +289,33 @@
                     </span>
 
                     <span asp-validation-for="Motivo"
-                          class="text-danger"></span>
+                          class="text-danger">
+                    </span>
+
                 </div>
 
+                <!-- =========================================================
+                     MONTO
+                     ========================================================= -->
+
                 <div class="campo-grupo">
-                    <label asp-for="Monto" class="campo-label">
+
+                    <label asp-for="Monto"
+                           class="campo-label">
+
                         <i class="bi bi-cash-stack"></i>
+
                         Monto solicitado
+
                         <span class="campo-obligatorio">*</span>
+
                     </label>
 
                     <div class="monto-group">
-                        <span class="monto-prefix">S/</span>
+
+                        <span class="monto-prefix">
+                            S/
+                        </span>
 
                         <input asp-for="Monto"
                                type="number"
@@ -225,6 +324,7 @@
                                class="form-control monto-input"
                                placeholder="0.00"
                                required />
+
                     </div>
 
                     <span class="campo-ayuda">
@@ -232,51 +332,118 @@
                     </span>
 
                     <span asp-validation-for="Monto"
-                          class="text-danger"></span>
+                          class="text-danger">
+                    </span>
+
                 </div>
 
+                <!-- =========================================================
+                     BOTONES
+                     ========================================================= -->
+
                 <div class="formulario-actions">
+
                     <a asp-controller="Solicitud"
                        asp-action="MisSolicitudes"
                        class="btn-regresar">
+
                         <i class="bi bi-arrow-left"></i>
+
                         Regresar
+
                     </a>
 
                     <button type="submit"
                             class="btn-enviar">
+
                         <i class="bi bi-send-fill"></i>
+
                         Enviar solicitud
+
                     </button>
+
                 </div>
 
+                <!-- =========================================================
+                     PIE
+                     ========================================================= -->
+
                 <div class="formulario-footer">
+
                     <i class="bi bi-shield-check"></i>
-                    <span>Revise la información antes de enviar la solicitud.</span>
+
+                    <span>
+                        Revise la información antes de enviar la solicitud.
+                    </span>
+
                 </div>
 
             </form>
 
         </div>
+
     </div>
+
 </div>
 
-<!-- Script opcional para asegurar lógica cruzada entre FechaInicio y FechaFin -->
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const inputFechaInicio = document.getElementById("FechaInicio");
-            const inputFechaFin = document.getElementById("FechaFin");
 
-            if (inputFechaInicio && inputFechaFin) {
-                inputFechaInicio.addEventListener("change", function () {
-                    // Si la fecha de fin es menor a la nueva fecha de inicio, actualizarla
-                    inputFechaFin.min = this.value;
-                    if (inputFechaFin.value && inputFechaFin.value < this.value) {
-                        inputFechaFin.value = this.value;
-                    }
-                });
+@section Scripts {
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const inputFechaInicio =
+                document.getElementById("FechaInicio");
+
+            const inputFechaFin =
+                document.getElementById("FechaFin");
+
+
+            if (!inputFechaInicio || !inputFechaFin) {
+                return;
             }
+
+
+            // =========================================================
+            // CUANDO CAMBIA LA FECHA DE INICIO
+            // =========================================================
+
+            inputFechaInicio.addEventListener("change", function () {
+
+                const fechaInicio =
+                    this.value;
+
+                if (!fechaInicio) {
+                    return;
+                }
+
+
+                // La fecha de fin no puede ser anterior
+                // a la fecha de inicio.
+
+                inputFechaFin.min =
+                    fechaInicio;
+
+
+                // Si la fecha de fin seleccionada
+                // es anterior a la nueva fecha de inicio,
+                // se actualiza automáticamente.
+
+                if (
+                    inputFechaFin.value &&
+                    inputFechaFin.value < fechaInicio
+                ) {
+
+                    inputFechaFin.value =
+                        fechaInicio;
+
+                }
+
+            });
+
         });
+
     </script>
+
 }
