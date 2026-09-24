@@ -252,6 +252,9 @@ namespace Dinacem.Controllers
             bool esHospedaje =
                 EsHospedaje(tipoGasto);
 
+            bool esOtros =
+                EsOtros(tipoGasto);
+
             ValidarFechaGasto(
                 gasto.Fecha,
                 rendicion,
@@ -292,12 +295,29 @@ namespace Dinacem.Controllers
                     gasto.IdGasto);
             }
 
+            // =========================================================
+            // VALIDACIÓN DE COMPROBANTE
+            // =========================================================
+
             if (esMovilidadInterna)
             {
                 LimpiarDatosComprobante(gasto);
             }
+            else if (esOtros)
+            {
+                // En "Otros" el comprobante es opcional.
+                // Si se ingresa RUC, se valida normalmente.
+                if (ModelState.IsValid &&
+                    !string.IsNullOrWhiteSpace(gasto.Ruc))
+                {
+                    await ValidarRucAsync(gasto);
+                }
+
+                ValidarDatosProveedor(gasto);
+            }
             else
             {
+                // Para los demás tipos el comprobante sigue siendo obligatorio.
                 ValidarDatosComprobante(gasto);
 
                 if (ModelState.IsValid &&
@@ -321,6 +341,10 @@ namespace Dinacem.Controllers
                 return await ProcesarErroresCreate(
                     gasto.IdRendicion);
             }
+
+            // =========================================================
+            // GUARDAR COMPROBANTE
+            // =========================================================
 
             if (!esMovilidadInterna &&
                 archivo != null &&
@@ -2049,6 +2073,12 @@ namespace Dinacem.Controllers
                 .Equals(
                     "Hospedaje",
                     StringComparison.OrdinalIgnoreCase);
+        }
+        private static bool EsOtros(TipoGasto tipoGasto)
+        {
+            return tipoGasto.Nombre.Trim().Equals(
+                "Otros",
+                StringComparison.OrdinalIgnoreCase);
         }
 
         // =========================================================
