@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "c8mQbA9c9meO7CO/MJ6Xr29Gl62/ida5nV8t6K3DbPU=",
+  "Hash": "SyK8Reka3K0om9vaftjl1NIkvV1/s73XTSZNSHpr5+k=",
   "Source": "Dinacen",
   "BasePath": "_content/Dinacen",
   "Mode": "Default",
@@ -511,6 +511,25 @@
       "OriginalItemSpec": "wwwroot\\comprobantes\\85e15cd6-0754-441c-8446-5ad25eff7ace.pdf"
     },
     {
+      "Identity": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\8df55f5c-501e-479d-8e4f-6ade842969d8.jpg",
+      "SourceId": "Dinacen",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\",
+      "BasePath": "_content/Dinacen",
+      "RelativePath": "comprobantes/8df55f5c-501e-479d-8e4f-6ade842969d8.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\comprobantes\\8df55f5c-501e-479d-8e4f-6ade842969d8.jpg"
+    },
+    {
       "Identity": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\95f2f472-634d-463e-9c8f-3de8a8ac6905.jpg",
       "SourceId": "Dinacen",
       "SourceType": "Discovered",
@@ -908,6 +927,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\comprobantes\\fa15b86e-5d20-47dc-8974-2e34e23b4aa3.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\comprobantes\\fae65f57-0842-4c56-8ee8-fc85633ae136.jpg",
+      "SourceId": "Dinacen",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\",
+      "BasePath": "_content/Dinacen",
+      "RelativePath": "comprobantes/fae65f57-0842-4c56-8ee8-fc85633ae136.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\comprobantes\\fae65f57-0842-4c56-8ee8-fc85633ae136.jpg"
     },
     {
       "Identity": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\css\\Admin.css",
@@ -2487,6 +2525,25 @@
       "OriginalItemSpec": "wwwroot\\liquidaciones\\Comprobantes-18-Lucas-Vazquez-Mesa.pdf"
     },
     {
+      "Identity": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Comprobantes-19-Lucas-Vazquez-Mesa.pdf",
+      "SourceId": "Dinacen",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\",
+      "BasePath": "_content/Dinacen",
+      "RelativePath": "liquidaciones/Comprobantes-19-Lucas-Vazquez-Mesa.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\liquidaciones\\Comprobantes-19-Lucas-Vazquez-Mesa.pdf"
+    },
+    {
       "Identity": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Comprobantes-5-Leonel-Lopez-Aliaga.pdf",
       "SourceId": "Dinacen",
       "SourceType": "Discovered",
@@ -2713,6 +2770,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\liquidaciones\\Liquidacion-18-Lucas-Vazquez-Mesa.pdf"
+    },
+    {
+      "Identity": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-19-Lucas-Vazquez-Mesa.pdf",
+      "SourceId": "Dinacen",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\",
+      "BasePath": "_content/Dinacen",
+      "RelativePath": "liquidaciones/Liquidacion-19-Lucas-Vazquez-Mesa.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\liquidaciones\\Liquidacion-19-Lucas-Vazquez-Mesa.pdf"
     },
     {
       "Identity": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\liquidaciones\\Liquidacion-1-lucas-altamiza.pdf",
@@ -3587,6 +3663,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\vouchers-devolucion\\ca7789a7-33df-42ef-bc4a-068ae3322901.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\vouchers-devolucion\\cef53b19-211d-40b0-bae7-8e4bccc63414.jpg",
+      "SourceId": "Dinacen",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\",
+      "BasePath": "_content/Dinacen",
+      "RelativePath": "vouchers-devolucion/cef53b19-211d-40b0-bae7-8e4bccc63414.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\vouchers-devolucion\\cef53b19-211d-40b0-bae7-8e4bccc63414.jpg"
     },
     {
       "Identity": "C:\\Users\\HP\\Documents\\SISTEMA DE VIATICOS\\SVIATICO.web\\Dinacem\\Dinacem\\wwwroot\\vouchers-devolucion\\e162efda-0453-46b3-b267-dcbcdb9448eb.png",

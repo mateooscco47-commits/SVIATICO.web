@@ -10,6 +10,8 @@
     const tipoGasto = document.getElementById("tipoGasto");
     const mensajeTipoGasto = document.getElementById("mensajeTipoGasto");
     const tipoComprobante = document.getElementById("tipoComprobante");
+    const seccionDatosComprobante =
+        document.getElementById("seccionDatosComprobante");
     const mensajeComprobante = document.getElementById("mensajeComprobante");
     const mensajeMovilidad = document.getElementById("mensajeMovilidad");
     const archivo = document.getElementById("archivo");
@@ -53,7 +55,7 @@
     let diasHospedajeEditadosManualmente = false;
 
     const LIMITE_ALIMENTACION = 40;
-    const LIMITE_MOVILIDAD_INTERNA = 10;
+    const LIMITE_MOVILIDAD_INTERNA = 20;
     const LIMITE_HOSPEDAJE = 50;
     const TAMANIO_MAXIMO_ARCHIVO = 5 * 1024 * 1024;
 
@@ -77,8 +79,18 @@
     }
 
     function esMovilidadInterna() {
-        const tipo = normalizarTexto(obtenerNombreTipo());
-        return tipo.includes("movilidad interna");
+        if (!tipoGasto) {
+            return false;
+        }
+
+        const texto =
+            normalizarTexto(
+                tipoGasto.options[
+                    tipoGasto.selectedIndex
+                ]?.text || ""
+            );
+
+        return texto === "movilidad interna";
     }
 
     function esMovilidadNormal() {
@@ -131,13 +143,35 @@
 
     function actualizarRequisitos() {
 
-        if (domicilio) domicilio.removeAttribute("readonly");
+        // =====================================================
+        // OBTENER SIEMPRE EL TIPO ACTUALMENTE SELECCIONADO
+        // =====================================================
 
-        if (periodoHospedaje) {
-            periodoHospedaje.style.display = hospedaje ? "block" : "none";
+        const movilidadActual =
+            esMovilidad();
+
+        const movilidadInternaActual =
+            esMovilidadInterna();
+
+        const movilidadNormalActual =
+            esMovilidadNormal();
+
+        const hospedajeActual =
+            esHospedaje();
+
+        const otrosActual =
+            esOtros();
+
+        if (domicilio) {
+            domicilio.removeAttribute("readonly");
         }
 
-        if (!hospedaje) {
+        if (periodoHospedaje) {
+            periodoHospedaje.style.display =
+                hospedajeActual ? "block" : "none";
+        }
+
+        if (!hospedajeActual) {
             if (fechaInicioHospedaje) {
                 fechaInicioHospedaje.value = "";
                 fechaInicioHospedaje.removeAttribute("required");
@@ -175,8 +209,7 @@
         // =====================================================
         // OTROS
         // =====================================================
-        if (esOtros()) {
-
+        if (otrosActual) {
             ruc?.removeAttribute("required");
             razonSocial?.removeAttribute("required");
             domicilio?.removeAttribute("required");
@@ -231,10 +264,12 @@
                 }
             });
 
+        } else if (movilidadInternaActual) {
+
             // =====================================================
             // MOVILIDAD INTERNA
+            // SIN COMPROBANTE
             // =====================================================
-        } else if (movilidadInterna) {
 
             ruc?.removeAttribute("required");
             razonSocial?.removeAttribute("required");
@@ -244,29 +279,37 @@
             numero?.removeAttribute("required");
             archivo?.removeAttribute("required");
 
+            // Ocultar completamente los datos del comprobante
+            if (seccionDatosComprobante) {
+                seccionDatosComprobante.style.display = "none";
+            }
+
+            // Limpiar valores
+            if (ruc) ruc.value = "";
+            if (razonSocial) razonSocial.value = "";
+            if (domicilio) domicilio.value = "";
+            if (tipoComprobante) tipoComprobante.value = "";
+            if (serie) serie.value = "";
+            if (numero) numero.value = "";
+            if (archivo) archivo.value = "";
+
             if (mensajeMovilidad) {
-                mensajeMovilidad.style.display = "block";
+                mensajeMovilidad.style.display = "none";
             }
 
             if (mensajeArchivo) {
-                mensajeArchivo.innerHTML =
-                    "PDF, JPG, JPEG o PNG. <strong>Opcional para Movilidad interna.</strong>";
+                mensajeArchivo.textContent = "";
+                mensajeArchivo.className = "form-text";
             }
 
             if (mensajeTipoGasto) {
-                mensajeTipoGasto.textContent =
-                    "Movilidad interna: RUC, comprobante y voucher son opcionales. Si ingresa un RUC, puede buscarlo y consultar sus datos.";
-
-                mensajeTipoGasto.className =
-                    "form-text text-success";
+                mensajeTipoGasto.textContent = "";
+                mensajeTipoGasto.className = "form-text";
             }
 
             if (mensajeComprobante) {
-                mensajeComprobante.textContent =
-                    "Para Movilidad interna el comprobante es opcional. Puede seleccionarlo y adjuntar el voucher si corresponde.";
-
-                mensajeComprobante.className =
-                    "form-text text-success";
+                mensajeComprobante.textContent = "";
+                mensajeComprobante.className = "form-text";
             }
 
             [
@@ -277,12 +320,17 @@
                 serie,
                 numero,
                 archivo
-            ].forEach(x => x?.classList.remove("is-invalid"));
+            ].forEach(x => {
 
+                if (!x) return;
+
+                x.classList.remove("is-invalid");
+                x.setCustomValidity("");
+            });
             // =====================================================
             // MOVILIDAD NORMAL
             // =====================================================
-        } else if (movilidadNormal) {
+        } else if (movilidadNormalActual) {
 
             ruc?.setAttribute("required", "required");
             razonSocial?.setAttribute("required", "required");
@@ -776,12 +824,14 @@
             return true;
         }
 
+        // =========================================================
+        // HOSPEDAJE
+        // =========================================================
         if (esHospedaje()) {
 
             if (mensajeLimiteMonto) {
                 mensajeLimiteMonto.textContent = "";
-                mensajeLimiteMonto.className =
-                    "form-text";
+                mensajeLimiteMonto.className = "form-text";
             }
 
             montoTotal.removeAttribute("max");
@@ -789,12 +839,15 @@
             return true;
         }
 
+        // =========================================================
+        // MOVILIDAD NORMAL Y OTROS
+        // SIN LÍMITE DIARIO
+        // =========================================================
         if (esMovilidad() || esOtros()) {
 
             if (mensajeLimiteMonto) {
                 mensajeLimiteMonto.textContent = "";
-                mensajeLimiteMonto.className =
-                    "form-text";
+                mensajeLimiteMonto.className = "form-text";
             }
 
             montoTotal.removeAttribute("max");
@@ -802,9 +855,93 @@
             return true;
         }
 
+        // =========================================================
+        // MOVILIDAD INTERNA
+        // LÍMITE INTERNO DE S/ 20
+        // NO SE MUESTRA AL USUARIO
+        // =========================================================
+        if (esMovilidadInterna()) {
+
+            const fecha = fechaGasto.value;
+
+            if (!fecha) {
+                if (mensajeLimiteMonto) {
+                    mensajeLimiteMonto.textContent = "";
+                    mensajeLimiteMonto.className = "form-text";
+                }
+
+                montoTotal.removeAttribute("max");
+
+                return true;
+            }
+
+            const tipo = obtenerNombreTipo();
+
+            const limite = LIMITE_MOVILIDAD_INTERNA;
+
+            const monto =
+                parseFloat(montoTotal.value) || 0;
+
+            const totalExistente =
+                obtenerTotalExistentePorDia(
+                    fecha,
+                    tipo
+                );
+
+            const disponible =
+                Math.max(
+                    0,
+                    limite - totalExistente
+                );
+
+            // No mostramos el límite en el input
+            montoTotal.removeAttribute("max");
+
+            // No mostramos información del límite mientras escribe
+            if (mensajeLimiteMonto) {
+                mensajeLimiteMonto.textContent = "";
+                mensajeLimiteMonto.className = "form-text";
+            }
+
+            // Si ya alcanzó el límite
+            if (totalExistente >= limite) {
+
+                if (mostrarMensaje) {
+                    mensajeLimiteMonto.textContent =
+                        "No puede registrar más gastos de Movilidad interna para esta fecha.";
+
+                    mensajeLimiteMonto.className =
+                        "form-text text-danger";
+                }
+
+                return false;
+            }
+
+            // Si el nuevo gasto supera lo disponible
+            if (monto > disponible) {
+
+                if (mostrarMensaje) {
+                    mensajeLimiteMonto.textContent =
+                        "El monto ingresado supera el monto disponible para Movilidad interna en esta fecha.";
+
+                    mensajeLimiteMonto.className =
+                        "form-text text-danger";
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        // =========================================================
+        // RESTO DE TIPOS CON LÍMITE DIARIO
+        // =========================================================
+
         const fecha = fechaGasto.value;
         const tipo = obtenerNombreTipo();
         const limite = obtenerLimiteTipo();
+
         const monto =
             parseFloat(montoTotal.value) || 0;
 
@@ -812,8 +949,7 @@
 
             if (mensajeLimiteMonto) {
                 mensajeLimiteMonto.textContent = "";
-                mensajeLimiteMonto.className =
-                    "form-text";
+                mensajeLimiteMonto.className = "form-text";
             }
 
             montoTotal.removeAttribute("max");
@@ -1884,31 +2020,69 @@ Editar gasto #${data.idGasto}
                 // - razón social
                 // - domicilio
 
-                // =================================================
-                // MOVILIDAD INTERNA
-                // =================================================
             } else if (movilidadInterna) {
 
-                const numeroRuc =
-                    ruc?.value.trim() || "";
+                // =================================================
+                // MOVILIDAD INTERNA
+                // NO REQUIERE COMPROBANTE NI RUC
+                // =================================================
 
-                if (
-                    numeroRuc &&
-                    !/^\d{11}$/.test(numeroRuc)
-                ) {
-
-                    event.preventDefault();
-
-                    mostrarAlerta(
-                        "RUC inválido",
-                        "El RUC es opcional para Movilidad interna, pero si lo ingresa debe contener exactamente 11 dígitos.",
-                        "warning"
-                    );
-
-                    ruc?.focus();
-
-                    return;
+                if (ruc) {
+                    ruc.value = "";
+                    ruc.removeAttribute("required");
+                    ruc.setCustomValidity("");
+                    ruc.classList.remove("is-invalid");
                 }
+
+                if (razonSocial) {
+                    razonSocial.value = "";
+                    razonSocial.removeAttribute("required");
+                    razonSocial.setCustomValidity("");
+                    razonSocial.classList.remove("is-invalid");
+                }
+
+                if (domicilio) {
+                    domicilio.value = "";
+                    domicilio.removeAttribute("required");
+                    domicilio.setCustomValidity("");
+                    domicilio.classList.remove("is-invalid");
+                }
+
+                if (tipoComprobante) {
+                    tipoComprobante.value = "";
+                    tipoComprobante.removeAttribute("required");
+                    tipoComprobante.setCustomValidity("");
+                    tipoComprobante.classList.remove("is-invalid");
+                }
+
+                if (serie) {
+                    serie.value = "";
+                    serie.removeAttribute("required");
+                    serie.setCustomValidity("");
+                    serie.classList.remove("is-invalid");
+                }
+
+                if (numero) {
+                    numero.value = "";
+                    numero.removeAttribute("required");
+                    numero.setCustomValidity("");
+                    numero.classList.remove("is-invalid");
+                }
+
+                if (archivo) {
+                    archivo.value = "";
+                    archivo.removeAttribute("required");
+                    archivo.setCustomValidity("");
+                    archivo.classList.remove("is-invalid");
+                }
+
+                if (seccionDatosComprobante) {
+                    seccionDatosComprobante.style.display = "none";
+                }
+
+                // =================================================
+                // MOVILIDAD NORMAL
+                // =================================================
 
                 // =================================================
                 // MOVILIDAD NORMAL

@@ -680,10 +680,9 @@
                             Tipo de comprobante
                         </label>
 
-                        <select asp-for="IdTipoComprobante"
-                                class="form-select"
-                                id="IdTipoComprobante"
-                                required>
+                       <select asp-for="IdTipoComprobante"
+        class="form-select"
+        id="IdTipoComprobante">
 
                             <option value="">
                                 Seleccione un tipo
@@ -870,12 +869,11 @@
 
                         <div class="input-group">
 
-                            <input asp-for="Ruc"
-                                   id="ruc"
-                                   class="form-control"
-                                   maxlength="11"
-                                   inputmode="numeric"
-                                   required />
+                           <input asp-for="Ruc"
+       id="ruc"
+       class="form-control"
+       maxlength="11"
+       inputmode="numeric" />
 
                             <button type="button"
                                     id="btnConsultarRuc"
@@ -918,10 +916,9 @@
                         </label>
 
                         <input asp-for="DomicilioFiscal"
-                               id="domicilioFiscal"
-                               class="form-control"
-                               maxlength="300"
-                               required />
+       id="domicilioFiscal"
+       class="form-control"
+       maxlength="300" />
 
                         <div class="form-help">
                             <i class="bi bi-info-circle me-1"></i>
@@ -1018,7 +1015,6 @@
 </div>
 
 @section Scripts {
-
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
@@ -1027,163 +1023,271 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            const formulario = document.getElementById("formEditarGasto");
+            const btnGuardar = document.getElementById("btnGuardarGasto");
+            const tipoGasto = document.getElementById("IdTipoGasto");
 
-            const formulario =
-                document.getElementById("formEditarGasto");
-
-            const btnGuardar =
-                document.getElementById("btnGuardarGasto");
-
-            const tipoGasto =
-                document.getElementById("IdTipoGasto");
+            const tipoComprobante = document.getElementById("IdTipoComprobante");
+            const ruc = document.getElementById("ruc");
+            const razonSocial = document.getElementById("razonSocial");
+            const domicilio = document.getElementById("domicilioFiscal");
+            const serie = document.querySelector('[name="Serie"]');
+            const numero = document.querySelector('[name="Numero"]');
+            const archivo = document.getElementById("archivo");
 
             // =========================================================
-// HOSPEDAJE
-// =========================================================
+            // TIPO DE GASTO
+            // =========================================================
 
-const seccionHospedaje =
-    document.getElementById("seccionHospedaje");
+            function normalizarTexto(texto) {
+                return (texto || "")
+                    .trim()
+                    .toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "");
+            }
 
-const campoFechaInicioHospedaje =
-    document.getElementById("campoFechaInicioHospedaje");
+            function obtenerTipoGasto() {
+                if (!tipoGasto) {
+                    return "";
+                }
 
-const campoFechaFinHospedaje =
-    document.getElementById("campoFechaFinHospedaje");
+                const opcion =
+                    tipoGasto.options[tipoGasto.selectedIndex];
 
-const campoDiasHospedaje =
-    document.getElementById("campoDiasHospedaje");
+                return normalizarTexto(
+                    opcion?.textContent || ""
+                );
+            }
 
-const fechaInicioHospedaje =
-    document.getElementById("fechaInicioHospedaje");
+            function esHospedaje() {
+                return obtenerTipoGasto().includes("hospedaje");
+            }
 
-const fechaFinHospedaje =
-    document.getElementById("fechaFinHospedaje");
+            function esMovilidadInterna() {
+                return obtenerTipoGasto() === "movilidad interna";
+            }
 
-const diasHospedaje =
-    document.getElementById("diasHospedaje");
+            function esMovilidad() {
+                const tipo = obtenerTipoGasto();
 
-function esHospedaje() {
+                return tipo.includes("movilidad") &&
+                       !tipo.includes("movilidad interna");
+            }
 
-    if (!tipoGasto) {
-        return false;
-    }
+            function esOtros() {
+                return obtenerTipoGasto().includes("otros");
+            }
 
-    const opcion =
-        tipoGasto.options[tipoGasto.selectedIndex];
+            // =========================================================
+            // REQUISITOS SEGÚN TIPO DE GASTO
+            // =========================================================
 
-    if (!opcion) {
-        return false;
-    }
+            function actualizarRequisitos() {
+                const movilidadInterna = esMovilidadInterna();
+                const otros = esOtros();
+                const requiereComprobante =
+                    !movilidadInterna && !otros;
 
-    const texto =
-        (opcion.textContent || "")
-            .trim()
-            .toLowerCase();
+                if (!requiereComprobante) {
+                    if (ruc) {
+                        ruc.removeAttribute("required");
+                        ruc.value = "";
+                        ruc.setCustomValidity("");
+                        ruc.classList.remove("is-invalid");
+                    }
 
-    return texto.includes("hospedaje");
-}
+                    if (razonSocial) {
+                        razonSocial.removeAttribute("required");
+                        razonSocial.value = "";
+                        razonSocial.setCustomValidity("");
+                        razonSocial.classList.remove("is-invalid");
+                    }
 
-function calcularDiasHospedaje() {
+                    if (domicilio) {
+                        domicilio.removeAttribute("required");
 
-    if (!fechaInicioHospedaje ||
-        !fechaFinHospedaje ||
-        !diasHospedaje) {
-        return;
-    }
+                        if (movilidadInterna) {
+                            domicilio.value = "";
+                        }
 
-    const inicio =
-        fechaInicioHospedaje.value;
+                        domicilio.setCustomValidity("");
+                        domicilio.classList.remove("is-invalid");
+                    }
 
-    const fin =
-        fechaFinHospedaje.value;
+                    if (tipoComprobante) {
+                        tipoComprobante.removeAttribute("required");
+                        tipoComprobante.value = "";
+                        tipoComprobante.setCustomValidity("");
+                        tipoComprobante.classList.remove("is-invalid");
+                    }
 
-    // Si no hay fechas, NO borrar
-    // el valor existente de la base de datos.
-    if (!inicio || !fin) {
-        return;
-    }
+                    if (serie) {
+                        serie.removeAttribute("required");
 
-    const fechaInicio =
-        new Date(inicio + "T00:00:00");
+                        if (movilidadInterna) {
+                            serie.value = "";
+                        }
 
-    const fechaFin =
-        new Date(fin + "T00:00:00");
+                        serie.setCustomValidity("");
+                        serie.classList.remove("is-invalid");
+                    }
 
-    if (fechaFin < fechaInicio) {
+                    if (numero) {
+                        numero.removeAttribute("required");
 
-        diasHospedaje.value = "";
+                        if (movilidadInterna) {
+                            numero.value = "";
+                        }
 
-        fechaFinHospedaje.setCustomValidity(
-            "La fecha de fin no puede ser anterior a la fecha de inicio."
-        );
+                        numero.setCustomValidity("");
+                        numero.classList.remove("is-invalid");
+                    }
 
-        return;
-    }
+                    if (archivo) {
+                        archivo.removeAttribute("required");
+                        archivo.setCustomValidity("");
+                        archivo.classList.remove("is-invalid");
+                    }
+                } else {
+                    if (ruc) {
+                        ruc.setAttribute("required", "required");
+                    }
 
-    fechaFinHospedaje.setCustomValidity("");
+                    if (domicilio) {
+                        domicilio.setAttribute("required", "required");
+                    }
 
-    const diferencia =
-        Math.floor(
-            (
-                fechaFin -
-                fechaInicio
-            ) /
-            (1000 * 60 * 60 * 24)
-        ) + 1;
+                    if (tipoComprobante) {
+                        tipoComprobante.setAttribute(
+                            "required",
+                            "required"
+                        );
+                    }
+                }
+            }
 
-    diasHospedaje.value =
-        diferencia;
-}
+            // =========================================================
+            // HOSPEDAJE
+            // =========================================================
 
-function actualizarSeccionHospedaje() {
+            const seccionHospedaje =
+                document.getElementById("seccionHospedaje");
 
-    const mostrar =
-        esHospedaje();
+            const campoFechaInicioHospedaje =
+                document.getElementById("campoFechaInicioHospedaje");
 
-    if (seccionHospedaje) {
-        seccionHospedaje.style.display =
-            mostrar ? "block" : "none";
-    }
+            const campoFechaFinHospedaje =
+                document.getElementById("campoFechaFinHospedaje");
 
-    if (campoFechaInicioHospedaje) {
-        campoFechaInicioHospedaje.style.display =
-            mostrar ? "block" : "none";
-    }
+            const campoDiasHospedaje =
+                document.getElementById("campoDiasHospedaje");
 
-    if (campoFechaFinHospedaje) {
-        campoFechaFinHospedaje.style.display =
-            mostrar ? "block" : "none";
-    }
+            const fechaInicioHospedaje =
+                document.getElementById("fechaInicioHospedaje");
 
-    if (campoDiasHospedaje) {
-        campoDiasHospedaje.style.display =
-            mostrar ? "block" : "none";
-    }
+            const fechaFinHospedaje =
+                document.getElementById("fechaFinHospedaje");
 
-    if (mostrar) {
-        calcularDiasHospedaje();
-    }
-}
+            const diasHospedaje =
+                document.getElementById("diasHospedaje");
 
-tipoGasto?.addEventListener(
-    "change",
-    actualizarSeccionHospedaje
-);
+            function calcularDiasHospedaje() {
+                if (!fechaInicioHospedaje ||
+                    !fechaFinHospedaje ||
+                    !diasHospedaje) {
+                    return;
+                }
 
-fechaInicioHospedaje?.addEventListener(
-    "change",
-    calcularDiasHospedaje
-);
+                const inicio =
+                    fechaInicioHospedaje.value;
 
-fechaFinHospedaje?.addEventListener(
-    "change",
-    calcularDiasHospedaje
-);
+                const fin =
+                    fechaFinHospedaje.value;
 
-// Ejecutar al cargar.
-// IMPORTANTE: aquí NO se borran los valores
-// que vienen de la base de datos.
-actualizarSeccionHospedaje();
+                if (!inicio || !fin) {
+                    return;
+                }
+
+                const fechaInicio =
+                    new Date(inicio + "T00:00:00");
+
+                const fechaFin =
+                    new Date(fin + "T00:00:00");
+
+                if (fechaFin < fechaInicio) {
+                    diasHospedaje.value = "";
+
+                    fechaFinHospedaje.setCustomValidity(
+                        "La fecha de fin no puede ser anterior a la fecha de inicio."
+                    );
+
+                    return;
+                }
+
+                fechaFinHospedaje.setCustomValidity("");
+
+                const diferencia =
+                    Math.floor(
+                        (
+                            fechaFin -
+                            fechaInicio
+                        ) /
+                        (1000 * 60 * 60 * 24)
+                    ) + 1;
+
+                diasHospedaje.value =
+                    diferencia;
+            }
+
+            function actualizarSeccionHospedaje() {
+                const mostrar = esHospedaje();
+
+                if (seccionHospedaje) {
+                    seccionHospedaje.style.display =
+                        mostrar ? "block" : "none";
+                }
+
+                if (campoFechaInicioHospedaje) {
+                    campoFechaInicioHospedaje.style.display =
+                        mostrar ? "block" : "none";
+                }
+
+                if (campoFechaFinHospedaje) {
+                    campoFechaFinHospedaje.style.display =
+                        mostrar ? "block" : "none";
+                }
+
+                if (campoDiasHospedaje) {
+                    campoDiasHospedaje.style.display =
+                        mostrar ? "block" : "none";
+                }
+
+                if (mostrar) {
+                    calcularDiasHospedaje();
+                }
+            }
+
+            tipoGasto?.addEventListener(
+                "change",
+                function () {
+                    actualizarSeccionHospedaje();
+                    actualizarRequisitos();
+                }
+            );
+
+            fechaInicioHospedaje?.addEventListener(
+                "change",
+                calcularDiasHospedaje
+            );
+
+            fechaFinHospedaje?.addEventListener(
+                "change",
+                calcularDiasHospedaje
+            );
+
+            actualizarSeccionHospedaje();
+            actualizarRequisitos();
 
             // =========================================================
             // IGV
@@ -1211,7 +1315,6 @@ actualizarSeccionHospedaje();
                 document.getElementById("resumenTotal");
 
             function calcular() {
-
                 const total =
                     parseFloat(monto?.value) || 0;
 
@@ -1219,14 +1322,10 @@ actualizarSeccionHospedaje();
                 let impuesto = 0;
 
                 if (total > 0) {
-
                     if (exonerado?.checked) {
-
                         base = total;
                         impuesto = 0;
-
                     } else {
-
                         base =
                             Math.round(
                                 (total / 1.18) * 100
@@ -1281,17 +1380,8 @@ actualizarSeccionHospedaje();
             // CONSULTA RUC
             // =========================================================
 
-            const ruc =
-                document.getElementById("ruc");
-
             const boton =
                 document.getElementById("btnConsultarRuc");
-
-            const razonSocial =
-                document.getElementById("razonSocial");
-
-            const domicilio =
-                document.getElementById("domicilioFiscal");
 
             const mensaje =
                 document.getElementById("mensajeRuc");
@@ -1299,7 +1389,6 @@ actualizarSeccionHospedaje();
             ruc?.addEventListener(
                 "input",
                 function () {
-
                     this.value =
                         this.value
                             .replace(/\D/g, "")
@@ -1310,12 +1399,14 @@ actualizarSeccionHospedaje();
             boton?.addEventListener(
                 "click",
                 async function () {
+                    if (esMovilidadInterna() || esOtros()) {
+                        return;
+                    }
 
                     const valor =
                         ruc?.value.trim() ?? "";
 
                     if (!/^\d{11}$/.test(valor)) {
-
                         mensaje.textContent =
                             "Ingrese un RUC válido de 11 dígitos.";
 
@@ -1331,7 +1422,6 @@ actualizarSeccionHospedaje();
                         '<span class="spinner-border spinner-border-sm me-1"></span>Buscando...';
 
                     try {
-
                         const url =
                             '@Url.Action("ConsultarRuc", "Gasto")' +
                             '?ruc=' +
@@ -1344,45 +1434,44 @@ actualizarSeccionHospedaje();
                             await response.json();
 
                         if (!response.ok) {
-
                             throw new Error(
                                 data.mensaje ??
                                 "No se encontró el RUC."
                             );
                         }
 
-                        razonSocial.value =
-                            data.razonSocial ?? "";
+                        if (razonSocial) {
+                            razonSocial.value =
+                                data.razonSocial ?? "";
+                        }
 
-                        if (!domicilio.value.trim()) {
-
+                        if (domicilio &&
+                            !domicilio.value.trim()) {
                             domicilio.value =
                                 data.domicilioFiscal ?? "";
                         }
 
-                        mensaje.textContent =
-                            `Estado: ${data.estado ?? "-"} | ` +
-                            `Condición: ${data.condicion ?? "-"}`;
+                        if (mensaje) {
+                            mensaje.textContent =
+                                `Estado: ${data.estado ?? "-"} | ` +
+                                `Condición: ${data.condicion ?? "-"}`;
 
-                        mensaje.className =
-                            "form-help text-success";
-
+                            mensaje.className =
+                                "form-help text-success";
+                        }
                     }
                     catch (error) {
+                        if (mensaje) {
+                            mensaje.textContent =
+                                error.message;
 
-                        mensaje.textContent =
-                            error.message;
-
-                        mensaje.className =
-                            "form-help text-danger";
-
+                            mensaje.className =
+                                "form-help text-danger";
+                        }
                     }
                     finally {
-
                         boton.disabled = false;
-
-                        boton.textContent =
-                            "Buscar";
+                        boton.textContent = "Buscar";
                     }
                 }
             );
@@ -1392,28 +1481,23 @@ actualizarSeccionHospedaje();
             // =========================================================
 
             if (formulario && btnGuardar) {
-
                 formulario.addEventListener(
                     "submit",
                     function (event) {
-
                         event.preventDefault();
 
+                        actualizarRequisitos();
+                        actualizarSeccionHospedaje();
                         calcularDiasHospedaje();
 
                         if (!formulario.checkValidity()) {
-
                             formulario.reportValidity();
-
                             return;
                         }
 
                         Swal.fire({
-
                             icon: "question",
-
                             title: "¿Guardar corrección?",
-
                             html: `
                                 <div style="font-size:14px;color:#4b5563;line-height:1.6;">
                                     ¿Está seguro de que desea guardar
@@ -1424,42 +1508,28 @@ actualizarSeccionHospedaje();
                                     </strong>
                                 </div>
                             `,
-
                             showCancelButton: true,
-
                             confirmButtonText:
                                 '<i class="bi bi-check-circle me-1"></i> Sí, guardar',
-
                             cancelButtonText:
                                 '<i class="bi bi-x-circle me-1"></i> Cancelar',
-
                             reverseButtons: true,
-
                             focusCancel: true,
-
                             buttonsStyling: false,
-
                             customClass: {
                                 popup:
                                     "swal-gasto-popup",
-
                                 title:
                                     "swal-gasto-title",
-
                                 htmlContainer:
                                     "swal-gasto-text",
-
                                 confirmButton:
                                     "swal-btn-confirmar swal-btn-guardar",
-
                                 cancelButton:
                                     "swal-btn-cancelar"
                             }
-
                         }).then(function (resultado) {
-
                             if (resultado.isConfirmed) {
-
                                 btnGuardar.disabled = true;
 
                                 btnGuardar.innerHTML =

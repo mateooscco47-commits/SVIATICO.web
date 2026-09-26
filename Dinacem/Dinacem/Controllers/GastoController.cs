@@ -23,7 +23,7 @@ namespace Dinacem.Controllers
         private const int ESTADO_REEMBOLSO_PENDIENTE = 1;
 
         private const decimal LIMITE_ALIMENTACION_DIARIO = 40m;
-        private const decimal LIMITE_MOVILIDAD_INTERNA_DIARIO = 10m;
+        private const decimal LIMITE_MOVILIDAD_INTERNA_DIARIO = 20m;
         private const decimal LIMITE_HOSPEDAJE_POR_DIA = 50m;
 
         private const decimal TASA_IGV = 0.18m;
@@ -657,6 +657,8 @@ namespace Dinacem.Controllers
                 tipoGasto != null &&
                 EsHospedaje(tipoGasto);
 
+            bool esOtros = tipoGasto != null && EsOtros(tipoGasto);
+
             // =====================================================
             // VALIDAR FECHA
             // =====================================================
@@ -723,10 +725,17 @@ namespace Dinacem.Controllers
             // =====================================================
             // MOVILIDAD INTERNA
             // =====================================================
-
             if (esMovilidadInterna)
             {
                 LimpiarDatosComprobante(modelo);
+            }
+            else if (esOtros)
+            {
+                // =================================================
+                // OTROS
+                // =================================================
+                // El comprobante, RUC y proveedor son opcionales.
+                // No se debe exigir comprobante para guardar.
             }
             else
             {
@@ -764,8 +773,6 @@ namespace Dinacem.Controllers
                     archivo != null &&
                     archivo.Length > 0;
 
-                // Si ya existe comprobante, no es obligatorio
-                // volver a subirlo.
                 if (!existeComprobanteAnterior &&
                     !seSubioNuevoComprobante)
                 {
@@ -2339,9 +2346,18 @@ namespace Dinacem.Controllers
                 disponible = 0;
             }
 
-            ModelState.AddModelError(
-                nameof(Gasto.MontoTotal),
-                $"El límite diario para {tipoGasto.Nombre} es S/ {limiteDiario:N2}. El {gasto.Fecha:dd/MM/yyyy} ya tiene registrado S/ {montoRegistrado:N2}. Solo puede registrar hasta S/ {disponible:N2}.");
+            if (EsMovilidadInterna(tipoGasto))
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.MontoTotal),
+                    "El monto ingresado supera el monto disponible para Movilidad interna en esta fecha.");
+            }
+            else
+            {
+                ModelState.AddModelError(
+                    nameof(Gasto.MontoTotal),
+                    $"El límite diario para {tipoGasto.Nombre} es S/ {limiteDiario:N2}. El {gasto.Fecha:dd/MM/yyyy} ya tiene registrado S/ {montoRegistrado:N2}. Solo puede registrar hasta S/ {disponible:N2}.");
+            }
         }
 
         // =========================================================

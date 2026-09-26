@@ -384,6 +384,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\85e15cd6-0754-441c-8446-5ad25eff7ace.pdf))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\8df55f5c-501e-479d-8e4f-6ade842969d8.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>Dinacen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Dinacen</BasePath>
+      <RelativePath>comprobantes/8df55f5c-501e-479d-8e4f-6ade842969d8.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\8df55f5c-501e-479d-8e4f-6ade842969d8.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\95f2f472-634d-463e-9c8f-3de8a8ac6905.jpg))">
       <SourceType>Package</SourceType>
       <SourceId>Dinacen</SourceId>
@@ -719,6 +735,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\fa15b86e-5d20-47dc-8974-2e34e23b4aa3.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\fae65f57-0842-4c56-8ee8-fc85633ae136.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>Dinacen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Dinacen</BasePath>
+      <RelativePath>comprobantes/fae65f57-0842-4c56-8ee8-fc85633ae136.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\comprobantes\fae65f57-0842-4c56-8ee8-fc85633ae136.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\css\Admin.css))">
       <SourceType>Package</SourceType>
@@ -2064,6 +2096,22 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Comprobantes-18-Lucas-Vazquez-Mesa.pdf))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Comprobantes-19-Lucas-Vazquez-Mesa.pdf))">
+      <SourceType>Package</SourceType>
+      <SourceId>Dinacen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Dinacen</BasePath>
+      <RelativePath>liquidaciones/Comprobantes-19-Lucas-Vazquez-Mesa.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Comprobantes-19-Lucas-Vazquez-Mesa.pdf))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Comprobantes-5-Leonel-Lopez-Aliaga.pdf))">
       <SourceType>Package</SourceType>
       <SourceId>Dinacen</SourceId>
@@ -2271,6 +2319,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-18-Lucas-Vazquez-Mesa.pdf))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-19-Lucas-Vazquez-Mesa.pdf))">
+      <SourceType>Package</SourceType>
+      <SourceId>Dinacen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Dinacen</BasePath>
+      <RelativePath>liquidaciones/Liquidacion-19-Lucas-Vazquez-Mesa.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-19-Lucas-Vazquez-Mesa.pdf))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\liquidaciones\Liquidacion-2-angel-asd.pdf))">
       <SourceType>Package</SourceType>
@@ -2991,6 +3055,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\ca7789a7-33df-42ef-bc4a-068ae3322901.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\cef53b19-211d-40b0-bae7-8e4bccc63414.jpg))">
+      <SourceType>Package</SourceType>
+      <SourceId>Dinacen</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Dinacen</BasePath>
+      <RelativePath>vouchers-devolucion/cef53b19-211d-40b0-bae7-8e4bccc63414.jpg</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\cef53b19-211d-40b0-bae7-8e4bccc63414.jpg))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\vouchers-devolucion\e162efda-0453-46b3-b267-dcbcdb9448eb.png))">
       <SourceType>Package</SourceType>
